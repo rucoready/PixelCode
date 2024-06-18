@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "PixelCodeGameMode.h"
-#include "PixelCodeCharacter.h"
+#include "Player/PixelCodeCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 APixelCodeGameMode::APixelCodeGameMode()
