@@ -8,7 +8,7 @@
 
 
 
-class UInstancedStaticMeshComponent;
+//class UInstancedStaticMeshComponent;
 
 UCLASS()
 class PIXELCODE_API ABuilding : public AActor
@@ -21,14 +21,25 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
-	UInstancedStaticMeshComponent* FoundationInstancedMesh;
+	class UInstancedStaticMeshComponent* FoundationInstancedMesh;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 
+
+
+
+
+
+
+
 public:
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void DestroyInstance(FVector HitPoint);
+
+
+	UFUNCTION(BlueprintCallable, Category = KSH)
+	 FTransform GetInstancedSocketTransform(UInstancedStaticMeshComponent* InstancedComponent, int32 InstanceIndex, const FName& SocketName, bool& Success, bool WorldSpace = false);
 
 };
