@@ -21,6 +21,7 @@ class APlayerOrganism;
 USTRUCT(BlueprintType)
 struct FCharacterStat : public FTableRowBase
 {
+
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
