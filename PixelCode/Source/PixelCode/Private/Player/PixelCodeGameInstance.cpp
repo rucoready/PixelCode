@@ -11,6 +11,7 @@ FCharacterStat UPixelCodeGameInstance::GetCharacterDataTable(const FString& rowN
 {
 	if (dt_characerStatDataTable != nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("gameins"));
 		FString errorText;
 		FCharacterStat* characerStatInfo = dt_characerStatDataTable->FindRow<FCharacterStat>(FName(rowName), errorText);
 

@@ -27,7 +27,7 @@ APlayerOrganism::APlayerOrganism()
 
 	combatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComp"));
 
-	characterName = TEXT("Default");
+	characterName = TEXT("Player");
 
 	CreateInventory();
 }

@@ -11,7 +11,8 @@ UENUM()
 enum EStateType
 {
 	HP,
-	SP
+	SP,
+	MP
 };
 
 class APlayerOrganism;
@@ -29,10 +30,32 @@ struct FCharacterStat : public FTableRowBase
 	float MaxSP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
-	int32 Strength;
+	float MaxMP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
-	int32 Agility;
+	int32 ATK;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	int32 DEF;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	int32 Critical;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	int32 STR;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	int32 Dex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	int32 INT;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	int32 LUCK;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	int32 CON;
+
 };
 
 class UDataTable;
@@ -77,11 +100,35 @@ public:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	float MaxSP = 0.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
-	int32 currentStrength = 0;
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	float currentMP = 0.0f;
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	float MaxMP = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
-	int32 currentAgility = 0;
+	int32 currentATK = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	int32 currentDEF = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	int32 currentCritical = 0;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	int32 currentSTR = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	int32 currentDex = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	int32 currentInt = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	int32 currentluck = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	int32 currentCon = 0;
 
 
 	void InitStat();
@@ -97,8 +144,15 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_SetStatePoint(EStateType stateType, float value);
 
-	int32 GetStrength() { return currentStrength; };
-	int32 GetAgility() { return currentAgility; };
+	int32 GetATK() { return currentATK; };
+	int32 GetDEF() { return currentDEF; };
+	int32 GetCritical() { return currentCritical; };
+	int32 GetSTR() { return currentSTR; };
+	int32 GetDex() { return currentDex; };
+	int32 GetInt() { return currentInt; };
+	int32 Getluck() { return currentluck; };
+	int32 GetCon() { return currentCon; };
+
 
 	// Set CurrentValue
 	void UpdateStat();

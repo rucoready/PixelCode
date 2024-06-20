@@ -34,12 +34,12 @@ void UStateComponent::BeginPlay()
 		SetIsReplicated(true);
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("StateComp GetIsReplicated() : %s"), GetIsReplicated() ? TEXT("TRUE") : TEXT("FALSE"));
-	if (GetIsReplicated() != true)
-	{
+	//UE_LOG(LogTemp, Warning, TEXT("StateComp GetIsReplicated() : %s"), GetIsReplicated() ? TEXT("TRUE") : TEXT("FALSE"));
+	//if (GetIsReplicated() != true)
+	//{
 
-		SetIsReplicated(true);
-	}
+	//	SetIsReplicated(true);
+	//}
 	// ...
 }
 
@@ -67,8 +67,15 @@ void UStateComponent::InitStat()
 
 		currentHP = stat.MaxHP;
 		currentSP = stat.MaxSP;
-		currentStrength = stat.Strength;
-		currentAgility = stat.Agility;
+		currentATK = stat.ATK;
+		currentDEF = stat.DEF;
+		currentCritical = stat.Critical;
+		currentSTR = stat.STR;
+		currentDex = stat.Dex;
+		currentInt = stat.INT;
+		currentluck = stat.LUCK;
+		currentCon = stat.CON;
+		
 	}
 	else
 	{
@@ -84,6 +91,8 @@ float UStateComponent::GetStatePoint(EStateType stateType)
 		return currentHP;
 	case SP:
 		return currentSP;
+	case MP:
+		return currentMP;
 	default:
 		//UE_LOG(LogTemp, Warning, TEXT("Type Error, %s, %d"), __FILE__, __LINE__);
 		break;
@@ -115,6 +124,10 @@ float UStateComponent::AddStatePoint(EStateType stateType, float value)
 		temp = currentSP + value;
 		currentSP = temp;
 		break;
+	case MP:
+		temp = currentMP + value;
+		currentMP = temp;
+		break;
 	default:
 		//UE_LOG(LogTemp, Warning, TEXT("Type Error, %s, %d"), __FILE__, __LINE__);
 		break;
@@ -133,6 +146,9 @@ void UStateComponent::ServerRPC_SetStatePoint_Implementation(EStateType stateTyp
 	case SP:
 		currentSP = value;
 		break;
+	case MP:
+		currentMP = value;
+		break;
 	default:
 		//UE_LOG(LogTemp, Warning, TEXT("Type Error, %s, %d"), __FILE__, __LINE__);
 		break;
@@ -148,6 +164,9 @@ void UStateComponent::NetMulticastRPC_SetStatePoint_Implementation(EStateType st
 		break;
 	case SP:
 		currentSP = value;
+		break;
+	case MP:
+		currentMP = value;
 		break;
 	default:
 		//UE_LOG(LogTemp, Warning, TEXT("Type Error, %s, %d"), __FILE__, __LINE__);
@@ -167,10 +186,11 @@ void UStateComponent::UpdateStat()
 	//	}
 	//}
 
-
+	UE_LOG(LogTemp,Warning,TEXT("updateStat"));
 	// 이후 장비에 있는 스탯을 여기에 추가해줘야 함
 	MaxHP = stat.MaxHP;
 	MaxSP = stat.MaxSP;
+	MaxMP = stat.MaxMP;
 }
 
 void UStateComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -181,5 +201,7 @@ void UStateComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(UStateComponent, MaxHP);
 	DOREPLIFETIME(UStateComponent, currentSP);
 	DOREPLIFETIME(UStateComponent, MaxSP);
+	DOREPLIFETIME(UStateComponent, currentMP);
+	DOREPLIFETIME(UStateComponent, MaxMP);
 }
 
