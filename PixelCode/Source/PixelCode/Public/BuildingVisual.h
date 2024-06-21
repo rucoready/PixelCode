@@ -6,6 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "BuildingVisual.generated.h"
 
+
+
+class ABuilding;
+
 UCLASS()
 class PIXELCODE_API ABuildingVisual : public AActor
 {
@@ -23,12 +27,15 @@ protected:
 	class UStaticMeshComponent* BuildMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = KSH)
-	TSubclassOf<class ABuilding> BuildingClass;
+	TSubclassOf< ABuilding> BuildingClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = KSH)
 	TArray<class UStaticMesh*> BuildingMeshes;
 
 	uint8 BuildingMeshesIndex;
+
+
+	ABuilding* GetHitBuildingActor(const FHitResult& HitResult);
 
 public:	
  

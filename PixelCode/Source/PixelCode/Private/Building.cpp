@@ -87,3 +87,36 @@ FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent*
 	Success = false;
 	return FTransform();
 }
+
+int32 ABuilding::GetHitIndex(const FHitResult& HitResult)
+{
+	TArray<int32> HitIndexes = FoundationInstancedMesh->GetInstancesOverlappingSphere(HitResult.Location, 5.0f);
+
+	DrawDebugSphere(GetWorld(), HitResult.Location, 5.0f, 10, FColor::Red);
+	if (HitIndexes.Num())
+	{
+		return HitIndexes[0];
+	}
+
+	return -1;
+}
+
+FTransform ABuilding::GetHitSocketTransform(const FHitResult& HitResult, float ValidHitDistance)
+{
+	// 가장 가까운 소켓으 판별하기
+	int32 HitIndex = GetHitIndex(HitResult);
+	if (HitIndex != -1)
+	{
+		TArray<FName> SocketNames = FoundationInstancedMesh->GetAllSocketNames();
+		for(const FName& SocketName : SocketNames)
+			{
+				FTransform SocketTransform = FoundationInstancedMesh->GetSocketTransform(SocketName);
+				if (FVector::Distance(SocketTransform.GetLocation(), HitResult.Location) <= ValidHitDistance)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Valid Hit On Socket: %s"), *SocketName.ToString());
+					return SocketTransform;
+				}
+			}
+	}
+	return FTransform();
+}

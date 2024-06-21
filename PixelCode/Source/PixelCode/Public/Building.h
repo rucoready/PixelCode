@@ -46,4 +46,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	 FTransform GetInstancedSocketTransform(UInstancedStaticMeshComponent* InstancedComponent, int32 InstanceIndex, const FName& SocketName, bool& Success, bool WorldSpace = false);
 
+
+	 int32 GetHitIndex(const FHitResult& HitResult);
+
+	 FTransform GetHitSocketTransform(const FHitResult& HitResult, float ValidHitDistance = 100.0f);
 };

@@ -33,12 +33,38 @@ void ABuildingVisual::BeginPlay()
 
 }
 
+ABuilding* ABuildingVisual::GetHitBuildingActor(const FHitResult& HitResult)
+{
+	return Cast<ABuilding>(HitResult.GetActor());
+}
+
 void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 {
 	if (HitResult.bBlockingHit)
 	{
 		SetActorHiddenInGame(false);
-		SetActorLocation(HitResult.Location);
+
+		UE_LOG(LogTemp, Warning, TEXT("SetBuildPosition"));
+		// #19 건축 자재 스냅시키기
+		if (ABuilding* HitBuilding = GetHitBuildingActor(HitResult))
+		{
+			FTransform SocketTransform = HitBuilding->GetHitSocketTransform(HitResult);
+			if (!SocketTransform.Equals(FTransform()))
+			{
+				SetActorTransform(SocketTransform);
+				return;
+			}
+			else
+			{
+				SetActorLocation(HitResult.Location);
+			}
+			// 로그--------------------------------------------------------------------건축 자재 오버랩 되면 -1, 오버랩 안되면 0
+			UE_LOG(LogTemp, Warning, TEXT("Hit BuildingActor"));
+		}
+		else
+		{
+			SetActorLocation(HitResult.Location);
+		}
 	}
 	else
 	{
