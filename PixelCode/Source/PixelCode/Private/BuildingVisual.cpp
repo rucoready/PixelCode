@@ -17,6 +17,8 @@ ABuildingVisual::ABuildingVisual()
 	RootComponent = BuildMesh;
 
 	BuildingMeshesIndex = 0;
+
+	bMaterialIsTrue = false;
 }
 
 // Called when the game starts or when spawned
@@ -29,6 +31,12 @@ void ABuildingVisual::BeginPlay()
 	if (BuildingMeshes[BuildingMeshesIndex])
 	{
 		BuildMesh->SetStaticMesh(BuildingMeshes[BuildingMeshesIndex]);
+	}
+
+	if (MaterialTrue)
+	{
+		bMaterialIsTrue = true;
+		BuildMesh->SetMaterial(0, MaterialTrue);
 	}
 
 }
@@ -52,10 +60,21 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 			if (!SocketTransform.Equals(FTransform()))
 			{
 				SetActorTransform(SocketTransform);
+				if (MaterialTrue && !bMaterialIsTrue)
+				{
+					bMaterialIsTrue = true;
+					BuildMesh->SetMaterial(0, MaterialTrue);
+				}
 				return;
 			}
 			else
 			{
+				if (MaterialFalse && bMaterialIsTrue)
+				{
+					bMaterialIsTrue = false;
+					BuildMesh->SetMaterial(0, MaterialFalse);
+
+				}
 				SetActorLocation(HitResult.Location);
 			}
 			// 로그--------------------------------------------------------------------건축 자재 오버랩 되면 -1, 오버랩 안되면 0

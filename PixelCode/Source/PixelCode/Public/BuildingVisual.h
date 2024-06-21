@@ -4,11 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../../../Intermediate/ProjectFiles/DataTypes.h"
 #include "BuildingVisual.generated.h"
 
 
 
+
 class ABuilding;
+class UMaterialInstance;
 
 UCLASS()
 class PIXELCODE_API ABuildingVisual : public AActor
@@ -33,6 +36,17 @@ protected:
 	TArray<class UStaticMesh*> BuildingMeshes;
 
 	uint8 BuildingMeshesIndex;
+
+
+
+	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	UMaterialInstance* MaterialFalse;
+
+	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	UMaterialInstance* MaterialTrue;
+
+	bool bMaterialIsTrue;
+
 
 
 	ABuilding* GetHitBuildingActor(const FHitResult& HitResult);

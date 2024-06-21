@@ -103,7 +103,7 @@ int32 ABuilding::GetHitIndex(const FHitResult& HitResult)
 
 FTransform ABuilding::GetHitSocketTransform(const FHitResult& HitResult, float ValidHitDistance)
 {
-	// 가장 가까운 소켓으 판별하기
+	// 가장 가까운 소켓을 판별하기
 	int32 HitIndex = GetHitIndex(HitResult);
 	if (HitIndex != -1)
 	{
