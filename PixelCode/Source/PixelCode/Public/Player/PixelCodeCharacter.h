@@ -52,6 +52,15 @@ struct FInteractionData
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
+
+
+
+// º≠»÷-----------------------------------------------------------------------------------------------------
+class ABuildingVisual;
+// º≠»÷-----------------------------------------------------------------------------------------------------≥°
+
+
+
 UCLASS(config=Game)
 class APixelCodeCharacter : public APlayerOrganism
 {
@@ -137,13 +146,26 @@ protected:
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+		
 	// To add mapping context
 	virtual void BeginPlay();
 
 	// ¡¯ø¯ s
 	UPROPERTY(Replicated, VisibleAnywhere, Category = "Character | Interaction")
 	TScriptInterface<IInteractionInterface> TargetInteractable;
+
+	// º≠»÷-----------------------------------------------------------------------------------------------------
+	FHitResult PerformLineTrace(float Distance = 650.0f, bool DrawDebug = false);
+
+	UPROPERTY(BlueprintReadOnly, Category = KSH)
+	bool bInBuildMode;
+
+	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	TSubclassOf<ABuildingVisual> BuildingClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
+	ABuildingVisual* Builder;
+	// º≠»÷-----------------------------------------------------------------------------------------------------≥°
 
 
 	float InteractionCheckFrequecy;
@@ -180,6 +202,21 @@ protected:
 public:
 
 	void Interact();
+
+	// º≠»÷-----------------------------------------------------------------------------------------------------
+	UFUNCTION(BlueprintCallable, Category = KSH)
+	void SetBuildMode(bool Enabled);
+
+	UFUNCTION(BlueprintCallable, Category = KSH)
+	bool GetBuildMode() const { return bInBuildMode; }
+
+	UFUNCTION(BlueprintCallable, Category = KSH)
+	void CycleBuildingMesh();
+
+	UFUNCTION(BlueprintCallable, Category = KSH)
+	void SpawnBuilding();
+	// º≠»÷-----------------------------------------------------------------------------------------------------≥°
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "weapon")
 	TSubclassOf<class ABaseWeapon> defaultWeapon;

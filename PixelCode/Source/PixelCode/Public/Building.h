@@ -23,6 +23,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	class UInstancedStaticMeshComponent* FoundationInstancedMesh;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
+	class UInstancedStaticMeshComponent* WallInstancedMesh;
+
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

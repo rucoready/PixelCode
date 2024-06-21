@@ -30,6 +30,7 @@
 #include "Player/Interfaces/InteractionInterface.h"
 #include <../../../../../../../Source/Runtime/CoreUObject/Public/UObject/ScriptInterface.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
+#include "BuildingVisual.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -88,6 +89,11 @@ APixelCodeCharacter::APixelCodeCharacter()
 	////lootPanelWidget->SetVisibility(ESlateVisibility::Collapsed);
 
 	int iTemp = 0;
+
+	// º≠»÷-----------------------------------------------------------------------------------------------------
+	bInBuildMode = false;
+
+	// º≠»÷-----------------------------------------------------------------------------------------------------≥°
 }
 
 void APixelCodeCharacter::BeginPlay()
@@ -127,7 +133,39 @@ void APixelCodeCharacter::BeginPlay()
 	}*/
 
 	//PlayerInventory->HandleAddItem();
+
+
+
+	// º≠»÷-----------------------------------------------------------------------------------------------------
+	if (BuildingClass)
+	{
+		Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass);
+	}
+	// º≠»÷-----------------------------------------------------------------------------------------------------≥°
+
+
 }
+
+// º≠»÷-----------------------------------------------------------------------------------------------------
+FHitResult APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug)
+{
+	FVector Start = GetFollowCamera()->GetComponentLocation();
+	FVector End = Start + GetFollowCamera()->GetForwardVector() * Distance;
+
+	FHitResult HitResult;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
+
+	if (DrawDebug)
+	{
+		DrawDebugLine(GetWorld(), Start, End, FColor::Red);
+	}
+ 
+	return HitResult;
+}
+// º≠»÷-----------------------------------------------------------------------------------------------------≥°
 
 void APixelCodeCharacter::ServerRPC_ToggleCombat_Implementation()
 {
@@ -321,6 +359,33 @@ void APixelCodeCharacter::Interact()
 	}
 
 }
+
+// º≠»÷-----------------------------------------------------------------------------------------------------
+void APixelCodeCharacter::SetBuildMode(bool Enabled)
+{
+	bInBuildMode = Enabled;
+	if (Builder)
+	{
+		Builder->SetActorHiddenInGame(!bInBuildMode);
+	}	
+}
+
+void APixelCodeCharacter::CycleBuildingMesh()
+{
+	if (bInBuildMode && Builder)
+	{
+		Builder->CycleMesh();
+	}
+}
+
+void APixelCodeCharacter::SpawnBuilding()
+{
+	if (bInBuildMode && Builder)
+	{
+		Builder->SpawnBuilding();
+	}
+}
+// º≠»÷-----------------------------------------------------------------------------------------------------≥°
 
 void APixelCodeCharacter::ServerRPC_Interact_Implementation()
 {
@@ -563,6 +628,15 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	{
 		PrintInfo();
 	}
+
+	// º≠»÷-----------------------------------------------------------------------------------------------------
+	if (bInBuildMode && Builder)
+	{
+		Builder->SetBuildPosition(PerformLineTrace(650.0f, false));
+		
+	}
+	// º≠»÷-----------------------------------------------------------------------------------------------------≥°
+
 }
 
 void APixelCodeCharacter::PrintInfo()

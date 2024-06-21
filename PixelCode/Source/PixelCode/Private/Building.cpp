@@ -13,23 +13,29 @@ ABuilding::ABuilding()
 
 	FoundationInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("FoundationInstancedStaticMeshComponent"));
 	RootComponent = FoundationInstancedMesh;
+
+	WallInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WallInstancedStaticMeshComponent"));
+
 }
 
 // Called when the game starts or when spawned
 void ABuilding::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	FTransform MeshTransform = FTransform();
 
-	for (uint8 i = 0; i < 3; ++i)
-	{
-		FoundationInstancedMesh->AddInstance(MeshTransform);
+	FoundationInstancedMesh->AddInstance(FTransform());
 
-		FVector MeshLocation = MeshTransform.GetLocation();
-		MeshLocation.Z += 250;
-		MeshTransform.SetLocation(MeshLocation);
-	}
+// 소켓에 3중으로 붙이기
+// 	FTransform MeshTransform = FTransform();
+// 
+// 	for (uint8 i = 0; i < 3; ++i)
+// 	{
+// 		FoundationInstancedMesh->AddInstance(MeshTransform);
+// 
+// 		FVector MeshLocation = MeshTransform.GetLocation();
+// 		MeshLocation.Z += 250;
+// 		MeshTransform.SetLocation(MeshLocation);
+// 	}
 }
 
 void ABuilding::DestroyInstance(FVector HitPoint)
@@ -49,11 +55,11 @@ FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent*
 	{
 		FTransform InstanceTransform = FTransform(); 
 		InstancedComponent->GetInstanceTransform(InstanceIndex, InstanceTransform, false);
-		if (InstanceTransform.Equals(FTransform()))
+		/*if (InstanceTransform.Equals(FTransform()))
 		{
 			Success = false;
 			return FTransform();
-		}
+		}*/
 		FTransform SocketTransform = InstancedComponent->GetSocketTransform(SocketName, RTS_Component);
 		if (SocketTransform.Equals(FTransform()))
 		{
