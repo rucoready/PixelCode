@@ -364,9 +364,12 @@ void APixelCodeCharacter::Interact()
 void APixelCodeCharacter::SetBuildMode(bool Enabled)
 {
 	bInBuildMode = Enabled;
+	UE_LOG(LogTemp, Warning, TEXT("No Builder"));
+
 	if (Builder)
 	{
 		Builder->SetActorHiddenInGame(!bInBuildMode);
+		UE_LOG(LogTemp, Warning, TEXT("SetBuildMode"));
 	}	
 }
 
