@@ -103,11 +103,11 @@ FTransform ABuilding::GetHitSocketTransform(const FHitResult& HitResult, float V
 	if (HitIndex != -1)
 	{
 		TArray<FName> SocketNames = FoundationInstancedMesh->GetAllSocketNames();
-		//bool bIsSuccessful = false;
+		bool bIsSuccessful = false;
 		for(const FName& SocketName : SocketNames)
 			{
-				FTransform SocketTransform = FoundationInstancedMesh->GetSocketTransform(SocketName);
-				//FTransform SocketTransform = GetInstancedSocketTransform(FoundationInstancedMesh, HitIndex, SocketName, bIsSuccessful, true);
+				//FTransform SocketTransform = FoundationInstancedMesh->GetSocketTransform(SocketName);
+				FTransform SocketTransform = GetInstancedSocketTransform(FoundationInstancedMesh, HitIndex, SocketName, bIsSuccessful, true);
 				if (FVector::Distance(SocketTransform.GetLocation(), HitResult.Location) <= ValidHitDistance)
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Valid Hit On Socket: %s"), *SocketName.ToString());
