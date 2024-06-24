@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "../../../Intermediate/ProjectFiles/DataTypes.h"
+#include "DataTypes.h"
 #include "BuildingVisual.generated.h"
 
 
