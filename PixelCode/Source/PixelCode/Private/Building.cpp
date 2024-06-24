@@ -11,6 +11,7 @@ ABuilding::ABuilding()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	// 스태틱 메시 할당하기
 	FoundationInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("FoundationInstancedStaticMeshComponent"));
 	RootComponent = FoundationInstancedMesh;
 
@@ -23,19 +24,8 @@ void ABuilding::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// B 키를 눌렀을 때 미리보기 메시 표시하기
 	FoundationInstancedMesh->AddInstance(FTransform());
-
-// 소켓에 3중으로 붙이기
-// 	FTransform MeshTransform = FTransform();
-// 
-// 	for (uint8 i = 0; i < 3; ++i)
-// 	{
-// 		FoundationInstancedMesh->AddInstance(MeshTransform);
-// 
-// 		FVector MeshLocation = MeshTransform.GetLocation();
-// 		MeshLocation.Z += 250;
-// 		MeshTransform.SetLocation(MeshLocation);
-// 	}
 }
 
 void ABuilding::DestroyInstance(FVector HitPoint)
@@ -44,6 +34,9 @@ void ABuilding::DestroyInstance(FVector HitPoint)
 
 	if (HitIndexes.Num() > 0)
 	{
+		// 디스트로이 로그
+		UE_LOG(LogTemp, Warning, TEXT ("Destroy Instances HitIndexes"));
+
 		FoundationInstancedMesh->RemoveInstance(HitIndexes[0]);
 	}
 }
@@ -53,22 +46,24 @@ FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent*
 	Success = true;
 	if (InstancedComponent && InstancedComponent->IsValidInstance(InstanceIndex))
 	{
+		// 인스턴스의 위치값을 담는 변수
 		FTransform InstanceTransform = FTransform(); 
 		InstancedComponent->GetInstanceTransform(InstanceIndex, InstanceTransform, false);
-		/*if (InstanceTransform.Equals(FTransform()))
-		{
-			Success = false;
-			return FTransform();
-		}*/
+		
+		// 인스턴스 컴포넌트의 소켓 위치를 담는 변수
 		FTransform SocketTransform = InstancedComponent->GetSocketTransform(SocketName, RTS_Component);
+
+		// 인스턴스 위에 배치할 때, 기존에 배치되어 있는 인스턴스의 소켓 위치를 찾아서 새로 배치할 인스턴스의 소켓 위치 받기
 		if (SocketTransform.Equals(FTransform()))
 		{
 			Success = false;
 			return FTransform();
 		}
+
+
 		FTransform RelativeTransform = UKismetMathLibrary::MakeRelativeTransform(SocketTransform, InstanceTransform);
 		FVector RelativeLocation = RelativeTransform.GetLocation();
-
+		// 배치 된 인스턴스가 없이 월드에 처음 배치 할 때, 배치 될 위치 받기
 		if (WorldSpace)
 		{			
 			RelativeLocation.Z = SocketTransform.GetLocation().Z;
@@ -88,16 +83,16 @@ FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent*
 	return FTransform();
 }
 
+
 int32 ABuilding::GetHitIndex(const FHitResult& HitResult)
 {
-	TArray<int32> HitIndexes = FoundationInstancedMesh->GetInstancesOverlappingSphere(HitResult.Location, 5.0f);
+	TArray<int32> HitIndexes = FoundationInstancedMesh->GetInstancesOverlappingSphere(HitResult.Location, 15.0f);
 
 	DrawDebugSphere(GetWorld(), HitResult.Location, 5.0f, 10, FColor::Red);
 	if (HitIndexes.Num())
 	{
 		return HitIndexes[0];
 	}
-
 	return -1;
 }
 
@@ -108,9 +103,11 @@ FTransform ABuilding::GetHitSocketTransform(const FHitResult& HitResult, float V
 	if (HitIndex != -1)
 	{
 		TArray<FName> SocketNames = FoundationInstancedMesh->GetAllSocketNames();
+		//bool bIsSuccessful = false;
 		for(const FName& SocketName : SocketNames)
 			{
 				FTransform SocketTransform = FoundationInstancedMesh->GetSocketTransform(SocketName);
+				//FTransform SocketTransform = GetInstancedSocketTransform(FoundationInstancedMesh, HitIndex, SocketName, bIsSuccessful, true);
 				if (FVector::Distance(SocketTransform.GetLocation(), HitResult.Location) <= ValidHitDistance)
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Valid Hit On Socket: %s"), *SocketName.ToString());
@@ -119,4 +116,15 @@ FTransform ABuilding::GetHitSocketTransform(const FHitResult& HitResult, float V
 			}
 	}
 	return FTransform();
+}
+
+
+void ABuilding::AddInstance(const FTransform& ActorTransform, EBuildType BuildType)
+{
+	switch (BuildType)
+	{
+		case EBuildType::Foundation : FoundationInstancedMesh->AddInstanceWorldSpace(ActorTransform); break;
+		case EBuildType::Wall : WallInstancedMesh->AddInstanceWorldSpace(ActorTransform); break;
+	}
+
 }

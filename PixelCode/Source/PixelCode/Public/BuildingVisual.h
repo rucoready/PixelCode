@@ -32,10 +32,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = KSH)
 	TSubclassOf< ABuilding> BuildingClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = KSH)
-	TArray<class UStaticMesh*> BuildingMeshes;
+// 	UPROPERTY(EditDefaultsOnly, Category = KSH)
+// 	TArray<class UStaticMesh*> BuildingMeshes;
 
-	uint8 BuildingMeshesIndex;
+	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	TArray<FBuildingVisualType> BuildingTypes;
+
+	uint8 BuildingTypeIndex;
 
 
 
@@ -50,6 +53,10 @@ protected:
 
 
 	ABuilding* GetHitBuildingActor(const FHitResult& HitResult);
+
+	ABuilding* InteractingBuilding;
+
+
 
 public:	
  

@@ -16,7 +16,7 @@ ABuildingVisual::ABuildingVisual()
 	BuildMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildMeshComponent"));
 	RootComponent = BuildMesh;
 
-	BuildingMeshesIndex = 0;
+	BuildingTypeIndex = 0;
 
 	bMaterialIsTrue = false;
 }
@@ -28,9 +28,9 @@ void ABuildingVisual::BeginPlay()
 	
 	SetActorHiddenInGame(true);
 
-	if (BuildingMeshes[BuildingMeshesIndex])
+	if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
 	{
-		BuildMesh->SetStaticMesh(BuildingMeshes[BuildingMeshesIndex]);
+		BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
 	}
 
 	if (MaterialTrue)
@@ -51,12 +51,13 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 	if (HitResult.bBlockingHit)
 	{
 		SetActorHiddenInGame(false);
+		InteractingBuilding = GetHitBuildingActor(HitResult); 
 
-		UE_LOG(LogTemp, Warning, TEXT("SetBuildPosition"));
+		//UE_LOG(LogTemp, Warning, TEXT("SetBuildPosition"));
 		// #19 건축 자재 스냅시키기
-		if (ABuilding* HitBuilding = GetHitBuildingActor(HitResult))
+		if (InteractingBuilding)
 		{
-			FTransform SocketTransform = HitBuilding->GetHitSocketTransform(HitResult);
+			FTransform SocketTransform = InteractingBuilding->GetHitSocketTransform(HitResult);
 			if (!SocketTransform.Equals(FTransform()))
 			{
 				SetActorTransform(SocketTransform);
@@ -73,12 +74,11 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 				{
 					bMaterialIsTrue = false;
 					BuildMesh->SetMaterial(0, MaterialFalse);
-
 				}
 				SetActorLocation(HitResult.Location);
 			}
 			// 로그--------------------------------------------------------------------건축 자재 오버랩 되면 -1, 오버랩 안되면 0
-			UE_LOG(LogTemp, Warning, TEXT("Hit BuildingActor"));
+			//UE_LOG(LogTemp, Warning, TEXT("Hit BuildingActor"));
 		}
 		else
 		{
@@ -87,6 +87,7 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 	}
 	else
 	{
+		InteractingBuilding = nullptr;
 		SetActorHiddenInGame(true);
 	}
 }
@@ -95,20 +96,28 @@ void ABuildingVisual::SpawnBuilding()
 {
 	if (BuildingClass && !IsHidden())
 	{
-		GetWorld()->SpawnActor<ABuilding>(BuildingClass, GetActorTransform());
+		if (InteractingBuilding && bMaterialIsTrue)
+		{
+			InteractingBuilding->AddInstance(GetActorTransform(), BuildingTypes[BuildingTypeIndex].BuildType);
+		}
+		else
+		{
+			GetWorld()->SpawnActor<ABuilding>(BuildingClass, GetActorTransform());
+
+		}
 	}
 }
 
 void ABuildingVisual::CycleMesh()
 {
-	if (++BuildingMeshesIndex >= BuildingMeshes.Num())
+	if (++BuildingTypeIndex >= BuildingTypes.Num())
 	{
-		BuildingMeshesIndex = 0;
+		BuildingTypeIndex = 0;
 	}
 
-	if (BuildingMeshes[BuildingMeshesIndex])
+	if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
 	{
-		BuildMesh->SetStaticMesh(BuildingMeshes[BuildingMeshesIndex]);
+		BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
 	}
 }
 
