@@ -16,7 +16,7 @@ APickup::APickup()
 	PickupMesh->SetSimulatePhysics(true);
 	SetRootComponent(PickupMesh);
 
-	ItemDataTable = ConstructorHelpers::FObjectFinder<UDataTable>(TEXT("/Script/Engine.DataTable'/Game/Player/DataTable/Items.Items'")).Object;
+	ItemDataTable = ConstructorHelpers::FObjectFinder<UDataTable>(TEXT("/Script/Engine.DataTable'/Game/YoHan/DataTable/itembase_-_itembase.itembase_-_itembase'")).Object;
 
 }
 
