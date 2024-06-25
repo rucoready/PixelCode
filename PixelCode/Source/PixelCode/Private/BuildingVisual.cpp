@@ -57,7 +57,7 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 		// #19 건축 자재 스냅시키기
 		if (InteractingBuilding)
 		{
-			FTransform SocketTransform = InteractingBuilding->GetHitSocketTransform(HitResult);
+			FTransform SocketTransform = InteractingBuilding->GetHitSocketTransform(HitResult, 25.0f);
 			if (!SocketTransform.Equals(FTransform()))
 			{
 				SetActorTransform(SocketTransform);

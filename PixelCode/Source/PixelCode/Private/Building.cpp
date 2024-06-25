@@ -86,14 +86,9 @@ FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent*
 
 int32 ABuilding::GetHitIndex(const FHitResult& HitResult)
 {
-	TArray<int32> HitIndexes = FoundationInstancedMesh->GetInstancesOverlappingSphere(HitResult.Location, 15.0f);
+	DrawDebugSphere(GetWorld(), HitResult.Location, 10.0f, 30, FColor::Red);
 
-	DrawDebugSphere(GetWorld(), HitResult.Location, 5.0f, 10, FColor::Red);
-	if (HitIndexes.Num())
-	{
-		return HitIndexes[0];
-	}
-	return -1;
+	return HitResult.Item;
 }
 
 FTransform ABuilding::GetHitSocketTransform(const FHitResult& HitResult, float ValidHitDistance)
@@ -110,7 +105,7 @@ FTransform ABuilding::GetHitSocketTransform(const FHitResult& HitResult, float V
 				FTransform SocketTransform = GetInstancedSocketTransform(FoundationInstancedMesh, HitIndex, SocketName, bIsSuccessful, true);
 				if (FVector::Distance(SocketTransform.GetLocation(), HitResult.Location) <= ValidHitDistance)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Valid Hit On Socket: %s"), *SocketName.ToString());
+					//UE_LOG(LogTemp, Warning, TEXT("Valid Hit On Socket: %s"), *SocketName.ToString());
 					return SocketTransform;
 				}
 			}
