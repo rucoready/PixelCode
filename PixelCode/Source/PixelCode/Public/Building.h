@@ -27,12 +27,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	class UInstancedStaticMeshComponent* WallInstancedMesh;
 
-	TArray<FName> FoundationSockets;
+	TArray<FName> MeshInstancedSockets;
 
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	bool IsValidSocket(UInstancedStaticMeshComponent* HitComponent, const FName& Filter, const FName& SocketName);
 
 public:
 	UFUNCTION(BlueprintCallable, Category = KSH)

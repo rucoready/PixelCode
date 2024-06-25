@@ -19,6 +19,7 @@ ABuildingVisual::ABuildingVisual()
 	BuildingTypeIndex = 0;
 
 	bMaterialIsTrue = false;
+	bReturnedMesh = true;
 }
 
 // Called when the game starts or when spawned
@@ -46,6 +47,31 @@ ABuilding* ABuildingVisual::GetHitBuildingActor(const FHitResult& HitResult)
 	return Cast<ABuilding>(HitResult.GetActor());
 }
 
+void ABuildingVisual::SetMeshTo(EBuildType BuildType)
+{
+	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
+	bReturnedMesh = false;
+	for (const FBuildingVisualType& Building : BuildingTypes)
+	{
+		if (Building.BuildType == BuildType)
+		{
+			BuildMesh->SetStaticMesh(Building.BuildingMesh);
+			return;
+		}
+	}
+}
+
+void ABuildingVisual::ReturnMeshToSelected()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ReturnMeshToSelected"));
+
+	bReturnedMesh = true;
+	if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
+	{
+		BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
+	}
+}
+
 void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 {
 	if (HitResult.bBlockingHit)
@@ -57,6 +83,12 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 		// #19 건축 자재 스냅시키기
 		if (InteractingBuilding)
 		{
+			if (!bReturnedMesh)
+			{
+				ReturnMeshToSelected();
+
+			}
+			
 			FTransform SocketTransform = InteractingBuilding->GetHitSocketTransform(HitResult, 25.0f);
 			if (!SocketTransform.Equals(FTransform()))
 			{
@@ -82,6 +114,11 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 		}
 		else
 		{
+			if (bReturnedMesh)
+			{
+				SetMeshTo(EBuildType::Foundation);
+			}
+
 			SetActorLocation(HitResult.Location);
 		}
 	}
@@ -96,9 +133,13 @@ void ABuildingVisual::SpawnBuilding()
 {
 	if (BuildingClass && !IsHidden())
 	{
-		if (InteractingBuilding && bMaterialIsTrue)
+		if (InteractingBuilding)
 		{
-			InteractingBuilding->AddInstance(GetActorTransform(), BuildingTypes[BuildingTypeIndex].BuildType);
+			if (bMaterialIsTrue)
+			{
+				InteractingBuilding->AddInstance(GetActorTransform(), BuildingTypes[BuildingTypeIndex].BuildType);
+
+			}
 		}
 		else
 		{
@@ -110,14 +151,17 @@ void ABuildingVisual::SpawnBuilding()
 
 void ABuildingVisual::CycleMesh()
 {
-	if (++BuildingTypeIndex >= BuildingTypes.Num())
+	if (bReturnedMesh)
 	{
-		BuildingTypeIndex = 0;
-	}
+		if (++BuildingTypeIndex >= BuildingTypes.Num())
+		{
+			BuildingTypeIndex = 0;
+		}
 
-	if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
-	{
-		BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
-	}
+		if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
+		{
+			BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
+		}
+	}	
 }
 

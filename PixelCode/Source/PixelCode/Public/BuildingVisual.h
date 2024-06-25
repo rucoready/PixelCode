@@ -56,7 +56,11 @@ protected:
 
 	ABuilding* InteractingBuilding;
 
+	void  SetMeshTo(EBuildType BuildType);
 
+	void ReturnMeshToSelected();
+	
+	bool bReturnedMesh;
 
 public:	
  

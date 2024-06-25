@@ -27,7 +27,27 @@ void ABuilding::BeginPlay()
 	// B 키를 눌렀을 때 미리보기 메시 표시하기
 	FoundationInstancedMesh->AddInstance(FTransform());
 
-	FoundationSockets = FoundationInstancedMesh->GetAllSocketNames();
+	MeshInstancedSockets = FoundationInstancedMesh->GetAllSocketNames();
+	MeshInstancedSockets.Append(WallInstancedMesh->GetAllSocketNames());
+}
+
+bool ABuilding::IsValidSocket(UInstancedStaticMeshComponent* HitComponent, const FName& Filter, const FName& SocketName)
+{
+	bool bSuccess = true;
+	if (!HitComponent->DoesSocketExist(SocketName))
+	{
+		bSuccess = false;
+		return bSuccess;
+	}
+	FString FilterString = Filter.ToString();
+	FString SocketNameString = SocketName.ToString();
+
+	if (!SocketNameString.Contains(FilterString, ESearchCase::CaseSensitive))
+	{
+		bSuccess = false;
+	}
+	
+	return bSuccess;
 }
 
 void ABuilding::DestroyInstance(FVector HitPoint)
@@ -56,11 +76,11 @@ FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent*
 		FTransform SocketTransform = InstancedComponent->GetSocketTransform(SocketName, RTS_Component);
 		InstanceTransform = SocketTransform * InstanceTransform;
 
-// 		DrawDebugString(GetWorld(), InstanceTransform.GetLocation(), SocketName.ToString(), nullptr, FColor::White, 0.01f);
-// 		DrawDebugSphere(GetWorld(), InstanceTransform.GetLocation(), 5.0f, 10, FColor::Red);
-// 		FTransform Temp;
-// 		InstancedComponent->GetInstanceTransform(InstanceIndex, Temp, true);
-// 		DrawDebugSphere(GetWorld(), Temp.GetLocation(), 5.0f, 15, FColor::Blue);
+ 		DrawDebugString(GetWorld(), InstanceTransform.GetLocation(), SocketName.ToString(), nullptr, FColor::White, 0.01f);
+ 		DrawDebugSphere(GetWorld(), InstanceTransform.GetLocation(), 5.0f, 10, FColor::Red);
+ 		FTransform Temp;
+ 		InstancedComponent->GetInstanceTransform(InstanceIndex, Temp, true);
+ 		DrawDebugSphere(GetWorld(), Temp.GetLocation(), 5.0f, 15, FColor::Blue);
 		
 		return InstanceTransform;
 
@@ -99,28 +119,34 @@ FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent*
 
 int32 ABuilding::GetHitIndex(const FHitResult& HitResult)
 {
-	DrawDebugSphere(GetWorld(), HitResult.Location, 10.0f, 30, FColor::Red);
+	DrawDebugSphere(GetWorld(), HitResult.Location, 10.0f, 10, FColor::Red);
 
 	return HitResult.Item;
 }
 
 FTransform ABuilding::GetHitSocketTransform(const FHitResult& HitResult, float ValidHitDistance)
 {
-	// 가장 가까운 소켓을 판별하기
-	int32 HitIndex = GetHitIndex(HitResult);
-	if (HitIndex != -1)
+	if (UInstancedStaticMeshComponent* HitComponent = Cast<UInstancedStaticMeshComponent>(HitResult.GetComponent()))
 	{
-				
-		for(const FName& SocketName : FoundationSockets)
+	
+		// 가장 가까운 소켓을 판별하기
+		int32 HitIndex = GetHitIndex(HitResult);
+
+		if (HitIndex != -1)
+		{				
+			for(const FName& SocketName : MeshInstancedSockets)
 			{
-				//FTransform SocketTransform = FoundationInstancedMesh->GetSocketTransform(SocketName);
-				FTransform SocketTransform = GetInstancedSocketTransform(FoundationInstancedMesh, HitIndex, SocketName);
-				if (FVector::Distance(SocketTransform.GetLocation(), HitResult.Location) <= ValidHitDistance)
+				if (HitComponent->DoesSocketExist(SocketName))
 				{
-					//UE_LOG(LogTemp, Warning, TEXT("Valid Hit On Socket: %s"), *SocketName.ToString());
-					return SocketTransform;
-				}
+					FTransform SocketTransform = GetInstancedSocketTransform(HitComponent, HitIndex, SocketName);
+					if (FVector::Distance(SocketTransform.GetLocation(), HitResult.Location) <= ValidHitDistance)
+					{
+						//UE_LOG(LogTemp, Warning, TEXT("Valid Hit On Socket: %s"), *SocketName.ToString());
+						return SocketTransform;
+					}
+				}		
 			}
+		}
 	}
 	return FTransform();
 }

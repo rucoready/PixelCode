@@ -24,6 +24,9 @@ struct FBuildingVisualType
 
 	UPROPERTY(EditDefaultsOnly, Category = KSH)
 	EBuildType BuildType;
+
+	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	FName FilterCharacter;
 };
 
 
