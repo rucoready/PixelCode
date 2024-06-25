@@ -27,6 +27,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	class UInstancedStaticMeshComponent* WallInstancedMesh;
 
+	TArray<FName> FoundationSockets;
+
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -38,7 +40,7 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
-	 FTransform GetInstancedSocketTransform(UInstancedStaticMeshComponent* InstancedComponent, int32 InstanceIndex, const FName& SocketName, bool& Success, bool WorldSpace = false);
+	 FTransform GetInstancedSocketTransform(UInstancedStaticMeshComponent* InstancedComponent, int32 InstanceIndex, const FName& SocketName);
 
 
 	 int32 GetHitIndex(const FHitResult& HitResult);
