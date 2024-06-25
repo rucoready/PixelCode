@@ -89,7 +89,7 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 
 			}
 			
-			FTransform SocketTransform = InteractingBuilding->GetHitSocketTransform(HitResult, 25.0f);
+			FTransform SocketTransform = InteractingBuilding->GetHitSocketTransform(HitResult, BuildingTypes[BuildingTypeIndex].FilterCharacter, 25.0f);
 			if (!SocketTransform.Equals(FTransform()))
 			{
 				SetActorTransform(SocketTransform);

@@ -31,24 +31,7 @@ void ABuilding::BeginPlay()
 	MeshInstancedSockets.Append(WallInstancedMesh->GetAllSocketNames());
 }
 
-bool ABuilding::IsValidSocket(UInstancedStaticMeshComponent* HitComponent, const FName& Filter, const FName& SocketName)
-{
-	bool bSuccess = true;
-	if (!HitComponent->DoesSocketExist(SocketName))
-	{
-		bSuccess = false;
-		return bSuccess;
-	}
-	FString FilterString = Filter.ToString();
-	FString SocketNameString = SocketName.ToString();
 
-	if (!SocketNameString.Contains(FilterString, ESearchCase::CaseSensitive))
-	{
-		bSuccess = false;
-	}
-	
-	return bSuccess;
-}
 
 void ABuilding::DestroyInstance(FVector HitPoint)
 {
@@ -124,7 +107,26 @@ int32 ABuilding::GetHitIndex(const FHitResult& HitResult)
 	return HitResult.Item;
 }
 
-FTransform ABuilding::GetHitSocketTransform(const FHitResult& HitResult, float ValidHitDistance)
+bool ABuilding::IsValidSocket(UInstancedStaticMeshComponent* HitComponent, const FName& Filter, const FName& SocketName)
+{
+	bool bSuccess = true;
+	if (!HitComponent->DoesSocketExist(SocketName))
+	{
+		bSuccess = false;
+		return bSuccess;
+	}
+	FString FilterString = Filter.ToString();
+	FString SocketNameString = SocketName.ToString();
+
+	if (!SocketNameString.Contains(FilterString, ESearchCase::CaseSensitive))
+	{
+		bSuccess = false;
+	}
+
+	return bSuccess;
+}
+
+FTransform ABuilding::GetHitSocketTransform(const FHitResult& HitResult, const FName& Filter, float ValidHitDistance)
 {
 	if (UInstancedStaticMeshComponent* HitComponent = Cast<UInstancedStaticMeshComponent>(HitResult.GetComponent()))
 	{
@@ -136,7 +138,7 @@ FTransform ABuilding::GetHitSocketTransform(const FHitResult& HitResult, float V
 		{				
 			for(const FName& SocketName : MeshInstancedSockets)
 			{
-				if (HitComponent->DoesSocketExist(SocketName))
+				if (IsValidSocket(HitComponent, Filter, SocketName))
 				{
 					FTransform SocketTransform = GetInstancedSocketTransform(HitComponent, HitIndex, SocketName);
 					if (FVector::Distance(SocketTransform.GetLocation(), HitResult.Location) <= ValidHitDistance)
