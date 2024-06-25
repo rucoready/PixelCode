@@ -19,7 +19,7 @@ enum class IItemType : uint8
 
 
 USTRUCT(BlueprintType)
-struct FUnitActorData : public FTableRowBase
+struct FUnitActorData : public FTableRowBase // 아이템 구조체
 {
 	GENERATED_BODY()
 		
