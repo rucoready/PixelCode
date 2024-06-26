@@ -128,7 +128,7 @@ int32 ABuilding::GetHitIndex(const FHitResult& HitResult)
 	return HitResult.Item;
 }
 
-bool ABuilding::IsValidSocket(UInstancedStaticMeshComponent* HitComponent, const FName& Filter, const FName& SocketName)
+bool ABuilding::IsValidSocket(UInstancedStaticMeshComponent* HitComponent, int32 Index, const FName& Filter, const FName& SocketName)
 {
 	bool bSuccess = true;
 	if (!HitComponent->DoesSocketExist(SocketName))
@@ -144,6 +144,28 @@ bool ABuilding::IsValidSocket(UInstancedStaticMeshComponent* HitComponent, const
 		bSuccess = false;
 	}
 
+	//https://youtu.be/kstSj5nU3KI?list=PLnHeglBaPYu-F1ZGmVZIfnbR11WN2_ReW&t=1198
+	for (const FInstanceSocketCheck& InstanceSocketCheck : InstanceSocketsCheck)
+	{
+		if (InstanceSocketCheck.InstancedComponent == HitComponent)
+		{
+			for (const FBuildIndexSockets& BuildIndexSockets : InstanceSocketCheck.InstanceSocketInformation)
+			{
+				if (BuildIndexSockets.Index == Index)
+				{
+					for (const FSocketInformation& SocketInformation : BuildIndexSockets.SocketsInformation)
+					{
+						if (SocketInformation.SocketName == SocketName.ToString() && SocketInformation.bSocketInUse)
+						{
+							bSuccess = false;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+	//https://youtu.be/kstSj5nU3KI?list=PLnHeglBaPYu-F1ZGmVZIfnbR11WN2_ReW&t=1406
 	return bSuccess;
 }
 
@@ -161,7 +183,7 @@ FBuildingSocketData ABuilding::GetHitSocketTransform(const FHitResult& HitResult
 		{		
 			for(const FName& SocketName : MeshInstancedSockets)
 			{
-				if (IsValidSocket(HitComponent, Filter, SocketName))
+				if (IsValidSocket(HitComponent, HitIndex, Filter, SocketName))
 				{
 					FTransform SocketTransform = GetInstancedSocketTransform(HitComponent, HitIndex, SocketName);
 					if (FVector::Distance(SocketTransform.GetLocation(), HitResult.Location) <= ValidHitDistance)
@@ -187,23 +209,51 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 	{
 		if (InstanceSocket.InstancedComponent == BuildingSocketData.InstancedComponent)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Found Matching Component : %s"), *InstanceSocket.InstancedComponent->GetName());
+			bool bFoundMatchingIndex = false;
 
-			FBuildIndexSockets BuildIndexSockets;
-			BuildIndexSockets.Index = BuildingSocketData.Index;
-
-			FSocketInformation SocketInformation;
-
-			for (const FName& SocketName : InstanceSocket.InstancedComponent->GetAllSocketNames())
+			for (FBuildIndexSockets& IndexSockets : InstanceSocket.InstanceSocketInformation)
 			{
-				SocketInformation.SocketName = SocketName.ToString();
-				if (SocketName.IsEqual(BuildingSocketData.SocketName))
+				if (IndexSockets.Index == BuildingSocketData.Index)
 				{
-					SocketInformation.bSocketInUse = true;
+					bFoundMatchingIndex = true;
+					for (FSocketInformation& SocketInformation : IndexSockets.SocketsInformation)
+					{
+						if (SocketInformation.SocketName == BuildingSocketData.SocketName.ToString())
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Setting Socket %s to TRUE"), *SocketInformation.SocketName);
+
+							SocketInformation.bSocketInUse = true;
+							break;
+						}
+
+					}
+					break;
 				}
-				BuildIndexSockets.SocketsInformation.Add(SocketInformation);
 			}
-			InstanceSocket.InstanceSocketInformation.Add(BuildIndexSockets);
+
+			if (!bFoundMatchingIndex)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("DID NOT FIND MATCHING INDEX"));
+
+				//UE_LOG(LogTemp, Warning, TEXT("Found Matching Component : %s"), *InstanceSocket.InstancedComponent->GetName());
+
+				FBuildIndexSockets BuildIndexSockets;
+				BuildIndexSockets.Index = BuildingSocketData.Index;
+
+				FSocketInformation SocketInformation;
+
+				for (const FName& SocketName : InstanceSocket.InstancedComponent->GetAllSocketNames())
+				{
+					SocketInformation.SocketName = SocketName.ToString();
+					if (SocketName.IsEqual(BuildingSocketData.SocketName))
+					{
+						SocketInformation.bSocketInUse = true;
+					}
+					BuildIndexSockets.SocketsInformation.Add(SocketInformation);
+				}
+
+				InstanceSocket.InstanceSocketInformation.Add(BuildIndexSockets);
+			}	
 		}
 	}
 
