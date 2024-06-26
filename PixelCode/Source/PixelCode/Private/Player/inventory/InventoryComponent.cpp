@@ -4,6 +4,7 @@
 #include "Player/inventory/InventoryComponent.h"
 #include "Player/inventory/ItemBase.h"
 
+
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
 {
@@ -162,6 +163,49 @@ FItemAddResult UInventoryComponent::HandleNonStackableItems(UItemBase* InputItem
 
 int32 UInventoryComponent::HandleStackableItems(UItemBase* ItemIn, int32 RequestedAddAmount)
 {
+	if (RequestedAddAmount <= 0 || FMath::IsNearlyZero(ItemIn->GetItemStackWeight())) // 요청한 숫자가 잘못되거나 0에 가까운지 확인
+	{
+		// 유효하지 않은 항목 데이터
+		return 0;
+	}
+
+	int32 AmountToDistribute = RequestedAddAmount; // 인벤토리에 넣기위한 남은자리
+
+	UItemBase* ExistingItem = FindNextPartialStack(ItemIn); // 아이템 id 비교하여 동일한 종류의 항목인지 확인
+
+	// distribute item stack over existing stacks; 스텍쌓임
+	while (ExistingItem) // Loop를 사용하는데 null이 들어옴
+	{
+		// 남은 무게나 스택 둘다 계산
+		const int32 AmountToMakeFullStack = CalculateNumberForFullStack(ExistingItem, AmountToDistribute); // 최대가 4고 2가 들어있는 상태 2가 들어올 수 있음, 스택 계산
+		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(ExistingItem, AmountToMakeFullStack); // 무게계산
+
+		if (WeightLimitAddAmount > 0)
+		{
+			ExistingItem->SetQuantity(ExistingItem->Quantity + WeightLimitAddAmount);
+			InventoryTotalWeight += (ExistingItem->GetItemSingleWeight() * WeightLimitAddAmount);
+
+			AmountToDistribute -= WeightLimitAddAmount;
+
+			ItemIn->SetQuantity(AmountToDistribute);
+
+			// TODO: Refine this logic since going over weight capacity should not ever be possible
+			if (InventoryTotalWeight >= InventoryWeightCapacity) // 이제 무게에 가까워졌기때문에 루프 계속 실행할필요 x
+			{
+				OnInventoryUpdated.Broadcast();
+				return RequestedAddAmount - AmountToDistribute;
+			}
+		}
+
+
+	}
+
+	// no more partial stacks found. check if a new stack can be added 더 이상 부분스택 발견x  새 스택 바로 추가할 수 있는지 확인
+	if (InventoryContents.Num() + 1 <= InventorySlotsCapacity) // 콘텐츠의 번호 +1이 슬롯 용량보다 작거나 같은경우
+	{
+
+	}
+
 	return 0;
 }
 
