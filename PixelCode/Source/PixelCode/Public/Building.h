@@ -27,7 +27,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	class UInstancedStaticMeshComponent* WallInstancedMesh;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
+	class UInstancedStaticMeshComponent* CeilingInstancedMesh;
+
 	TArray<FName> MeshInstancedSockets;
+
+	TArray<FInstanceSocketCheck> InstanceSocketsCheck;
 
 
 	// Called when the game starts or when spawned
@@ -43,10 +48,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	 FTransform GetInstancedSocketTransform(UInstancedStaticMeshComponent* InstancedComponent, int32 InstanceIndex, const FName& SocketName);
 
-
 	 int32 GetHitIndex(const FHitResult& HitResult);
 
-	 FTransform GetHitSocketTransform(const FHitResult& HitResult, const FName& Filter, float ValidHitDistance = 100.0f);
+	 FBuildingSocketData GetHitSocketTransform(const FHitResult& HitResult, const FName& Filter, float ValidHitDistance = 100.0f);
 
-	 void AddInstance(const FTransform& ActorTransform, EBuildType BuildType);
+	 void AddInstance(const FBuildingSocketData& BuildingSocketData, EBuildType BuildType);
 };

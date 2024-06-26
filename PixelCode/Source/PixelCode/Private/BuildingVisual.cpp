@@ -86,13 +86,13 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 			if (!bReturnedMesh)
 			{
 				ReturnMeshToSelected();
-
 			}
 			
-			FTransform SocketTransform = InteractingBuilding->GetHitSocketTransform(HitResult, BuildingTypes[BuildingTypeIndex].FilterCharacter, 25.0f);
-			if (!SocketTransform.Equals(FTransform()))
+			SocketData = InteractingBuilding->GetHitSocketTransform(HitResult, BuildingTypes[BuildingTypeIndex].FilterCharacter, 25.0f);
+
+			if (!SocketData.SocketTransform.Equals(FTransform()))
 			{
-				SetActorTransform(SocketTransform);
+				SetActorTransform(SocketData.SocketTransform);
 				if (MaterialTrue && !bMaterialIsTrue)
 				{
 					bMaterialIsTrue = true;
@@ -137,14 +137,12 @@ void ABuildingVisual::SpawnBuilding()
 		{
 			if (bMaterialIsTrue)
 			{
-				InteractingBuilding->AddInstance(GetActorTransform(), BuildingTypes[BuildingTypeIndex].BuildType);
-
+				InteractingBuilding->AddInstance(SocketData, BuildingTypes[BuildingTypeIndex].BuildType);
 			}
 		}
 		else
 		{
 			GetWorld()->SpawnActor<ABuilding>(BuildingClass, GetActorTransform());
-
 		}
 	}
 }

@@ -56,6 +56,8 @@ protected:
 
 	ABuilding* InteractingBuilding;
 
+	FBuildingSocketData SocketData;
+
 	void  SetMeshTo(EBuildType BuildType);
 
 	void ReturnMeshToSelected();
