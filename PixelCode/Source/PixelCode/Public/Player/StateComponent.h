@@ -158,6 +158,7 @@ public:
 	// Set CurrentValue
 	void UpdateStat();
 
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UPROPERTY(BlueprintReadWrite, Category = "MySettings")

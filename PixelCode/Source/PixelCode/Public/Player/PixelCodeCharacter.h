@@ -19,6 +19,7 @@ class UCombatComponent;
 class APlayerHUD;
 class UInventoryComponent;
 class UItemBase;
+class UPlayerStatWidget;
 
 UENUM()
 enum class MyEnum : int8
@@ -106,6 +107,9 @@ class APixelCodeCharacter : public APlayerOrganism
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_Released;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_Stat;
+
 public:
 	APixelCodeCharacter();
 	// 진원 S
@@ -117,6 +121,14 @@ public:
 	void DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
 
 	class AInterfaceTestActor* InterfaceActor;
+
+	UPROPERTY()
+	UPlayerStatWidget* statWidget;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UPlayerStatWidget> StatWidgetClass;
+
+	bool bIsStatVisible = true;
 
 	// 진원 E
 protected:
@@ -179,7 +191,7 @@ protected:
 
 	void ToggleMenu();
 
-
+	void StatMenu();
 
 	void PerformInteractionCheck();
 	void FoundInteractable(AActor* NewInteractable); // 상호작용 가능항목호출, 새 상호작용 가능항목 가져오기

@@ -193,6 +193,9 @@ void UStateComponent::UpdateStat()
 	MaxMP = stat.MaxMP;
 }
 
+
+
+
 void UStateComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

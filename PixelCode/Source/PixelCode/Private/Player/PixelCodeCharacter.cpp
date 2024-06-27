@@ -31,6 +31,7 @@
 #include <../../../../../../../Source/Runtime/CoreUObject/Public/UObject/ScriptInterface.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include "BuildingVisual.h"
+#include "Player/PlayerStatWidget.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -94,6 +95,8 @@ APixelCodeCharacter::APixelCodeCharacter()
 	bInBuildMode = false;
 
 	// 서휘-----------------------------------------------------------------------------------------------------끝
+
+	
 }
 
 void APixelCodeCharacter::BeginPlay()
@@ -143,6 +146,12 @@ void APixelCodeCharacter::BeginPlay()
 	}
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
+	statWidget = CreateWidget<UPlayerStatWidget>(GetWorld(), StatWidgetClass);
+	if (StatWidgetClass)
+	{
+		statWidget->AddToViewport(1);
+		statWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
 
 }
 
@@ -472,6 +481,21 @@ void APixelCodeCharacter::ToggleMenu()
 	HUD->ToggleMenu();
 }
 
+void APixelCodeCharacter::StatMenu()
+{
+	if (bIsStatVisible)
+	{ 
+		statWidget->DisplayStat();
+		bIsStatVisible = false;
+	}
+	
+	else
+	{
+		statWidget->HideStat();
+		bIsStatVisible = true;
+	}
+}
+
 void APixelCodeCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
 	// 인벤토리 null이 아니라면
@@ -532,6 +556,9 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 
 		EnhancedInputComponent->BindAction(IA_Pressed, ETriggerEvent::Completed, this, &APixelCodeCharacter::EndInteract);
+
+		EnhancedInputComponent->BindAction(IA_Stat, ETriggerEvent::Started, this, &APixelCodeCharacter::StatMenu);
+
 	}
 	else
 	{
@@ -621,6 +648,9 @@ void APixelCodeCharacter::ToggleCombatFunction(const FInputActionValue& Value)
 void APixelCodeCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	FRotator RotB = GetActorRotation();
+	//UE_LOG(LogTemp, Log, TEXT("Rotation(Before): %f, %f, %f"), RotB.Roll, RotB.Pitch, RotB.Yaw); // Correct
 
 	if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequecy)
 	{

@@ -8,6 +8,7 @@
 
 class UMainMenuWidget; // 뭐가 사용됐는지 알아보기위해, 헤더따로 추가 안해도 됨.
 class UInteractionWidget;
+class UPlayerStatWidget;
 //class ULootPanel;
 struct FInteractableData;
 // HUD는 위젯을 생성하기 완벽한 장소
@@ -34,6 +35,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UInteractionWidget> InteractionWidgetClass;
+
 
 
 	bool bIsMenuVisible; // 조준모드에 있는 다음메뉴 전환X하기위함 불값
@@ -65,6 +67,7 @@ protected:
 
 	UPROPERTY()
 	UInteractionWidget* InteractionWidget;
+
 
 	//================================================================================
 

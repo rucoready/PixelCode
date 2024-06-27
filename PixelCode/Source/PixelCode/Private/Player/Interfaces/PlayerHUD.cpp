@@ -4,7 +4,9 @@
 #include "Player/Interfaces/PlayerHUD.h"
 #include "Player/Interfaces/MainMenuWidget.h"
 #include "Player/Interfaces/InteractionWidget.h"
+#include "Player/PlayerStatWidget.h"
 //#include "LootPanel.h"
+
 
 APlayerHUD::APlayerHUD()
 {
@@ -69,6 +71,7 @@ void APlayerHUD::ToggleMenu()
 
 
 }
+
 
 void APlayerHUD::ShowInteractionWidget()const
 {
