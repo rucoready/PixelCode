@@ -45,7 +45,7 @@ APixelCodeCharacter::APixelCodeCharacter()
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 
 	// Configure character movement
@@ -372,11 +372,13 @@ void APixelCodeCharacter::Interact()
 // 서휘-----------------------------------------------------------------------------------------------------
 void APixelCodeCharacter::SetBuildMode(bool Enabled)
 {
+	// B키 누르면 Enabled
 	bInBuildMode = Enabled;
 	UE_LOG(LogTemp, Warning, TEXT("No Builder"));
 
 	if (Builder)
 	{
+		// 건축자재 preview On
 		Builder->SetActorHiddenInGame(!bInBuildMode);
 		UE_LOG(LogTemp, Warning, TEXT("SetBuildMode"));
 	}	
@@ -384,8 +386,11 @@ void APixelCodeCharacter::SetBuildMode(bool Enabled)
 
 void APixelCodeCharacter::CycleBuildingMesh()
 {
+	
 	if (bInBuildMode && Builder)
 	{
+		// ABuildingVisual ->CycleMesh 불러옴
+		// CycleMesh() = 스크롤에 따라 건축자재 메시 변경해서 preview로 보이기 
 		Builder->CycleMesh();
 	}
 }

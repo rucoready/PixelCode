@@ -151,11 +151,12 @@ void ABuildingVisual::CycleMesh()
 {
 	if (bReturnedMesh)
 	{
+		// 건축자재 인덱스 스크롤로 돌리기
 		if (++BuildingTypeIndex >= BuildingTypes.Num())
 		{
 			BuildingTypeIndex = 0;
 		}
-
+		// 건축자재[#]의 메시를 preview 메시로 설정하기
 		if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
 		{
 			BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);

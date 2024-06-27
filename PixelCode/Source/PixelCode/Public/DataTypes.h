@@ -12,7 +12,8 @@ enum class EBuildType : uint8
 {
 	Foundation UMETA(DisplayName = "Foundation"),
 	Wall UMETA(DisplayName = "Wall"),
-	Ceiling UMETA(DisplayName = "Ceiling")
+	Ceiling UMETA(DisplayName = "Ceiling"),
+	WoodenPilar UMETA(DisplayName = "WoodenPilar")
 };
 
 USTRUCT(BlueprintType)

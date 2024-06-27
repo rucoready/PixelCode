@@ -19,6 +19,8 @@ ABuilding::ABuilding()
 
 	CeilingInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("CeilingInstancedStaticMeshComponent"));
 
+	WoodenPilarInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WoodenPilarInstancedStaticMeshComponent"));
+
 }
 
 // Called when the game starts or when spawned
@@ -37,6 +39,9 @@ void ABuilding::BeginPlay()
 	InstanceSocket.InstancedComponent = CeilingInstancedMesh;
 	InstanceSocketsCheck.Add(InstanceSocket);
 
+	InstanceSocket.InstancedComponent = WoodenPilarInstancedMesh;
+	InstanceSocketsCheck.Add(InstanceSocket);
+
 	FBuildingSocketData BuildingSocketData;
 	BuildingSocketData.Index = 0;
 	BuildingSocketData.InstancedComponent = FoundationInstancedMesh;
@@ -50,6 +55,7 @@ void ABuilding::BeginPlay()
 	MeshInstancedSockets = FoundationInstancedMesh->GetAllSocketNames();
 	MeshInstancedSockets.Append(WallInstancedMesh->GetAllSocketNames());
 	MeshInstancedSockets.Append(CeilingInstancedMesh->GetAllSocketNames());	
+	MeshInstancedSockets.Append(WoodenPilarInstancedMesh->GetAllSocketNames());	
 }
 
 
@@ -262,5 +268,6 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 	case EBuildType::Foundation: FoundationInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
 	case EBuildType::Wall: WallInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
 	case EBuildType::Ceiling: CeilingInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
+	case EBuildType::WoodenPilar: WoodenPilarInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
 	}
 }

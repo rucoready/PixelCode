@@ -30,6 +30,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	class UInstancedStaticMeshComponent* CeilingInstancedMesh;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
+	class UInstancedStaticMeshComponent* WoodenPilarInstancedMesh;
+
 	TArray<FName> MeshInstancedSockets;
 
 	TArray<FInstanceSocketCheck> InstanceSocketsCheck;
