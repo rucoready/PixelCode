@@ -5,6 +5,7 @@
 #include "Player/Interfaces/MainMenuWidget.h"
 #include "Player/Interfaces/InteractionWidget.h"
 #include "Player/PlayerStatWidget.h"
+#include "CraftingWidget.h"
 //#include "LootPanel.h"
 
 
@@ -29,6 +30,13 @@ void APlayerHUD::BeginPlay()
 		InteractionWidget = CreateWidget<UInteractionWidget>(GetWorld(), InteractionWidgetClass);
 		InteractionWidget->AddToViewport(-1);
 		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+
+	if (Crafting)
+	{
+		Crafting = CreateWidget<UCraftingWidget>(GetWorld(), CraftingClass);
+		Crafting->AddToViewport(2);
+		Crafting->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
@@ -99,6 +107,53 @@ void APlayerHUD::UpdateInteractionWidget(const FInteractableData& InteractableDa
 		}
 
 		InteractionWidget->UpdateWidget(InteractableData);
+	}
+
+}
+
+//=================== 요한 ===============================================================================================
+
+void APlayerHUD::ShowOrHideCrafting()
+{
+	if (Crafting)
+	{
+		const FInputModeGameOnly InputMode;
+		Crafting->SetVisibility(ESlateVisibility::Visible);
+		bIsCreatVisible = true;
+		GetOwningPlayerController()->SetShowMouseCursor(true);
+		GetOwningPlayerController()->SetInputMode(InputMode);
+	}
+}
+
+void APlayerHUD::HideCrafting()
+{
+	if (Crafting)
+	{
+		Crafting->SetVisibility(ESlateVisibility::Collapsed);
+		bIsCreatVisible = false;
+		const FInputModeGameOnly InputMode; // 게임화면만 클릭하도록 설정
+		GetOwningPlayerController()->SetInputMode(InputMode);
+		GetOwningPlayerController()->SetShowMouseCursor(false);
+	}
+}
+
+void APlayerHUD::ToggleCreate()
+{
+	if (bIsCreatVisible)
+	{
+		HideCrafting();
+
+		const FInputModeGameOnly InputMode; // 게임화면만 클릭하도록 설정
+		GetOwningPlayerController()->SetInputMode(InputMode);
+		GetOwningPlayerController()->SetShowMouseCursor(false);
+	}
+	else
+	{
+		ShowOrHideCrafting();
+
+		const FInputModeGameAndUI InputMode; // UI만 클릭하도록 설정
+		GetOwningPlayerController()->SetInputMode(InputMode);
+		GetOwningPlayerController()->SetShowMouseCursor(true);
 	}
 
 }

@@ -110,6 +110,9 @@ class APixelCodeCharacter : public APlayerOrganism
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_Stat;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_Crafting;
+
 public:
 	APixelCodeCharacter();
 	// 진원 S
@@ -214,6 +217,11 @@ protected:
 public:
 
 	void Interact();
+
+	// 요한
+	UFUNCTION()
+	void OnCraftingPressed();
+
 
 	// 서휘-----------------------------------------------------------------------------------------------------
 	UFUNCTION(BlueprintCallable, Category = KSH)

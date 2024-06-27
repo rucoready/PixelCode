@@ -369,6 +369,17 @@ void APixelCodeCharacter::Interact()
 
 }
 
+
+// 요한 ------------------------------------------------------------------------------------------
+
+void APixelCodeCharacter::OnCraftingPressed()
+{
+	if (HUD)
+	{
+		HUD->ToggleCreate();
+	}
+}
+
 // 서휘-----------------------------------------------------------------------------------------------------
 void APixelCodeCharacter::SetBuildMode(bool Enabled)
 {
@@ -563,6 +574,10 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(IA_Pressed, ETriggerEvent::Completed, this, &APixelCodeCharacter::EndInteract);
 
 		EnhancedInputComponent->BindAction(IA_Stat, ETriggerEvent::Started, this, &APixelCodeCharacter::StatMenu);
+
+
+		// 요한 ==================
+		EnhancedInputComponent->BindAction(IA_Crafting, ETriggerEvent::Started, this, &APixelCodeCharacter::OnCraftingPressed);
 
 	}
 	else

@@ -10,6 +10,7 @@ class UMainMenuWidget; // 뭐가 사용됐는지 알아보기위해, 헤더따로 추가 안해도 됨.
 class UInteractionWidget;
 class UPlayerStatWidget;
 //class ULootPanel;
+class UCraftingWidget;
 struct FInteractableData;
 // HUD는 위젯을 생성하기 완벽한 장소
 /**
@@ -55,6 +56,20 @@ public:
 	void HideInteractionWidget()const;
 	void UpdateInteractionWidget(const FInteractableData& InteractableData)const; // 상호작용가능데이터
 
+	
+
+	//요한 ------------------------------====================================================================
+	void ShowOrHideCrafting();
+	void HideCrafting();
+	bool bIsCreatVisible;
+	void ToggleCreate();
+
+	 
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UCraftingWidget> CraftingClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	UCraftingWidget* Crafting;
 	
 	
 
