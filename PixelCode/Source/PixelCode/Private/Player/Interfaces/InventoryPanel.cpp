@@ -7,6 +7,7 @@
 #include "Player/PixelCodeCharacter.h"
 #include "Player/inventory/InventoryComponent.h"
 #include "Player/Inventory/InventoryItemSlot.h"
+#include "Player/inventory/itemDragDropOperation.h"
 
 void UInventoryPanel::NativeOnInitialized()
 {
@@ -67,8 +68,20 @@ void UInventoryPanel::RefreshInventory()
 
 }
 
+
 bool UInventoryPanel::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
+	// 인벤토리 안에 드래그앤 드랍
+	const UitemDragDropOperation* ItemDragDrop = Cast<UitemDragDropOperation>(InOperation);
+
+	if (ItemDragDrop->SourceItem && InventoryReference)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Detected an item drop on InventoryPanel."))
+
+		// returning true will stop the drop operation at this widget
+		return true;
+	}
+	// returning false will cause the drop operation to fall throungt to underlying widgets (if any)
 	return false;
 }
 

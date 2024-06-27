@@ -171,42 +171,88 @@ int32 UInventoryComponent::HandleStackableItems(UItemBase* ItemIn, int32 Request
 
 	int32 AmountToDistribute = RequestedAddAmount; // 인벤토리에 넣기위한 남은자리
 
-	UItemBase* ExistingItem = FindNextPartialStack(ItemIn); // 아이템 id 비교하여 동일한 종류의 항목인지 확인
+	// check if the input item already exists in the inventory and is not a full stack 항목스텍 항목이 이미 인벤토리에 있는지 확인하고
+	UItemBase* ExistingItemStack = FindNextPartialStack(ItemIn); // 아이템 id 비교하여 동일한 종류의 항목인지 확인
 
 	// distribute item stack over existing stacks; 스텍쌓임
-	while (ExistingItem) // Loop를 사용하는데 null이 들어옴
+	while (ExistingItemStack) // Loop를 사용하는데 null이 들어옴
 	{
 		// 남은 무게나 스택 둘다 계산
-		const int32 AmountToMakeFullStack = CalculateNumberForFullStack(ExistingItem, AmountToDistribute); // 최대가 4고 2가 들어있는 상태 2가 들어올 수 있음, 스택 계산
-		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(ExistingItem, AmountToMakeFullStack); // 무게계산
-
+		// 전체 스택을 만들기 위한 전체 스택 금액이 아닌지 확인한다는 것은 다음 전체 스택을 만드는 데 필요한 기존 항목의 수를 계산하는 것.
+		const int32 AmountToMakeFullStack = CalculateNumberForFullStack(ExistingItemStack, AmountToDistribute); // 최대가 4고 2가 들어있는 상태 2가 들어올 수 있음, 스택 계산
+		// 무게 제한 전체 스택 무게 중 실제로 얼마나 많은 양을 운반할 수 있는지 계산
+		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(ExistingItemStack, AmountToMakeFullStack); // 무게계산
+ 
+		// 물품의 남은 양이 무게 용량을 초과하지 않는 한
 		if (WeightLimitAddAmount > 0)
 		{
-			ExistingItem->SetQuantity(ExistingItem->Quantity + WeightLimitAddAmount);
-			InventoryTotalWeight += (ExistingItem->GetItemSingleWeight() * WeightLimitAddAmount);
+			// 기존 품목 스택 수량 및 재고 총 중량 조정
+			ExistingItemStack->SetQuantity(ExistingItemStack->Quantity + WeightLimitAddAmount);
+			InventoryTotalWeight += (ExistingItemStack->GetItemSingleWeight() * WeightLimitAddAmount);
 
+			// 분배할 개수를 조정
 			AmountToDistribute -= WeightLimitAddAmount;
 
 			ItemIn->SetQuantity(AmountToDistribute);
 
 			// TODO: Refine this logic since going over weight capacity should not ever be possible
-			if (InventoryTotalWeight >= InventoryWeightCapacity) // 이제 무게에 가까워졌기때문에 루프 계속 실행할필요 x
+			// 이제 최대 무게에 가까워졌기때문에 루프 계속 실행할필요 x
+			if (InventoryTotalWeight >= InventoryWeightCapacity) 
 			{
 				OnInventoryUpdated.Broadcast();
 				return RequestedAddAmount - AmountToDistribute;
 			}
 		}
+		else if (WeightLimitAddAmount <= 0)
+		{
+			if (AmountToDistribute != RequestedAddAmount)
+			{
+				// 여러 스택에 항목을 배포하면 이 블록에 도달합니다.
+				// 그 과정에서 체중 제한은 그의 것입니다
 
+				OnInventoryUpdated.Broadcast();
+				return RequestedAddAmount - AmountToDistribute;
+			}
 
+			return 0;
+		}
+		if (AmountToDistribute <= 0) // 마지막으로 배포할 금액이 0보다 작거나 같은경우, 모든것 배포. 위에는 코드는 일부배포
+		{
+			// all of the input item was distributed across existing stacks 기존 스텍에 분산되어서 더이상 배포할 항목이 없으므로
+			OnInventoryUpdated.Broadcast();
+			return RequestedAddAmount;
+		}
+		// 해당 항목의 유효한 부분 스택이 아직 남아있는지 확인
+		ExistingItemStack = FindNextPartialStack(ItemIn);
 	}
 
 	// no more partial stacks found. check if a new stack can be added 더 이상 부분스택 발견x  새 스택 바로 추가할 수 있는지 확인
 	if (InventoryContents.Num() + 1 <= InventorySlotsCapacity) // 콘텐츠의 번호 +1이 슬롯 용량보다 작거나 같은경우
 	{
+		// 따라서 우리는 이미 남은 항목 수량에서 재고 용량에 맞을 수 있는 만큼 추가
+		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(ItemIn,AmountToDistribute);
 
+		if (WeightLimitAddAmount > 0)
+		{
+			// 아직 남은 아이템이 있지만 무게 제한에 도달.
+			if (WeightLimitAddAmount < AmountToDistribute)
+			{
+				// 입력 항목을 조정하고 올바른 수만큼 새 스택을 추가
+				AmountToDistribute -= WeightLimitAddAmount;
+				ItemIn->SetQuantity(AmountToDistribute);
+
+				// 부분 스택만 추가되므로 복사본을 만듭니다.
+				AddNewItem(ItemIn->CreateItemCopy(), WeightLimitAddAmount);
+				return RequestedAddAmount - AmountToDistribute;
+			}
+			// 스택의 나머지 전체 추가
+			AddNewItem(ItemIn, AmountToDistribute);
+			return RequestedAddAmount;
+		}
 	}
 
-	return 0;
+	OnInventoryUpdated.Broadcast();
+	return RequestedAddAmount - AmountToDistribute;
 }
 
 FItemAddResult UInventoryComponent::HandleAddItem(UItemBase* InputItem)

@@ -96,6 +96,11 @@ void UInventoryItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const
 		DragVisual->ItemBorder->SetBrushColor(ItemBorder->GetBrushColor());
 		DragVisual->ItemQuantity->SetText(FText::AsNumber(ItemReference->Quantity));
 
+		ItemReference->NumericData.bisStackable
+			? DragVisual->ItemQuantity->SetText(FText::AsNumber(ItemReference->Quantity))
+			: DragVisual->ItemQuantity->SetVisibility(ESlateVisibility::Collapsed);
+
+
 		UitemDragDropOperation* DragItemOperation = NewObject<UitemDragDropOperation>(); // 생성자가없으므로 호출할필요 x
 		DragItemOperation->SourceItem = ItemReference;
 		DragItemOperation->SourceInventory = ItemReference->OwningInventory;
