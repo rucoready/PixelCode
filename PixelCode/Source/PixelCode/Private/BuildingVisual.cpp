@@ -131,12 +131,17 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 
 void ABuildingVisual::SpawnBuilding()
 {
+	// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
 	if (BuildingClass && !IsHidden())
+		// IsHidden() --> return bHidden;
 	{
+		// ABuilding 인스턴스 = 건축자재가 있을 때
 		if (InteractingBuilding)
 		{
+			// preview가 초록일 때
 			if (bMaterialIsTrue)
 			{
+				// ABuildind 클래스의 AddInstance() 호출
 				InteractingBuilding->AddInstance(SocketData, BuildingTypes[BuildingTypeIndex].BuildType);
 			}
 		}

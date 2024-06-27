@@ -408,8 +408,10 @@ void APixelCodeCharacter::CycleBuildingMesh()
 
 void APixelCodeCharacter::SpawnBuilding()
 {
+	// BuildMode 이고 BuildingVisual 인스턴스가 있을 때
 	if (bInBuildMode && Builder)
 	{
+		// BuildingVisual의 SpawnBuilding() 호출
 		Builder->SpawnBuilding();
 	}
 }
