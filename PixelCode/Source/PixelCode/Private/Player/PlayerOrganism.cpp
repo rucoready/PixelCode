@@ -122,7 +122,7 @@ void APlayerOrganism::AttackEvent()
 	}
 }
 
-void APlayerOrganism::PerformAttack(int32 attackIndex, bool bUseRandom)
+void APlayerOrganism::PerformAttack(int32 attackIndex, bool bUseRandom) // 이거의 인덱스값을 바꿔주면 애니메이션이 다른게 재생됨. 불값이 트루가 되면 랜덤 공격 애니메이션 재생.
 {
 	ABaseWeapon* mainWeapon = nullptr;
 	UAnimMontage* useMontage = nullptr;
