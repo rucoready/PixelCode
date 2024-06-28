@@ -100,10 +100,10 @@ void UPCodeGameInstance::JoinMySession(int32 index)
 	sessionInterface->JoinSession(0, FName(*mySessionName), sessionInSearch->SearchResults[index]);
 }
 
-void UPCodeGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+void UPCodeGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type results)
 {
 	// 호스트의 IP, Port번호를 가져와서 ClientTravel 하고싶다.
-	if (Result == EOnJoinSessionCompleteResult::Success)
+	if (results == EOnJoinSessionCompleteResult::Success)
 	{
 		auto* pc = GetWorld()->GetFirstPlayerController();
 		FString url;
@@ -155,12 +155,10 @@ void UPCodeGameInstance::OnFindSessionsComplete(bool bWasSuccressful)
 
 
 				OnMySessionSearchCompleteDelegate.Broadcast(info);
+
 				UE_LOG(LogTemp, Warning, TEXT("%s"), *info.ToString());
 			}
-		}
-		else {
-			UE_LOG(LogTemp, Warning, TEXT("OnFindSessionsComplete bWasSuccessful is false"));
-			// UI의 Finding...을 활성화 해달라...
+		
 		}
 
 		/*if (OnMySessioinSearchFinishedDelegate.IsBound())

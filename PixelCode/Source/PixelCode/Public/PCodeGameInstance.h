@@ -91,7 +91,7 @@ class PIXELCODE_API UPCodeGameInstance : public UGameInstance
 	
 	void JoinMySession(int32 index);
 
-	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type results);
 
 	FString StringBase64Encode(const FString& str);
 	FString StringBase64Decode(const FString& str);
