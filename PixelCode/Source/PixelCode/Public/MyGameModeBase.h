@@ -6,6 +6,9 @@
 #include "GameFramework/GameModeBase.h"
 #include "MyGameModeBase.generated.h"
 
+
+class ApixelPlayerState;
+
 /**
  * 
  */
@@ -13,5 +16,16 @@ UCLASS()
 class PIXELCODE_API AMyGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+public:
+
+
+	ApixelPlayerState* PlayerState;
+
+	float totalEXP = 0;
+	float currentEXP = 0;
+
+	void EXPmanagement(float EXP);
 	
+
+
 };
