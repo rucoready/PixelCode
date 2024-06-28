@@ -55,13 +55,7 @@ void ULobbyWidget::OnMyClickGoFindRoom()
 	}
 }
 
-void ULobbyWidget::OnMyClickFindRoom()
-{
-	// 기존의 목록을 삭제하고싶다.
-	ScrollBox_RoomList->ClearChildren();
-	// gi의 FindOtherSessions를 호출하고싶다.
-	gi->FindOtherSessions();
-}
+
 
 void ULobbyWidget::AddRoomInfoUI(const struct FSessionInfo& info)
 {
@@ -113,6 +107,14 @@ void ULobbyWidget::OnMyClickCreateRoom()
 		int32 count = Slider_PlayerCount->GetValue();
 		gi->CreateMySession(Edit_RoomName->GetText().ToString(),count);
 	}
+}
+
+void ULobbyWidget::OnMyClickFindRoom()
+{
+	// 기존의 목록을 삭제하고싶다.
+	ScrollBox_RoomList->ClearChildren();
+	// gi의 FindOtherSessions를 호출하고싶다.
+	gi->FindOtherSessions();
 }
 
 void ULobbyWidget::OnValueChanged(float value)

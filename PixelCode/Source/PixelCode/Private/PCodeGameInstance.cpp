@@ -18,7 +18,9 @@ void UPCodeGameInstance::Init()
 		sessionInterface = subsys->GetSessionInterface();
 
 		sessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPCodeGameInstance::OnCreateSessionComplete);
+
 		sessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPCodeGameInstance::OnFindSessionsComplete);
+		
 		sessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UPCodeGameInstance::OnJoinSessionComplete);
 	}
 }
@@ -58,18 +60,38 @@ void UPCodeGameInstance::CreateMySession(FString roomName, int32 PlayerCount)
 
 void UPCodeGameInstance::FindOtherSessions()
 {
+	//sessionInSearch = MakeShareable(new FOnlineSessionSearch);
+	//
+
+	//// 검색 조건 설정
+	//sessionInSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+
+	//sessionInSearch->bIsLanQuery = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
+
+	//sessionInterface->FindSessions(0, sessionInSearch.ToSharedRef());
+
+	//// 최대 검색 수 
+	//sessionInSearch->MaxSearchResults = 30
+	// 세션 인터페이스를 이용해서 방을 찾고 싶다. 
+
 	sessionInSearch = MakeShareable(new FOnlineSessionSearch);
-	
+	UE_LOG(LogTemp, Warning, TEXT("11111111111111"));
 
-	// 검색 조건 설정
-	sessionInSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+	// 검색 조건을 설정 하고싶다.
 
+	sessionInSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Near);
+	UE_LOG(LogTemp, Warning, TEXT("2222222222"));
+
+	// LAN 여부
 	sessionInSearch->bIsLanQuery = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
+	UE_LOG(LogTemp, Warning, TEXT("33333333333"));
+
+	// 최대 검색 수
+	sessionInSearch->MaxSearchResults = 30;
+	UE_LOG(LogTemp, Warning, TEXT("44444444444444444"));
 
 	sessionInterface->FindSessions(0, sessionInSearch.ToSharedRef());
 
-	// 최대 검색 수 
-	sessionInSearch->MaxSearchResults = 30;
 
 }
 
@@ -141,10 +163,10 @@ void UPCodeGameInstance::OnFindSessionsComplete(bool bWasSuccressful)
 			// UI의 Finding...을 활성화 해달라...
 		}
 
-	if (OnMySessioinSearchFinishedDelegate.IsBound())
-	{
-		OnMySessioinSearchFinishedDelegate.Broadcast(false);
-	}
+		/*if (OnMySessioinSearchFinishedDelegate.IsBound())
+		{
+			OnMySessioinSearchFinishedDelegate.Broadcast(false);
+		}*/
 }
 
 

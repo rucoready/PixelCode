@@ -42,6 +42,7 @@ struct FSessionInfo
 		maxPlayerCount = item.Session.SessionSettings.NumPublicConnections;
 		// 현재 방에 들어온 플레이어 수
 		currentPlayerCount = maxPlayerCount - item.Session.NumOpenPublicConnections;
+
 		pingMs = item.PingInMs;
 	}
 
@@ -53,7 +54,8 @@ struct FSessionInfo
 
 // 방찾기 요청 후 응답이 왔을 때 호출될 델리게이트
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSessioinSearchDelegate, const FSessionInfo&, info);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSessioinSearchFinishedDelegate, bool, bSearching);
+
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSessioinSearchFinishedDelegate, bool, bSearching);
 
 UCLASS()
 class PIXELCODE_API UPCodeGameInstance : public UGameInstance
@@ -67,7 +69,7 @@ class PIXELCODE_API UPCodeGameInstance : public UGameInstance
 
 		FSessioinSearchDelegate OnMySessionSearchCompleteDelegate;
 
-		FSessioinSearchFinishedDelegate OnMySessioinSearchFinishedDelegate;
+		//FSessioinSearchFinishedDelegate OnMySessioinSearchFinishedDelegate;
 
 
 		void CreateMySession(FString roomName, int32 PlayerCount);
@@ -78,13 +80,13 @@ class PIXELCODE_API UPCodeGameInstance : public UGameInstance
 	UFUNCTION()
 	void OnCreateSessionComplete(FName sessionName, bool bWasSuccessful);
 
-	UFUNCTION()
+	
 	void OnFindSessionsComplete(bool bWasSuccressful);
 
-	UFUNCTION()
-	void FindOtherSessions();
+	
+	
 	TSharedPtr<FOnlineSessionSearch> sessionInSearch;
-
+	void FindOtherSessions();
 
 	
 	void JoinMySession(int32 index);
