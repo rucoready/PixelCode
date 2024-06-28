@@ -19,6 +19,12 @@ void UCharacterAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	myCharacter = Cast<APlayerOrganism>(GetOwningActor());
+
+	if (myCharacter != nullptr)
+	{
+		playerMovementComp = myCharacter->GetCharacterMovement();
+	}
+
 }
 
 void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -28,3 +34,4 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bDie = myCharacter->bDead;
 	}
 }
+

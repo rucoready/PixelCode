@@ -29,6 +29,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bDie = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
+	FVector moveDirection;
+
 	UPROPERTY()
 	APlayerOrganism* myCharacter;
 
@@ -36,6 +39,9 @@ public:
 	virtual void UpdateCombatEnabled_Implementation(bool bEnable) override;
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+	UPROPERTY()
+	class UCharacterMovementComponent* playerMovementComp;
 };
 
 
