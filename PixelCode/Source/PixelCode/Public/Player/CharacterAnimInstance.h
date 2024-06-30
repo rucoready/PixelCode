@@ -42,6 +42,11 @@ public:
 
 	UPROPERTY()
 	class UCharacterMovementComponent* playerMovementComp;
+
+
+	UFUNCTION()
+	void AnimNotify_RDash(); //플레이어 R
+
 };
 
 

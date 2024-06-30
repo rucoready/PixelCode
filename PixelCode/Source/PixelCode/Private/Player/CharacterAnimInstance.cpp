@@ -35,3 +35,13 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 }
 
+void UCharacterAnimInstance::AnimNotify_RDash()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->SkillR = true;
+	}
+	UE_LOG(LogTemp,Warning,TEXT("noti"))
+
+}
+

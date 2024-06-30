@@ -52,6 +52,13 @@ void APlayerOrganism::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (SkillR)
+	{
+		FVector Rdistance;
+		Rdistance = GetActorLocation()+(GetActorForwardVector() * 1000);
+		SetActorLocation(Rdistance);
+		SkillR = false;
+	}
 }
 
 // Called to bind functionality to input

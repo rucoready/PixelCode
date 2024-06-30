@@ -118,7 +118,7 @@ public:
 	UFUNCTION()
 	virtual void DieFunction();
 
-
+	bool SkillR = false;
 	
 	/*UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<ULootPanel> lootPanelWidgetClass;
