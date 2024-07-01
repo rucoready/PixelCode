@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Player/ParentItem.h" // 구조체 만든 헤더로 변경
+#include "CreateItemData.h"
 #include "ItemBase.generated.h"
 
 
@@ -21,6 +22,12 @@ class PIXELCODE_API UItemBase : public UObject // object로 C++만듬
 	//================================================================================
 	// PROPERTIES & VARIABLES
 	//================================================================================
+
+
+	TArray<FCraftItem> GetAllCrafting();
+
+	FCraftItemInfo GetCraftItemInfoBasedOn(EItemName Name);
+
 
 	UPROPERTY()
 	UInventoryComponent* OwningInventory; // 인벤토리
@@ -50,6 +57,12 @@ class PIXELCODE_API UItemBase : public UObject // object로 C++만듬
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FItemAssetData AssetData;
 	
+	UPROPERTY(VisibleAnywhere, Category = "Item")
+	TMap<EItemName, FCraftItemInfo> CraftItemData;
+
+	UPROPERTY(VisibleAnywhere, Category = "Item")
+	TArray<FCraftItem> Crafting;
+
 	bool bIsCopy;
 	bool bIsPickup;
 

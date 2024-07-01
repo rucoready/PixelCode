@@ -6,6 +6,20 @@
 #include "Player/PixelCodeCharacter.h"
 #include "Player/inventory/InventoryComponent.h"
 
+
+// 요한 -------=========================================================------------------------------------
+
+TArray<FCraftItem> UItemBase::GetAllCrafting()
+{
+	return Crafting;
+}
+
+
+FCraftItemInfo UItemBase::GetCraftItemInfoBasedOn(EItemName Name)
+{
+	return CraftItemData[Name];
+}
+
 UItemBase::UItemBase() : bIsCopy(false), bIsPickup(false) // 생성자가 생성되는 동시에 값을 넣어줌.
 {
 
