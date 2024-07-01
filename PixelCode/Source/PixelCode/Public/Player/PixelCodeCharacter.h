@@ -19,6 +19,7 @@ class UCombatComponent;
 class APlayerHUD;
 class UInventoryComponent;
 class UItemBase;
+class AItemStorage;
 class UPlayerStatWidget;
 
 UENUM()
@@ -222,6 +223,11 @@ public:
 	UFUNCTION()
 	void OnCraftingPressed();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
+	AItemStorage* ItemStorage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
+	TSubclassOf<AActor>	ItemStorageTemplate;
 
 	// º≠»÷-----------------------------------------------------------------------------------------------------
 	UFUNCTION(BlueprintCallable, Category = KSH)

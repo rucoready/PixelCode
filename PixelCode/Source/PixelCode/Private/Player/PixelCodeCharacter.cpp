@@ -32,6 +32,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include "BuildingVisual.h"
 #include "Player/PlayerStatWidget.h"
+#include "ItemStorage.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -152,6 +153,9 @@ void APixelCodeCharacter::BeginPlay()
 		statWidget->AddToViewport(1);
 		statWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
+
+	// ¿äÇÑ ========================================================================================================
+	ItemStorage = GetWorld() ->SpawnActor<AItemStorage>(ItemStorageTemplate, FVector::ZeroVector, FRotator::ZeroRotator);
 
 }
 
