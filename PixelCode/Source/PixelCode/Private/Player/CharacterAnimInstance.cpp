@@ -4,8 +4,6 @@
 #include "Player/CharacterAnimInstance.h"
 #include "Player/PlayerOrganism.h"
 
-#include "Player/PixelCodeCharacter.h"
-
 
 
 void UCharacterAnimInstance::UpdateCombatType_Implementation(EWeaponType eType)
@@ -22,8 +20,6 @@ void UCharacterAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	myPlayer = Cast<APixelCodeCharacter>(GetOwningActor());
-
 	myCharacter = Cast<APlayerOrganism>(GetOwningActor());
 
 
@@ -35,8 +31,6 @@ void UCharacterAnimInstance::NativeInitializeAnimation()
 
 void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
-	if (myPlayer == nullptr)
-		return;
 
 	if (myCharacter == nullptr)
 		return;
@@ -44,18 +38,9 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	if (myCharacter != nullptr)
 	{
 		bDie = myCharacter->bDead;
-
-		bRoll = myPlayer->bRoll;
 	}
 }
 
-void UCharacterAnimInstance::bRollState()
-{
-	/*if (myPlayer)
-	{
-		myPlayer->bRoll = false;
-	}*/
-}
 
 void UCharacterAnimInstance::AnimNotify_RDash()
 {

@@ -33,6 +33,8 @@
 #include "BuildingVisual.h"
 #include "ItemStorage.h"
 #include "Player/PlayerStatWidget.h"
+#include "Animation/AnimInstance.h"
+#include "Animation/AnimMontage.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -679,45 +681,23 @@ void APixelCodeCharacter::ToggleCombatFunction(const FInputActionValue& Value)
 
 void APixelCodeCharacter::PlayerRoll(const FInputActionValue& Value)
 {	
-	bRoll = true;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	if (!bRoll)
+	{ 
+		FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-	SetActorLocation(GetActorLocation()+GetActorForwardVector()*500);
-	UE_LOG(LogTemp, Warning, TEXT("Start"));
-	// PixelCodeCharacter의 포인터를 받아서 forwardVector 방향으로 launch character하는 함수
-	
-			
-	
-	// 앞쪽으로 500단위만큼 구르기를 합니다.
-	RollCharacterForward(this, 500.0f);
-	
-	
-}
-
-void APixelCodeCharacter::RollCharacterForward(APixelCodeCharacter* PixelCodeCharacter, float RollDistance)
-{
-	if (PixelCodeCharacter)
-	{
-		// 캐릭터의 방향 벡터를 구합니다. (기본적으로 Forward는 캐릭터의 앞쪽 방향을 나타냅니다)
-		FVector RollDirection = PixelCodeCharacter->GetActorForwardVector();
-
-		// 구르는 속도를 설정합니다. 이 예제에서는 구르는 속도로 RollDistance를 사용합니다.
-		float RollSpeed = RollDistance;
-
-
-		// 캐릭터의 회전을 설정합니다.
-		FRotator NewRotation = FRotator(0.0f, RollDirection.Rotation().Yaw, 0.0f);
-		PixelCodeCharacter->SetActorRotation(NewRotation);
-
-		// 캐릭터를 이동시킵니다.
-		//FVector RollVelocity = RollDirection * RollSpeed;
-		FVector launchDirection = PixelCodeCharacter->GetActorForwardVector(); // 플레이어 캐릭터의 앞 방향 벡터를 가져옵니다.
-		float launchDistance = 10.0f; // 이동할 거리를 설정합니다.
-
-		FVector launchVelocity = launchDirection * launchDistance; 
-		PixelCodeCharacter->LaunchCharacter(launchVelocity, true, true); 
+		if (Controller != nullptr)
+		{
+			// add yaw and pitch input to controller
+			AddControllerYawInput(LookAxisVector.X);
+			AddControllerPitchInput(LookAxisVector.Y);
+		}
+		GetMesh()->GetAnimInstance()->Montage_Play(RollAnim);
+		GetCharacterMovement()->MaxWalkSpeed = 500.f;
+		bRoll = true;
+		UE_LOG(LogTemp, Warning, TEXT("Start"));
 	}
 }
+
 
 void APixelCodeCharacter::PlayerRun(const FInputActionValue& Value)
 {	
@@ -755,18 +735,17 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	}
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
+	
 	if (bRoll)
 	{
 		RollTime += DeltaTime;
-		if (1.0f <= RollTime)
+		if (1.5f <= RollTime)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("time"));
 
 			RollTime = 0;
 			bRoll = false;
 
 		}
-
 	}
 
 }

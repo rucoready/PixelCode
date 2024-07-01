@@ -12,7 +12,6 @@
  */
 
 class APlayerOrganism;
-class APixelCodeCharacter;
 
 UCLASS()
 class PIXELCODE_API UCharacterAnimInstance : public UAnimInstance, public IAnimInstance_Interface
@@ -30,23 +29,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bDie = false;
 
-	//  ±¸¸£±â
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bRoll = false;
-
-	UFUNCTION()
-	void bRollState();
-
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
 	FVector moveDirection;
 
 	UPROPERTY()
 	APlayerOrganism* myCharacter;
-
-	UPROPERTY()
-	APixelCodeCharacter* myPlayer;
 
 	virtual void UpdateCombatType_Implementation(EWeaponType eType) override;
 	virtual void UpdateCombatEnabled_Implementation(bool bEnable) override;

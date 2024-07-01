@@ -139,9 +139,12 @@ public:
 	// 구르기
 	bool bRoll = false;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
+	class UAnimMontage* RollAnim;
+
 	float RollTime = 0;
 
-	void RollCharacterForward(APixelCodeCharacter* PixelCodeCharacter, float RollDistance);
+	//void RollCharacterForward(APixelCodeCharacter* PixelCodeCharacter, float RollDistance);
 
 	// 진원 E
 protected:
