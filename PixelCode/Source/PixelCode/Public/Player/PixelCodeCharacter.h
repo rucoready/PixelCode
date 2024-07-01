@@ -104,9 +104,11 @@ class APixelCodeCharacter : public APlayerOrganism
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_Pressed;
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_Released;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_RollandRun;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_Stat;
@@ -134,6 +136,13 @@ public:
 
 	bool bIsStatVisible = true;
 
+	// ±¸¸£±â
+	bool bRoll = false;
+
+	float RollTime = 0;
+
+	void RollCharacterForward(APixelCodeCharacter* PixelCodeCharacter, float RollDistance);
+
 	// Áø¿ø E
 protected:
 	// Áø¿ø S
@@ -152,6 +161,12 @@ protected:
 	void LightAttackFunction(const FInputActionValue& Value);
 
 	void ToggleCombatFunction(const FInputActionValue& Value);
+
+	void PlayerRoll(const FInputActionValue& Value);
+
+	void PlayerRun(const FInputActionValue& Value);
+
+	void PlayerRunEnd(const FInputActionValue& Value);
 
 	bool bInventorystate = false;
 
@@ -207,6 +222,11 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_Interact();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
+	AItemStorage* ItemStorage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
+	TSubclassOf<AActor>	ItemStorageTemplate;
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_Interact(const TScriptInterface<IInteractionInterface>& Interactable);
@@ -223,11 +243,6 @@ public:
 	UFUNCTION()
 	void OnCraftingPressed();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
-	AItemStorage* ItemStorage;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
-	TSubclassOf<AActor>	ItemStorageTemplate;
 
 	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------
 	UFUNCTION(BlueprintCallable, Category = KSH)
@@ -241,8 +256,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void SpawnBuilding();
-	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
 
+
+	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
+	/*UPROPERTY(EditAnywhere, Category="MySettings")
+	class UAnimMontage* rollMT;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "weapon")
 	TSubclassOf<class ABaseWeapon> defaultWeapon;
@@ -266,6 +284,8 @@ public:
 	virtual void CreateInventory() override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	
 };
 
 

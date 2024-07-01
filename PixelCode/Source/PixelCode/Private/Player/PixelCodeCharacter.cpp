@@ -31,8 +31,8 @@
 #include <../../../../../../../Source/Runtime/CoreUObject/Public/UObject/ScriptInterface.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include "BuildingVisual.h"
-#include "Player/PlayerStatWidget.h"
 #include "ItemStorage.h"
+#include "Player/PlayerStatWidget.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -57,7 +57,7 @@ APixelCodeCharacter::APixelCodeCharacter()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
@@ -154,8 +154,9 @@ void APixelCodeCharacter::BeginPlay()
 		statWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 
-	// 요한 ========================================================================================================
-	ItemStorage = GetWorld() ->SpawnActor<AItemStorage>(ItemStorageTemplate, FVector::ZeroVector, FRotator::ZeroRotator);
+	// 요한----------------------------------------------------------------------
+
+	ItemStorage = GetWorld()->SpawnActor<AItemStorage>(ItemStorageTemplate, FVector::ZeroVector, FRotator::ZeroRotator);
 
 }
 
@@ -566,11 +567,10 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &APixelCodeCharacter::LightAttackFunction);// 기본공격
 
-		EnhancedInputComponent->BindAction(ToggleCombatAction, ETriggerEvent::Started, this, &APixelCodeCharacter::ToggleCombatFunction);// 무기 발도
+		EnhancedInputComponent->BindAction(ToggleCombatAction, ETriggerEvent::Started, this, &APixelCodeCharacter::ToggleCombatFunction);// 무기 빼서장착
 
 		// 인벤토리 열고닫기
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &APixelCodeCharacter::ToggleMenu);
-		/*EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMithrilDungeonCharacter::InventoryOnOff);*/
 
 
 		// 물체 상호작용
@@ -581,6 +581,12 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 		EnhancedInputComponent->BindAction(IA_Stat, ETriggerEvent::Started, this, &APixelCodeCharacter::StatMenu);
 
+		// 플레이어 구르기
+		EnhancedInputComponent->BindAction(IA_RollandRun, ETriggerEvent::Canceled, this, &APixelCodeCharacter::PlayerRoll);
+
+		// 플레이어 뛰기
+		EnhancedInputComponent->BindAction(IA_RollandRun, ETriggerEvent::Ongoing, this, &APixelCodeCharacter::PlayerRun);
+		EnhancedInputComponent->BindAction(IA_RollandRun, ETriggerEvent::Completed, this, &APixelCodeCharacter::PlayerRunEnd);
 
 		// 요한 ==================
 		EnhancedInputComponent->BindAction(IA_Crafting, ETriggerEvent::Started, this, &APixelCodeCharacter::OnCraftingPressed);
@@ -671,6 +677,59 @@ void APixelCodeCharacter::ToggleCombatFunction(const FInputActionValue& Value)
 	}
 }
 
+void APixelCodeCharacter::PlayerRoll(const FInputActionValue& Value)
+{	
+	bRoll = true;
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+
+	SetActorLocation(GetActorLocation()+GetActorForwardVector()*500);
+	UE_LOG(LogTemp, Warning, TEXT("Start"));
+	// PixelCodeCharacter의 포인터를 받아서 forwardVector 방향으로 launch character하는 함수
+	
+			
+	
+	// 앞쪽으로 500단위만큼 구르기를 합니다.
+	RollCharacterForward(this, 500.0f);
+	
+	
+}
+
+void APixelCodeCharacter::RollCharacterForward(APixelCodeCharacter* PixelCodeCharacter, float RollDistance)
+{
+	if (PixelCodeCharacter)
+	{
+		// 캐릭터의 방향 벡터를 구합니다. (기본적으로 Forward는 캐릭터의 앞쪽 방향을 나타냅니다)
+		FVector RollDirection = PixelCodeCharacter->GetActorForwardVector();
+
+		// 구르는 속도를 설정합니다. 이 예제에서는 구르는 속도로 RollDistance를 사용합니다.
+		float RollSpeed = RollDistance;
+
+
+		// 캐릭터의 회전을 설정합니다.
+		FRotator NewRotation = FRotator(0.0f, RollDirection.Rotation().Yaw, 0.0f);
+		PixelCodeCharacter->SetActorRotation(NewRotation);
+
+		// 캐릭터를 이동시킵니다.
+		//FVector RollVelocity = RollDirection * RollSpeed;
+		FVector launchDirection = PixelCodeCharacter->GetActorForwardVector(); // 플레이어 캐릭터의 앞 방향 벡터를 가져옵니다.
+		float launchDistance = 10.0f; // 이동할 거리를 설정합니다.
+
+		FVector launchVelocity = launchDirection * launchDistance; 
+		PixelCodeCharacter->LaunchCharacter(launchVelocity, true, true); 
+	}
+}
+
+void APixelCodeCharacter::PlayerRun(const FInputActionValue& Value)
+{	
+	GetCharacterMovement()->MaxWalkSpeed = 1000.f;
+	UE_LOG(LogTemp,Warning,TEXT("trigreed"));
+}
+
+void APixelCodeCharacter::PlayerRunEnd(const FInputActionValue& Value)
+{	
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+}
+
 void APixelCodeCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -695,6 +754,20 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		
 	}
 	// 서휘-----------------------------------------------------------------------------------------------------끝
+
+	if (bRoll)
+	{
+		RollTime += DeltaTime;
+		if (1.0f <= RollTime)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("time"));
+
+			RollTime = 0;
+			bRoll = false;
+
+		}
+
+	}
 
 }
 

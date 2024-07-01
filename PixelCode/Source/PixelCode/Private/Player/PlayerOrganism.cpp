@@ -15,6 +15,7 @@
 #include "Player/Interfaces/InventoryPanel.h"
 #include "Player/World/Pickup.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
+#include <../../../../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputComponent.h>
 
 
 // Sets default values
@@ -65,6 +66,8 @@ void APlayerOrganism::Tick(float DeltaTime)
 void APlayerOrganism::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	
 
 }
 
