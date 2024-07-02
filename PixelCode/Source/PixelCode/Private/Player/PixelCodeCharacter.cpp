@@ -427,6 +427,13 @@ void APixelCodeCharacter::SpawnBuilding()
 		Builder->SpawnBuilding();
 	}
 }
+void APixelCodeCharacter::DestroyBuildingInstance()
+{
+	if (bInBuildMode && Builder)
+	{
+		Builder->DestroyInstance(PerformLineTrace());
+	}
+}
 // º≠»÷-----------------------------------------------------------------------------------------------------≥°
 
 void APixelCodeCharacter::ServerRPC_Interact_Implementation()

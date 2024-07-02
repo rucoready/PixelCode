@@ -265,7 +265,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void SpawnBuilding();
 
-
+	UFUNCTION(BlueprintCallable, Category = KSH)
+	void DestroyBuildingInstance();
 	// º≠»÷-----------------------------------------------------------------------------------------------------≥°
 	/*UPROPERTY(EditAnywhere, Category="MySettings")
 	class UAnimMontage* rollMT;*/
