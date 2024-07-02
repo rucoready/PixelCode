@@ -45,7 +45,7 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable, Category = KSH)
-	void DestroyInstance(FVector HitPoint);
+	void DestroyInstance(const FBuildingSocketData& BuildingSocketData);
 
 
 	UFUNCTION(BlueprintCallable, Category = KSH)

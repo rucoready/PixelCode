@@ -60,16 +60,21 @@ void ABuilding::BeginPlay()
 
 
 
-void ABuilding::DestroyInstance(FVector HitPoint)
+void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData)
 {
-	const TArray<int32> HitIndexes = FoundationInstancedMesh->GetInstancesOverlappingSphere(HitPoint, 1.0f);
+	//const TArray<int32> HitIndexes = FoundationInstancedMesh->GetInstancesOverlappingSphere(HitPoint, 1.0f);
 
-	if (HitIndexes.Num() > 0)
+	//if (HitIndexes.Num() > 0)
+	//{
+	//	// 디스트로이 로그
+	//	UE_LOG(LogTemp, Warning, TEXT ("Destroy Instances HitIndexes"));
+
+	//	FoundationInstancedMesh->RemoveInstance(HitIndexes[0]);
+	//}
+
+	if (BuildingSocketData.InstancedComponent)
 	{
-		// 디스트로이 로그
-		UE_LOG(LogTemp, Warning, TEXT ("Destroy Instances HitIndexes"));
-
-		FoundationInstancedMesh->RemoveInstance(HitIndexes[0]);
+		BuildingSocketData.InstancedComponent->RemoveInstance(BuildingSocketData.Index);
 	}
 }
 
@@ -161,7 +166,7 @@ bool ABuilding::IsValidSocket(UInstancedStaticMeshComponent* HitComponent, int32
 				{
 					for (const FSocketInformation& SocketInformation : BuildIndexSockets.SocketsInformation)
 					{
-						if (SocketInformation.SocketName == SocketName.ToString() && SocketInformation.bSocketInUse)
+						if (SocketInformation.SocketName == SocketName/*$.ToString()*/ && SocketInformation.bSocketInUse)
 						{
 							bSuccess = false;
 							break;
@@ -224,9 +229,9 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 					bFoundMatchingIndex = true;
 					for (FSocketInformation& SocketInformation : IndexSockets.SocketsInformation)
 					{
-						if (SocketInformation.SocketName == BuildingSocketData.SocketName.ToString())
+						if (SocketInformation.SocketName == BuildingSocketData.SocketName/*$.ToString()*/)
 						{
-							UE_LOG(LogTemp, Warning, TEXT("Setting Socket %s to TRUE"), *SocketInformation.SocketName);
+							// UE_LOG(LogTemp, Warning, TEXT("Setting Socket %s to TRUE"), *SocketInformation.SocketName);
 
 							SocketInformation.bSocketInUse = true;
 							break;
@@ -251,6 +256,9 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 				for (const FName& SocketName : InstanceSocket.InstancedComponent->GetAllSocketNames())
 				{
 					SocketInformation.SocketName = SocketName.ToString();
+					//--------------------------------------------------------------------------------------------7.2
+					SocketInformation.bSocketInUse = false;
+					//--------------------------------------------------------------------------------------------7.2 끝
 					if (SocketName.IsEqual(BuildingSocketData.SocketName))
 					{
 						SocketInformation.bSocketInUse = true;

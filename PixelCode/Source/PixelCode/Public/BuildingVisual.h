@@ -41,7 +41,6 @@ protected:
 	uint8 BuildingTypeIndex;
 
 
-
 	UPROPERTY(EditDefaultsOnly, Category = KSH)
 	UMaterialInstance* MaterialFalse;
 
@@ -68,6 +67,7 @@ public:
  
 	void SetBuildPosition(const FHitResult& HitResult);
 	void SpawnBuilding();
+	void DestroyInstance(const FHitResult& HitResult);
 	void CycleMesh();
 
 };

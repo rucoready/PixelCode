@@ -4,6 +4,7 @@
 #include "BuildingVisual.h"
 #include "Building.h"
 #include "Components/StaticMeshComponent.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/Components/InstancedStaticMeshComponent.h>
 
 
 // Sets default values
@@ -148,6 +149,21 @@ void ABuildingVisual::SpawnBuilding()
 		else
 		{
 			GetWorld()->SpawnActor<ABuilding>(BuildingClass, GetActorTransform());
+		}
+	}
+}
+
+void ABuildingVisual::DestroyInstance(const FHitResult& HitResult)
+{
+	if (InteractingBuilding)
+	{
+		if ( UInstancedStaticMeshComponent* InstancedStaticMeshComponent = Cast<UInstancedStaticMeshComponent>(HitResult.GetComponent()))
+		{
+			FBuildingSocketData BuildingSocketData;
+			BuildingSocketData.InstancedComponent = InstancedStaticMeshComponent;
+			BuildingSocketData.Index = HitResult.Item;
+
+			InteractingBuilding->DestroyInstance(BuildingSocketData);
 		}
 	}
 }
