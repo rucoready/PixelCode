@@ -119,6 +119,34 @@ public:
 	virtual void DieFunction();
 
 	bool SkillR = false;
+
+	// 캐릭터가 현재 이동 중인지 여부
+	bool SkillE = false;
+
+	// Lerp 알파 변수 (보간 제어)
+	float ESkillTime;
+	
+	 // 목표 위치 변수
+    UPROPERTY(EditAnywhere, Category = "Movement")
+    FVector TargetLoc;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+    float MoveSpeed;
+
+	// 선형 보간을 사용하여 캐릭터를 목표 위치로 이동시키는 함수
+	void MoveToTargetLocation();
+
+	// 캐릭터 위치지정
+	void CharcurrentLoc();
+
+
+    // 카메라 이동 속도 변수
+    float CameraMoveSpeed;
+
+    // 카메라 이동 시간 변수
+    float CameraMoveTime;
+
+
 	
 	/*UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<ULootPanel> lootPanelWidgetClass;

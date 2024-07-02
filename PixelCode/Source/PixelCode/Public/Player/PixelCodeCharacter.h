@@ -121,7 +121,6 @@ public:
 	// 진원 S
 	FORCEINLINE bool IsInteracting() const {return GetWorld()->GetTimerManager().IsTimerActive(TimerHandle_Interaction); }; // 현재 상호작용중인지 아닌지
 
-
 	void UpdateInteractionWidget() const;
 
 	void DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
@@ -139,10 +138,13 @@ public:
 	// 구르기
 	bool bRoll = false;
 
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
 	class UAnimMontage* RollAnim;
 
 	float RollTime = 0;
+	
+	
 
 	//void RollCharacterForward(APixelCodeCharacter* PixelCodeCharacter, float RollDistance);
 
@@ -245,10 +247,8 @@ public:
 	// 요한
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "camera", meta )
 
-
 	UFUNCTION()
 	void OnCraftingPressed();
-
 
 	AItemStorage* GetItemStorage() const;
 
@@ -267,6 +267,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void DestroyBuildingInstance();
+
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 	/*UPROPERTY(EditAnywhere, Category="MySettings")
 	class UAnimMontage* rollMT;*/
@@ -278,6 +279,12 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	// 카메라 속도
+    UPROPERTY(EditAnywhere, Category = Camera)
+    float CameraLagSpeed;
+
+	FVector CameraLoc;
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_ToggleCombat();

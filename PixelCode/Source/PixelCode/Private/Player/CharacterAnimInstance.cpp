@@ -48,7 +48,16 @@ void UCharacterAnimInstance::AnimNotify_RDash()
 	{
 		myCharacter->SkillR = true;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("noti"))
+}
+
+void UCharacterAnimInstance::AnimNotify_blockcounter()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->CharcurrentLoc();
+		myCharacter->MoveToTargetLocation();
+		myCharacter->SkillE = true;
+	}
 
 }
 

@@ -67,7 +67,7 @@ APixelCodeCharacter::APixelCodeCharacter()
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
+	CameraBoom->TargetArmLength = 500.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
 	CreateInventory();
@@ -99,13 +99,15 @@ APixelCodeCharacter::APixelCodeCharacter()
 
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
-	
 }
 
 void APixelCodeCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	CameraBoom->bEnableCameraLag = true;
+	CameraBoom->CameraLagSpeed = 10.0f;
 
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -159,6 +161,8 @@ void APixelCodeCharacter::BeginPlay()
 	// 요한----------------------------------------------------------------------
 
 	ItemStorage = GetWorld()->SpawnActor<AItemStorage>(ItemStorageTemplate, FVector::ZeroVector, FRotator::ZeroRotator);
+
+
 
 }
 
@@ -392,6 +396,7 @@ AItemStorage* APixelCodeCharacter::GetItemStorage() const
 	return ItemStorage;
 }
 
+
 // 서휘-----------------------------------------------------------------------------------------------------
 void APixelCodeCharacter::SetBuildMode(bool Enabled)
 {
@@ -427,6 +432,7 @@ void APixelCodeCharacter::SpawnBuilding()
 		Builder->SpawnBuilding();
 	}
 }
+
 void APixelCodeCharacter::DestroyBuildingInstance()
 {
 	if (bInBuildMode && Builder)
@@ -434,6 +440,7 @@ void APixelCodeCharacter::DestroyBuildingInstance()
 		Builder->DestroyInstance(PerformLineTrace());
 	}
 }
+
 // 서휘-----------------------------------------------------------------------------------------------------끝
 
 void APixelCodeCharacter::ServerRPC_Interact_Implementation()
@@ -747,18 +754,31 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	}
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
-	
+	// 지논------------------------------------------------------------------------------------------------------
 	if (bRoll)
 	{
 		RollTime += DeltaTime;
 		if (1.5f <= RollTime)
 		{
-
 			RollTime = 0;
 			bRoll = false;
-
 		}
 	}
+
+	// 카메라 위치 업데이트 (스프링 암 컴포넌트의 위치를 사용)
+	
+		/*if (SkillE)
+		{
+			CameraBoom->bEnableCameraLag = true;
+			CameraBoom->CameraLagSpeed = 5;
+		}
+		else
+		{
+			CameraBoom->bEnableCameraLag = false;
+		}*/
+		
+	
+	// 지논------------------------------------------------------------------------------------------------------
 
 }
 

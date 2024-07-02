@@ -31,6 +31,13 @@ APlayerOrganism::APlayerOrganism()
 	characterName = TEXT("Player");
 
 	CreateInventory();
+
+	MoveSpeed = 1000.0f;
+	ESkillTime = 0.0f;
+
+	CameraMoveSpeed = 5.0f; // 카메라 이동 속도
+	CameraMoveTime = 0.5f;  // 카메라 이동 시간 (초)
+
 }
 
 // Called when the game starts or when spawned
@@ -46,6 +53,13 @@ void APlayerOrganism::BeginPlay()
 	stateComp->InitStat();
 	stateComp->UpdateStat();
 	stateComp->dieDelegate.BindUFunction(this, FName("DieFunction"));
+
+	//TargetLoc = GetActorLocation() + GetActorForwardVector() * 700; // 원하는 목표 위치 설정
+	MoveToTargetLocation();
+
+
+	
+
 }
 
 // Called every frame
@@ -60,7 +74,44 @@ void APlayerOrganism::Tick(float DeltaTime)
 		SetActorLocation(Rdistance);
 		SkillR = false;
 	}
+
+	if (SkillE)
+	{
+		// 선형 보간을 사용하여 캐릭터 위치 업데이트
+		FVector CurrentLocation = GetActorLocation();
+		FVector NewLocation = FMath::Lerp(CurrentLocation, TargetLoc, ESkillTime);
+		SetActorLocation(NewLocation);
+
+		// 이동 속도와 델타 타임을 기반으로 Lerp 알파 값을 증가
+		float LerpDelta = MoveSpeed * DeltaTime / FVector::Dist(CurrentLocation, TargetLoc);
+		ESkillTime = FMath::Clamp(ESkillTime + LerpDelta, 0.0f, 1.0f);
+
+		
+
+
+		// 목표 위치에 도달했는지 확인
+		if (ESkillTime >= 1.0f)
+		{
+			SkillE = false;
+		}
+	}
 }
+
+/*if (SkillE)
+{
+	ESkillTime += DeltaTime;
+	FVector Edistance;
+	Edistance = FMath::Lerp(CharLoc,TargetLoc,ESkillTime * 3);
+
+	SetActorLocation(Edistance);
+	if (ESkillTime >= 1.0f)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("ESkill"));
+		ESkillTime = 0.0f;
+		SkillE = false;
+	}
+}*/
+
 
 // Called to bind functionality to input
 void APlayerOrganism::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -284,6 +335,24 @@ void APlayerOrganism::DieFunction()
 
 	bDead = true;
 
+}
+
+void APlayerOrganism::CharcurrentLoc()
+{
+	//CharLoc = GetActorLocation();
+	TargetLoc = GetActorLocation() + GetActorForwardVector() * 700;
+	//TargetrangeLoc = GetActorLocation() + GetActorForwardVector() * 500;
+
+	
+}
+
+void APlayerOrganism::MoveToTargetLocation()
+{
+	if (!SkillE)
+	{
+		SkillE = true;
+		ESkillTime = 0.0f; // Lerp 알파를 초기화하여 처음부터 보간 시작
+	}
 }
 
 void APlayerOrganism::LootByOthers(APlayerOrganism* otherCharacter)

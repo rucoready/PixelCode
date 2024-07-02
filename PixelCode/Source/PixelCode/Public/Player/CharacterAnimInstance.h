@@ -48,6 +48,9 @@ public:
 	UFUNCTION()
 	void AnimNotify_RDash(); //플레이어 R
 
+	UFUNCTION()
+	void AnimNotify_blockcounter(); //플레이어 E
+
 };
 
 
