@@ -24,9 +24,7 @@ class PIXELCODE_API UItemBase : public UObject // object·Î C++¸¸µë
 	//================================================================================
 
 
-	TArray<FCraftItem> GetAllCrafting();
-
-	FCraftItemInfo GetCraftItemInfoBasedOn(EItemName Name);
+	
 
 
 	UPROPERTY()
@@ -57,11 +55,7 @@ class PIXELCODE_API UItemBase : public UObject // object·Î C++¸¸µë
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FItemAssetData AssetData;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Item")
-	TMap<EItemName, FCraftItemInfo> CraftItemData;
-
-	UPROPERTY(VisibleAnywhere, Category = "Item")
-	TArray<FCraftItem> Crafting;
+	
 
 	bool bIsCopy;
 	bool bIsPickup;

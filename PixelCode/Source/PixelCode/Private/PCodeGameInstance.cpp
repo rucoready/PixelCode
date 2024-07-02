@@ -5,8 +5,8 @@
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
 #include "Online/OnlineSessionNames.h"
-#include <../../../../../../../Source/Runtime/Core/Public/Templates/SharedPointer.h>
-#include <string>
+//#include <../../../../../../../Source/Runtime/Core/Public/Templates/SharedPointer.h>
+#include <xstring>
 
 void UPCodeGameInstance::Init()
 {
@@ -32,7 +32,7 @@ void UPCodeGameInstance::CreateMySession(FString roomName, int32 PlayerCount)
 	set.bIsDedicated = false;
 	
 	FName subsysName = IOnlineSubsystem::Get()->GetSubsystemName();
-	set.bIsLANMatch = subsysName =="NULL";
+	set.bIsLANMatch = subsysName == "NULL";
 
 	// 매칭 방을 공개할건인가 YES
 	set.bShouldAdvertise = true;
@@ -45,6 +45,19 @@ void UPCodeGameInstance::CreateMySession(FString roomName, int32 PlayerCount)
 	set.bAllowJoinViaPresence = true;
 
 	set.NumPublicConnections = PlayerCount;
+
+	// 6. 참여할 공개 연결의 최대 갯수
+	UE_LOG(LogTemp, Warning, TEXT("set.NumPublicConnections: %d,"), set.NumPublicConnections);
+	PlayerCount = (PlayerCount == 0) ? 2 : PlayerCount;
+
+	if (PlayerCount == 0)
+	{
+		PlayerCount = 10;
+	}
+
+	set.NumPublicConnections = PlayerCount;
+
+	UE_LOG(LogTemp, Warning, TEXT("set.NumPublicConnections: %d,"), set.NumPublicConnections);
 
 	// 커스텀 정보 : 방 이름 , 호스트 이름
 	set.Set(FName("ROOM_NAME"), roomName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
@@ -95,29 +108,6 @@ void UPCodeGameInstance::FindOtherSessions()
 
 }
 
-void UPCodeGameInstance::JoinMySession(int32 index)
-{
-	sessionInterface->JoinSession(0, FName(*mySessionName), sessionInSearch->SearchResults[index]);
-}
-
-void UPCodeGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type results)
-{
-	// 호스트의 IP, Port번호를 가져와서 ClientTravel 하고싶다.
-	if (results == EOnJoinSessionCompleteResult::Success)
-	{
-		auto* pc = GetWorld()->GetFirstPlayerController();
-		FString url;
-		sessionInterface->GetResolvedConnectString(SessionName, url);
-		UE_LOG(LogTemp, Warning, TEXT("ClientTravel URL : %s"), *url);
-
-		if (false == url.IsEmpty())
-		{
-			pc->ClientTravel(url, ETravelType::TRAVEL_Absolute);
-		}
-	}
-}
-
-
 void UPCodeGameInstance::OnCreateSessionComplete(FName sessionName, bool bWasSuccessful)
 {
 	// 만약 방생성을 성공했다면 ServerTravel 하고싶다.
@@ -135,7 +125,9 @@ void UPCodeGameInstance::OnFindSessionsComplete(bool bWasSuccressful)
 			// sessioinSearch에서 정보를 가져오고싶다. -> UI로 표현하고싶다.
 			auto results = sessionInSearch->SearchResults;
 			if (results.Num() == 0) {
-				UE_LOG(LogTemp, Warning, TEXT("OnFindSessionsComplete results.Num() == 0"));
+				//UE_LOG(LogTemp, Warning, TEXT("OnFindSessionsComplete results.Num() == 0"));
+				UE_LOG(LogTemp, Warning, TEXT(" i kill you"));
+			
 			}
 			for (int i = 0; i < results.Num(); i++)
 			{
@@ -165,6 +157,29 @@ void UPCodeGameInstance::OnFindSessionsComplete(bool bWasSuccressful)
 		{
 			OnMySessioinSearchFinishedDelegate.Broadcast(false);
 		}*/
+}
+
+void UPCodeGameInstance::JoinMySession(int32 index)
+{
+	sessionInterface->JoinSession(0, FName(*mySessionName), sessionInSearch->SearchResults[index]);
+	UE_LOG(LogTemp, Warning, TEXT("777777777"));
+}
+
+void UPCodeGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type results)
+{
+	// 호스트의 IP, Port번호를 가져와서 ClientTravel 하고싶다.
+	if (results == EOnJoinSessionCompleteResult::Success)
+	{
+		auto* pc = GetWorld()->GetFirstPlayerController();
+		FString url;
+		sessionInterface->GetResolvedConnectString(SessionName, url);
+		UE_LOG(LogTemp, Warning, TEXT("ClientTravel URL : %s"), *url);
+
+		if (false == url.IsEmpty())
+		{
+			pc->ClientTravel(url, ETravelType::TRAVEL_Absolute);
+		}
+	}
 }
 
 

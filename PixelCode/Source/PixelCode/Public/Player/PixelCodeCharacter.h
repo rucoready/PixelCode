@@ -243,9 +243,14 @@ public:
 	void Interact();
 
 	// ø‰«—
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "camera", meta )
+
+
 	UFUNCTION()
 	void OnCraftingPressed();
 
+
+	AItemStorage* GetItemStorage() const;
 
 	// º≠»÷-----------------------------------------------------------------------------------------------------
 	UFUNCTION(BlueprintCallable, Category = KSH)

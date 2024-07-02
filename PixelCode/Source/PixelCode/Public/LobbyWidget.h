@@ -80,5 +80,5 @@ class PIXELCODE_API ULobbyWidget : public UUserWidget
 
 	UFUNCTION()
 	void AddRoomInfoUI(const struct FSessionInfo& info);
-	bool SetSessionName();
+	//bool SetSessionName();
 };

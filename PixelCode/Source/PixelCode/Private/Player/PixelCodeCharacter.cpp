@@ -387,6 +387,11 @@ void APixelCodeCharacter::OnCraftingPressed()
 	}
 }
 
+AItemStorage* APixelCodeCharacter::GetItemStorage() const
+{
+	return ItemStorage;
+}
+
 // º≠»÷-----------------------------------------------------------------------------------------------------
 void APixelCodeCharacter::SetBuildMode(bool Enabled)
 {

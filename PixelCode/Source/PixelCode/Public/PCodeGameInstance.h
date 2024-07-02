@@ -33,7 +33,8 @@ struct FSessionInfo
 	int32 index;
 
 	FORCEINLINE void Set(int32 _index, const FOnlineSessionSearchResult& item) {
-		
+		index = _index;
+
 		//item.Session.SessionSettings.Get(FName("ROOM_NAME"), roomName);
 		//item.Session.SessionSettings.Get(FName("HOST_NAME"), hostName);
 		// 방장의 이름
@@ -74,7 +75,7 @@ class PIXELCODE_API UPCodeGameInstance : public UGameInstance
 
 		void CreateMySession(FString roomName, int32 PlayerCount);
 
-		FString mySessionName = TEXT("PixelCode");
+		FString mySessionName = TEXT("YoHa");
 	
 
 	UFUNCTION()

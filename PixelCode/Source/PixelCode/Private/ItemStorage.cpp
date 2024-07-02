@@ -17,6 +17,16 @@ TSubclassOf<AActor> AItemStorage::GetTemplateOfItem(uint8 Id)
 	
 }
 
+TArray<FCraftItem> AItemStorage::GetAllCrafting()
+{
+	return Crafting;
+}
+
+FCraftItemInfo AItemStorage::GetCraftItemInfoBasedOn(EItemName Name)
+{
+	return CraftItemData[Name];
+}
+
 // Called when the game starts or when spawned
 void AItemStorage::BeginPlay()
 {

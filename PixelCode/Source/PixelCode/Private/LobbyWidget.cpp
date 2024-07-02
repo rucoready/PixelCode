@@ -44,8 +44,8 @@ void ULobbyWidget::OnMyClickGoCreateRoom()
 
 void ULobbyWidget::OnMyClickGoFindRoom()
 {
-	if (false == SetSessionName())
-		return;
+	/*if (false == SetSessionName())
+		return;*/
 
 	SwitcherUI->SetActiveWidgetIndex(2);
 	// 방찾기 메뉴 진입시 찾기를 시도하고싶다.
@@ -67,38 +67,20 @@ void ULobbyWidget::AddRoomInfoUI(const struct FSessionInfo& info)
 	ScrollBox_RoomList->AddChild(ui);
 }
 
-bool ULobbyWidget::SetSessionName()
-{
-	// 해야할일!
-		// badword 체크!
-	FString str = Edit_SessionName->GetText().ToString();
-	//str = str.TrimStartAndEnd();
-	//str = str.Replace(TEXT("|"), TEXT(""));
-	//str.Split()
-	//str.Replace()
-	// 입력한 것이 없다면
-	if (str.IsEmpty()) {
-		return false;
-	}
-
-#pragma region BadWords
-	//TArray<FString> badWords;
-	//badWords.Add("쓰|레|기");
-	//badWords.Add("양말");
-
-	//if ( badWords.Contains(str) )
-	//{
-	//	return;
-	//}
-#pragma endregion
-
-	if (gi)
-	{
-		gi->mySessionName = str;
-		return true;
-	}
-	return false;
-}
+//bool ULobbyWidget::SetSessionName()
+//{
+//	// 해야할일!
+//		// badword 체크!
+//	FString str = Edit_SessionName->GetText().ToString();
+//	//str = str.TrimStartAndEnd();
+//	//str = str.Replace(TEXT("|"), TEXT(""));
+//	//str.Split()
+//	//str.Replace()
+//	// 입력한 것이 없다면
+//	if (str.IsEmpty()) {
+//		return false;
+//	}
+//}
 
 void ULobbyWidget::OnMyClickCreateRoom()
 {

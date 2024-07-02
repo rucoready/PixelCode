@@ -6,8 +6,11 @@
 #include "Blueprint/UserWidget.h"
 #include "CraftingWidget.generated.h"
 
+class AItemStorage;
 class UScrollBox;
+class APixelCodeCharacter;
 class UCraftItemWidget;
+
 
 /**
  * 
@@ -27,6 +30,12 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "CRAFT")
 	TArray<TWeakObjectPtr<UCraftItemWidget>> CraftItems;
+
+	UPROPERTY(EditAnywhere, Category = "CRAFT")
+	AItemStorage* ItemStorage;
+
+	UPROPERTY(EditAnywhere, Category = "CRAFT")
+	APixelCodeCharacter* Char;
 
 	UPROPERTY(meta = (BindWidget))
 	UScrollBox* CraftList;
