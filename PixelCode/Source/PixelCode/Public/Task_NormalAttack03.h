@@ -38,4 +38,9 @@ public:
     float superSpeed = 2200.0f;
 
     bool animOnce;
+
+    bool normalAttack03;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector normalAttack03CoolTime;
 };

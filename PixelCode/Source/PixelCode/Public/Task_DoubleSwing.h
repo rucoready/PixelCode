@@ -46,4 +46,9 @@ class PIXELCODE_API UTask_DoubleSwing : public UBTTask_BlackboardBase
     bool changeSwordPosition1 = false;
     float speed = 700.0f;
     float speed2 = 1400.0f;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector doubleSwingAttackCoolTime;
+
+    bool doubleSwingAttack1;
 };

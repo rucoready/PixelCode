@@ -32,10 +32,18 @@ UTask_DoubleSwing::UTask_DoubleSwing(FObjectInitializer const& ObjectInitializer
 
 EBTNodeResult::Type UTask_DoubleSwing::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-    TickTask(OwnerComp, NodeMemory, 0.0f);
+    // 태스크 시작 시 필요한 변수 초기화
+    currentTime = 0.0f;
+    firstSwingAttack = false;
+    changeSwordPosition1 = false;
+    
+    animOnce = false;
+    animOnce2 = false;
+    onceSpawnStingNiagara = false;
+    onceSpawnStingNiagara2 = false;
 
-    currentTime = 0.0f; // 태스크 시작 시 currentTime 초기화
-    firstSwingAttack = false; // 태스크 시작 시 firstSwingAttack 초기화
+    // 애니메이션 재생 시작
+    TickTask(OwnerComp, NodeMemory, 0.0f);
 
     return EBTNodeResult::InProgress;
 }
@@ -219,7 +227,7 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
                 {
                     // 애니메이션 재생
                     ABossApernia* boss = Cast<ABossApernia>(bossPawn);
-                    if (doubleSwingAttack && boss->GetMesh() && boss->GetMesh()->GetAnimInstance() && !animOnce2)
+                    if (doubleSwingAttack && boss->GetMesh()&&boss->GetMesh()->GetAnimInstance() && !animOnce2)
                     {
                         UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
                         boss->PlayAnimMontage(doubleSwingAttack);
@@ -279,11 +287,16 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
     // 1.8초가 지나면 태스크 완료
     if (currentTime >= 1.8f)
     {
+        doubleSwingAttack1 = false;
+        UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
+        BlackboardComp = OwnerComp.GetBlackboardComponent();
+        if (BlackboardComp)
+        {
+            BlackboardComp->SetValueAsBool(doubleSwingAttackCoolTime.SelectedKeyName, doubleSwingAttack1);
+        }
+
+        
         FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-        animOnce = false;
-        animOnce2 = false;
-        onceSpawnStingNiagara = false;
-        onceSpawnStingNiagara2 = false;
-        currentTime = 0.0f; // currentTime 초기화
+        
     }
 }

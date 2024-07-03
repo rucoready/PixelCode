@@ -189,13 +189,20 @@ void UTask_NormalAttack03::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
     if (currentTime >= 2.2f)
     {
         
-        
-
-
-        FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
         animOnce = false;
         currentTime = 0.0f; // currentTime 초기화
         directionSet = false; // 방향 설정 여부 플래그 초기화
         moveDirection = FVector::ZeroVector; // 이동 방향 초기화
+        normalAttack03 = false;
+
+
+        UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
+        BlackboardComp = OwnerComp.GetBlackboardComponent();
+        if (BlackboardComp)
+        {
+            BlackboardComp->SetValueAsBool(normalAttack03CoolTime.SelectedKeyName, normalAttack03);
+        }
+
+        FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
     }
 }

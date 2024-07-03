@@ -23,11 +23,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* swordNormalAttack01;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* swordNormalAttack01V2;
+
 	FVector playerLocation;
 
 	bool animOnce;
 
+	bool animOnceV2;
+
 	float currentTime;
+
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector normalAttack01CoolTime;
+
+	bool normalAttack01;
 
 
 };

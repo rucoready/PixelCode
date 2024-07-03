@@ -20,6 +20,12 @@ UTTask_NormalAttack01::UTTask_NormalAttack01(FObjectInitializer const& ObjectIni
     {
         swordNormalAttack01 = montageObj.Object;
     }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> montageObj2(TEXT("/Script/Engine.AnimMontage'/Game/KMS_AI/Boss_Alpernia/Animations/AnimationV2/AM_NormalAttackV2_Montage.AM_NormalAttackV2_Montage'"));
+    if (montageObj2.Succeeded())
+    {
+        swordNormalAttack01V2 = montageObj2.Object;
+    }
     bNotifyTick = true;
 }
 
@@ -82,10 +88,67 @@ void UTTask_NormalAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 
     currentTime += DeltaSeconds;
 
-    // 1.8초가 지나면 태스크 완료
-    if (currentTime >= 2.5f)
+    if (currentTime > 1.2 && currentTime < 1.6)
     {
-        FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+        APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+        if (player)
+        {
+            //플레이어의 위치를 얻어낸다
+            playerLocation = player->GetActorLocation();
+            //보스컨트롤러를 캐스팅
+            ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
+            if (bossController)
+            {
+                APawn* bossPawn = bossController->GetPawn();
+                if (bossPawn)
+                {
+
+                    // 방향 설정
+                    FVector direction = playerLocation - bossPawn->GetActorLocation();
+                    direction.Z = 0; // 보스가 수평으로만 회전하도록 Z축 회전 제거
+                    FRotator newRotation = direction.Rotation();
+                    bossPawn->SetActorRotation(newRotation);
+                }
+            }
+        }
+
+        if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetOwner()))
+        {
+            APawn* ControlledPawn = bossController->GetPawn();
+            if (ControlledPawn)
+            {
+                ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+
+                if (swordNormalAttack01 && boss->GetMesh() && boss->GetMesh()->GetAnimInstance()&&!animOnceV2)
+                {
+                    //애니메이션을 실행하되 Delegate로 애니메이션이 끝난후 EBTNodeResult::Succeeded를 리턴
+                    UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
+
+                    boss->PlayAnimMontage(swordNormalAttack01V2);
+                    animOnceV2 = true;
+
+                }
+            }
+        }
+    }
+
+
+
+    // 1.8초가 지나면 태스크 완료
+    if (currentTime >= 3.5f)
+    {
+
         currentTime = 0.0f; // currentTime 초기화
+        normalAttack01 = false;
+        animOnceV2 = false;
+        UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
+        BlackboardComp = OwnerComp.GetBlackboardComponent();
+        if (BlackboardComp)
+        {
+            BlackboardComp->SetValueAsBool(normalAttack01CoolTime.SelectedKeyName, normalAttack01);
+        }
+
+        FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+        
     }
 }

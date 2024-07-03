@@ -39,20 +39,42 @@ public:
     FBlackboardKeySelector jumpAttack3CoolTime;
 
     UPROPERTY(EditAnywhere, Category = "Blackboard")
-    FBlackboardKeySelector comboAttackCoolTime;
+    FBlackboardKeySelector forwardSlashCoolTime;
 
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector doubleSwingAttackCoolTime;
 
-    float currentTime;
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector dodgeLeftCoolTime;
 
-    bool normalAttack01 = true;
-    bool normalAttack02 = true;
-    bool normalAttack03 = true;
-    bool jumpAttack1 = true;
-    bool jumpAttack2 = true;
-    bool jumpAttack3 = true;
-    bool comboAttack = true;
-    bool doubleSwingAttack = true;
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector dodgeRightCoolTime;
+
+    
+    /// //////////////////////////////////////////////////////
+    
+    float currentTime_NormalAttack01 = 0.0f;
+    float currentTime_NormalAttack02 = 0.0f;
+    float currentTime_NormalAttack03 = 0.0f;
+    float currentTime_JumpAttack1 = 0.0f;
+    float currentTime_JumpAttack2 = 0.0f;
+    float currentTime_JumpAttack3 = 0.0f;
+    float currentTime_ForwardSlash = 0.0f;
+    float currentTime_DoubleSwingAttack = 0.0f;
+    float currentTime_DodgeLeft = 0.0f;
+    float currentTime_DodgeRight = 0.0f;
+
+    bool normalAttack01;
+    bool normalAttack02;
+    bool normalAttack03;
+    bool jumpAttack1;
+    bool jumpAttack2;
+    bool jumpAttack3;
+    bool forwardSlash;
+    bool doubleSwingAttack;
+    bool dodgeLeft;
+    bool dodgeRight;
+
+    bool firstSkillCoolTimeSetting = false;
         
 };
