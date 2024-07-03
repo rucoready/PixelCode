@@ -41,5 +41,5 @@ protected:
 	UScrollBox* CraftList;
 
 	// 아이템 만드는 함수
-	void MakeCraftItem(uint8 Index,const FText& ItemName);
+	void MakeCraftItem(uint16 Index,const FText& ItemName);
 };
