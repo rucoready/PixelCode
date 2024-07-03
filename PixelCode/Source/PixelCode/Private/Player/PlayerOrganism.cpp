@@ -33,7 +33,7 @@ APlayerOrganism::APlayerOrganism()
 	CreateInventory();
 
 	MoveSpeed = 1000.0f;
-	ESkillTime = 0.0f;
+	dashSkillTime = 0.0f;
 
 	CameraMoveSpeed = 5.0f; // 카메라 이동 속도
 	CameraMoveTime = 0.5f;  // 카메라 이동 시간 (초)
@@ -55,7 +55,7 @@ void APlayerOrganism::BeginPlay()
 	stateComp->dieDelegate.BindUFunction(this, FName("DieFunction"));
 
 	//TargetLoc = GetActorLocation() + GetActorForwardVector() * 700; // 원하는 목표 위치 설정
-	MoveToTargetLocation();
+	/*MoveToTargetLocation();*/
 
 
 	
@@ -69,29 +69,45 @@ void APlayerOrganism::Tick(float DeltaTime)
 
 	if (SkillR)
 	{
-		FVector Rdistance;
+		/*FVector Rdistance;
 		Rdistance = GetActorLocation()+(GetActorForwardVector() * 1000);
-		SetActorLocation(Rdistance);
-		SkillR = false;
+		SetActorLocation(Rdistance);*/
+
+		FVector CurrentLocation = GetActorLocation();
+		FVector NewLocation = FMath::Lerp(CurrentLocation, TargetLoc, dashSkillTime);
+		SetActorLocation(NewLocation);
+
+		// 이동 속도와 델타 타임을 기반으로 Lerp 알파 값을 증가
+		float LerpDelta = MoveSpeed * DeltaTime / FVector::Dist(CurrentLocation, TargetLoc);
+		dashSkillTime = FMath::Clamp(dashSkillTime + LerpDelta, 0.0f, 1.0f);
+
+		// 목표 위치에 도달했는지 확인
+		if (dashSkillTime >= 1.0f)
+		{
+			dashSkillTime = 0.0f;
+			SkillR = false;
+		}
+		
 	}
 
 	if (SkillE)
 	{
 		// 선형 보간을 사용하여 캐릭터 위치 업데이트
 		FVector CurrentLocation = GetActorLocation();
-		FVector NewLocation = FMath::Lerp(CurrentLocation, TargetLoc, ESkillTime);
+		FVector NewLocation = FMath::Lerp(CurrentLocation, TargetLoc, dashSkillTime);
 		SetActorLocation(NewLocation);
 
 		// 이동 속도와 델타 타임을 기반으로 Lerp 알파 값을 증가
 		float LerpDelta = MoveSpeed * DeltaTime / FVector::Dist(CurrentLocation, TargetLoc);
-		ESkillTime = FMath::Clamp(ESkillTime + LerpDelta, 0.0f, 1.0f);
+		dashSkillTime = FMath::Clamp(dashSkillTime + LerpDelta, 0.0f, 1.0f);
 
 		
 
 
 		// 목표 위치에 도달했는지 확인
-		if (ESkillTime >= 1.0f)
+		if (dashSkillTime >= 1.0f)
 		{
+			dashSkillTime = 0.0f;
 			SkillE = false;
 		}
 	}
@@ -286,6 +302,10 @@ void APlayerOrganism::ServerRPC_PerformAttack_Implementation(UAnimMontage* useMo
 
 	// 카운트 증가
 	combatComponent->attackCount++;
+	if (combatComponent->attackCount >= 5)
+	{
+		combatComponent->attackCount = 0;
+	}
 
 	int32 montageLastIndex = mainWeapon->attackMontages.Num() - 1;
 
@@ -340,20 +360,27 @@ void APlayerOrganism::DieFunction()
 void APlayerOrganism::CharcurrentLoc()
 {
 	//CharLoc = GetActorLocation();
-	TargetLoc = GetActorLocation() + GetActorForwardVector() * 700;
+	if (SkillE)
+	{ 
+		TargetLoc = GetActorLocation() + GetActorForwardVector() * 700;
+	}
+	else if (SkillR)
+	{
+		TargetLoc = GetActorLocation() + GetActorForwardVector() * 1000;
+	}
 	//TargetrangeLoc = GetActorLocation() + GetActorForwardVector() * 500;
 
 	
 }
 
-void APlayerOrganism::MoveToTargetLocation()
-{
-	if (!SkillE)
-	{
-		SkillE = true;
-		ESkillTime = 0.0f; // Lerp 알파를 초기화하여 처음부터 보간 시작
-	}
-}
+//void APlayerOrganism::MoveToTargetLocation()
+//{
+//	if (!SkillE)
+//	{
+//		SkillE = true;
+//		dashSkillTime = 0.0f; // Lerp 알파를 초기화하여 처음부터 보간 시작
+//	}
+//}
 
 void APlayerOrganism::LootByOthers(APlayerOrganism* otherCharacter)
 {

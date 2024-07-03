@@ -105,9 +105,6 @@ class APixelCodeCharacter : public APlayerOrganism
 	UInputAction* IA_Pressed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* IA_Released;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_RollandRun;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -115,6 +112,21 @@ class APixelCodeCharacter : public APlayerOrganism
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_Crafting;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_SkillQ;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_SkillE;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_SkillR;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_SkillZ;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_Skill_RightMouse;
 
 public:
 	APixelCodeCharacter();
@@ -143,7 +155,20 @@ public:
 	class UAnimMontage* RollAnim;
 
 	float RollTime = 0;
+
+	// ½ºÅ³
+	void SkillQ();
+
+	void SkillE();
+
+	void SkillR();
+
+	void SkillZ();
+
+	void SkillRightMouse();
 	
+	FVector CachedDestination;
+	void Mousehit();
 	
 
 	//void RollCharacterForward(APixelCodeCharacter* PixelCodeCharacter, float RollDistance);

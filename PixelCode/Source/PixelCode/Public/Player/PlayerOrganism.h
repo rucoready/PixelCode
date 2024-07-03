@@ -124,7 +124,7 @@ public:
 	bool SkillE = false;
 
 	// Lerp 알파 변수 (보간 제어)
-	float ESkillTime;
+	float dashSkillTime;
 	
 	 // 목표 위치 변수
     UPROPERTY(EditAnywhere, Category = "Movement")
@@ -134,7 +134,7 @@ public:
     float MoveSpeed;
 
 	// 선형 보간을 사용하여 캐릭터를 목표 위치로 이동시키는 함수
-	void MoveToTargetLocation();
+	//void MoveToTargetLocation();
 
 	// 캐릭터 위치지정
 	void CharcurrentLoc();

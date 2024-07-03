@@ -35,6 +35,7 @@
 #include "Player/PlayerStatWidget.h"
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetMathLibrary.h>
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -612,6 +613,13 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		// 요한 ==================
 		EnhancedInputComponent->BindAction(IA_Crafting, ETriggerEvent::Started, this, &APixelCodeCharacter::OnCraftingPressed);
 
+		// 플레이어 스킬
+		EnhancedInputComponent->BindAction(IA_SkillQ, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillQ);
+		EnhancedInputComponent->BindAction(IA_SkillE, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillE);
+		EnhancedInputComponent->BindAction(IA_SkillR, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillR);
+		EnhancedInputComponent->BindAction(IA_SkillZ, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillZ);
+		EnhancedInputComponent->BindAction(IA_Skill_RightMouse, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillRightMouse);
+
 	}
 	else
 	{
@@ -630,6 +638,99 @@ void APixelCodeCharacter::CharacterJump(const FInputActionValue& Value)
 }
 
 
+
+void APixelCodeCharacter::SkillQ()
+{
+	if (false == combatComponent->bCombatEnable)
+	{
+		return;
+	}
+
+	if (combatComponent->bAttacking)
+	{
+		combatComponent->bAttackSaved = true;
+	}
+	else
+	{
+		PerformAttack(5, false);
+	}
+}
+
+void APixelCodeCharacter::SkillE()
+{
+	if (false == combatComponent->bCombatEnable)
+	{
+		return;
+	}
+
+	if (combatComponent->bAttacking)
+	{
+		combatComponent->bAttackSaved = true;
+	}
+	else
+	{
+		PerformAttack(6, false);
+	}
+}
+
+void APixelCodeCharacter::SkillR()
+{
+	if (false == combatComponent->bCombatEnable)
+	{
+		return;
+	}
+
+	if (combatComponent->bAttacking)
+	{
+		combatComponent->bAttackSaved = true;
+	}
+	else
+	{
+		PerformAttack(7, false);
+	}
+}
+
+void APixelCodeCharacter::SkillZ()
+{
+	if (false == combatComponent->bCombatEnable)
+	{
+		return;
+	}
+
+	if (combatComponent->bAttacking)
+	{
+		combatComponent->bAttackSaved = true;
+	}
+	else
+	{
+		PerformAttack(8, false);
+	}
+}
+
+void APixelCodeCharacter::SkillRightMouse()
+{
+	if (false == combatComponent->bCombatEnable)
+	{
+		return;
+	}
+
+	if (combatComponent->bAttacking)
+	{
+		combatComponent->bAttackSaved = true;
+	}
+	else
+	{
+		PerformAttack(9, false);
+	}
+}
+
+void APixelCodeCharacter::Mousehit()
+{
+		FVector cameraComponentForwardVector = FollowCamera->GetForwardVector();
+		FRotator newRot = UKismetMathLibrary::MakeRotFromZX(GetActorUpVector(), cameraComponentForwardVector);
+
+		SetActorRotation(newRot);
+}
 
 void APixelCodeCharacter::Move(const FInputActionValue& Value)
 {
@@ -669,6 +770,7 @@ void APixelCodeCharacter::Look(const FInputActionValue& Value)
 
 void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 {
+	Mousehit();
 	if (false == combatComponent->bCombatEnable)
 	{
 		return;
@@ -683,6 +785,8 @@ void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 		AttackEvent();
 	}
 }
+
+
 
 void APixelCodeCharacter::ToggleCombatFunction(const FInputActionValue& Value)
 {
@@ -764,19 +868,6 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 			bRoll = false;
 		}
 	}
-
-	// 카메라 위치 업데이트 (스프링 암 컴포넌트의 위치를 사용)
-	
-		/*if (SkillE)
-		{
-			CameraBoom->bEnableCameraLag = true;
-			CameraBoom->CameraLagSpeed = 5;
-		}
-		else
-		{
-			CameraBoom->bEnableCameraLag = false;
-		}*/
-		
 	
 	// 지논------------------------------------------------------------------------------------------------------
 

@@ -47,6 +47,7 @@ void UCharacterAnimInstance::AnimNotify_RDash()
 	if (myCharacter != nullptr)
 	{
 		myCharacter->SkillR = true;
+		myCharacter->CharcurrentLoc();
 	}
 }
 
@@ -54,9 +55,9 @@ void UCharacterAnimInstance::AnimNotify_blockcounter()
 {
 	if (myCharacter != nullptr)
 	{
-		myCharacter->CharcurrentLoc();
-		myCharacter->MoveToTargetLocation();
 		myCharacter->SkillE = true;
+		myCharacter->CharcurrentLoc();
+		//myCharacter->MoveToTargetLocation();
 	}
 
 }
