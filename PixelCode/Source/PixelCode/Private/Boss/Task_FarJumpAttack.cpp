@@ -96,26 +96,57 @@ void UTask_FarJumpAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
     {
         animOnce = false;
         moveToPlayerOnce = false;
+        previousPlayerLocation = FVector::ZeroVector; // 플레이어의 이전 위치를 저장할 변수 초기화
     }
 
+    // 현재 시간을 업데이트
     currentTime += DeltaSeconds;
 
+    if (currentTime >= 1.0f && currentTime < 1.5f)
+    {
+        APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+        if (player)
+        {
+            //플레이어의 위치를 얻어낸다
+            playerLocation = player->GetActorLocation();
+            //보스컨트롤러를 캐스팅
+            ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
+            if (bossController)
+            {
+                APawn* bossPawn = bossController->GetPawn();
+                if (bossPawn)
+                {
+
+                    // 방향 설정
+                    FVector direction = playerLocation - bossPawn->GetActorLocation();
+                    direction.Z = 0; // 보스가 수평으로만 회전하도록 Z축 회전 제거
+                    FRotator newRotation = direction.Rotation();
+                    bossPawn->SetActorRotation(newRotation);
+                }
+            }
+        }
+    }
+
+
+    // 보스 객체를 얻음
     if (ABossApernia* boss = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
     {
-        if (currentTime >= 1.0f && currentTime < 2.3f) // 1초 후 플레이어에게 다가가기 시작
+        // 플레이어 캐릭터를 얻어옴
+        APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+        if (player)
         {
-            
-            boss->bossSwordComp->SetRelativeLocation(FVector(41.750762f, 266.377071, 22.241364));
-            boss->bossSwordComp->SetRelativeRotation(FRotator(-4.150309f, -5.576854f, 180.027317f));
-            
-            APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-            if (player)
+            playerLocation = player->GetActorLocation();
+
+            if (currentTime >= 1.0f && currentTime < 1.5f) // 1초 후 플레이어에게 다가가기 시작
             {
+                boss->bossSwordComp->SetRelativeLocation(FVector(41.750762f, 266.377071, 22.241364));
+                boss->bossSwordComp->SetRelativeRotation(FRotator(-4.150309f, -5.576854f, 180.027317f));
+
                 FVector DirectionToPlayer = playerLocation - boss->GetActorLocation();
                 DirectionToPlayer.Z = 0; // 수평 이동
                 float DistanceToPlayer = DirectionToPlayer.Size();
 
-                if (DistanceToPlayer > 230.0f) // 일정 거리 이상일 때만 이동
+                if (DistanceToPlayer > 270.0f) // 일정 거리 이상일 때만 이동
                 {
                     DirectionToPlayer.Normalize();
                     boss->SetActorLocation(boss->GetActorLocation() + DirectionToPlayer * speedAddMovement * DeltaSeconds);
@@ -126,21 +157,17 @@ void UTask_FarJumpAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
                     UE_LOG(LogTemp, Warning, TEXT("Close to Player, stop moving!"));
                 }
             }
-        }
 
-        if (currentTime >= 1.4f && !animOnce) // 1.5초 후 급강하 시작
-        {
-            FVector LaunchVelocity(0, 0, -4000);
-            boss->LaunchCharacter(LaunchVelocity, true, true);
-            animOnce = true;
-            UE_LOG(LogTemp, Warning, TEXT("Rapid Descent!"));
-        }
-        if (currentTime > 1.62f && !onceCameraShake)
-        {
-            // 플레이어 캐릭터를 얻어옴
-            APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+            if (currentTime >= 1.4f && !animOnce) // 1.5초 후 급강하 시작
+            {
+                previousPlayerLocation = playerLocation; // 플레이어의 위치를 저장
+                FVector LaunchVelocity(0, 0, -4000);
+                boss->LaunchCharacter(LaunchVelocity, true, true);
+                animOnce = true;
+                UE_LOG(LogTemp, Warning, TEXT("Rapid Descent!"));
+            }
 
-            if (player)
+            if (currentTime > 1.62f && !onceCameraShake)
             {
                 APlayerController* pc = player->GetController<APlayerController>();
                 if (pc != nullptr)
@@ -148,33 +175,23 @@ void UTask_FarJumpAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
                     UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
                     pc->ClientStartCameraShake(cameraShakeOBJ);
                     onceCameraShake = true;
-
-                    
                 }
             }
+
+            if (currentTime > 1.7f && !onceSpawnGroundParticle01)
+            {
+                FVector bossLocation = boss->GetActorLocation();
+                FVector bossForwardVector = boss->GetActorForwardVector();
+
+                FVector bossGroundLocation = bossLocation - FVector(0.0f, 0.0f, boss->GetSimpleCollisionHalfHeight());
+                FVector spawnLocation = bossGroundLocation + bossForwardVector * 200.0f;
+
+                UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), groundImpactParticle, spawnLocation, FRotator::ZeroRotator, FVector(0.7f));
+                UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), groundImpactNiagara, spawnLocation, FRotator::ZeroRotator, FVector(0.5f));
+
+                onceSpawnGroundParticle01 = true;
+            }
         }
-
-        if (currentTime > 1.7 && !onceSpawnGroundParticle01)
-        {
-            // 보스의 위치와 방향을 가져옴
-            FVector bossLocation = boss->GetActorLocation();
-            FVector bossForwardVector = boss->GetActorForwardVector();
-
-            // 보스의 바닥 위치 계산 (보스의 위치에서 아래로 보스의 높이만큼 이동)
-            FVector bossGroundLocation = bossLocation - FVector(0.0f, 0.0f, boss->GetSimpleCollisionHalfHeight());
-
-            // 파티클을 스폰할 위치 계산
-            FVector spawnLocation = bossGroundLocation + bossForwardVector * 200.0f;
-
-            // 파티클 시스템을 월드에 스폰
-            UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), groundImpactParticle, spawnLocation, FRotator::ZeroRotator, FVector(0.7f));
-
-            
-            UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), groundImpactNiagara, spawnLocation, FRotator::ZeroRotator, FVector(0.5f));
-
-            onceSpawnGroundParticle01 = true;
-        }
-
 
         if (currentTime > 3.5f)
         {
@@ -184,9 +201,8 @@ void UTask_FarJumpAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
     }
 
     // 4.5초가 지나면 태스크 완료
-    if (currentTime >= 3.6f)
+    if (currentTime >= 3.5f)
     {
-
         FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
         currentTime = 0.0f; // currentTime 초기화
         onceCameraShake = false;

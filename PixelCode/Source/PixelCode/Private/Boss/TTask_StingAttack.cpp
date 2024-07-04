@@ -87,8 +87,8 @@ void UTTask_StingAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
                         boss->PlayAnimMontage(stingAttack01);
                         animOnce = true;
 
-                        boss->bossSwordComp->SetRelativeLocation(FVector(-2.318054, 70.209585, 6.364768));
-                        boss->bossSwordComp->SetRelativeRotation(FRotator(-0.851094f, -199.71024f, 184.916072f));
+                        boss->bossSwordComp->SetRelativeLocation(FVector(29.425722f, 55.060376f, 8.3646449f));
+                        boss->bossSwordComp->SetRelativeRotation(FRotator(4.826905f, 1.306981f, 8.324931f));
 
                         
                     }

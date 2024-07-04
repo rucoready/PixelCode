@@ -45,4 +45,9 @@ public:
     bool animOnce;
 
     bool swingSwordNiagaraOnce = false;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector forwardSlashCoolTime;
+
+    bool forwardSlash;
 };

@@ -5,6 +5,8 @@
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 #include "Components/StaticMeshComponent.h"
+#include "BossSword.h"
+#include "Components/ChildActorComponent.h"
 #include "Engine/StaticMesh.h"
 
 
@@ -30,18 +32,24 @@ ABossApernia::ABossApernia()
 	}
 
 	
+	// UChildActorComponent 생성
+	bossSwordComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("bossSwordComp"));
 
-	bossSwordComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("bossSwordComp"));
-	//SwordComp Attach RightHandSocket!!
-	bossSwordComp->SetupAttachment(GetMesh(),TEXT("RightHandSocket"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>bossSwordMesh(TEXT("/Script/Engine.StaticMesh'/Game/KMS_AI/Boss_Alpernia/BossSword/BossSword_Sword_low.BossSword_Sword_low'"));
-	if (bossSwordMesh.Succeeded())
+	// 부모 메쉬에 Attach
+	bossSwordComp->SetupAttachment(GetMesh(), TEXT("RightHandSocket"));
+
+	// FObjectFinder를 사용하여 ABossSword 클래스 객체를 찾습니다.
+	static ConstructorHelpers::FClassFinder<ABossSword> bossSwordAsset(TEXT("/Script/Engine.Blueprint'/Game/KMS_AI/Boss_Alpernia/BossSword/BP_BossSword.BP_BossSword'_C"));
+	if (bossSwordAsset.Succeeded())
 	{
-		bossSwordComp->SetStaticMesh(bossSwordMesh.Object);
+		// ABossSword 클래스를 설정합니다.
+		bossSwordComp->SetChildActorClass(bossSwordAsset.Class);
 	}
-	bossSwordComp->SetRelativeLocation(FVector(29.425722f, 55.060376f, 8.3646449f));
+	
+	// 위치, 회전, 스케일 설정
+	bossSwordComp->SetRelativeLocation(FVector(29.122834f, 84.073564f, 4.113887f));
 	bossSwordComp->SetRelativeRotation(FRotator(4.826905f, 1.306981f, 8.324931f));
-	bossSwordComp->SetWorldScale3D(FVector(0.7f, 0.6f, 1.0f));
+	bossSwordComp->SetWorldScale3D(FVector(1.120000f, 0.960000f, 1.600000f));
 	bossSwordComp->SetVisibility(false);
 
 	//back sword
@@ -51,8 +59,9 @@ ABossApernia::ABossApernia()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>bossBackSwordMesh(TEXT("/Script/Engine.StaticMesh'/Game/KMS_AI/Boss_Alpernia/BossSword/BossSword_Sword_low.BossSword_Sword_low'"));
 	if (bossBackSwordMesh.Succeeded())
 	{
-		bossBackSwordComp->SetStaticMesh(bossSwordMesh.Object);
+		bossBackSwordComp->SetStaticMesh(bossBackSwordMesh.Object);
 	}
+
 	bossBackSwordComp->SetRelativeLocation(FVector(-28.945981f, -235.270012f, 29.204212f));
 	bossBackSwordComp->SetRelativeRotation(FRotator(-0.016692f, 0.044553f, 20.539312f));
 	bossBackSwordComp->SetWorldScale3D(FVector(0.7f, 0.5f, 1.0f));
@@ -63,6 +72,8 @@ ABossApernia::ABossApernia()
 void ABossApernia::BeginPlay()
 {
 	Super::BeginPlay();
+
+	
 	
 }
 

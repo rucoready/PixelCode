@@ -33,6 +33,7 @@ public:
     UPROPERTY(EditAnywhere, Category = "Niagara")
     class UNiagaraSystem* groundImpactNiagara;
 
+    FVector previousPlayerLocation;
 
     bool animOnce;
 

@@ -47,6 +47,12 @@ EBTNodeResult::Type UTask_NormalAttack02::ExecuteTask(UBehaviorTreeComponent& Ow
 
                 boss->PlayAnimMontage(swordNormalAttack02);
 
+                if (ABossApernia* bossComponent = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
+                {
+                   
+                    bossComponent->bossSwordComp->SetRelativeLocation(FVector(17.137708f, 57.508425f, 23.246429f));
+                    bossComponent->bossSwordComp->SetRelativeRotation(FRotator(28.852794f, 169.726741f, 183.362852f));
+                }
             }
         }
     }
@@ -155,7 +161,16 @@ void UTask_NormalAttack02::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
             BlackboardComp->SetValueAsBool(normalAttack02CoolTime.SelectedKeyName, normalAttack02);
         }
         currentTime = 0.0f; // currentTime 초기화
-
+        if (ABossApernia* bossComponent = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
+        {
+            APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+            if (player)
+            {
+                bossComponent->bossSwordComp->SetRelativeLocation(FVector(29.425722f, 55.060376f, 8.3646449f));
+                bossComponent->bossSwordComp->SetRelativeRotation(FRotator(4.826905f, 1.306981f, 8.324931f));
+            }
+        }
+        
 
         FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
        

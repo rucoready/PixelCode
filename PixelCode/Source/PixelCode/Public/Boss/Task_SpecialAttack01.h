@@ -23,9 +23,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* jumpAttack02;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* jumpAttack02V2;
+
 	FVector playerLocation;
 
 	bool animOnce;
+
+	bool animOnceV2;
 
 	float currentTime;
 
@@ -39,6 +44,7 @@ public:
 
 	bool jumpNiagara3 = false;
 
+
 	UPROPERTY(EditAnywhere, Category = "Niagara")
 	class UNiagaraSystem* jumpSwing;
 
@@ -47,4 +53,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Niagara")
 	class UNiagaraSystem* jumpSwing3;
+
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector jumpAttack2CoolTime;
+
+	bool jumpAttack2;
 };

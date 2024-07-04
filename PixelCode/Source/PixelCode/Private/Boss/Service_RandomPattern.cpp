@@ -11,7 +11,7 @@ UService_RandomPattern::UService_RandomPattern()
 
 void UService_RandomPattern::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-	int32 value = FMath::RandRange(0, 8);
+	int32 value = FMath::RandRange(0, 10);
 	if (value == 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Random0"));
@@ -52,12 +52,21 @@ void UService_RandomPattern::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		UE_LOG(LogTemp, Warning, TEXT("Random7"));
 		OwnerComp.GetBlackboardComponent()->SetValueAsInt(GetSelectedBlackboardKey(), value);
 	}
-	else
+	else if (value == 8)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Random8"));
 		OwnerComp.GetBlackboardComponent()->SetValueAsInt(GetSelectedBlackboardKey(), value);
 	}
-
+	else if (value == 9)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Random9"));
+		OwnerComp.GetBlackboardComponent()->SetValueAsInt(GetSelectedBlackboardKey(), value);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Random10"));
+		OwnerComp.GetBlackboardComponent()->SetValueAsInt(GetSelectedBlackboardKey(), value);
+	}
 
 
 	

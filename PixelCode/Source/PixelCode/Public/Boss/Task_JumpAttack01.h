@@ -48,7 +48,29 @@ public:
 
     bool animOnce;
 
+    bool animOnceV2;
+
+    bool animOnceV3;
+
+    bool animOnceV4;
+
     bool onceNiagara01 = false;
 
     bool onceNiagara02 = false;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector jumpAttack1CoolTime;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+    class UAnimMontage* jumpAttack03V2;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+    class UAnimMontage* jumpAttack03V3;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+    class UAnimMontage* jumpAttack03V4;
+
+    FVector playerLocation;
+
+    bool jumpAttack1;
 };

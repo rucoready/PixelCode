@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "BossSword.h"
+#include "Components/ChildActorComponent.h"
 #include "BossApernia.generated.h"
 
 UCLASS()
@@ -20,7 +22,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -33,9 +35,22 @@ public:
 	UBehaviorTree* GetBehaviorTree() const;
 
 	class UAIPerceptionStimuliSourceComponent* StimulusSource;
+
 	void SetupStimulusSource();
 
-	class UStaticMeshComponent* bossSwordComp;
+	//class UStaticMeshComponent* bossSwordComp;
+
 
 	class UStaticMeshComponent* bossBackSwordComp;
+
+	//UPROPERTY(EditAnywhere, Category="MySettings")
+	//class ABossSword* bossSwordComp;
+
+	//UPROPERTY(EditAnywhere, Category = "MySettings")
+	//TSubclassOf<ABossSword> BossSwordActorClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
+	class UChildActorComponent* bossSwordComp;
+
+
 };

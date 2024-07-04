@@ -90,8 +90,17 @@ void UTask_Dodge02::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
     // 1.8초가 지나면 태스크 완료
     if (currentTime >= 0.5f)
     {
-        FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-        currentTime = 0.0f; // currentTime 초기화
+        dodgeLeft = false;
 
+
+        UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
+        BlackboardComp = OwnerComp.GetBlackboardComponent();
+        if (BlackboardComp)
+        {
+            BlackboardComp->SetValueAsBool(dodgeLeftCoolTime.SelectedKeyName, dodgeLeft);
+        }
+        currentTime = 0.0f; // currentTime 초기화
+        FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+        
     }
 }

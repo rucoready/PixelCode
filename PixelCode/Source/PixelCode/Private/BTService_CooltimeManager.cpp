@@ -77,11 +77,11 @@ void UBTService_CooltimeManager::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 
     }
 
-    //normalAttack 03 쿨타임 [ 10초 ]
+    //normalAttack 03 쿨타임 [ 20초 ]
     if (!BlackboardComp->GetValueAsBool(normalAttack03CoolTime.SelectedKeyName))
     {
         currentTime_NormalAttack03 += DeltaSeconds;
-        if (currentTime_NormalAttack03 > 15.0f)
+        if (currentTime_NormalAttack03 > 20.0f)
         {
             normalAttack03 = true;
             currentTime_NormalAttack03 = 0.0f;
@@ -95,11 +95,11 @@ void UBTService_CooltimeManager::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 
     }
 
-    //jumpAttack1 쿨타임 [40초]
+    //jumpAttack1 쿨타임 [30초]
     if (!BlackboardComp->GetValueAsBool(jumpAttack1CoolTime.SelectedKeyName))
     {
         currentTime_JumpAttack1 += DeltaSeconds;
-        if (currentTime_JumpAttack1 > 40.0f)
+        if (currentTime_JumpAttack1 > 30.0f)
         {
             jumpAttack1 = true;
             currentTime_JumpAttack1 = 0.0f;
@@ -121,11 +121,11 @@ void UBTService_CooltimeManager::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 
     }
 
-    //jumpAttack3 쿨타임 [40초]
+    //jumpAttack3 쿨타임 [10초]
     if (!BlackboardComp->GetValueAsBool(jumpAttack3CoolTime.SelectedKeyName))
     {
         currentTime_JumpAttack3 += DeltaSeconds;
-        if (currentTime_JumpAttack3 > 30.0f)
+        if (currentTime_JumpAttack3 > 10.0f)
         {
             jumpAttack3 = true;
             
@@ -135,11 +135,11 @@ void UBTService_CooltimeManager::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 
     }
 
-    //Forward Slash 쿨타임 [ 20초 ]
+    //Forward Slash 쿨타임 [ 30초 ]
     if (!BlackboardComp->GetValueAsBool(forwardSlashCoolTime.SelectedKeyName))
     { 
         currentTime_ForwardSlash += DeltaSeconds;
-        if (currentTime_ForwardSlash > 10.0f)
+        if (currentTime_ForwardSlash > 30.0f)
         {
             forwardSlash = true;
             currentTime_ForwardSlash = 0.0f;
@@ -148,11 +148,11 @@ void UBTService_CooltimeManager::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 
     }
 
-    //doubleSwingAttack [ 10초 ]
+    //doubleSwingAttack [ 35초 ]
     if (!BlackboardComp->GetValueAsBool(doubleSwingAttackCoolTime.SelectedKeyName))
     {
         currentTime_DoubleSwingAttack += DeltaSeconds;
-        if (currentTime_DoubleSwingAttack > 12.0f)
+        if (currentTime_DoubleSwingAttack > 35.0f)
         {
             doubleSwingAttack = true;
             currentTime_DoubleSwingAttack = 0.0f;
@@ -161,11 +161,11 @@ void UBTService_CooltimeManager::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 
     }
 
-    //dodgeLeft [ 5초 ]
+    //dodgeLeft [ 10초 ]
     if (!BlackboardComp->GetValueAsBool(dodgeLeftCoolTime.SelectedKeyName))
     {
         currentTime_DodgeLeft += DeltaSeconds;
-        if (currentTime_DodgeLeft > 5.0f)
+        if (currentTime_DodgeLeft > 10.0f)
         {
             dodgeLeft = true;
             currentTime_DodgeLeft = 0.0f;
@@ -174,11 +174,11 @@ void UBTService_CooltimeManager::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 
     }
 
-    //dodgeRight [ 5초 ]
+    //dodgeRight [ 10초 ]
     if (!BlackboardComp->GetValueAsBool(dodgeRightCoolTime.SelectedKeyName))
     {
         currentTime_DodgeRight += DeltaSeconds;
-        if (currentTime_DodgeRight > 5.0f)
+        if (currentTime_DodgeRight > 10.0f)
         {
             dodgeRight = true;
             currentTime_DodgeRight = 0.0f;

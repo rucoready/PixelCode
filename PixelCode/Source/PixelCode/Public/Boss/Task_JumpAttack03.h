@@ -20,9 +20,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* jumpAttack03;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* jumpAttack03V2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* jumpAttack03V3;
+
 	FVector playerLocation;
 
+	
+
 	bool animOnce;
+
+	bool animOnceV2;
+
+	bool animOnceV3;
 
 	float currentTime;
 
@@ -38,6 +50,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Particles")
 	UParticleSystem* groundImpactParticle;
 
+	UPROPERTY(EditAnywhere, Category = "Particles")
+	UParticleSystem* groundImpactParticleV2;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	TSubclassOf<UCameraShakeBase> cameraShakeOBJ;
+
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector jumpAttack3CoolTime;
+
+	bool jumpAttack3;
 };

@@ -27,4 +27,10 @@ public:
     bool animOnce;
 
     FVector playerLocation;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector dodgeRightCoolTime;
+
+    bool dodgeRight;
+
 };

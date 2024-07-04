@@ -124,12 +124,13 @@ void UTask_DodgetAddBack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
     currentTime += DeltaSeconds;
 
     // 1.8초가 지나면 태스크 완료
-    if (currentTime >= 1.2f)
+    if (currentTime >= 1.8f)
     {
         onceSpawnStingNiagara = false;
+        currentTime = 0.0f; // currentTime 초기화
         FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 
-        currentTime = 0.0f; // currentTime 초기화
+        
 
     }
 

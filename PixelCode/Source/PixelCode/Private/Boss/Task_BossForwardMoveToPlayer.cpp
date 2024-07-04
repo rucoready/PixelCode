@@ -15,7 +15,7 @@
 
 UTask_BossForwardMoveToPlayer::UTask_BossForwardMoveToPlayer(FObjectInitializer const& ObjectInitializer)
 {
-    NodeName = TEXT("Move Forward To Player Tick");
+    NodeName = TEXT("Forward Slash");
 	
 	
 	bNotifyTick = true;
@@ -46,7 +46,7 @@ void UTask_BossForwardMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, 
 
     currentTime += DeltaSeconds;
 
-    if (currentTime < 1.0f)
+    if (currentTime < 2.0f)
     {
         UE_LOG(LogTemp, Warning, TEXT("OverFive1"));
         ACharacter* const Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
@@ -87,7 +87,7 @@ void UTask_BossForwardMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, 
     }
 
 
-    if (currentTime > 3.4f &&!swingSwordNiagaraOnce)
+    if (currentTime > 3.45f &&!swingSwordNiagaraOnce)
     {
         ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
         if (bossController)
@@ -120,11 +120,18 @@ void UTask_BossForwardMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, 
     // 5초가 지나면 태스크 완료
     if (currentTime >= 4.0f)
     {
-        UE_LOG(LogTemp, Warning, TEXT("OverFive2"));
-        FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
         animOnce = false;
         currentTime = 0.0f; // currentTime 초기화
         swingSwordNiagaraOnce = false;
+        forwardSlash = false;
+        UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
+        BlackboardComp = OwnerComp.GetBlackboardComponent();
+        if (BlackboardComp)
+        {
+            BlackboardComp->SetValueAsBool(forwardSlashCoolTime.SelectedKeyName, forwardSlash);
+        }
+        FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+        
     }
     
 }
