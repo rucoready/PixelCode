@@ -41,6 +41,7 @@
 	// the Recipe name
 	UPROPERTY(EditAnywhere, Category = "Recipe")
 	EItemName ItemType;
+
 	// the Recipe amount
 	UPROPERTY(EditAnywhere, Category = "Recipe")
 	uint8 Amount;

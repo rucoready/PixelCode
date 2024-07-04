@@ -22,23 +22,22 @@ void UCraftingWidget::NativeConstruct()
 
 
 	Char = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	ItemStorage = Cast<AItemStorage>(this);
 	if(Char)
 	{
-		//ItemStorage = Char->GetItemStorage();
+		ItemStorage = Char->GetItemStorage();
 		if(ItemStorage)
 		{
-			//uint8 Index = 0;
+			uint8 Index = 0;
 			
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemStorage->GetCraftItemInfoBasedOn(EItemName::EIN_Wood).ItemName.ToString());
-			//Crafts = ItemStorage->GetAllCrafting();
-			//for (FCraftItem& Item : Crafts)
-			//{
-			//	MakeCraftItem(Index, ItemStorage->GetCraftItemInfoBasedOn(Item.CraftedItem).ItemName);
-			//	Index++;
-			//	UE_LOG(LogTemp, Warning, TEXT("3333333333"))
-			//	//UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemStorage->GetCraftItemInfoBasedOn(Item.CraftedItem).ItemName.ToString());
-			//}
+			Crafts = ItemStorage->GetAllCrafting();
+			for (FCraftItem& Item : Crafts)
+			{
+				MakeCraftItem(Index, ItemStorage->GetCraftItemInfoBasedOn(Item.CraftedItem).ItemName);
+				Index++;
+				UE_LOG(LogTemp, Warning, TEXT("3333333333"))
+				UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemStorage->GetCraftItemInfoBasedOn(Item.CraftedItem).ItemName.ToString());
+			}
 		}
 		else
 		{

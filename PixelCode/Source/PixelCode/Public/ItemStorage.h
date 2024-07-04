@@ -18,6 +18,11 @@ public:
 
 	// get the item class based on id
 	TSubclassOf<AActor> GetTemplateOfItem(uint8 Id);
+	
+
+	// Å×½ºÆ® =============================================================
+	UPROPERTY(EditInstanceOnly, Category = "Item")
+	UDataTable* ItemDataTable;
 
 	// get all crafting data
 	TArray<FCraftItem> GetAllCrafting();
@@ -28,7 +33,7 @@ public:
 	// Template of all of the item
 	UPROPERTY(EditAnywhere, Category = "Item")
 	TMap<uint8, TSubclassOf<AActor>> ItemTemplates;
-	 
+	
 
 	// the data of craft item. item Name In Text and Icon based On EItemName
 	UPROPERTY(EditAnywhere, Category = "Item")

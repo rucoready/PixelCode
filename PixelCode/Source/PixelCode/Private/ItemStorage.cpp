@@ -9,6 +9,9 @@ AItemStorage::AItemStorage()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+
+	ItemDataTable = ConstructorHelpers::FObjectFinder<UDataTable>(TEXT("/Script/Engine.DataTable'/Game/YoHan/DataTable/itembase_-_itembase.itembase_-_itembase'")).Object;
+
 }
 
 TSubclassOf<AActor> AItemStorage::GetTemplateOfItem(uint8 Id)
