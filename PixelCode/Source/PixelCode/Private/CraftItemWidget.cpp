@@ -4,6 +4,7 @@
 #include "CraftItemWidget.h"
 #include <../../../../../../../Source/Runtime/UMG/Public/Components/TextBlock.h>
 #include <../../../../../../../Source/Runtime/UMG/Public/Components/Button.h>
+#include "CraftingWidget.h"
 
 void UCraftItemWidget::NativeConstruct()
 {
@@ -14,11 +15,15 @@ void UCraftItemWidget::NativeConstruct()
 
 void UCraftItemWidget::OnCraftItemClicked()
 {
-
+	if(CraftingWidget.IsValid())
+	{
+		CraftingWidget->SetCraftingInfo(ItemIndex);
+	}
 }
 
-void UCraftItemWidget::SetData(uint16 Index, const FText& ItemName)
+void UCraftItemWidget::SetData(uint16 Index, const FText& ItemName, TWeakObjectPtr<UCraftingWidget> Craft)
 {
 	ItemIndex = Index;
+	CraftingWidget = Craft;
 	T_CraftItemName->SetText(ItemName); 
 }

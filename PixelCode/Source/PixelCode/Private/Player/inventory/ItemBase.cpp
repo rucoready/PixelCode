@@ -4,6 +4,7 @@
 #include "Player/inventory/ItemBase.h"
 #include <../../../../../../../Source/Runtime/Core/Public/Math/UnrealMathUtility.h>
 #include "Player/PixelCodeCharacter.h"
+#include "CreateItemData.h"
 #include "Player/inventory/InventoryComponent.h"
 
 
@@ -45,6 +46,7 @@ UItemBase* UItemBase::CreateItemCopy() const
 	ItemCopy->ItemStatistics = this->ItemStatistics;
 	ItemCopy->AssetData = this->AssetData;
 	ItemCopy->bIsCopy = true;
+	ItemCopy->ItemName = this->ItemName;
 
 
 	return ItemCopy;

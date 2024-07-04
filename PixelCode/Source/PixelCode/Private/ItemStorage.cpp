@@ -19,6 +19,7 @@ TSubclassOf<AActor> AItemStorage::GetTemplateOfItem(uint8 Id)
 
 TArray<FCraftItem> AItemStorage::GetAllCrafting()
 {
+	UE_LOG(LogTemp, Warning, TEXT("777777777777777777777"))
 	return Crafting;
 }
 

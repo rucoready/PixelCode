@@ -389,6 +389,7 @@ void APixelCodeCharacter::OnCraftingPressed()
 {
 	if (HUD)
 	{
+		//HUD->ShowOrHideCrafting();
 		HUD->ToggleCreate();
 	}
 }

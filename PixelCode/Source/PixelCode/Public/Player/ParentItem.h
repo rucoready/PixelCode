@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include <Engine/DataTable.h>
+#include "CreateItemData.h"
 #include "ParentItem.generated.h"
 
 class UDataTable;
@@ -141,6 +142,8 @@ struct  FItemData : public FTableRowBase // 행 베이스 상속
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	FItemAssetData AssetData;
 
+	UPROPERTY(EditAnywhere, Category = "Item Data")
+	EItemName ItemName;
 };
 // HJW
 
@@ -157,6 +160,8 @@ struct FParentItemInfo : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	int32 numberOfItemsOwned;
+
+	
 };
 
 UCLASS()

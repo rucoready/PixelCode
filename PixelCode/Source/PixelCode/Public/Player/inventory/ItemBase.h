@@ -46,6 +46,9 @@ class PIXELCODE_API UItemBase : public UObject // object로 C++만듬
 	EItemQuality ItemQuality;
 
 	UPROPERTY(VisibleAnywhere, Category = "Item")
+	EItemName ItemName;
+
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FItemStatistics ItemStatistics;
 
 	UPROPERTY(VisibleAnywhere, Category = "Item")
@@ -58,7 +61,7 @@ class PIXELCODE_API UItemBase : public UObject // object로 C++만듬
 	FItemAssetData AssetData;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Item")
-	TMap<EItemName, FCraftItemInfo> CraftItemData;
+	TMap<EItemName, FCraftItemInfo> CraftItemData; // 크리에이트 아이템
 
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	TArray<FCraftItem> Crafting;

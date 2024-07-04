@@ -261,11 +261,7 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_Interact();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
-	AItemStorage* ItemStorage;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
-	TSubclassOf<AActor>	ItemStorageTemplate;
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_Interact(const TScriptInterface<IInteractionInterface>& Interactable);
@@ -284,7 +280,15 @@ public:
 	UFUNCTION()
 	void OnCraftingPressed();
 
+	// 저장 품목
 	AItemStorage* GetItemStorage() const;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
+	AItemStorage* ItemStorage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
+	TSubclassOf<AActor>	ItemStorageTemplate;
+
 
 	// 서휘-----------------------------------------------------------------------------------------------------
 	UFUNCTION(BlueprintCallable, Category = KSH)
