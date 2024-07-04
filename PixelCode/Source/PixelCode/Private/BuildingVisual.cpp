@@ -80,7 +80,6 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 		SetActorHiddenInGame(false);
 		InteractingBuilding = GetHitBuildingActor(HitResult); 
 
-		//UE_LOG(LogTemp, Warning, TEXT("SetBuildPosition"));
 		// #19 건축 자재 스냅시키기
 		if (InteractingBuilding)
 		{
@@ -110,8 +109,6 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 				}
 				SetActorLocation(HitResult.Location);
 			}
-			// 로그--------------------------------------------------------------------건축 자재 오버랩 되면 -1, 오버랩 안되면 0
-			//UE_LOG(LogTemp, Warning, TEXT("Hit BuildingActor"));
 		}
 		else
 		{
@@ -135,19 +132,26 @@ void ABuildingVisual::SpawnBuilding()
 	// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
 	if (BuildingClass && !IsHidden())
 		// IsHidden() --> return bHidden;
+		UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 1ST IF"));
 	{
 		// ABuilding 인스턴스 = 건축자재가 있을 때
 		if (InteractingBuilding)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 2ND IF"));
+
 			// preview가 초록일 때
 			if (bMaterialIsTrue)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 3RD IF"));
+
 				// ABuildind 클래스의 AddInstance() 호출
 				InteractingBuilding->AddInstance(SocketData, BuildingTypes[BuildingTypeIndex].BuildType);
 			}
 		}
 		else
 		{
+			UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL ELSE"));
+
 			GetWorld()->SpawnActor<ABuilding>(BuildingClass, GetActorTransform());
 		}
 	}

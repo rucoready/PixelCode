@@ -458,7 +458,10 @@ void APixelCodeCharacter::RemoveFoliage(const FHitResult& HitResult)
 	if(HitResult.bBlockingHit)
 	{
 		UFoliageInstancedStaticMeshComponent* FoliageInstance = Cast< UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
-		FoliageInstance->RemoveInstance(HitResult.Item);
+		if(FoliageInstance)
+		{
+			FoliageInstance->RemoveInstance(HitResult.Item);
+		}
 	}
 	NetMulticastRPC_RemoveFoliage(HitResult);
 }
@@ -473,8 +476,34 @@ void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHi
 	if (HitResult.bBlockingHit)
 	{
 		UFoliageInstancedStaticMeshComponent* FoliageInstance = Cast< UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
-		FoliageInstance->RemoveInstance(HitResult.Item);
+		if (FoliageInstance)
+		{
+			FoliageInstance->RemoveInstance(HitResult.Item);
+		}
 	}
+}
+
+void APixelCodeCharacter::OnSpawnBuildingPressed()
+{
+	ServerRPC_SpawnBuilding();
+}
+
+void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------TOP"));
+
+	SpawnBuilding();
+	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------MIDDLE"));
+
+	NetMulticastRPC_SpawnBuilding();
+	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BOTTOM"));
+
+}
+
+void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation()
+{
+	SpawnBuilding();
+
 }
 
 // ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
@@ -657,6 +686,7 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 		EnhancedInputComponent->BindAction(IA_SetBuildMode, ETriggerEvent::Started, this, &APixelCodeCharacter::OnSetBuildModePressed);
 		EnhancedInputComponent->BindAction(IA_RemoveFoliage, ETriggerEvent::Started, this, &APixelCodeCharacter::OnRemoveFoliagePressed);
+		EnhancedInputComponent->BindAction(IA_SpawnBuilding, ETriggerEvent::Started, this, &APixelCodeCharacter::OnSpawnBuildingPressed);
 
 	}
 	else

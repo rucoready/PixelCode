@@ -132,7 +132,10 @@ class APixelCodeCharacter : public APlayerOrganism
 	UInputAction* IA_SetBuildMode;
   
   	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
-	UInputAction* IA_RemoveFoliage; 
+	UInputAction* IA_RemoveFoliage;
+
+ 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
+	UInputAction* IA_SpawnBuilding; 
 
 public:
 	APixelCodeCharacter();
@@ -313,6 +316,15 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_RemoveFoliage(const FHitResult& HitResult);
+
+	UFUNCTION()
+	void OnSpawnBuildingPressed();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnBuilding();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_SpawnBuilding();
 
 	// º≠»÷-----------------------------------------------------------------------------------------------------≥°
 	/*UPROPERTY(EditAnywhere, Category="MySettings")

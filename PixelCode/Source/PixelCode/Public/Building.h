@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,17 +5,12 @@
 #include "DataTypes.h"
 #include "Building.generated.h"
 
-
-
-//class UInstancedStaticMeshComponent;
-
 UCLASS()
 class PIXELCODE_API ABuilding : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ABuilding();
 
 protected:
@@ -37,8 +30,6 @@ protected:
 
 	TArray<FInstanceSocketCheck> InstanceSocketsCheck;
 
-
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	bool IsValidSocket(UInstancedStaticMeshComponent* HitComponent, int32 Index, const FName& Filter, const FName& SocketName);
@@ -46,7 +37,6 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void DestroyInstance(const FBuildingSocketData& BuildingSocketData);
-
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	 FTransform GetInstancedSocketTransform(UInstancedStaticMeshComponent* InstancedComponent, int32 InstanceIndex, const FName& SocketName);
