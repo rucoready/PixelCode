@@ -36,6 +36,7 @@
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetMathLibrary.h>
+#include <../../../../../../../Source/Runtime/Foliage/Public/FoliageInstancedStaticMeshComponent.h>
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -442,6 +443,40 @@ void APixelCodeCharacter::DestroyBuildingInstance()
 	}
 }
 
+void APixelCodeCharacter::OnSetBuildModePressed()
+{
+	SetBuildMode(!bInBuildMode);
+}
+
+void APixelCodeCharacter::OnRemoveFoliagePressed()
+{
+	ServerRPC_RemoveFoliage();
+}
+
+void APixelCodeCharacter::RemoveFoliage(const FHitResult& HitResult)
+{
+	if(HitResult.bBlockingHit)
+	{
+		UFoliageInstancedStaticMeshComponent* FoliageInstance = Cast< UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
+		FoliageInstance->RemoveInstance(HitResult.Item);
+	}
+	NetMulticastRPC_RemoveFoliage(HitResult);
+}
+
+void APixelCodeCharacter::ServerRPC_RemoveFoliage_Implementation()
+{
+	RemoveFoliage(PerformLineTrace());
+}
+
+void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHitResult& HitResult)
+{
+	if (HitResult.bBlockingHit)
+	{
+		UFoliageInstancedStaticMeshComponent* FoliageInstance = Cast< UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
+		FoliageInstance->RemoveInstance(HitResult.Item);
+	}
+}
+
 // ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
 
 void APixelCodeCharacter::ServerRPC_Interact_Implementation()
@@ -619,6 +654,9 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(IA_SkillR, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillR);
 		EnhancedInputComponent->BindAction(IA_SkillZ, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillZ);
 		EnhancedInputComponent->BindAction(IA_Skill_RightMouse, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillRightMouse);
+
+		EnhancedInputComponent->BindAction(IA_SetBuildMode, ETriggerEvent::Started, this, &APixelCodeCharacter::OnSetBuildModePressed);
+		EnhancedInputComponent->BindAction(IA_RemoveFoliage, ETriggerEvent::Started, this, &APixelCodeCharacter::OnRemoveFoliagePressed);
 
 	}
 	else

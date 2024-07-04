@@ -128,6 +128,12 @@ class APixelCodeCharacter : public APlayerOrganism
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* IA_Skill_RightMouse;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
+	UInputAction* IA_SetBuildMode;
+  
+  	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
+	UInputAction* IA_RemoveFoliage; 
+
 public:
 	APixelCodeCharacter();
 	// Áø¿ø S
@@ -292,6 +298,21 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void DestroyBuildingInstance();
+
+	UFUNCTION()
+	void OnSetBuildModePressed();  
+
+	UFUNCTION()
+	void OnRemoveFoliagePressed();  
+
+	UFUNCTION(BlueprintCallable, Category = KSH) 
+	void RemoveFoliage(const FHitResult& HitResult);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_RemoveFoliage();  
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_RemoveFoliage(const FHitResult& HitResult);
 
 	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
 	/*UPROPERTY(EditAnywhere, Category="MySettings")
