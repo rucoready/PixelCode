@@ -492,8 +492,7 @@ void APixelCodeCharacter::OnSpawnBuildingPressed()
 void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------TOP"));
-
-	SpawnBuilding();
+	//SpawnBuilding();
 	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------MIDDLE"));
 
 	NetMulticastRPC_SpawnBuilding();
