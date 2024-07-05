@@ -48,7 +48,7 @@ void UTask_BossForwardMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, 
 
     if (currentTime < 2.0f)
     {
-        //UE_LOG(LogTemp, Warning, TEXT("OverFive1"));
+        UE_LOG(LogTemp, Warning, TEXT("OverFive1"));
         ACharacter* const Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
         if (Player)
         {

@@ -21,12 +21,6 @@ public:
 	UPROPERTY()
 	class ABossApernia* boss;
 
-	UPROPERTY(EditAnywhere, Category="MySettings")
-	class ABossSword* sword;
-
-	//UPROPERTY(EditAnywhere, Category = "MySettings")
-	//TSubclassOf<class ABossSword> sword;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MySettings")
 	float Horizontal;
 
@@ -43,19 +37,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AnimNotify_SwordOn();
 
-	UFUNCTION(BlueprintCallable)
-	void AnimNotify_CollisionOn(float DeltaSeconds);
 
-	UFUNCTION()
-	void AnimNotify_CollisionOff(float DeltaSeconds);
-
-	FTimerHandle timerhandle_OverlapCoolTime;
-
-	float currentTime;
-
-	bool attackCoolTime = false;
-
-	bool attackCoolTimeDelta = false;
 	
 	
 };
