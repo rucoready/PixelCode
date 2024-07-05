@@ -3,6 +3,7 @@
 
 #include "Boss/BossAnimInstance.h"
 #include "Boss/TestBoss.h"
+#include "BossSword.h"
 #include "Boss/BossApernia.h"
 
 
@@ -12,15 +13,17 @@ void UBossAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	boss = Cast<ABossApernia>(TryGetPawnOwner());
+	
+	
+	
 }
 
 void UBossAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
-
-
-	if (nullptr == boss)
+	if (boss == nullptr)
 		return;
+
 	auto vel = boss->GetVelocity();
 	
 	Vertical = FVector::DotProduct(vel, boss->GetActorForwardVector());
@@ -34,12 +37,12 @@ void UBossAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	//UE_LOG(LogTemp, Warning, TEXT("Vertical: %f, Horizontal: %f, PitchAngle: %f"), Vertical, Horizontal, PitchAngle);
 
-
+	
 }
 
 void UBossAnimInstance::AnimNotify_SwordOn()
 {
-	UE_LOG(LogTemp, Warning, TEXT("AnimNotify_LongSting"));
+	
 	APawn* owningPawn = TryGetPawnOwner();
 	if (owningPawn)
 	{
@@ -51,6 +54,37 @@ void UBossAnimInstance::AnimNotify_SwordOn()
 		}
 	}
 }
+
+void UBossAnimInstance::AnimNotify_CollisionOn(float DeltaSeconds)
+{
+
+	if (!attackCoolTime)
+	{
+		currentTime = 0;
+		UE_LOG(LogTemp, Warning, TEXT("Start"));
+		boss->SwordCollisionActive();
+
+		attackCoolTime = true;
+
+		
+	}
+	
+
+	
+	
+}
+
+void UBossAnimInstance::AnimNotify_CollisionOff(float DeltaSeconds)
+{
+	
+	UE_LOG(LogTemp, Warning, TEXT("End"));
+	boss->SwordCollisionDeactive();
+	attackCoolTime = false;
+}
+
+
+
+
 
 void UBossAnimInstance::AnimNotify_StingAttack()
 {
