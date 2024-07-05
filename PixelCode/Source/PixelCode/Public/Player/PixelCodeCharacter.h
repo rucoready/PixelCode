@@ -21,6 +21,7 @@ class UInventoryComponent;
 class UItemBase;
 class AItemStorage;
 class UPlayerStatWidget;
+class ABuilding;
 
 UENUM()
 enum class MyEnum : int8
@@ -232,11 +233,19 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = KSH)
 	bool bInBuildMode;
 
-	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
 	TSubclassOf<ABuildingVisual> BuildingClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
+	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	ABuildingVisual* Builder;
+	
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
+	ABuilding* Buildings;
+
+
+	FVector BuildLoc;
+
+	void SetBuildPosition(const FHitResult& HitResult);
 	// º≠»÷-----------------------------------------------------------------------------------------------------≥°
 
 
@@ -326,7 +335,7 @@ public:
 	void OnSpawnBuildingPressed();
 
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_SpawnBuilding();
+	void ServerRPC_SpawnBuilding(FVector _BuildLoc);
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_SpawnBuilding();

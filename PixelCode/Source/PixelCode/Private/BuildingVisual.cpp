@@ -4,6 +4,7 @@
 #include "BuildingVisual.h"
 #include "Building.h"
 #include "Components/StaticMeshComponent.h"
+#include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Components/InstancedStaticMeshComponent.h>
 
 
@@ -117,7 +118,7 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 				SetMeshTo(EBuildType::Foundation);
 			}
 
-			SetActorLocation(HitResult.Location);
+			SetActorLocation(HitResult.ImpactPoint);
 		}
 	}
 	else
@@ -129,32 +130,32 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 
 void ABuildingVisual::SpawnBuilding()
 {
-	// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
-	if (BuildingClass && !IsHidden())
-		// IsHidden() --> return bHidden;
-		UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 1ST IF"));
-	{
-		// ABuilding 인스턴스 = 건축자재가 있을 때
-		if (InteractingBuilding)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 2ND IF"));
+	//// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
+	//if (BuildingClass && !IsHidden())
+	//	// IsHidden() --> return bHidden;
+	//	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 1ST IF"));
+	//{
+	//	// ABuilding 인스턴스 = 건축자재가 있을 때
+	//	if (InteractingBuilding)
+	//	{
+	//		UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 2ND IF"));
 
-			// preview가 초록일 때
-			if (bMaterialIsTrue)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 3RD IF"));
+	//		// preview가 초록일 때
+	//		if (bMaterialIsTrue)
+	//		{
+	//			UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 3RD IF"));
 
-				// ABuildind 클래스의 AddInstance() 호출
-				InteractingBuilding->AddInstance(SocketData, BuildingTypes[BuildingTypeIndex].BuildType);
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL ELSE"));
+	//			// ABuildind 클래스의 AddInstance() 호출
+	//			InteractingBuilding->AddInstance(SocketData, BuildingTypes[BuildingTypeIndex].BuildType);
+	//		}
+	//	}
+	//	else
+	//	{
+	//		UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL ELSE"));
 
-			GetWorld()->SpawnActor<ABuilding>(BuildingClass, GetActorTransform());
-		}
-	}
+	//		GetWorld()->SpawnActor<ABuilding>(BuildingClass, GetActorTransform());
+	//	}
+	//}
 }
 
 void ABuildingVisual::DestroyInstance(const FHitResult& HitResult)
@@ -187,5 +188,21 @@ void ABuildingVisual::CycleMesh()
 			BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
 		}
 	}	
+}
+
+void ABuildingVisual::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABuildingVisual, BuildingTypeIndex);
+	DOREPLIFETIME(ABuildingVisual, BuildMesh);
+	DOREPLIFETIME(ABuildingVisual, BuildingClass);
+	DOREPLIFETIME(ABuildingVisual, BuildingTypes);
+	DOREPLIFETIME(ABuildingVisual, MaterialFalse);
+	DOREPLIFETIME(ABuildingVisual, MaterialTrue);
+	DOREPLIFETIME(ABuildingVisual, bMaterialIsTrue);
+	DOREPLIFETIME(ABuildingVisual, InteractingBuilding);
+	DOREPLIFETIME(ABuildingVisual, SocketData);
+	DOREPLIFETIME(ABuildingVisual, bReturnedMesh);
 }
 

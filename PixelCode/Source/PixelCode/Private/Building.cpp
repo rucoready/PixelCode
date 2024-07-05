@@ -1,5 +1,6 @@
 #include "Building.h"
 #include "Components/InstancedStaticMeshComponent.h"
+#include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetMathLibrary.h>
 
 ABuilding::ABuilding()
@@ -236,4 +237,13 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 		case EBuildType::Ceiling: CeilingInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
 		case EBuildType::WoodenPilar: WoodenPilarInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
 	}
+}
+
+void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABuilding, MeshInstancedSockets);
+	DOREPLIFETIME(ABuilding, InstanceSocketsCheck);
+	
 }

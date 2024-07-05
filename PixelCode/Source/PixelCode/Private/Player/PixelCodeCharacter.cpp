@@ -37,6 +37,7 @@
 #include "Animation/AnimMontage.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetMathLibrary.h>
 #include <../../../../../../../Source/Runtime/Foliage/Public/FoliageInstancedStaticMeshComponent.h>
+#include "Building.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -184,7 +185,7 @@ FHitResult APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug
 	{
 		DrawDebugLine(GetWorld(), Start, End, FColor::Red);
 	}
- 
+	BuildLoc = HitResult.ImpactPoint;
 	return HitResult;
 }
 // 서휘-----------------------------------------------------------------------------------------------------끝
@@ -428,12 +429,7 @@ void APixelCodeCharacter::CycleBuildingMesh()
 
 void APixelCodeCharacter::SpawnBuilding()
 {
-	// BuildMode 이고 BuildingVisual 인스턴스가 있을 때
-	if (bInBuildMode && Builder)
-	{
-		// BuildingVisual의 SpawnBuilding() 호출
-		Builder->SpawnBuilding();
-	}
+	ServerRPC_SpawnBuilding(BuildLoc);
 }
 
 void APixelCodeCharacter::DestroyBuildingInstance()
@@ -486,14 +482,60 @@ void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHi
 
 void APixelCodeCharacter::OnSpawnBuildingPressed()
 {
-	ServerRPC_SpawnBuilding();
+	SpawnBuilding();
 }
 
-void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
+void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation(FVector _BuildLoc)
 {
-	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------TOP"));
+	// 2차
+	//SetBuildPosition(const FHitResult & HitResult);
+	// 1차
+	 
+	// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
+	if (Builder->BuildingClass && !Builder->IsHidden())
+	
+		// IsHidden() --> return bHidden;
+		UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 1ST IF"));
+	{
+		// ABuilding 인스턴스 = 건축자재가 있을 때
+		if (Builder->InteractingBuilding && Builder->bMaterialIsTrue)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 2ND IF"));
 
-	SpawnBuilding();
+			// preview가 초록일 때
+			//if (Builder->bMaterialIsTrue)
+			//{
+			
+				UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 3RD IF"));
+				
+				// ABuildind 클래스의 AddInstance() 호출
+				Builder->InteractingBuilding->AddInstance(Builder->SocketData, Builder->BuildingTypes[Builder->BuildingTypeIndex].BuildType);
+			//}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL ELSE"));
+			
+			FRotator Rotation = FRotator(0);
+			FVector Scale = FVector(0);
+			FTransform Transform = FTransform::Identity;
+
+			Rotation = Builder->GetActorRotation(); // 예시로 회전을 Y축 기준으로 90도 회전합니다.
+			Scale = Builder->GetActorScale3D(); // 예시로 스케일을 (1, 1, 1)로 설정합니다.
+
+			// FTransform 생성
+			Transform = FTransform(Rotation, _BuildLoc, Scale);
+
+			GetWorld()->SpawnActor<ABuilding>(Builder->BuildingClass,Transform);
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------TOP"));
+	// BuildMode 이고 BuildingVisual 인스턴스가 있을 때
+	
+		// BuildingVisual의 SpawnBuilding() 호출
+		//Builder->SpawnBuilding();
+	
 	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------MIDDLE"));
 
 	NetMulticastRPC_SpawnBuilding();
@@ -503,7 +545,11 @@ void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
 
 void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation()
 {
-	SpawnBuilding();
+	//if (bInBuildMode && Builder)
+	//{
+		// BuildingVisual의 SpawnBuilding() 호출
+	//GetWorld()->SpawnActor<ABuilding>(Builder->BuildingClass, GetActorTransform());
+	//}
 }
 
 // 서휘-----------------------------------------------------------------------------------------------------끝
@@ -574,6 +620,10 @@ void APixelCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 	DOREPLIFETIME(APixelCodeCharacter, InteractionData);
 	DOREPLIFETIME(APixelCodeCharacter, TargetInteractable);
+	DOREPLIFETIME(APixelCodeCharacter, BuildingClass);
+	DOREPLIFETIME(APixelCodeCharacter, Builder);
+	DOREPLIFETIME(APixelCodeCharacter, Buildings);
+
 }
 
 void APixelCodeCharacter::UpdateInteractionWidget() const
@@ -584,6 +634,60 @@ void APixelCodeCharacter::UpdateInteractionWidget() const
 	}
 }
 
+
+void APixelCodeCharacter::SetBuildPosition(const FHitResult& HitResult)
+{
+	if (HitResult.bBlockingHit)
+	{
+		SetActorHiddenInGame(false);
+		Builder->InteractingBuilding = Builder->GetHitBuildingActor(HitResult);
+
+		// #19 건축 자재 스냅시키기
+		if (Builder->InteractingBuilding)
+		{
+			if (!Builder->bReturnedMesh)
+			{
+				Builder->ReturnMeshToSelected();
+			}
+
+			Builder->SocketData = Builder->InteractingBuilding->GetHitSocketTransform(HitResult, Builder->BuildingTypes[Builder->BuildingTypeIndex].FilterCharacter, 25.0f);
+
+			if (!Builder->SocketData.SocketTransform.Equals(FTransform()))
+			{
+				SetActorTransform(Builder->SocketData.SocketTransform);
+				if (Builder->MaterialTrue && !Builder->bMaterialIsTrue)
+				{
+					Builder->bMaterialIsTrue = true;
+					Builder->BuildMesh->SetMaterial(0, Builder->MaterialTrue);
+				}
+				return;
+			}
+			else
+			{
+				if (Builder->MaterialFalse && Builder->bMaterialIsTrue)
+				{
+					Builder->bMaterialIsTrue = false;
+					Builder->BuildMesh->SetMaterial(0, Builder->MaterialFalse);
+				}
+				SetActorLocation(HitResult.Location);
+			}
+		}
+		else
+		{
+			if (Builder->bReturnedMesh)
+			{
+				Builder->SetMeshTo(EBuildType::Foundation);
+			}
+
+			SetActorLocation(HitResult.Location);
+		}
+	}
+	else
+	{
+		Builder->InteractingBuilding = nullptr;
+		SetActorHiddenInGame(true);
+	}
+}
 
 void APixelCodeCharacter::ToggleMenu()
 {
@@ -959,8 +1063,11 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	// 서휘-----------------------------------------------------------------------------------------------------
 	if (bInBuildMode && Builder)
 	{
+		///FHitResult result;
+		//result = PerformLineTrace(650.0f, false);
+		//UE_LOG(LogTemp,Warning,TEXT("%s"), result);
 		Builder->SetBuildPosition(PerformLineTrace(650.0f, false));
-		
+		//UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"), result.ImpactPoint.X,result.ImpactPoint.Y,result.ImpactPoint.Z);
 	}
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 

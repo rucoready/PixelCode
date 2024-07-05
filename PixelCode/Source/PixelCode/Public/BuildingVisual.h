@@ -8,6 +8,7 @@
 class ABuilding;
 class UMaterialInstance;
 
+
 UCLASS()
 class PIXELCODE_API ABuildingVisual : public AActor
 {
@@ -16,38 +17,44 @@ class PIXELCODE_API ABuildingVisual : public AActor
 public:	
 	ABuildingVisual();
 
-protected:
+
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
+	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	class UStaticMeshComponent* BuildMesh;
 
-	UPROPERTY(EditDefaultsOnly, Category = KSH)
-	TSubclassOf< ABuilding> BuildingClass;
+	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
+	TSubclassOf<ABuilding> BuildingClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
 	TArray<FBuildingVisualType> BuildingTypes;
 
+	UPROPERTY(Replicated)
 	uint8 BuildingTypeIndex;
 
-	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
 	UMaterialInstance* MaterialFalse;
 
-	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
 	UMaterialInstance* MaterialTrue;
 
+	UPROPERTY(Replicated)
 	bool bMaterialIsTrue;
+
 
 	ABuilding* GetHitBuildingActor(const FHitResult& HitResult);
 
+	UPROPERTY(Replicated)
 	ABuilding* InteractingBuilding;
 
+	UPROPERTY(Replicated)
 	FBuildingSocketData SocketData;
 
 	void  SetMeshTo(EBuildType BuildType);
 
 	void ReturnMeshToSelected();
 	
+	UPROPERTY(Replicated)
 	bool bReturnedMesh;
 
 public:	 

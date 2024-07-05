@@ -26,8 +26,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	class UInstancedStaticMeshComponent* WoodenPilarInstancedMesh;
 
+	UPROPERTY(Replicated)
 	TArray<FName> MeshInstancedSockets;
 
+	UPROPERTY(Replicated)
 	TArray<FInstanceSocketCheck> InstanceSocketsCheck;
 
 	virtual void BeginPlay() override;
@@ -46,4 +48,6 @@ public:
 	 FBuildingSocketData GetHitSocketTransform(const FHitResult& HitResult, const FName& Filter, float ValidHitDistance = 100.0f);
 
 	 void AddInstance(const FBuildingSocketData& BuildingSocketData, EBuildType BuildType);
+
+	 virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };
