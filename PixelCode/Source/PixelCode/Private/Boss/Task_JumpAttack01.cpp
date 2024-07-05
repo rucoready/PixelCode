@@ -124,7 +124,7 @@ void UTask_JumpAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 
     if (currentTime < 1.0f)
     {
-        UE_LOG(LogTemp, Warning, TEXT("OverFive1"));
+        
         APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
         if (player)
         {

@@ -85,7 +85,7 @@ void UBTService_CooltimeManager::TickNode(UBehaviorTreeComponent& OwnerComp, uin
         {
             normalAttack03 = true;
             currentTime_NormalAttack03 = 0.0f;
-            UE_LOG(LogTemp, Warning, TEXT("Over 10 seconds"));
+            
 
             BlackboardComp->SetValueAsBool(normalAttack03CoolTime.SelectedKeyName, normalAttack03);
             

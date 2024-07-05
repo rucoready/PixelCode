@@ -45,7 +45,7 @@ EBTNodeResult::Type UTask_Dodge02::ExecuteTask(UBehaviorTreeComponent& OwnerComp
                 FVector LaunchVelocity(0, -800, 0);
 
                 boss->LaunchCharacter(LaunchVelocity, true, true);
-                UE_LOG(LogTemp, Warning, TEXT("Launch Characters!"));
+                
 
                 APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
                 if (player)

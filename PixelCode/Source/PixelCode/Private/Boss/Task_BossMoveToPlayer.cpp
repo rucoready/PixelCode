@@ -24,7 +24,7 @@ EBTNodeResult::Type UTask_BossMoveToPlayer::ExecuteTask(UBehaviorTreeComponent& 
 {
     currentTime = 0.0f;
     TickTask(OwnerComp, NodeMemory, 0.0f);
-    UE_LOG(LogTemp, Warning, TEXT("Task1Inprogress"));
+    
     return EBTNodeResult::InProgress;
     //return EBTNodeResult::Succeeded;
     
@@ -68,7 +68,7 @@ void UTask_BossMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
                 {
                     // 태스크 완료
                         
-                    UE_LOG(LogTemp, Warning, TEXT("Task1Inprogress2"));
+                    
                     FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
                     
                     

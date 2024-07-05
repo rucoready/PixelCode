@@ -57,7 +57,7 @@ EBTNodeResult::Type UTask_FarJumpAttack::ExecuteTask(UBehaviorTreeComponent& Own
                 FVector LaunchVelocity(0, 0, 1500);
 
                 boss->LaunchCharacter(LaunchVelocity, true, true);
-                UE_LOG(LogTemp, Warning, TEXT("Launch Characters!"));
+                
 
                 APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
                 if (player)
@@ -150,11 +150,11 @@ void UTask_FarJumpAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
                 {
                     DirectionToPlayer.Normalize();
                     boss->SetActorLocation(boss->GetActorLocation() + DirectionToPlayer * speedAddMovement * DeltaSeconds);
-                    UE_LOG(LogTemp, Warning, TEXT("Moving to Player!"));
+                    
                 }
                 else
                 {
-                    UE_LOG(LogTemp, Warning, TEXT("Close to Player, stop moving!"));
+                    
                 }
             }
 
@@ -164,7 +164,7 @@ void UTask_FarJumpAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
                 FVector LaunchVelocity(0, 0, -4000);
                 boss->LaunchCharacter(LaunchVelocity, true, true);
                 animOnce = true;
-                UE_LOG(LogTemp, Warning, TEXT("Rapid Descent!"));
+                
             }
 
             if (currentTime > 1.62f && !onceCameraShake)
@@ -172,7 +172,7 @@ void UTask_FarJumpAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
                 APlayerController* pc = player->GetController<APlayerController>();
                 if (pc != nullptr)
                 {
-                    UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
+                    
                     pc->ClientStartCameraShake(cameraShakeOBJ);
                     onceCameraShake = true;
                 }

@@ -49,8 +49,19 @@ public:
 	//UPROPERTY(EditAnywhere, Category = "MySettings")
 	//TSubclassOf<ABossSword> BossSwordActorClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class UChildActorComponent* bossSwordComp;
 
+	UFUNCTION()
+	void SwordCollisionActive();
+
+	UFUNCTION()
+	void SwordCollisionDeactive();
+
+	//UPROPERTY(EditAnywhere, Category = "MySettings")
+	//class ABossSword* sword;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	TSubclassOf<class ABossSword> bossSwordclass;
 
 };
