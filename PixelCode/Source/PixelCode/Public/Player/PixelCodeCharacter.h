@@ -281,9 +281,9 @@ public:
 	void OnCraftingPressed();
 
 	// 저장 품목
-	AItemStorage* GetItemStorage() const;
+	AItemStorage* GetItemStorage();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = KYH)
 	AItemStorage* ItemStorage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)

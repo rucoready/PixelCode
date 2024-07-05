@@ -32,12 +32,13 @@ void APlayerHUD::BeginPlay()
 		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 
-	if (Crafting)
+	/*if (Crafting)
 	{
 		Crafting = CreateWidget<UCraftingWidget>(GetWorld(), CraftingClass);
 		Crafting->AddToViewport(2);
 		Crafting->SetVisibility(ESlateVisibility::Collapsed);
-	}
+	}*/
+	
 }
 
 void APlayerHUD::DisplayMenu()
@@ -142,6 +143,7 @@ void APlayerHUD::ToggleCreate()
 	if (bIsCreatVisible)
 	{
 		HideCrafting();
+		//creatwidgets();
 
 		const FInputModeGameOnly InputMode; // 게임화면만 클릭하도록 설정
 		GetOwningPlayerController()->SetInputMode(InputMode);
@@ -150,10 +152,24 @@ void APlayerHUD::ToggleCreate()
 	else
 	{
 		ShowOrHideCrafting();
+		creatwidgets();
 
 		const FInputModeGameAndUI InputMode; // UI만 클릭하도록 설정
 		GetOwningPlayerController()->SetInputMode(InputMode);
 		GetOwningPlayerController()->SetShowMouseCursor(true);
 	}
+
+}
+
+void APlayerHUD::creatwidgets()
+{
+	if (Crafting)
+	{
+		Crafting = CreateWidget<UCraftingWidget>(GetWorld(), CraftingClass);
+		Crafting->AddToViewport(2);
+		Crafting->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	
+	
 
 }

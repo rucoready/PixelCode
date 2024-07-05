@@ -16,7 +16,7 @@ public:
 	// Sets default values for this actor's properties
 	AItemStorage();
 
-	// get the item class based on id
+	// id를 기반으로 클래스 가져오기
 	TSubclassOf<AActor> GetTemplateOfItem(uint8 Id);
 	
 
@@ -24,18 +24,18 @@ public:
 	UPROPERTY(EditInstanceOnly, Category = "Item")
 	UDataTable* ItemDataTable;
 
-	// get all crafting data
+	// 모든 제작
 	TArray<FCraftItem> GetAllCrafting();
 
-	// get craft item info(name in text n icon) based on EItemName value
+	// EItemName 기반 크래프트 품목 정보
 	FCraftItemInfo GetCraftItemInfoBasedOn(EItemName Name);
 
-	// Template of all of the item
+	//  템플릿
 	UPROPERTY(EditAnywhere, Category = "Item")
 	TMap<uint8, TSubclassOf<AActor>> ItemTemplates;
 	
 
-	// the data of craft item. item Name In Text and Icon based On EItemName
+	//  데이터들 , EItemName 기반 텍스트 및 아이콘
 	UPROPERTY(EditAnywhere, Category = "Item")
 	TMap<EItemName, FCraftItemInfo> CraftItemData;
 

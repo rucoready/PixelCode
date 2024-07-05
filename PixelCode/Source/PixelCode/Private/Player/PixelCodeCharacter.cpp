@@ -394,7 +394,7 @@ void APixelCodeCharacter::OnCraftingPressed()
 	}
 }
 
-AItemStorage* APixelCodeCharacter::GetItemStorage() const
+AItemStorage* APixelCodeCharacter::GetItemStorage()
 {
 	return ItemStorage;
 }

@@ -63,6 +63,7 @@ public:
 	void HideCrafting();
 	bool bIsCreatVisible;
 	void ToggleCreate();
+	void creatwidgets();
 
 	 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")

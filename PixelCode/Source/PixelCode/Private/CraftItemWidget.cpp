@@ -18,6 +18,7 @@ void UCraftItemWidget::OnCraftItemClicked()
 	if(CraftingWidget.IsValid())
 	{
 		CraftingWidget->SetCraftingInfo(ItemIndex);
+		ActivateButton(true);
 	}
 }
 
@@ -26,4 +27,18 @@ void UCraftItemWidget::SetData(uint16 Index, const FText& ItemName, TWeakObjectP
 	ItemIndex = Index;
 	CraftingWidget = Craft;
 	T_CraftItemName->SetText(ItemName); 
+}
+
+void UCraftItemWidget::ActivateButton(bool bActive)
+{
+	if(bActive)
+	{
+		Button_CItem->SetIsEnabled(false);
+		Button_CItem->SetBackgroundColor(SelectedColor);
+	}
+	else
+	{
+		Button_CItem->SetIsEnabled(true);
+		Button_CItem->SetBackgroundColor(DefalutColor);
+	}
 }

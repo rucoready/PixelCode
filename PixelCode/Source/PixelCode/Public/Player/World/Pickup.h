@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Player/Interfaces/InteractionInterface.h"
+#include "CreateItemData.h"
 #include "Pickup.generated.h"
 
 class UDataTable;
@@ -41,21 +42,28 @@ protected:
 	//================================================================================
 	// PROPERTIES & VARIABLES
 	//================================================================================
-	UPROPERTY(VisibleAnywhere, Category = "Pickup | Components")
+	UPROPERTY(EditDefaultsOnly, Category = "Pickup | Components")
 	UStaticMeshComponent* PickupMesh;
 
-	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
+	UPROPERTY(EditDefaultsOnly, Category = "Pickup | Item Initialization")
 	UDataTable* ItemDataTable;
 
 
-	UPROPERTY(VisibleAnywhere, Category = "Pickup | Item Reference")
+	UPROPERTY(EditDefaultsOnly, Category = "Pickup | Item Reference")
 	UItemBase* ItemReference; // 픽업이 가리키는 항목
 
-	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
+	UPROPERTY(EditDefaultsOnly, Category = "Pickup | Item Initialization")
 	int32 ItemQuantity; // 수량
 
-	UPROPERTY(VisibleInstanceOnly, Category = "Pickup | Interaction")
+	UPROPERTY(EditDefaultsOnly, Category = "Pickup | Interaction")
 	FInteractableData InstanceInteractableData; // 인스턴스 상호작용가능
+
+	// 테스트 
+	/*UPROPERTY(EditAnywhere, Category = "Item")
+	TMap<uint8, TSubclassOf<AActor>> ItemTemplates;*/
+
+	UPROPERTY(EditAnywhere, Category = "Item")
+	EItemName ItemName;
 
 
 	//================================================================================
@@ -75,7 +83,7 @@ protected:
 
 public:
 
-	UPROPERTY(EditInstanceOnly, Category = "Pickup | Item Initialization")
+	UPROPERTY(EditDefaultsOnly, Category = "Pickup | Item Initialization")
 	FName DesiredItemID;
 
 	void SetInput(const APlayerOrganism* Taker);

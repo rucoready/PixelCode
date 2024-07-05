@@ -31,13 +31,17 @@ public:
 	// 아이템 제작 번호 설정
 	UFUNCTION() 
 	void SetData(uint16 Index, const FText&ItemName, TWeakObjectPtr<UCraftingWidget> Craft);
-	
+
+	void ActivateButton(bool bActive);
+		
 	// 아이템 번호 
 	UPROPERTY(meta = (BindWidget))
 	uint16 ItemIndex;
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* Button_CItem;
+
+	
 	
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* T_CraftItemName;
@@ -45,4 +49,11 @@ public:
 	// 크래프팅 위젯 참조
 	UPROPERTY(VisibleAnywhere, Category = "Widget")
 	TWeakObjectPtr<UCraftingWidget> CraftingWidget;
+	
+	// 버튼 컬러
+	UPROPERTY(EditAnywhere, Category = "Widget")
+	FLinearColor SelectedColor;
+
+	UPROPERTY(EditAnywhere, Category = "Widget")
+	FLinearColor DefalutColor;
 };

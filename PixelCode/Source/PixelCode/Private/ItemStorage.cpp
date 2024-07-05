@@ -17,6 +17,8 @@ AItemStorage::AItemStorage()
 TSubclassOf<AActor> AItemStorage::GetTemplateOfItem(uint8 Id)
 {
 	return ItemTemplates[Id];
+	//UPROPERTY(EditDefaultsOnly, Category = "Pickup | Item Initialization")
+	//FName DesiredItemID;
 	
 }
 
