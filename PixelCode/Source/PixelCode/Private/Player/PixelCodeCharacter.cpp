@@ -145,7 +145,7 @@ void APixelCodeCharacter::BeginPlay()
 	//PlayerInventory->HandleAddItem();
 
 
-
+	
 	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------
 	if (BuildingClass)
 	{
@@ -492,7 +492,8 @@ void APixelCodeCharacter::OnSpawnBuildingPressed()
 void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------TOP"));
-	//SpawnBuilding();
+
+	SpawnBuilding();
 	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------MIDDLE"));
 
 	NetMulticastRPC_SpawnBuilding();
@@ -503,7 +504,6 @@ void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
 void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation()
 {
 	SpawnBuilding();
-
 }
 
 // ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
@@ -709,23 +709,30 @@ void APixelCodeCharacter::CharacterJump(const FInputActionValue& Value)
 
 void APixelCodeCharacter::SkillQ()
 {
+	Mousehit();
+
 	if (false == combatComponent->bCombatEnable)
 	{
 		return;
 	}
-
 	if (combatComponent->bAttacking)
 	{
 		combatComponent->bAttackSaved = true;
 	}
 	else
 	{
-		PerformAttack(5, false);
+		if (bUseSkill)
+		{ 
+			PerformAttack(5, false);
+			combatComponent->attackCount = 0;
+		}
 	}
 }
 
 void APixelCodeCharacter::SkillE()
 {
+	Mousehit();
+
 	if (false == combatComponent->bCombatEnable)
 	{
 		return;
@@ -737,12 +744,18 @@ void APixelCodeCharacter::SkillE()
 	}
 	else
 	{
-		PerformAttack(6, false);
+		if (bUseSkill)
+		{
+			PerformAttack(6, false);
+			combatComponent->attackCount = 0;
+		}
 	}
 }
 
 void APixelCodeCharacter::SkillR()
 {
+	Mousehit();
+
 	if (false == combatComponent->bCombatEnable)
 	{
 		return;
@@ -754,12 +767,17 @@ void APixelCodeCharacter::SkillR()
 	}
 	else
 	{
-		PerformAttack(7, false);
+		if (bUseSkill)
+		{
+			PerformAttack(7, false);
+			combatComponent->attackCount = 0;
+		}
 	}
 }
 
 void APixelCodeCharacter::SkillZ()
 {
+	Mousehit();
 	if (false == combatComponent->bCombatEnable)
 	{
 		return;
@@ -771,12 +789,19 @@ void APixelCodeCharacter::SkillZ()
 	}
 	else
 	{
-		PerformAttack(8, false);
+		if (bUseSkill)
+		{
+			PerformAttack(8, false);
+			combatComponent->attackCount = 0;
+		}
 	}
 }
 
 void APixelCodeCharacter::SkillRightMouse()
 {
+	
+	
+	Mousehit();
 	if (false == combatComponent->bCombatEnable)
 	{
 		return;
@@ -788,12 +813,20 @@ void APixelCodeCharacter::SkillRightMouse()
 	}
 	else
 	{
-		PerformAttack(9, false);
+		if (bUseSkill)
+		{
+			PerformAttack(9, false);
+			combatComponent->attackCount = 0;
+		}
 	}
 }
 
 void APixelCodeCharacter::Mousehit()
 {
+	if (!bRotation)
+	{
+		return;
+	}
 		FVector cameraComponentForwardVector = FollowCamera->GetForwardVector();
 		FRotator newRot = UKismetMathLibrary::MakeRotFromZX(GetActorUpVector(), cameraComponentForwardVector);
 
@@ -839,6 +872,7 @@ void APixelCodeCharacter::Look(const FInputActionValue& Value)
 void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 {
 	Mousehit();
+	
 	if (false == combatComponent->bCombatEnable)
 	{
 		return;
@@ -850,8 +884,12 @@ void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 	}
 	else
 	{
-		AttackEvent();
+		if (bUseSkill)
+		{
+			AttackEvent();
+		}
 	}
+	
 }
 
 

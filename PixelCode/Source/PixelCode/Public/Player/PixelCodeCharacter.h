@@ -178,6 +178,8 @@ public:
 	
 	FVector CachedDestination;
 	void Mousehit();
+
+	
 	
 
 	//void RollCharacterForward(APixelCodeCharacter* PixelCodeCharacter, float RollDistance);
@@ -260,7 +262,6 @@ protected:
 		
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_Interact();
-
 
 
 	UFUNCTION(NetMulticast, Reliable)
