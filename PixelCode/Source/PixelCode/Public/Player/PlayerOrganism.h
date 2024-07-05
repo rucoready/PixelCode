@@ -125,7 +125,16 @@ public:
 
 	// Lerp 알파 변수 (보간 제어)
 	float dashSkillTime;
+
+	// 플레이어 공격중 회전 막기
+	bool bRotation = false;
+
+	// 플레이어 스킬중 다른공격 못하게 설정
+	bool bUseSkill = false;
+
+	void GetHit(const FVector& ImpactPoint);
 	
+
 	 // 목표 위치 변수
     UPROPERTY(EditAnywhere, Category = "Movement")
     FVector TargetLoc;

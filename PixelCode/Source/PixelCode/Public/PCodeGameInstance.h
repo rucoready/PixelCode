@@ -5,12 +5,15 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#include "Engine/DataTable.h"
 #include "OnlineSessionSettings.h"
 #include "PCodeGameInstance.generated.h"
 
 /**
  * 
  */
+
+class UDataTable;
 
  USTRUCT(BlueprintType)
 struct FSessionInfo
@@ -97,4 +100,20 @@ class PIXELCODE_API UPCodeGameInstance : public UGameInstance
 	FString StringBase64Encode(const FString& str);
 	FString StringBase64Decode(const FString& str);
 
+	// -------------------------------------------------- 진원
+	UFUNCTION(BlueprintCallable)
+	FCharacterStat GetCharacterDataTable(const FString& rowName);
+
+	UFUNCTION(BlueprintCallable)
+	FParentItemInfo GetParentItemDataTable(const FString& rowName);
+
+		
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
+	UDataTable* dt_characerStatDataTable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
+	UDataTable* dt_parentItemDataTable;
+	// -------------------------------------------------- 진원
+
 };
+

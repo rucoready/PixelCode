@@ -3,6 +3,9 @@
 
 #include "PCodeGameInstance.h"
 #include "OnlineSubsystem.h"
+#include "Player/StateComponent.h"
+#include "Player/ParentItem.h"
+#include <../../../../../../../Source/Runtime/Core/Public/Templates/SharedPointer.h>
 #include "OnlineSessionSettings.h"
 #include "Online/OnlineSessionNames.h"
 //#include <../../../../../../../Source/Runtime/Core/Public/Templates/SharedPointer.h>
@@ -198,4 +201,45 @@ FString UPCodeGameInstance::StringBase64Decode(const FString& str)
 	FBase64::Decode(str, arrayData);
 	std::string ut8String((char*)(arrayData.GetData()), arrayData.Num());
 	return UTF8_TO_TCHAR(ut8String.c_str());
+}
+
+FCharacterStat UPCodeGameInstance::GetCharacterDataTable(const FString& rowName)
+{
+	if (dt_characerStatDataTable != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("gameins"));
+		FString errorText;
+		FCharacterStat* characerStatInfo = dt_characerStatDataTable->FindRow<FCharacterStat>(FName(rowName), errorText);
+
+		if (characerStatInfo != nullptr)
+		{
+			return *characerStatInfo;
+		}
+		else
+		{
+			return FCharacterStat();
+		}
+	}
+
+	return FCharacterStat();
+}
+
+FParentItemInfo UPCodeGameInstance::GetParentItemDataTable(const FString& rowName)
+{
+	if (dt_parentItemDataTable != nullptr)
+	{
+		FString errorText;
+		FParentItemInfo* parentItemInfo = dt_parentItemDataTable->FindRow<FParentItemInfo>(FName(rowName), errorText);
+
+		if (parentItemInfo != nullptr)
+		{
+			return *parentItemInfo;
+		}
+		else
+		{
+			return FParentItemInfo();
+		}
+	}
+
+	return FParentItemInfo();
 }

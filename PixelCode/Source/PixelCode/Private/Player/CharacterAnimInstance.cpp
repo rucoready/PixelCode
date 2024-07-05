@@ -62,3 +62,25 @@ void UCharacterAnimInstance::AnimNotify_blockcounter()
 
 }
 
+void UCharacterAnimInstance::AnimNotify_bRotation()
+{
+	if (myCharacter != nullptr)
+	{
+			myCharacter->bRotation = true;
+			UE_LOG(LogTemp,Warning,TEXT("bRotation"));
+			myCharacter->bUseSkill = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_bEndRotation()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bRotation = false;
+		UE_LOG(LogTemp, Warning, TEXT("!bRotation"));
+		myCharacter->bUseSkill = false;
+	}
+}
+
+
+

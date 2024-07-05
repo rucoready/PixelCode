@@ -3,9 +3,9 @@
 
 #include "Player/StateComponent.h"
 #include "Player/PlayerOrganism.h"
-#include "Player/PixelCodeGameInstance.h"
 #include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
+#include "PCodeGameInstance.h"
 
 
 // Sets default values for this component's properties
@@ -60,7 +60,7 @@ void UStateComponent::InitStat()
 		return;
 	}
 
-	auto gi = GetOwner()->GetGameInstance<UPixelCodeGameInstance>();
+	auto gi = GetOwner()->GetGameInstance<UPCodeGameInstance>();
 	if (gi != nullptr)
 	{
 		stat = gi->GetCharacterDataTable(character->GetName());

@@ -44,13 +44,20 @@ public:
 	UPROPERTY()
 	class UCharacterMovementComponent* playerMovementComp;
 
+	//플레이어 R
+	UFUNCTION()
+	void AnimNotify_RDash(); 
+
+	//플레이어 E
+	UFUNCTION()
+	void AnimNotify_blockcounter(); 
+
+	//플레이어 공격 중 회전 제어
+	UFUNCTION()
+	void AnimNotify_bRotation();
 
 	UFUNCTION()
-	void AnimNotify_RDash(); //플레이어 R
-
-	UFUNCTION()
-	void AnimNotify_blockcounter(); //플레이어 E
-
+	void AnimNotify_bEndRotation();
 };
 
 
