@@ -35,6 +35,17 @@ public:
 	class UBossCollisionComponent* bossCollisionComponent;
 
 	UPROPERTY(EditAnywhere, Category="MySettings")
+	class APixelCodeCharacter* Player;
+
+	
+	UPROPERTY(EditAnywhere, Category="MySettings")
+	class APlayerController* Pc;
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void ApplyDamageToTarget(AActor* OtherActor, float DamageAmount);
+
+
+	UPROPERTY(EditAnywhere, Category="MySettings")
 	class UBoxComponent* damageSphereComp;
 
 	void OnEquipped();

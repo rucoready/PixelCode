@@ -7,6 +7,9 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetStringLibrary.h"
+#include "Player/PixelCodeCharacter.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
 
 // Sets default values
 ABossSword::ABossSword()
@@ -47,7 +50,10 @@ void ABossSword::BeginPlay()
 
 	damageSphereComp->OnComponentBeginOverlap.AddDynamic(this, &ABossSword::OnBeginOverlapSwordCollision);
 	//damageSphereComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	//damageSphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	damageSphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+	Player = Cast<APixelCodeCharacter>(GetOwner());
+	
 
 }
 
@@ -60,6 +66,15 @@ void ABossSword::Tick(float DeltaTime)
 
 	GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Emerald, CollisionString);
 
+}
+
+void ABossSword::ApplyDamageToTarget(AActor* OtherActor, float DamageAmount)
+{
+	if (IsValid(OtherActor))
+	{
+		Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		UGameplayStatics::ApplyDamage(OtherActor, DamageAmount, Pc, Player, UDamageType::StaticClass());
+	}
 }
 
 void ABossSword::OnEquipped()
@@ -76,7 +91,8 @@ void ABossSword::OnBeginOverlapSwordCollision(UPrimitiveComponent* OverlappedCom
 {
 	if (OtherActor->GetName().Contains("Player"))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Overlap  Sword"));
+		ApplyDamageToTarget(OtherActor, 20);
+		//Player->GetHit(SweepResult.ImpactPoint);
 	}
 	
 }

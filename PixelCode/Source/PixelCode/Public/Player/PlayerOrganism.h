@@ -87,8 +87,9 @@ public:
 
 	TArray<int32> attackDamageArray;
 
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)override;
 
+	
 	FName pelvisBoneName = TEXT("Pelvis");
 
 	UFUNCTION(BlueprintCallable)
@@ -131,8 +132,6 @@ public:
 
 	// 플레이어 스킬중 다른공격 못하게 설정
 	bool bUseSkill = false;
-
-	void GetHit(const FVector& ImpactPoint);
 	
 
 	 // 목표 위치 변수

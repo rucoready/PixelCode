@@ -366,6 +366,8 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 
+	void GetHit(const FVector& ImpactPoint);
+
 	virtual void DieFunction() override;
 
 
