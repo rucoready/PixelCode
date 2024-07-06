@@ -48,8 +48,6 @@ public:
 	UPROPERTY(EditAnywhere, Category="MySettings")
 	class UBoxComponent* damageSphereComp;
 
-	void OnEquipped();
-
 	void Testing1();
 
 	UFUNCTION()

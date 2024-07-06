@@ -19,6 +19,7 @@ UBossCollisionComponent::UBossCollisionComponent()
 	collisionObjectTypes.Reset();
 	collisionObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 	collisionObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery1);
+	
 }
 
 
@@ -28,7 +29,15 @@ void UBossCollisionComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	bCollisionEnabled = true;
+	UE_LOG(LogTemp, Warning, TEXT("startSocketName: %s"), *startSocketName.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("endSocketName: %s"), *endSocketName.ToString());
+
+	FVector startSocketLocation = collisionMeshComponent->GetSocketLocation(startSocketName);
+	FVector endSocketLocation = collisionMeshComponent->GetSocketLocation(endSocketName);
+
+	UE_LOG(LogTemp, Warning, TEXT("Start Socket Location: %s"), *startSocketLocation.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("End Socket Location: %s"), *endSocketLocation.ToString());
 }
 
 
@@ -40,6 +49,7 @@ void UBossCollisionComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	if (bCollisionEnabled)
 	{
 		CollisionTrace();
+		
 	}
 }
 
@@ -68,25 +78,17 @@ void UBossCollisionComponent::CollisionTrace()
 	FVector startSocketLocation = collisionMeshComponent->GetSocketLocation(startSocketName);
 	FVector endSocketLocation = collisionMeshComponent->GetSocketLocation(endSocketName);
 
+	UE_LOG(LogTemp, Warning, TEXT("Start Socket Location: %s"), *startSocketLocation.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("End Socket Location: %s"), *endSocketLocation.ToString());
+
 	TArray<FHitResult> arrayHits;
 
 	UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), startSocketLocation, endSocketLocation, traceRadius, collisionObjectTypes, false, actorsToIgnore, drawDebugType, arrayHits, true, FLinearColor::Red, FLinearColor::Green, 1.0f);
-
-	for (const FHitResult& elem : arrayHits)
+	
+	if (onHitDeligate.IsBound())
 	{
-		lastHitStruct = elem;
-
-		if (alreadyHitActors.Contains(lastHitStruct.GetActor()) == false)
-		{
-			hittedActor = lastHitStruct.GetActor();
-
-			alreadyHitActors.Add(hittedActor);
-
-			if (onHitDeligate.IsBound())
-			{
-				onHitDeligate.Execute(lastHitStruct);
-			}
-		}
+		UE_LOG(LogTemp, Warning, TEXT("CollisionBegin0"));
+		onHitDeligate.Execute(lastHitStruct);
 	}
 }
 

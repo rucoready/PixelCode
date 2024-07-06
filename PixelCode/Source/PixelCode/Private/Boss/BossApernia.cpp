@@ -69,8 +69,6 @@ ABossApernia::ABossApernia()
     //bossBackSwordComp->SetVisibility(false);
 
 
-
-
 }
 
 // Called when the game starts or when spawned
@@ -78,9 +76,8 @@ void ABossApernia::BeginPlay()
 {
     Super::BeginPlay();
 
-    //UChildActorComponent* temp = GetComponentByClass<UChildActorComponent>(UChildActorComponent::StaticClass());
-
-    
+    //set boss maxHP
+    bossCurrentHP = bossMaxHP;
 
 }
 
@@ -108,7 +105,6 @@ void ABossApernia::SetupStimulusSource()
     StimulusSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus"));
     if (StimulusSource)
     {
-
         StimulusSource->RegisterForSense(TSubclassOf <UAISense_Sight>());
         StimulusSource->RegisterWithPerceptionSystem();
 
@@ -117,53 +113,34 @@ void ABossApernia::SetupStimulusSource()
 
 void ABossApernia::SwordCollisionActive()
 {
-
-
-    // Get the child actor from the UChildActorComponent
     ABossSword* SwordActor = Cast<ABossSword>(bossSwordComp->GetChildActor());
 
     if (SwordActor)
     {
-        // Assuming the collision component is named "damageSphereComp" in ABossSword
-        UPrimitiveComponent* DamageSphereComp = SwordActor->FindComponentByClass<UPrimitiveComponent>();
-        
-        
-        
+        UPrimitiveComponent* DamageSphereComp = SwordActor->FindComponentByClass<UPrimitiveComponent>();  
         SwordActor->SwordCollisionActive();
-        
-        
     }
-    else
-    {
-        
-    }
-
-
 
 }
 
 void ABossApernia::SwordCollisionDeactive()
 {
 
-
-    // Get the child actor from the UChildActorComponent
     ABossSword* SwordActor = Cast<ABossSword>(bossSwordComp->GetChildActor());
 
     if (SwordActor)
     {
-        // Assuming the collision component is named "damageSphereComp" in ABossSword
         UPrimitiveComponent* DamageSphereComp = SwordActor->FindComponentByClass<UPrimitiveComponent>();
 
         SwordActor->SwordCollisionDeactive();
         
     }
-    else
-    {
-        
-    }
 
+}
 
-
-
+void ABossApernia::BossTakeDamage(float Damage)
+{
+    bossCurrentHP = bossCurrentHP - Damage;
+    PlayAnimMontage(bossTakeDamageMT);
 }
 

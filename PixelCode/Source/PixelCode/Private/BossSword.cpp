@@ -32,26 +32,21 @@ ABossSword::ABossSword()
 	damageSphereComp->SetRelativeLocation(FVector(0, 340, 10));
 	damageSphereComp->SetRelativeRotation(FRotator(0, 0, 90));
 	damageSphereComp->SetWorldScale3D(FVector(1.12, 0.46, 5.85));
-
-
 	swordComp->SetWorldScale3D(FVector(0.7, 0.6, 1.0));
 
 	bossCollisionComponent = CreateDefaultSubobject<UBossCollisionComponent>(TEXT("CollisionComponent"));
 
-	
-	
 
 }
 
-// Called when the game starts or when spawned
+
 void ABossSword::BeginPlay()
 {
 	Super::BeginPlay();
 
 	damageSphereComp->OnComponentBeginOverlap.AddDynamic(this, &ABossSword::OnBeginOverlapSwordCollision);
-	//damageSphereComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	damageSphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-
+	damageSphereComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//damageSphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Player = Cast<APixelCodeCharacter>(GetOwner());
 	
 
@@ -77,10 +72,6 @@ void ABossSword::ApplyDamageToTarget(AActor* OtherActor, float DamageAmount)
 	}
 }
 
-void ABossSword::OnEquipped()
-{
-	
-}
 
 void ABossSword::Testing1()
 {
@@ -99,7 +90,6 @@ void ABossSword::OnBeginOverlapSwordCollision(UPrimitiveComponent* OverlappedCom
 
 void ABossSword::SwordCollisionActive()
 {
-	//if(IsValid(damageSphereComp))	{ UE_LOG(LogTemp, Warning, TEXT("Sword Collision Activate")); }
 	UE_LOG(LogTemp, Warning, TEXT("Sword Collision Activate"));
 	damageSphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	
@@ -107,12 +97,8 @@ void ABossSword::SwordCollisionActive()
 
 void ABossSword::SwordCollisionDeactive()
 {
-	//if (IsValid(damageSphereComp)) { UE_LOG(LogTemp, Warning, TEXT("Sword Collision DeActivate")); }
 	damageSphereComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	
-	UE_LOG(LogTemp, Warning, TEXT("Sword Collision DeActivate"));
-	
-	
+	UE_LOG(LogTemp, Warning, TEXT("Sword Collision DeActivate"));	
 }
 
 

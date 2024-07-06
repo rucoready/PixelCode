@@ -55,29 +55,28 @@ void UBossAnimInstance::AnimNotify_SwordOn()
 	}
 }
 
-void UBossAnimInstance::AnimNotify_CollisionOn(float DeltaSeconds)
+void UBossAnimInstance::AnimNotify_CollisionOn()
 {
 
-	if (!attackCoolTime)
-	{
-		currentTime = 0;
+	UE_LOG(LogTemp, Warning, TEXT("AnimNotify CollisionOn Call"))
+	currentTime = 0;
 		
-		boss->SwordCollisionActive();
+	boss->SwordCollisionActive();
 
-		attackCoolTime = true;
+	attackCoolTime = true;
 
 		
-	}
+	
 	
 
 	
 	
 }
 
-void UBossAnimInstance::AnimNotify_CollisionOff(float DeltaSeconds)
+void UBossAnimInstance::AnimNotify_CollisionOff()
 {
 	
-	
+	UE_LOG(LogTemp, Warning, TEXT("AnimNotify CollisionOff Call"))
 	boss->SwordCollisionDeactive();
 	attackCoolTime = false;
 }

@@ -44,10 +44,10 @@ public:
 	void AnimNotify_SwordOn();
 
 	UFUNCTION(BlueprintCallable)
-	void AnimNotify_CollisionOn(float DeltaSeconds);
+	void AnimNotify_CollisionOn();
 
 	UFUNCTION()
-	void AnimNotify_CollisionOff(float DeltaSeconds);
+	void AnimNotify_CollisionOff();
 
 	FTimerHandle timerhandle_OverlapCoolTime;
 

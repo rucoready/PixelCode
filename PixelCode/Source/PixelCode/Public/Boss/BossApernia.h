@@ -64,4 +64,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	TSubclassOf<class ABossSword> bossSwordclass;
 
+	float bossMaxHP = 200.0f;
+
+	float bossCurrentHP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* bossTakeDamageMT;
+
+	UFUNCTION()
+	void BossTakeDamage(float Damage);
+
 };

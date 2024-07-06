@@ -73,7 +73,31 @@ void UTask_JumpAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 
     currentTime += DeltaSeconds;
 
-    if (currentTime > 0.0 && currentTime < 1.3)
+    if (currentTime > 0.0 && currentTime < 0.1)
+    {
+        APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+        if (player)
+        {
+            //플레이어의 위치를 얻어낸다
+            playerLocation = player->GetActorLocation();
+            //보스컨트롤러를 캐스팅
+            ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
+            if (bossController)
+            {
+                APawn* bossPawn = bossController->GetPawn();
+                if (bossPawn)
+                {
+
+                    // 방향 설정
+                    FVector direction = playerLocation - bossPawn->GetActorLocation();
+                    direction.Z = 0; // 보스가 수평으로만 회전하도록 Z축 회전 제거
+                    FRotator newRotation = direction.Rotation();
+                    bossPawn->SetActorRotation(newRotation);
+                }
+            }
+        }   
+    }
+    if (currentTime > 0.9 && currentTime < 0.95)
     {
         APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
         if (player)
@@ -97,6 +121,32 @@ void UTask_JumpAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
             }
         }
     }
+
+    if (currentTime > 1.5 && currentTime < 1.6)
+    {
+        APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+        if (player)
+        {
+            //플레이어의 위치를 얻어낸다
+            playerLocation = player->GetActorLocation();
+            //보스컨트롤러를 캐스팅
+            ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
+            if (bossController)
+            {
+                APawn* bossPawn = bossController->GetPawn();
+                if (bossPawn)
+                {
+
+                    // 방향 설정
+                    FVector direction = playerLocation - bossPawn->GetActorLocation();
+                    direction.Z = 0; // 보스가 수평으로만 회전하도록 Z축 회전 제거
+                    FRotator newRotation = direction.Rotation();
+                    bossPawn->SetActorRotation(newRotation);
+                }
+            }
+        }
+    }
+    //set rotation / location
     if (currentTime > 2.3 && currentTime < 2.4)
     {
         APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
@@ -122,29 +172,7 @@ void UTask_JumpAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
         }
     }
 
-    if (currentTime < 1.0f)
-    {
-        
-        APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-        if (player)
-        {
-            playerLocation = player->GetActorLocation();
-            OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), playerLocation);
-
-            ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
-            if (bossController)
-            {
-                APawn* bossPawn = bossController->GetPawn();
-                if (bossPawn)
-                {
-                    FVector direction = playerLocation - bossPawn->GetActorLocation();
-                    direction.Z = 0;
-                    FRotator newRotation = direction.Rotation();
-                    bossPawn->SetActorRotation(newRotation);
-                }
-            }
-        }
-    }
+    
     if (currentTime > 0.0 && currentTime < 1.0)
     {
 
@@ -163,6 +191,14 @@ void UTask_JumpAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 
                     boss->PlayAnimMontage(jumpAttack03V2);
                     animOnceV2 = true;
+
+                }
+
+                if (ABossApernia* bossComponent = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
+                {
+                    
+                    bossComponent->bossSwordComp->SetRelativeLocation(FVector(67.829360f, 65.919485f, -5.596131f));
+                    bossComponent->bossSwordComp->SetRelativeRotation(FRotator(8.929752f, 199.055201f, 197.468674f));
 
                 }
             }
@@ -213,6 +249,13 @@ void UTask_JumpAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 
                 }
             }
+        }
+        if (ABossApernia* bossComponent = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
+        {
+            
+            bossComponent->bossSwordComp->SetRelativeLocation(FVector(-9.262842f, 91.403065f, -6.445372f));
+            bossComponent->bossSwordComp->SetRelativeRotation(FRotator(70.003781f, 182.098563f, 218.299690f));
+
         }
     }
 
@@ -323,7 +366,13 @@ void UTask_JumpAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
     {
         ABossAIController* BossAIController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
 
-        
+        if (ABossApernia* bossComponent = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
+        {
+
+            bossComponent->bossSwordComp->SetRelativeLocation(FVector(29.122834f, 84.073564f, 4.113887f));
+            bossComponent->bossSwordComp->SetRelativeRotation(FRotator(4.826905f, 1.306981f, 8.324931f));
+
+        }
         animOnce = false;
         currentTime = 0.0f;
         onceNiagara01 = false;
