@@ -38,6 +38,9 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetMathLibrary.h>
 #include <../../../../../../../Source/Runtime/Foliage/Public/FoliageInstancedStaticMeshComponent.h>
 #include "Building.h"
+#include "Player/Widget/NormallyWidget.h"
+#include "../../../FX/Niagara/Source/Niagara/Public/NiagaraFunctionLibrary.h"
+#include <../../../../../../../Plugins/FX/Niagara/Source/Niagara/Public/NiagaraComponent.h>
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -101,7 +104,7 @@ APixelCodeCharacter::APixelCodeCharacter()
 	bInBuildMode = false;
 
 	// 서휘-----------------------------------------------------------------------------------------------------끝
-
+	
 }
 
 void APixelCodeCharacter::BeginPlay()
@@ -159,6 +162,13 @@ void APixelCodeCharacter::BeginPlay()
 	{
 		statWidget->AddToViewport(1);
 		statWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+
+	NormallyWidget = CreateWidget<UNormallyWidget>(GetWorld(), NormallyWidgetClass);
+	if (NormallyWidgetClass)
+	{
+		NormallyWidget->AddToViewport(2);
+		NormallyWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 
 	// 요한----------------------------------------------------------------------
@@ -846,7 +856,7 @@ void APixelCodeCharacter::CharacterJump(const FInputActionValue& Value)
 void APixelCodeCharacter::SkillQ()
 {
 	Mousehit();
-
+	
 	if (false == combatComponent->bCombatEnable)
 	{
 		return;
@@ -1114,6 +1124,23 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		}
 	}
 	
+	if (NormallyWidgetClass)
+	{
+		NormallyWidget->currentStatUpdate();
+	}
+
+	if (bSkillNSQ)
+	{ 
+		UNiagaraComponent* NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_SkillQ, GetActorLocation()+GetActorForwardVector()*330, GetActorRotation());
+		
+		bSkillNSQ = false;
+	}
+
+	if (bSkillNSR)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_SkillR, GetActorLocation(), GetActorRotation());
+		bSkillNSR = false;
+	}
 	// 지논------------------------------------------------------------------------------------------------------
 
 }

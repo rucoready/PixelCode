@@ -6,7 +6,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
 #include "PCodeGameInstance.h"
-
+#include "Player/Widget/NormallyWidget.h"
 
 // Sets default values for this component's properties
 UStateComponent::UStateComponent()
@@ -27,6 +27,8 @@ void UStateComponent::BeginPlay()
 
 	character = GetOwner<APlayerOrganism>();
 
+	//NormallyWidget->firstUpdate();
+		
 	UE_LOG(LogTemp, Warning, TEXT("StateComp GetIsReplicated() : %s"), GetIsReplicated() ? TEXT("TRUE") : TEXT("FALSE"));
 	if (GetIsReplicated() != true)
 	{

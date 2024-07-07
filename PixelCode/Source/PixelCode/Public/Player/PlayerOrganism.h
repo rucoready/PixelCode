@@ -133,6 +133,11 @@ public:
 	// 플레이어 스킬중 다른공격 못하게 설정
 	bool bUseSkill = false;
 	
+	// 플레이어 스킬 나이아가라
+	bool bSkillNSQ = false;
+	bool bSkillNSR = false;
+
+
 
 	 // 목표 위치 변수
     UPROPERTY(EditAnywhere, Category = "Movement")

@@ -16,6 +16,7 @@ enum EStateType
 };
 
 class APlayerOrganism;
+class UNormallyWidget;
 
 // DataTable(베이스 포인트)
 USTRUCT(BlueprintType)
@@ -79,6 +80,8 @@ protected:
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UNormallyWidget* NormallyWidget;
 
 private:
 

@@ -22,6 +22,7 @@ class UItemBase;
 class AItemStorage;
 class UPlayerStatWidget;
 class ABuilding;
+class UNormallyWidget;
 
 UENUM()
 enum class MyEnum : int8
@@ -155,6 +156,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UPlayerStatWidget> StatWidgetClass;
 
+	UPROPERTY()
+	UNormallyWidget* NormallyWidget;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UNormallyWidget> NormallyWidgetClass;
+
 	bool bIsStatVisible = true;
 
 	// ±¸¸£±â
@@ -180,8 +187,11 @@ public:
 	FVector CachedDestination;
 	void Mousehit();
 
+	UPROPERTY(EditAnywhere)
+	class UNiagaraSystem* NS_SkillQ;
 	
-	
+	UPROPERTY(EditAnywhere)
+	class UNiagaraSystem* NS_SkillR;
 
 	//void RollCharacterForward(APixelCodeCharacter* PixelCodeCharacter, float RollDistance);
 
@@ -197,7 +207,7 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-
+	
 	void CharacterJump(const FInputActionValue& Value);
 
 	void LightAttackFunction(const FInputActionValue& Value);

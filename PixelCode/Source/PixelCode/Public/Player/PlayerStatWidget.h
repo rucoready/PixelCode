@@ -9,6 +9,8 @@
 
 class UTextBlock;
 class UStateComponent;
+class APlayerController;
+class APixelCodeCharacter;
 
 /**
  * 
@@ -58,16 +60,28 @@ public:
 	UPROPERTY(VisibleAnywhere,Category = "Stat", meta = (BindWidget))
 	UTextBlock* TB_CON;
 
+	FString HP;
+	FString MP;
+	FString ATK;
+	FString DEF;
+	FString CRITICAL;
+	FString STR;
+	FString DEX;
+	FString INT;
+	FString LUCK;
+	FString CON;
 
 	UStateComponent* statComp;
 
-	void UpdateStat();
+	APlayerController* PlayerController;
+
+	APixelCodeCharacter* Player;
 
 	void DisplayStat();
 	void HideStat();
 
-	//virtual void NativeConstruct() override;
+	virtual void NativeConstruct() override;
 	
-	
+	void UpdateStat();
 
 };

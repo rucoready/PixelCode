@@ -58,6 +58,12 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_bEndRotation();
+
+	UFUNCTION()
+	void AnimNotify_NSQ();
+
+	UFUNCTION()
+	void AnimNotify_NSR();
 };
 
 

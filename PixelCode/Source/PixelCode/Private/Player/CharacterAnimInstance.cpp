@@ -82,5 +82,22 @@ void UCharacterAnimInstance::AnimNotify_bEndRotation()
 	}
 }
 
+void UCharacterAnimInstance::AnimNotify_NSQ()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSkillNSQ = true;
+		
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_NSR()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSkillNSR = true;
+	}
+}
+
 
 
