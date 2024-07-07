@@ -300,6 +300,10 @@ public:
 	UFUNCTION()
 	void OnCraftingPressed();
 
+	// 아이템 생성 함수
+	UFUNCTION()
+	void CraftItem(const FCraftItem& Item);
+
 	// 저장 품목
 	AItemStorage* GetItemStorage();
 

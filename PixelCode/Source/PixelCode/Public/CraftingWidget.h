@@ -13,7 +13,9 @@ class APixelCodeCharacter;
 class UCraftItemWidget;
 class UTextBlock;
 class UImage;
-
+class UHorizontalBox;;
+class UCraftingSlotWidget;
+class UButton;
 
 
 /**
@@ -30,9 +32,21 @@ public:
 
 	void SetCraftingInfo(uint8 Index);
 
+	// 크래프트 슬롯 초기화
+	void InitializeCraftSlot();
+
+	UFUNCTION()
+	void OnCraftClicked();
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "CRAFT")
 	TSubclassOf<UCraftItemWidget>CraftItemTemplate;
+
+	UPROPERTY(EditAnywhere, Category = "CRAFT")
+	TSubclassOf<UCraftingSlotWidget>CraftingSlotTemplate;
+
+	UPROPERTY(EditAnywhere, Category = "CRAFT")
+	TSubclassOf<UUserWidget>CustomTooltipTemplate;
 
 	// 아이템 인덱스 선택
 	UPROPERTY(VisibleAnywhere, Category = "CRAFT")
@@ -60,7 +74,18 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UImage* Image_Icon;
 
+	UPROPERTY(meta = (BindWidget))
+	UHorizontalBox* item_Recipes;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* Btn_Craft;
 
 	// 아이템 만드는 함수
 	void MakeCraftItem(uint16 Index,const FText& ItemName);
+
+	
+
+
+	// 레시피 슬롯 베이스
+	void CreateCraftSlot(const FRecipe& Recipe);
 };

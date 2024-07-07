@@ -12,23 +12,24 @@
  UENUM(BlueprintType)
  enum class EItemName : uint8
  {
-	EIN_Wood	UMETA(DisplayName = "Wood"),
-	ETN_Smalltwig UMETA(DisplayName = "Smalltwig"),
-	ETN_Stone UMETA(DisplayName = "Stone"),
-	ETN_BigStone UMETA(DisplayName = "BigStone"),
-	ETN_MetalOre UMETA(DisplayName = "MetalOre"),
-	ETN_Fabric UMETA(DisplayName = "Fabric"),
-	ETN_Glass UMETA(DisplayName = "Glass"),
-	ETN_Plastic UMETA(DisplayName = "Plastic"),
-	ETN_Bone UMETA(DisplayName = "Bone"),
-	ETN_SoulStone UMETA(DisplayName = "SoulStone"),
-	ETN_SoulFragment UMETA(DisplayName = "SoulFragment"),
-	ETN_WoodFoundation UMETA(DisplayName = "WoodFoundation"), // 나무 의자 같은거
-	ETN_WoodWall UMETA(DisplayName = "WoodWall"),
-	ETN_WoodenRoof UMETA(DisplayName = "WoodenRoof"),
-	ETN_Woodfloor UMETA(DisplayName = "Woodfloor"),
+	ETN_NONE = 0			UMETA(DisplayName = "Wood"),
+	EIN_Wood = 2			UMETA(DisplayName = "Wood"),
+	ETN_Smalltwig = 3		UMETA(DisplayName = "Smalltwig"),
+	ETN_Stone = 4			UMETA(DisplayName = "Stone"),
+	ETN_BigStone = 5		UMETA(DisplayName = "BigStone"),
+	ETN_MetalOre = 6		UMETA(DisplayName = "MetalOre"),
+	ETN_Fabric = 7			UMETA(DisplayName = "Fabric"),
+	ETN_Glass = 8			UMETA(DisplayName = "Glass"),
+	ETN_Plastic = 9			UMETA(DisplayName = "Plastic"),
+	ETN_Bone = 10			UMETA(DisplayName = "Bone"),
+	ETN_SoulStone = 11		UMETA(DisplayName = "SoulStone"),
+	ETN_SoulFragment = 12	UMETA(DisplayName = "SoulFragment"),
+	ETN_WoodFoundation = 40 UMETA(DisplayName = "WoodFoundation"), // 나무 의자 같은거
+	ETN_WoodWall = 41		UMETA(DisplayName = "WoodWall"),
+	ETN_WoodenRoof = 42		UMETA(DisplayName = "WoodenRoof"),
+	ETN_Woodfloor = 43		UMETA(DisplayName = "Woodfloor"),
 
-	ETN_MAX	UMETA(DisplayName = "MAX")
+	ETN_MAX					UMETA(DisplayName = "MAX")
 
  };
 

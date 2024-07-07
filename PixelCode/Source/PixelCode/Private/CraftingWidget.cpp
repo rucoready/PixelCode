@@ -10,6 +10,9 @@
 #include "ItemStorage.h"
 #include <../../../../../../../Source/Runtime/UMG/Public/Components/Image.h>
 #include <../../../../../../../Source/Runtime/UMG/Public/Components/TextBlock.h>
+#include "Components/HorizontalBox.h"
+#include "CraftingSlotWidget.h"
+#include "Components/Button.h"
 
 
 
@@ -20,7 +23,11 @@ void UCraftingWidget::NativeConstruct()
 	SelectedIndex = 99;
 
 	CraftList->ClearChildren();
-	UE_LOG(LogTemp, Warning, TEXT("5555555555555"))
+	item_Recipes->ClearChildren();
+
+	Btn_Craft->OnClicked.AddUniqueDynamic(this, &UCraftingWidget::OnCraftClicked);
+
+	UE_LOG(LogTemp, Warning, TEXT("5555555555555"));
 	//MakeCraftItem(1, FText::FromString("test item"));
 	//UPROPERTY(EditAnywhere, Category = "Item")MakeCraftItem(2, FText::FromString("test item"));
 
@@ -80,7 +87,11 @@ void UCraftingWidget::SetCraftingInfo(uint8 Index)
 		// 나중에 갯수 넣어줄 자리
 		//T_Stack->SetText(FText::AsNumber(Crafts[SelectedIndex].CraftedItemAmount));
 	}
+
+	InitializeCraftSlot();
 }
+
+
 
 void UCraftingWidget::MakeCraftItem(uint16 Index, const FText& ItemName)
 {
@@ -93,6 +104,50 @@ void UCraftingWidget::MakeCraftItem(uint16 Index, const FText& ItemName)
 			CraftSlot->SetPadding(FMargin(0.f,10.f, 0.f, 0.f));
 			CraftItems.Add(CraftSlot);
 			CraftList->AddChild(CraftSlot.Get());
+		}
+	}
+}
+
+void UCraftingWidget::InitializeCraftSlot()
+{
+	item_Recipes->ClearChildren();
+
+	FCraftItem Info = Crafts[SelectedIndex];
+	for(FRecipe& Recipe : Info.CraftRecipes)
+	{
+		CreateCraftSlot(Recipe);
+	}
+
+}
+
+void UCraftingWidget::OnCraftClicked()
+{
+	if(!Char)
+	{
+		return;
+	}
+
+	Char->CraftItem(Crafts[SelectedIndex]);
+	
+}
+
+void UCraftingWidget::CreateCraftSlot(const FRecipe& Recipe)
+{
+	if(!CraftingSlotTemplate)
+	{
+		return;
+	}
+	TWeakObjectPtr<UCraftingSlotWidget> CraftsSlot = CreateWidget<UCraftingSlotWidget>(this , CraftingSlotTemplate);
+	if(CraftsSlot.IsValid())
+	{
+		CraftsSlot->SetData(FText::AsNumber(Recipe.Amount), ItemStorage->GetCraftItemInfoBasedOn(Recipe.ItemType).ItemIcon);
+		//CraftsSlot->SetPadding(FMargin(20.f, 0.f));
+		item_Recipes->AddChild(CraftsSlot.Get());
+
+		if(CustomTooltipTemplate)
+		{
+		TWeakObjectPtr<UUserWidget> Tooltip = CreateWidget<UUserWidget>(this, CustomTooltipTemplate);
+		CraftsSlot->SetToolTip(Tooltip.Get());
 		}
 	}
 }

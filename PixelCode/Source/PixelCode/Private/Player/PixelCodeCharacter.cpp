@@ -405,6 +405,25 @@ void APixelCodeCharacter::OnCraftingPressed()
 	}
 }
 
+void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
+{
+	TSubclassOf<AActor> Template = ItemStorage->GetTemplateOfItem(Item.CraftedItem);
+	if (Template)
+	{
+		FActorSpawnParameters Params;
+		Params.Owner = this;
+		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		FVector SpawnLoc = FVector(0.f, 0.f, -10000.f);
+		APickup* CraftedItem = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
+		if (CraftedItem)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Success Spawn"));
+
+		}
+	}
+}
+
 AItemStorage* APixelCodeCharacter::GetItemStorage()
 {
 	return ItemStorage;

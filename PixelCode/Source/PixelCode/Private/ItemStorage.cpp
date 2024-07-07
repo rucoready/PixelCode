@@ -22,6 +22,14 @@ TSubclassOf<AActor> AItemStorage::GetTemplateOfItem(uint8 Id)
 	
 }
 
+TSubclassOf<AActor> AItemStorage::GetTemplateOfItem(EItemName ItemName)
+{
+	uint8 ItemId = (uint8) ItemName;
+	UE_LOG(LogTemp, Warning, TEXT("%d"), ItemId);
+
+	return GetTemplateOfItem(ItemId);
+}
+
 TArray<FCraftItem> AItemStorage::GetAllCrafting()
 {
 	UE_LOG(LogTemp, Warning, TEXT("777777777777777777777"))

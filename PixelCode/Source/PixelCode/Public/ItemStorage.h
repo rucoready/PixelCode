@@ -18,6 +18,9 @@ public:
 
 	// id를 기반으로 클래스 가져오기
 	TSubclassOf<AActor> GetTemplateOfItem(uint8 Id);
+
+
+	TSubclassOf<AActor> GetTemplateOfItem(EItemName ItemName);
 	
 
 	// 테스트 =============================================================
