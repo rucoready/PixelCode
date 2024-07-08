@@ -365,6 +365,10 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_SpawnBuilding();
 
+	UPROPERTY(EditAnywhere, Category=KSH)
+	TSubclassOf<class APickup> pickupItem;
+
+
 	// º≠»÷-----------------------------------------------------------------------------------------------------≥°
 	/*UPROPERTY(EditAnywhere, Category="MySettings")
 	class UAnimMontage* rollMT;*/

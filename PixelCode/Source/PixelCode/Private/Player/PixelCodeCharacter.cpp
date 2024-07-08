@@ -41,6 +41,8 @@
 #include "Player/Widget/NormallyWidget.h"
 #include "../../../FX/Niagara/Source/Niagara/Public/NiagaraFunctionLibrary.h"
 #include <../../../../../../../Plugins/FX/Niagara/Source/Niagara/Public/NiagaraComponent.h>
+#include "Player/World/Pickup.h"
+
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -487,6 +489,7 @@ void APixelCodeCharacter::RemoveFoliage(const FHitResult& HitResult)
 		if(FoliageInstance)
 		{
 			FoliageInstance->RemoveInstance(HitResult.Item);
+			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
 	NetMulticastRPC_RemoveFoliage(HitResult);
@@ -505,6 +508,7 @@ void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHi
 		if (FoliageInstance)
 		{
 			FoliageInstance->RemoveInstance(HitResult.Item);
+			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
 }
