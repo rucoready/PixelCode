@@ -130,7 +130,7 @@ void APixelCodeCharacter::BeginPlay()
 	spawnParam.Owner = this;
 	spawnParam.Instigator = this;
 
-	ABaseWeapon* equipment = GetWorld()->SpawnActor<ABaseWeapon>(defaultWeapon, GetActorTransform(), spawnParam);
+	equipment = GetWorld()->SpawnActor<ABaseWeapon>(defaultWeapon, GetActorTransform(), spawnParam);
 
 	if (equipment)
 	{
@@ -853,6 +853,10 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(IA_RemoveFoliage, ETriggerEvent::Started, this, &APixelCodeCharacter::OnRemoveFoliagePressed);
 		EnhancedInputComponent->BindAction(IA_SpawnBuilding, ETriggerEvent::Started, this, &APixelCodeCharacter::OnSpawnBuildingPressed);
 
+		EnhancedInputComponent->BindAction(IA_Weapon, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon);
+		EnhancedInputComponent->BindAction(IA_Weapon2, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon2);
+
+
 	}
 	else
 	{
@@ -996,6 +1000,49 @@ void APixelCodeCharacter::Mousehit()
 		FRotator newRot = UKismetMathLibrary::MakeRotFromZX(GetActorUpVector(), cameraComponentForwardVector);
 
 		SetActorRotation(newRot);
+}
+
+void APixelCodeCharacter::switchWeapon()
+{
+	FActorSpawnParameters spawnParam;
+	spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+	spawnParam.Owner = this;
+	spawnParam.Instigator = this;
+	
+	if (equipment)
+	{
+		equipment->Destroy();
+	}
+	
+	if (axe != nullptr)
+	{ 
+		equipment = GetWorld()->SpawnActor<ABaseWeapon>(axe, GetActorTransform(), spawnParam);
+	}
+
+	if (equipment)
+	{
+		equipment->OnEquipped();
+	}
+	
+}
+
+void APixelCodeCharacter::switchWeapon2()
+{
+	FActorSpawnParameters spawnParam;
+	spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+	spawnParam.Owner = this;
+	spawnParam.Instigator = this;
+
+	if (defaultWeapon != nullptr)
+	{
+		equipment = GetWorld()->SpawnActor<ABaseWeapon>(defaultWeapon, GetActorTransform(), spawnParam);
+	}
+	if (equipment)
+	{
+		equipment->OnEquipped();
+	}
 }
 
 void APixelCodeCharacter::Move(const FInputActionValue& Value)

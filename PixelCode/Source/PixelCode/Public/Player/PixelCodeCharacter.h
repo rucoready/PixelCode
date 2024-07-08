@@ -23,6 +23,7 @@ class AItemStorage;
 class UPlayerStatWidget;
 class ABuilding;
 class UNormallyWidget;
+class ABaseWeapon;
 
 UENUM()
 enum class MyEnum : int8
@@ -139,6 +140,12 @@ class APixelCodeCharacter : public APlayerOrganism
  	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
 	UInputAction* IA_SpawnBuilding; 
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
+	UInputAction* IA_Weapon; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
+	UInputAction* IA_Weapon2; 
+
 public:
 	APixelCodeCharacter();
 	// Áø¿ø S
@@ -186,6 +193,10 @@ public:
 	
 	FVector CachedDestination;
 	void Mousehit();
+
+	void switchWeapon();
+
+	void switchWeapon2();
 
 	UPROPERTY(EditAnywhere)
 	class UNiagaraSystem* NS_SkillQ;
@@ -360,6 +371,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "weapon")
 	TSubclassOf<class ABaseWeapon> defaultWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "weapon")
+	TSubclassOf<class ABaseWeapon> axe;
+
+	ABaseWeapon* equipment;
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
