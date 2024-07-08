@@ -81,4 +81,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SimulateWeaponPhysics();
 
+	FTimerHandle timerhandle_CoolTimeBossHit;
+
+	void HitCoolTimeSet();
+
+	bool bHit = false;
+
 };
