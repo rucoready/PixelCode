@@ -416,7 +416,9 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 		Params.Owner = this;
 		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		FVector SpawnLoc = FVector(440.f, 0.f, 0.f);
+		//FVector SpawnLoc = FVector(440.f, 0.f, 0.f);
+
+		FVector SpawnLoc = FVector(6797.037641f, -38828.846065f, 3000.503557f);
 		APickup* CraftedItem = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
 		if (CraftedItem)
 		{
@@ -676,7 +678,7 @@ void APixelCodeCharacter::CreateInventory()
 	}
 
 	PlayerInventory->SetSlotsCapacity(60); //인벤토리 슬롯 20개생성
-	PlayerInventory->SetWeightCapacity(50.0f); // 무게용량 50설정
+	PlayerInventory->SetWeightCapacity(1000.0f); // 무게용량 50설정
 }
 
 void APixelCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
