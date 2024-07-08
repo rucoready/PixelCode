@@ -86,6 +86,7 @@ void ABossApernia::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
+    UE_LOG(LogTemp, Warning, TEXT("Boss Current HP : %f"), bossCurrentHP);
 }
 
 // Called to bind functionality to input
@@ -141,6 +142,16 @@ void ABossApernia::SwordCollisionDeactive()
 void ABossApernia::BossTakeDamage(float Damage)
 {
     bossCurrentHP = bossCurrentHP - Damage;
-    PlayAnimMontage(bossTakeDamageMT);
+    int32 value = FMath::RandRange(1, 2);
+    if (value == 1)
+    {
+        PlayAnimMontage(bossTakeDamageMT01);
+    }
+    else
+    {
+        PlayAnimMontage(bossTakeDamageMT2);
+    }
+    
+    UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage2"));
 }
 
