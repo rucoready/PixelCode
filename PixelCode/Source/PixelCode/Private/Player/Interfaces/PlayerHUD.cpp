@@ -118,6 +118,8 @@ void APlayerHUD::ShowOrHideCrafting()
 {
 	if (Crafting)
 	{
+
+		creatwidgets();
 		const FInputModeGameOnly InputMode;
 		Crafting->SetVisibility(ESlateVisibility::Visible);
 		bIsCreatVisible = true;
@@ -152,7 +154,7 @@ void APlayerHUD::ToggleCreate()
 	else
 	{
 		ShowOrHideCrafting();
-		creatwidgets();
+		
 
 		const FInputModeGameAndUI InputMode; // UI만 클릭하도록 설정
 		GetOwningPlayerController()->SetInputMode(InputMode);

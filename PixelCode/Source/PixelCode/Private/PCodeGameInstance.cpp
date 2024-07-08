@@ -116,7 +116,7 @@ void UPCodeGameInstance::OnCreateSessionComplete(FName sessionName, bool bWasSuc
 	// 만약 방생성을 성공했다면 ServerTravel 하고싶다.
 	if (bWasSuccessful)
 	{
-		GetWorld()->ServerTravel(TEXT("/Game/MainMap/MainMap?listen"));
+		GetWorld()->ServerTravel(TEXT("/Game/KSH/Maps/MAP?listen"));
 	}
 }
 
