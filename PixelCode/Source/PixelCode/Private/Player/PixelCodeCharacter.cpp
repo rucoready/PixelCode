@@ -414,7 +414,7 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 		Params.Owner = this;
 		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		FVector SpawnLoc = FVector(0.f, 0.f, -10000.f);
+		FVector SpawnLoc = FVector(440.f, 0.f, 0.f);
 		APickup* CraftedItem = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
 		if (CraftedItem)
 		{
