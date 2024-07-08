@@ -7,6 +7,7 @@
 #include "Player/CollisionComponent.h"
 #include "Player/CombatComponent.h"
 #include "Player/CombatInterface.h"
+#include "Boss/BossApernia.h"
 #include "Player/AnimInstance_Interface.h"
 
 ABaseWeapon::ABaseWeapon()
@@ -153,7 +154,19 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 	UE_LOG(LogTemp, Warning, TEXT("OnHitCollisionComponent Called"));
 
 	AActor* hitActor = lastHitStruct.GetActor();
-
+	ABossApernia* boss = Cast<ABossApernia>(hitActor);
+	if (boss && !bHit)
+	{
+		
+		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 1.0, false);
+		
+		
+		boss->BossTakeDamage(10.0f);
+		bHit = true;
+		
+		UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage1"));
+	}
+	
 	auto interfaceCheck = Cast<ICombatInterface>(hitActor);
 
 	if (interfaceCheck != nullptr)
@@ -164,7 +177,7 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 
 		TSubclassOf<UDamageType> damageTypeClass = {};
 
-		//<< ÀÌ°Å damageTypeClass¶û ºí·çÇÁ¸°Æ®ÀÇ ±âº»°ªÀÌ¶û Â÷ÀÌ°¡ ÀÖ´ÂÁö È®ÀÎÇÊ¿ä
+		//<< ï¿½Ì°ï¿½ damageTypeClassï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ê¿ï¿½
 		UGameplayStatics::ApplyPointDamage(hitActor, weaponDamage, hitFromDirection, lastHitStruct, GetInstigatorController(), this, damageTypeClass);
 	}
 }
@@ -173,4 +186,10 @@ void ABaseWeapon::SimulateWeaponPhysics()
 {
 	GetItemMesh()->SetCollisionProfileName(FName("PhysicsActor"));
 	GetItemMesh()->SetSimulatePhysics(true);
+}
+
+void ABaseWeapon::HitCoolTimeSet()
+{
+
+	bHit = false;
 }
