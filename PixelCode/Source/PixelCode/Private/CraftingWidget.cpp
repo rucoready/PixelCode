@@ -4,6 +4,7 @@
 #include "CraftingWidget.h"
 #include "Components/ScrollBox.h"
 #include "CraftItemWidget.h"
+#include "CustomTooltipWidget.h"
 //#include <../../../../../../../Source/Runtime/Core/Public/UObject/WeakObjectPtrTemplates.h>
 #include "Kismet/GameplayStatics.h"
 #include "Player/PixelCodeCharacter.h"
@@ -20,6 +21,8 @@ void UCraftingWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+
+	bCraftable = true;
 	SelectedIndex = 99;
 
 	CraftList->ClearChildren();
@@ -43,7 +46,7 @@ void UCraftingWidget::NativeConstruct()
 			Crafts = ItemStorage->GetAllCrafting();
 			for (FCraftItem& Item : Crafts)
 			{
-				MakeCraftItem(Index, ItemStorage->GetCraftItemInfoBasedOn(Item.CraftedItem).ItemName);
+				MakeCraftItem(Index, GetItemNameFromType(Item.CraftedItem));
 	
 				if(Index == 0)
 				{
@@ -81,9 +84,9 @@ void UCraftingWidget::SetCraftingInfo(uint8 Index)
 	if(CraftItems.IsValidIndex(SelectedIndex))
 	{ 
 		EItemName EnumName = Crafts[SelectedIndex].CraftedItem;
-		const FText ItemName = ItemStorage->GetCraftItemInfoBasedOn(EnumName).ItemName;
+		const FText ItemName = GetItemNameFromType(EnumName);
 		TextBlock_ItemName->SetText(ItemName);
-		Image_Icon->SetBrush(ItemStorage->GetCraftItemInfoBasedOn(EnumName).ItemIcon);
+		Image_Icon->SetBrush(GetItemIconFromType(EnumName));
 		// 나중에 갯수 넣어줄 자리
 		//T_Stack->SetText(FText::AsNumber(Crafts[SelectedIndex].CraftedItemAmount));
 	}
@@ -127,6 +130,14 @@ void UCraftingWidget::OnCraftClicked()
 		return;
 	}
 
+
+	// 재료 사라짐
+	
+
+
+	// 플레이어 인벤토리 풀
+
+
 	Char->CraftItem(Crafts[SelectedIndex]);
 	
 }
@@ -140,14 +151,30 @@ void UCraftingWidget::CreateCraftSlot(const FRecipe& Recipe)
 	TWeakObjectPtr<UCraftingSlotWidget> CraftsSlot = CreateWidget<UCraftingSlotWidget>(this , CraftingSlotTemplate);
 	if(CraftsSlot.IsValid())
 	{
-		CraftsSlot->SetData(FText::AsNumber(Recipe.Amount), ItemStorage->GetCraftItemInfoBasedOn(Recipe.ItemType).ItemIcon);
+		CraftsSlot->SetData(FText::AsNumber(Recipe.Amount), GetItemIconFromType(Recipe.ItemType));
 		//CraftsSlot->SetPadding(FMargin(20.f, 0.f));
 		item_Recipes->AddChild(CraftsSlot.Get());
 
 		if(CustomTooltipTemplate)
 		{
-		TWeakObjectPtr<UUserWidget> Tooltip = CreateWidget<UUserWidget>(this, CustomTooltipTemplate);
-		CraftsSlot->SetToolTip(Tooltip.Get());
+		TWeakObjectPtr<UCustomTooltipWidget> Tooltip = CreateWidget<UCustomTooltipWidget>(this, CustomTooltipTemplate);
+
+			if(Tooltip.IsValid())
+			{ 
+				Tooltip-> SetItemName(GetItemNameFromType(Recipe.ItemType));
+				CraftsSlot->SetToolTip(Tooltip.Get());
+			}
 		}
 	}
 }
+
+FText UCraftingWidget::GetItemNameFromType(EItemName Name)
+{
+	return ItemStorage->GetCraftItemInfoBasedOn(Name).ItemName;
+}
+
+FSlateBrush UCraftingWidget::GetItemIconFromType(EItemName Name)
+{
+	return ItemStorage->GetCraftItemInfoBasedOn(Name).ItemIcon;
+}
+

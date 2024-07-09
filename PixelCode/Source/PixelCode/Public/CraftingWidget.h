@@ -52,6 +52,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "CRAFT")
 	uint8 SelectedIndex;
 	
+
+	
+	UPROPERTY(VisibleAnywhere, Category = "CRAFT")
+	bool bCraftable;
+	
 	UPROPERTY(VisibleAnywhere, Category = "CRAFT")
 	TArray<TWeakObjectPtr<UCraftItemWidget>> CraftItems;
 
@@ -88,4 +93,9 @@ protected:
 
 	// 레시피 슬롯 베이스
 	void CreateCraftSlot(const FRecipe& Recipe);
+	
+	
+	FText GetItemNameFromType(EItemName Name);
+
+	FSlateBrush GetItemIconFromType(EItemName Name);
 };

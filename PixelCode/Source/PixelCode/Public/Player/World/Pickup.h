@@ -87,4 +87,6 @@ public:
 	FName DesiredItemID;
 
 	void SetInput(const APlayerOrganism* Taker);
+
+
 };

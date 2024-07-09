@@ -149,6 +149,8 @@ void APixelCodeCharacter::BeginPlay()
 	}*/
 
 	//PlayerInventory->HandleAddItem();
+
+
 	
 	// 서휘-----------------------------------------------------------------------------------------------------
 	if (BuildingClass)
@@ -420,8 +422,7 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 		APickup* CraftedItem = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
 		if (CraftedItem)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Success Spawn"));
-
+			 
 		}
 	}
 }
@@ -443,7 +444,7 @@ void APixelCodeCharacter::SetBuildMode(bool Enabled)
 	{
 		// 건축자재 preview On
 		Builder->SetActorHiddenInGame(!bInBuildMode);
-		UE_LOG(LogTemp, Warning, TEXT("SetBuildMode"));
+		UE_LOG(LogTemp, Warning, TEXT("SePtBuildMode"));
 	}	
 }
 
@@ -458,7 +459,10 @@ void APixelCodeCharacter::CycleBuildingMesh()
 	}
 }
 
-
+void APixelCodeCharacter::SpawnBuilding()
+{
+	ServerRPC_SpawnBuilding(BuildLoc);
+}
 
 void APixelCodeCharacter::DestroyBuildingInstance()
 {
@@ -510,37 +514,76 @@ void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHi
 	}
 }
 
-void APixelCodeCharacter::SpawnBuilding()
-{
-	if (bInBuildMode && Builder)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("SPAWNBUILDING TOP"));
-		Builder->SpawnBuilding();
-		UE_LOG(LogTemp, Warning, TEXT("SPAWNBUILDING BOTTOM"));
-	}
-}
-
 void APixelCodeCharacter::OnSpawnBuildingPressed()
 {
-	UE_LOG(LogTemp, Warning, TEXT("PRESSED SpawnBuilding START"));
-	ServerRPC_SpawnBuilding();
-	UE_LOG(LogTemp, Warning, TEXT("PRESSED SpawnBuilding END"));
+	SpawnBuilding();
 }
 
-void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
+void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation(FVector _BuildLoc)
 {
-	UE_LOG(LogTemp, Warning, TEXT("SERVER_SPAWNBUILDING_IMPLEMENT TOP"));
-	SpawnBuilding();
-	UE_LOG(LogTemp, Warning, TEXT("SERVER_SPAWNBUILDING_IMPLEMENT MIDDLE"));
+	// 2차
+	//SetBuildPosition(const FHitResult & HitResult);
+	// 1차
+	 
+	// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
+	if (Builder->BuildingClass && !Builder->IsHidden())
+	
+		// IsHidden() --> return bHidden;
+		UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 1ST IF"));
+	{
+		// ABuilding 인스턴스 = 건축자재가 있을 때
+		if (Builder->InteractingBuilding && Builder->bMaterialIsTrue)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 2ND IF"));
+
+			// preview가 초록일 때
+			//if (Builder->bMaterialIsTrue)
+			//{
+			
+				UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 3RD IF"));
+				
+				// ABuildind 클래스의 AddInstance() 호출
+				Builder->InteractingBuilding->AddInstance(Builder->SocketData, Builder->BuildingTypes[Builder->BuildingTypeIndex].BuildType);
+			//}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL ELSE"));
+			
+			FRotator Rotation = FRotator(0);
+			FVector Scale = FVector(0);
+			FTransform Transform = FTransform::Identity;
+
+			Rotation = Builder->GetActorRotation(); // 예시로 회전을 Y축 기준으로 90도 회전합니다.
+			Scale = Builder->GetActorScale3D(); // 예시로 스케일을 (1, 1, 1)로 설정합니다.
+
+			// FTransform 생성
+			Transform = FTransform(Rotation, _BuildLoc, Scale);
+
+			GetWorld()->SpawnActor<ABuilding>(Builder->BuildingClass,Transform);
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------TOP"));
+	// BuildMode 이고 BuildingVisual 인스턴스가 있을 때
+	
+		// BuildingVisual의 SpawnBuilding() 호출
+		//Builder->SpawnBuilding();
+	
+	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------MIDDLE"));
+
 	NetMulticastRPC_SpawnBuilding();
-	UE_LOG(LogTemp, Warning, TEXT("SERVER_SPAWNBUILDING_IMPLEMENT BOTTOM"));
+	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BOTTOM"));
+
 }
 
 void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MULTICAST_SPAWNBUILDING_IMPLEMENT TOP"));
-	SpawnBuilding();
-	UE_LOG(LogTemp, Warning, TEXT("MULTICAST_SPAWNBUILDING_IMPLEMENT BOTTOM"));
+	//if (bInBuildMode && Builder)
+	//{
+		// BuildingVisual의 SpawnBuilding() 호출
+	//GetWorld()->SpawnActor<ABuilding>(Builder->BuildingClass, GetActorTransform());
+	//}
 }
 
 // 서휘-----------------------------------------------------------------------------------------------------끝

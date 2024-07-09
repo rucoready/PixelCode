@@ -356,13 +356,13 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_RemoveFoliage(const FHitResult& HitResult);
 
-	UFUNCTION(BlueprintCallable, Category = KSH)
+	UFUNCTION()
 	void OnSpawnBuildingPressed();
 
-	UFUNCTION(BlueprintCallable, Server, Reliable, Category = KSH)
-	void ServerRPC_SpawnBuilding();
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnBuilding(FVector _BuildLoc);
 
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = KSH)
+	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_SpawnBuilding();
 
 	UPROPERTY(EditAnywhere, Category=KSH)
