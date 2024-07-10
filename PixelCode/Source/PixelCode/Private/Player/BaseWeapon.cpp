@@ -9,11 +9,14 @@
 #include "Player/CombatInterface.h"
 #include "Boss/BossApernia.h"
 #include "Player/AnimInstance_Interface.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
+#include "Player/PlayerOrganism.h"
 
 ABaseWeapon::ABaseWeapon()
 {
 	collisionComponent = CreateDefaultSubobject<UCollisionComponent>(TEXT("CollisionComponent"));
 	ItemStaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 }
 
 void ABaseWeapon::BeginPlay()
@@ -149,6 +152,7 @@ void ABaseWeapon::OnEquippedTarget(UCombatComponent* combatcomp)
 	}
 }
 
+
 void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnHitCollisionComponent Called"));
@@ -156,17 +160,21 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 	AActor* hitActor = lastHitStruct.GetActor();
 	ABossApernia* boss = Cast<ABossApernia>(hitActor);
 	if (boss && !bHit)
-	{
-		
+	{		
 		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 1.0, false);
-		
-		
+
 		boss->BossTakeDamage(10.0f);
 		bHit = true;
 		
 		UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage1"));
 	}
 	
+	Player = Cast<APlayerOrganism>(hitActor);
+	if (Player)
+	{
+		Player->GetHit(lastHitStruct.ImpactPoint);
+	}
+
 	auto interfaceCheck = Cast<ICombatInterface>(hitActor);
 
 	if (interfaceCheck != nullptr)
@@ -177,10 +185,11 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 
 		TSubclassOf<UDamageType> damageTypeClass = {};
 
-		//<< �̰� damageTypeClass�� �������Ʈ�� �⺻���̶� ���̰� �ִ��� Ȯ���ʿ�
+		// 데미지를 플레이어에게 넣어주는 함수
 		UGameplayStatics::ApplyPointDamage(hitActor, weaponDamage, hitFromDirection, lastHitStruct, GetInstigatorController(), this, damageTypeClass);
 	}
 }
+
 
 void ABaseWeapon::SimulateWeaponPhysics()
 {

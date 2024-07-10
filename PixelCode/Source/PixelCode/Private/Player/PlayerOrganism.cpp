@@ -16,6 +16,9 @@
 #include "Player/World/Pickup.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include <../../../../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputComponent.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/Animation/AnimInstance.h>
+#include <../../../../../../../Source/Runtime/Core/Public/UObject/NameTypes.h>
 
 
 // Sets default values
@@ -149,7 +152,7 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 
 	if (hitReaction != nullptr)
 	{
-		PlayAnimMontage(hitReaction);
+		
 	}
 
 	// 디버그
@@ -169,6 +172,81 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 	
 
 	return 0.0f;
+}
+
+void APlayerOrganism::PlayHitReactMontage(const FName& SectionName)
+{
+	AnimInsatnce = GetMesh()->GetAnimInstance();
+	if (AnimInsatnce && hitReaction)
+	{
+		AnimInsatnce->Montage_Play(hitReaction);
+		AnimInsatnce->Montage_JumpToSection(SectionName, hitReaction);
+	}
+}
+
+void APlayerOrganism::GetHit(const FVector& ImpactPoint)
+{
+	DrawDebugSphere(GetWorld(), GetActorLocation(), 8.f, 24, FColor::Orange, false, 5.f);
+
+	const FVector Forward = GetActorForwardVector();
+
+	// 적의 액터 위치 Z에 대한 더 낮은 충격지점
+	const FVector ImpactLowered(ImpactPoint.X, ImpactPoint.Y, GetActorLocation().Z);
+	// 충격 지점 , 0으로 나뉘는걸 방지하기위해 GetSafeNormal() 사용
+	const FVector ToHit = (ImpactLowered - GetActorLocation()).GetSafeNormal();
+
+	// Forward와 ToHit사이의 값 구하기 -> Dot Product
+	// Forward * ToHit = |Forward||ToHit| * cos(theta)
+	// |Forward| = 1, |ToHit| = 1, so Forward * ToHit = cos(theta)
+	const double CosTheta = FVector::DotProduct(Forward, ToHit);
+
+	//(세타)의 역코사인(아크 - 코사인)을 취하여 세타를 구합니다.
+	// 아크 코사인에 코사인 세타전달
+	double Theta = FMath::Acos(CosTheta);
+	// 라디안을 각도로 변환
+	// Theta를 도 단위의 각도로 재지정
+	Theta = FMath::RadiansToDegrees(Theta);
+
+	// 만약 벡터가 아래를 가르키면 세타 포인트는 음수여야함,
+	const FVector CrossProduct = FVector::CrossProduct(Forward, ToHit);
+	if (CrossProduct.Z < 0)
+	{
+		Theta *= -1.f;
+		UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
+	}
+
+	FName Section("HitBack");
+
+	if (Theta >= -45.f && Theta < 45.f)
+	{
+		Section = FName("HitForward");
+		UE_LOG(LogTemp, Warning, TEXT("Front"));
+	}
+	else if (Theta >= -135.f && Theta < -45.f)
+	{
+		Section = FName("HitLeft");
+		UE_LOG(LogTemp, Warning, TEXT("Left"));
+	}
+	else if (Theta >= 45.f && Theta < 135.f)
+	{
+		Section = FName("HitRight");
+		UE_LOG(LogTemp, Warning, TEXT("Right"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Back"));
+	}
+
+	PlayHitReactMontage(Section);
+
+	if (GEngine)
+	{
+		// 화면 디버그 기능
+		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta));
+	}
+	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.0f, 5.f, FColor::Red, 5.f);
+	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
+
 }
 
 void APlayerOrganism::ContinueAttack_Implementation()

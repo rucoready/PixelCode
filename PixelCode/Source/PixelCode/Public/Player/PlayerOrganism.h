@@ -31,7 +31,6 @@ enum class ECharacterMotionState : int8
 class UAnimMontage;
 class UCombatComponent;
 class ULootPanel;
-
 UCLASS()
 class PIXELCODE_API APlayerOrganism : public ACharacter, public ICombatInterface
 {
@@ -71,8 +70,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	ECharacterType characterType;
 	
+	// 피격시 HitReactMontage 재생을 위한 함수
+	void PlayHitReactMontage(const FName& SectionName);
+
 	UPROPERTY(EditDefaultsOnly, Category = "MySettings")
 	UAnimMontage* hitReaction;	
+
+	class UAnimInstance* AnimInsatnce;
+
+	void GetHit(const FVector& ImpactPoint);
 
 	UPROPERTY(Replicated, BlueprintReadWrite)
 	ECharacterMotionState motionState = ECharacterMotionState::Idle;

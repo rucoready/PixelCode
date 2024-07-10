@@ -356,13 +356,13 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_RemoveFoliage(const FHitResult& HitResult);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = KSH)
 	void OnSpawnBuildingPressed();
 
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_SpawnBuilding(FVector _BuildLoc);
+	UFUNCTION(BlueprintCallable, Server, Reliable, Category = KSH)
+	void ServerRPC_SpawnBuilding();
 
-	UFUNCTION(NetMulticast, Reliable)
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = KSH)
 	void NetMulticastRPC_SpawnBuilding();
 
 	UPROPERTY(EditAnywhere, Category=KSH)
@@ -399,8 +399,6 @@ public:
 	void NetMulticastRPC_ToggleCombat();
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
-
-	void GetHit(const FVector& ImpactPoint);
 
 	virtual void DieFunction() override;
 

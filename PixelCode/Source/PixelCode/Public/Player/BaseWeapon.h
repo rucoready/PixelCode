@@ -12,13 +12,15 @@
 class UCollisionComponent;
 class UCombatComponent;
 class UAnimMontage;
- 
+class APlayerOrganism;
+
 UENUM(BlueprintType)
 enum class EWeaponType : uint8
 {
 	None = 0				UMETA(DisplayName = "None"),
 	LightSword				UMETA(DisplayName = "LightSword"),
 	GreatSword				UMETA(DisplayName = "GreatSword"),
+	MagicStaff              UMETA(DisplayName = "MagicStaff"),
 	E_WeaponTypeMax
 };
 
@@ -66,6 +68,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UCombatComponent* combatComponent;
+
+	UPROPERTY()
+	APlayerOrganism* Player;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Initialization")
 	float weaponDamage;
