@@ -52,7 +52,7 @@ UItemBase* UItemBase::CreateItemCopy() const
 	return ItemCopy;
 }
 
-void UItemBase::SetQuantity(const int32 NewQuantity)
+void UItemBase::SetQuantity(const int32 NewQuantity) 
 {
 	if (NewQuantity != Quantity)
 	{

@@ -24,6 +24,9 @@ class UPlayerStatWidget;
 class ABuilding;
 class UNormallyWidget;
 class ABaseWeapon;
+class UCreateItemData;
+class AParentItem;
+struct FRecipe;
 
 UENUM()
 enum class MyEnum : int8
@@ -325,12 +328,34 @@ public:
 	// 저장 품목
 	AItemStorage* GetItemStorage();
 
+	// 아이템 테스트 들감
+	UPROPERTY(EditAnywhere, Category = "KYH")
+	class AParentItem* Iteminfo;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = KYH)
 	AItemStorage* ItemStorage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
 	TSubclassOf<AActor>	ItemStorageTemplate;
 
+	//TArray<UItemBase> Inventory;
+
+	//void ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes);
+
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
+	//TArray <AParentItem> Inventory;
+
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
+	
+	
+
+	//TArray<UItemBase> GetInventory() const;
+
+
+	//int32  GetSpecifictItemAmount(EItemName ItemsName);
+
+	UPROPERTY()
+	UInventoryComponent* OwningInventory;
 
 	// 서휘-----------------------------------------------------------------------------------------------------
 	UFUNCTION(BlueprintCallable, Category = KSH)

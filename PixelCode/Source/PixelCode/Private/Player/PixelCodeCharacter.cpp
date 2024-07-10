@@ -427,6 +427,8 @@ void APixelCodeCharacter::OnCraftingPressed()
 
 void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 {
+	//ReduceRecipeFromInventory(Item.CraftRecipes);
+
 	TSubclassOf<AActor> Template = ItemStorage->GetTemplateOfItem(Item.CraftedItem);
 	if (Template)
 	{
@@ -440,6 +442,7 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 		APickup* CraftedItem = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
 		if (CraftedItem)
 		{
+			//UItemBase info = CraftedItem->GetItemData();
 			UE_LOG(LogTemp, Warning, TEXT("Success Spawn"));
 
 		}
@@ -451,6 +454,43 @@ AItemStorage* APixelCodeCharacter::GetItemStorage()
 	return ItemStorage;
 }
 
+
+
+
+//TArray<UItemBase> APixelCodeCharacter::GetInventory() const
+//{
+//	return Inventory;
+//}
+
+//int32 APixelCodeCharacter::GetSpecifictItemAmount(EItemName ItemsName)
+//{
+//	int32 Amount = 0;
+//	for(UItemBase& Info : Inventory)
+//	{
+//		if(Info.ItemName == ItemsName)
+//		{
+//			Amount += Info.Quantity;
+//		}
+//	}
+//	return Amount;
+//}
+
+//void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes)
+//{
+//	for (const FRecipe& Recipe : Recipes)
+//	{
+//		uint8 RecipeAmount = Recipe.Amount;
+//		for (const UItemBase& Item : Inventory)
+//		{
+//			if (Item.ItemName == Recipe.ItemType)
+//			{
+//				//Item.SetQuantity(Quaternion -= Recipe.Amount)
+//				//Item.SetQuantity(Recipe.Amount);
+//			}
+//		}
+//		// FItemInfo = 아이템 베이스 , itemamount 우리 이름 방식 대로 변경
+//	}
+//}
 
 // 서휘-----------------------------------------------------------------------------------------------------
 void APixelCodeCharacter::SetBuildMode(bool Enabled)

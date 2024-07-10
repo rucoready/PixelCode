@@ -96,6 +96,19 @@ void UCraftingWidget::SetCraftingInfo(uint8 Index)
 
 
 
+bool UCraftingWidget::isCraftable()
+{
+	if(!bCraftable)
+	{
+		return false;
+	}
+	/*else if(Char->isinventoryFull())
+	{
+		return false;
+	}*/
+	return true;
+}
+
 void UCraftingWidget::MakeCraftItem(uint16 Index, const FText& ItemName)
 {
 	if(CraftItemTemplate)
@@ -115,6 +128,8 @@ void UCraftingWidget::InitializeCraftSlot()
 {
 	item_Recipes->ClearChildren();
 
+	bCraftable = true;
+
 	FCraftItem Info = Crafts[SelectedIndex];
 	for(FRecipe& Recipe : Info.CraftRecipes)
 	{
@@ -131,14 +146,23 @@ void UCraftingWidget::OnCraftClicked()
 	}
 
 
+
+
 	// 재료 사라짐
-	
+	if(isCraftable())
+	{
+		Char->CraftItem(Crafts[SelectedIndex]);
+	}
+	else
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Craftable"));
+	}
 
 
 	// 플레이어 인벤토리 풀
 
 
-	Char->CraftItem(Crafts[SelectedIndex]);
+	
 	
 }
 
@@ -165,6 +189,18 @@ void UCraftingWidget::CreateCraftSlot(const FRecipe& Recipe)
 				CraftsSlot->SetToolTip(Tooltip.Get());
 			}
 		}
+			/*if(Char->getspecificItemAmount(Recipe.ItemType) >= Recipe.Amount)
+			{
+				CraftsSlot->SetBackgroundColorBase(true);
+
+			}
+			else
+			{
+				bCraftable = false;
+				CraftsSlot->SetBackgroundColorBase(true);
+			}*/
+
+
 	}
 }
 

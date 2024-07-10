@@ -12,7 +12,7 @@
  UENUM(BlueprintType)
  enum class EItemName : uint8
  {
-	ETN_NONE = 0			UMETA(DisplayName = "Wood"),
+	ETN_NONE = 0			UMETA(DisplayName = "NOne"),
 	EIN_Wood = 2			UMETA(DisplayName = "Wood"),
 	ETN_Smalltwig = 3		UMETA(DisplayName = "Smalltwig"),
 	ETN_Stone = 4			UMETA(DisplayName = "Stone"),

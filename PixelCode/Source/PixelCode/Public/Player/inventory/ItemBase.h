@@ -9,7 +9,7 @@
 
 
 class UInventoryComponent;
-
+class AParentItem;
 /**
  * 
  */
@@ -33,7 +33,7 @@ class PIXELCODE_API UItemBase : public UObject // object로 C++만듬
 	UInventoryComponent* OwningInventory; // 인벤토리
 
 
-	UPROPERTY(VisibleAnywhere, Category = "Item")
+	UPROPERTY(EditAnywhere, Category = "Item")
 	int32 Quantity;
 
 	UPROPERTY(VisibleAnywhere, Category = "Item")
@@ -92,6 +92,9 @@ class PIXELCODE_API UItemBase : public UObject // object로 C++만듬
 
 	UFUNCTION(Category = "Item")
 	virtual void Use(APixelCodeCharacter* Character);// 플레이어 캐릭터 참조인 캐릭터를 가져옴
+
+	UPROPERTY(EditAnywhere, Category = "KYH")
+	class AParentItem* Iteminfo;
 
 
 protected:

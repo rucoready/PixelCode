@@ -56,6 +56,8 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category = "CRAFT")
 	bool bCraftable;
+
+	bool isCraftable();
 	
 	UPROPERTY(VisibleAnywhere, Category = "CRAFT")
 	TArray<TWeakObjectPtr<UCraftItemWidget>> CraftItems;
