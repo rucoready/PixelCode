@@ -57,6 +57,12 @@ public:
 	UPROPERTY(Replicated)
 	bool bReturnedMesh;
 
+	UFUNCTION(BlueprintCallable, Server, Reliable, Category = KSH)
+	void ServerRPC_SetBuildPosition(const FHitResult& HitResult);
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = KSH)
+	void NetMulticastRPC_SetBuildPosition(const FHitResult& HitResult);
+
 public:	 
 	void SetBuildPosition(const FHitResult& HitResult);
 	void SpawnBuilding();

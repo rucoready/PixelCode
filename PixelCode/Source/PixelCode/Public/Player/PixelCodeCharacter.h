@@ -249,7 +249,14 @@ protected:
 	TScriptInterface<IInteractionInterface> TargetInteractable;
 
 	// º≠»÷-----------------------------------------------------------------------------------------------------
-	FHitResult PerformLineTrace(float Distance = 650.0f, bool DrawDebug = false);
+	void PerformLineTrace(float Distance = 650.0f, bool DrawDebug = false);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PerformLineTrace(float Distance, bool DrawDebug);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PerformLineTrace(const FHitResult& HitResult, float Distance, bool DrawDebug);
+
 
 	UPROPERTY(BlueprintReadOnly, Category = KSH)
 	bool bInBuildMode;
@@ -266,7 +273,7 @@ protected:
 
 	FVector BuildLoc;
 
-	void SetBuildPosition(const FHitResult& HitResult);
+	
 	// º≠»÷-----------------------------------------------------------------------------------------------------≥°
 
 
@@ -364,6 +371,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = KSH)
 	void NetMulticastRPC_SpawnBuilding();
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, Category = KSH)
+	void ServerRPC_CycleBuildingMesh();
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = KSH)
+	void NetMulticastRPC_CycleBuildingMesh();
 
 	UPROPERTY(EditAnywhere, Category=KSH)
 	TSubclassOf<class APickup> pickupItem;

@@ -40,7 +40,7 @@ void ABuilding::BeginPlay()
 	BuildingSocketData.InstancedComponent = FoundationInstancedMesh;
 	BuildingSocketData.SocketName = NAME_None;
 	BuildingSocketData.SocketTransform = GetActorTransform();
-	AddInstance(BuildingSocketData, EBuildType::Foundation);
+	ServerRPC_AddInstance(BuildingSocketData, EBuildType::Foundation);
 
 	MeshInstancedSockets = FoundationInstancedMesh->GetAllSocketNames();
 	MeshInstancedSockets.Append(WallInstancedMesh->GetAllSocketNames());
@@ -50,6 +50,7 @@ void ABuilding::BeginPlay()
 
 void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData)
 {	
+	UE_LOG(LogTemp, Warning, TEXT("11"));
 	if (BuildingSocketData.InstancedComponent)
 	{
 		BuildingSocketData.InstancedComponent->RemoveInstance(BuildingSocketData.Index);
@@ -58,6 +59,7 @@ void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData)
 
 FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent* InstancedComponent, int32 InstanceIndex, const FName& SocketName)
 {	
+	UE_LOG(LogTemp, Warning, TEXT("12"));
 	if (InstancedComponent && InstancedComponent->IsValidInstance(InstanceIndex))
 	{
 		// 인스턴스의 위치값을 담는 변수
@@ -81,12 +83,14 @@ FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent*
 
 int32 ABuilding::GetHitIndex(const FHitResult& HitResult)
 {
+	UE_LOG(LogTemp, Warning, TEXT("13"));
 	DrawDebugSphere(GetWorld(), HitResult.Location, 10.0f, 10, FColor::Red);
 	return HitResult.Item;
 }
 
 bool ABuilding::IsValidSocket(UInstancedStaticMeshComponent* HitComponent, int32 Index, const FName& Filter, const FName& SocketName)
 {
+	UE_LOG(LogTemp, Warning, TEXT("14"));
 	bool bSuccess = true;
 	if (!HitComponent->DoesSocketExist(SocketName))
 	{
@@ -125,8 +129,12 @@ bool ABuilding::IsValidSocket(UInstancedStaticMeshComponent* HitComponent, int32
 	return bSuccess;
 }
 
+
+
+
 FBuildingSocketData ABuilding::GetHitSocketTransform(const FHitResult& HitResult, const FName& Filter, float ValidHitDistance)
 {
+	UE_LOG(LogTemp, Warning, TEXT("15"));
 	FBuildingSocketData SocketData = FBuildingSocketData();
 
 	if (UInstancedStaticMeshComponent* HitComponent = Cast<UInstancedStaticMeshComponent>(HitResult.GetComponent()))
@@ -135,8 +143,8 @@ FBuildingSocketData ABuilding::GetHitSocketTransform(const FHitResult& HitResult
 		int32 HitIndex = GetHitIndex(HitResult);
 
 		if (HitIndex != -1)
-		{		
-			for(const FName& SocketName : MeshInstancedSockets)
+		{
+			for (const FName& SocketName : MeshInstancedSockets)
 			{
 				if (IsValidSocket(HitComponent, HitIndex, Filter, SocketName))
 				{
@@ -150,16 +158,32 @@ FBuildingSocketData ABuilding::GetHitSocketTransform(const FHitResult& HitResult
 						SocketData.SocketTransform = SocketTransform;
 						return SocketData;
 					}
-				}		
+				}
 			}
 		}
 	}
 	return SocketData;
 }
 
+void ABuilding::ServerRPC_GetHitSocketTransform_Implementation(FBuildingSocketData SocketData, const FHitResult& HitResult, const FName& Filter, float ValidHitDistance)
+{
+	UE_LOG(LogTemp, Warning, TEXT("16"));
+	GetHitSocketTransform(HitResult, Filter, ValidHitDistance);
+	NetMulticastRPC_GetHitSocketTransform(SocketData, HitResult, Filter, ValidHitDistance);
+}
+
+void ABuilding::NetMulticastRPC_GetHitSocketTransform_Implementation(FBuildingSocketData SocketData, const FHitResult & HitResult, const FName & Filter, float ValidHitDistance)
+{
+	UE_LOG(LogTemp, Warning, TEXT("17"));
+	GetHitSocketTransform(HitResult, Filter, ValidHitDistance);
+}
+
+
+
 
 void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuildType BuildType)
 {
+	UE_LOG(LogTemp, Warning, TEXT("18"));
 	for (FInstanceSocketCheck& InstanceSocket : InstanceSocketsCheck)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDING 1ST FOR"));
@@ -226,18 +250,32 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 					BuildIndexSockets.SocketsInformation.Add(SocketInformation);
 				}
 				InstanceSocket.InstanceSocketInformation.Add(BuildIndexSockets);
-			}	
+			}
 		}
 	}
 
 	switch (BuildType)
 	{
-		case EBuildType::Foundation: FoundationInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
-		case EBuildType::Wall: WallInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
-		case EBuildType::Ceiling: CeilingInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
-		case EBuildType::WoodenPilar: WoodenPilarInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
+	case EBuildType::Foundation: FoundationInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
+	case EBuildType::Wall: WallInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
+	case EBuildType::Ceiling: CeilingInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
+	case EBuildType::WoodenPilar: WoodenPilarInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
 	}
 }
+
+void ABuilding::ServerRPC_AddInstance_Implementation(const FBuildingSocketData& BuildingSocketData, EBuildType BuildType)
+{
+	UE_LOG(LogTemp, Warning, TEXT("19"));
+	NetMulticastRPC_AddInstance(BuildingSocketData,BuildType);
+	AddInstance(BuildingSocketData,BuildType);
+}
+
+void ABuilding::NetMulticastRPC_AddInstance_Implementation(const FBuildingSocketData& BuildingSocketData, EBuildType BuildType)
+{
+	UE_LOG(LogTemp, Warning, TEXT("20"));
+	AddInstance(BuildingSocketData,BuildType);
+}
+
 
 void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -245,5 +283,9 @@ void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 
 	DOREPLIFETIME(ABuilding, MeshInstancedSockets);
 	DOREPLIFETIME(ABuilding, InstanceSocketsCheck);
+	DOREPLIFETIME(ABuilding, FoundationInstancedMesh);
+	DOREPLIFETIME(ABuilding, WallInstancedMesh);
+	DOREPLIFETIME(ABuilding, CeilingInstancedMesh);
+	DOREPLIFETIME(ABuilding, WoodenPilarInstancedMesh);
 	
 }
