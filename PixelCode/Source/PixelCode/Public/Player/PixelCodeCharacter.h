@@ -332,6 +332,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "KYH")
 	class AParentItem* Iteminfo;
 
+	/*
+	UPROPERTY(EditAnywhere, Category = "KYH")
+	class UItemBase* ItemBase;*/
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = KYH)
 	AItemStorage* ItemStorage;
 
@@ -342,14 +346,7 @@ public:
 
 	//void ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes);
 
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
-	//TArray <AParentItem> Inventory;
-
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
-	
-	
-
-	//TArray<UItemBase> GetInventory() const;
+	///TArray<UItemBase> GetInventory() const;
 
 
 	//int32  GetSpecifictItemAmount(EItemName ItemsName);

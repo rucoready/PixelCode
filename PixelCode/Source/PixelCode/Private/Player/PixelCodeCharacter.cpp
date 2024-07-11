@@ -444,6 +444,10 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 		{
 			//UItemBase info = CraftedItem->GetItemData();
 			UE_LOG(LogTemp, Warning, TEXT("Success Spawn"));
+			//OwningInventory->HandleStackableItems();
+			//BeginInteract();
+			//CraftedItem->Destroy();
+			
 
 		}
 	}
@@ -457,11 +461,13 @@ AItemStorage* APixelCodeCharacter::GetItemStorage()
 
 
 
+
+
 //TArray<UItemBase> APixelCodeCharacter::GetInventory() const
 //{
 //	return Inventory;
 //}
-
+//
 //int32 APixelCodeCharacter::GetSpecifictItemAmount(EItemName ItemsName)
 //{
 //	int32 Amount = 0;
@@ -474,22 +480,36 @@ AItemStorage* APixelCodeCharacter::GetItemStorage()
 //	}
 //	return Amount;
 //}
-
+//
 //void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes)
 //{
 //	for (const FRecipe& Recipe : Recipes)
 //	{
 //		uint8 RecipeAmount = Recipe.Amount;
-//		for (const UItemBase& Item : Inventory)
+//		for (UItemBase& Item : Inventory)
 //		{
 //			if (Item.ItemName == Recipe.ItemType)
 //			{
-//				//Item.SetQuantity(Quaternion -= Recipe.Amount)
-//				//Item.SetQuantity(Recipe.Amount);
+//				if(Item.Quantity - Recipe.Amount < 0)
+//				{
+//				
+//				}
+//				else
+//				{
+//					Item.Quantity -= Recipe.Amount;
+//					RecipeAmount -= Recipe.Amount;
+//					if(Item.Quantity == 0)
+//					{
+//						Inventory.Remove(Item);
+//					}
+//					break;
+//				}
 //			}
 //		}
-//		// FItemInfo = 아이템 베이스 , itemamount 우리 이름 방식 대로 변경
-//	}
+		 
+		 
+		 //FItemInfo = 아이템 베이스 , itemamount 우리 이름 방식 대로 변경
+	//}
 //}
 
 // 서휘-----------------------------------------------------------------------------------------------------

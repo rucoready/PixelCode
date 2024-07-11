@@ -293,6 +293,8 @@ void UInventoryComponent::AddNewItem(UItemBase* Item, const int32 AmountToAdd)
 {
 	UItemBase* NewItem;
 
+	
+
 	if (Item->bIsCopy || Item->bIsPickup)
 	{
 		// 항목이 이미 사본이거나 픽업인 경우
@@ -311,5 +313,6 @@ void UInventoryComponent::AddNewItem(UItemBase* Item, const int32 AmountToAdd)
 	InventoryContents.Add(NewItem);	// 새 항목 추가
 	InventoryTotalWeight += NewItem->GetItemStackWeight();// 가중치 조정
 	OnInventoryUpdated.Broadcast(); // 모든 UI요소에 변경사항 적용
+
 }
 
