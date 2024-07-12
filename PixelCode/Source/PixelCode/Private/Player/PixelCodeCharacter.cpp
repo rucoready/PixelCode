@@ -446,23 +446,38 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 
 void APixelCodeCharacter::PickUpItemUp(const UItemBase& Iteminfomation)
 {
-	//	bool bAddNewItem = Iteminfomation.ItemType == EItemName::EIN_Wood
-	//	if(bAddNewItem)
-	//	{
-	//		AddItemToInventory(Iteminfomation);
-	//	}
-	//	//OwningInventory.Add(Iteminfo)
+		bool bAddNewItem = Iteminfomation.ItemType == EItemType::Equipmentable; //|| ItemIndex == 100;
+		if(bAddNewItem)
+		{
+			for(uint8 i= 0; i < Iteminfos->Quantity; i++)
+			{ 
+			//AddItemToInventory(Iteminfomation);
+			}
+		}
+		else
+		{
+			//AddItemToInventory(Iteminfomation /*,ItemIndex*/);
+		}
+		//OwningInventory.Add(Iteminfo)
 
 }
-
-void APixelCodeCharacter::AddItemToInventory(const UItemBase& Iteminfomations)
-{
-	if (Inventory.Num() == MaxInventorySlot)
-	{
-		return;
-	}
-	//Inventory.Add(Iteminfo);
-}
+//
+//void APixelCodeCharacter::AddItemToInventory(const UItemBase& Iteminfomations ,uint8 ItemIndex = 100)
+//{
+//	if (Inventory.Num() == MaxInventorySlot)
+//	{
+//		return;
+//	}
+//	if(ItemIndex == 100)
+//	{
+//		//Inventory.Add(Iteminfo);
+//	}
+//	else
+//	{
+//		Inventory[ItemIndex]->Quantity += Iteminfos->Quantity;
+//	}
+//	//Inventory.Add(Iteminfo);
+//}
 
 AItemStorage* APixelCodeCharacter::GetItemStorage()
 {

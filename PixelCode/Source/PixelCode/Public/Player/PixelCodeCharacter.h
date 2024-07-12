@@ -326,7 +326,7 @@ public:
 
 	void PickUpItemUp(const UItemBase& Iteminfomation);
 	
-	void AddItemToInventory(const UItemBase& Iteminfomations);
+	//void AddItemToInventory(const UItemBase& Iteminfomations, uint8 ItemIndex = 100);
 
 	// 저장 품목
 	AItemStorage* GetItemStorage();
