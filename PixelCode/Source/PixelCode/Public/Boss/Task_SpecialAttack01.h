@@ -20,11 +20,7 @@ public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)override;
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
-	class UAnimMontage* jumpAttack02;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
-	class UAnimMontage* jumpAttack02V2;
+	
 
 	FVector playerLocation;
 
@@ -56,6 +52,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
 	FBlackboardKeySelector jumpAttack2CoolTime;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class APixelCodeCharacter* player;
 
 	bool jumpAttack2;
 };

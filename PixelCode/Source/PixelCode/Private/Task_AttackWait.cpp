@@ -25,8 +25,12 @@ EBTNodeResult::Type UTask_AttackWait::ExecuteTask(UBehaviorTreeComponent& OwnerC
     // 상태 초기화
     currentTime = 0.0f;
 
-    // 플레이어 캐릭터를 가져오고 유효성을 확인
-    APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    TArray<AActor*> foundCharacters;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+    int32 randomIndex = FMath::RandRange(0, foundCharacters.Num() - 1);
+    player = Cast<APixelCodeCharacter>(foundCharacters[randomIndex]);
+
     if (player)
     {
         playerLocation = player->GetActorLocation();
@@ -38,7 +42,7 @@ EBTNodeResult::Type UTask_AttackWait::ExecuteTask(UBehaviorTreeComponent& OwnerC
             if (bossPawn)
             {
                 // boss의 이동 속도 설정
-                ACharacter* bossCharacter = Cast<ACharacter>(bossPawn);
+                ABossApernia* bossCharacter = Cast<ABossApernia>(bossPawn);
                 if (bossCharacter)
                 {
                     UCharacterMovementComponent* movementComponent = bossCharacter->GetCharacterMovement();

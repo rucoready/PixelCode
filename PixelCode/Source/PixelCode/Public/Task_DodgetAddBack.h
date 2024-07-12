@@ -34,6 +34,9 @@ public:
 
     FVector playerLocation;
 
+    UPROPERTY(EditAnywhere, Category = "MySettings")
+    class APixelCodeCharacter* player;
+
     bool onceSpawnStingNiagara = false;
 
     float speed = 500.0f;

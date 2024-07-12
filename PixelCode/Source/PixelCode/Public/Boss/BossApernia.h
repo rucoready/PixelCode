@@ -7,6 +7,9 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BossSword.h"
 #include "Components/ChildActorComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "BossApernia.generated.h"
 
 UCLASS()
@@ -77,7 +80,463 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* bossTakeDamageMT2;
 
+	bool bStiffness = false;
+	///////////////////////////////////////////////////////////////////////////////////////////////Network//////////////////////////////////////////////////////
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+
 	UFUNCTION()
 	void BossTakeDamage(float Damage);
 
+	//Forward Slash//////////////////////////////////////////////////////////
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings", Replicated)
+	class UAnimMontage* swordComboAttack1;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_ForwardSlash();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_ForwardSlash();
+
+	//Jump Attack01/////////////////////////////////////////////////////////////////
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings", Replicated)
+	class UAnimMontage* jumpAttack01V1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings", Replicated)
+	class UAnimMontage* jumpAttack01V2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings", Replicated)
+	class UAnimMontage* jumpAttack01V3;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings", Replicated)
+	class UAnimMontage* jumpAttack01V4;
+
+	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
+	class UNiagaraSystem* groundImpactV1Niagara;
+
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_JumpAttack01V1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_JumpAttack01V1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_JumpAttack01V2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_JumpAttack01V2();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_JumpAttack01V3();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_JumpAttack01V3();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_JumpAttack01V4();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_JumpAttack01V4();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnJumpAttackNiagara();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnJumpAttackNiagara();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnJumpAttackSwordPositionSet();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnJumpAttackSwordPositionSet();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnJumpAttackSwordPositionSet2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnJumpAttackSwordPositionSet2();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnJumpAttackSwordPositionReSet();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnJumpAttackSwordPositionReSet();
+
+
+
+	//Jump Attack02/////////////////////////////////////////////////////////////////
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* jumpAttack02V1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* jumpAttack02V2;
+
+	UPROPERTY(EditAnywhere, Category = "Niagara")
+	class UNiagaraSystem* jumpSwing;
+
+	UPROPERTY(EditAnywhere, Category = "Niagara")
+	class UNiagaraSystem* jumpSwing2;
+
+	UPROPERTY(EditAnywhere, Category = "Niagara")
+	class UNiagaraSystem* jumpSwing3;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_JumpAttack02V1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_JumpAttack02V1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_JumpAttack02V2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_JumpAttack02V2();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnJumpAttackNiagara2V1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnJumpAttackNiagara2V1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnJumpAttackNiagara2V2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnJumpAttackNiagara2V2();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnJumpAttackNiagara2V3();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnJumpAttackNiagara2V3();
+
+	//Jump Attack03/////////////////////////////////////////////////////////////////
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* jumpAttack03V1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* jumpAttack03V2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* jumpAttack03V3;
+
+	UPROPERTY(EditAnywhere, Category = "Niagara")
+	class UNiagaraSystem* groundImpacts;
+
+	UPROPERTY(EditAnywhere, Category = "Particles")
+	class UParticleSystem* groundImpactParticle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	TSubclassOf<UCameraShakeBase> cameraShakeOBJ;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_JumpAttack03V1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_JumpAttack03V1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_JumpAttack03V2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_JumpAttack03V2();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_JumpAttack03V3();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_JumpAttack03V3();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnJumpAttackNiagara3V1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnJumpAttackNiagara3V1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_JumpAttack03CameraShake();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_JumpAttack03CameraShake();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_JumpAttack03SwordPositionSet();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_JumpAttack03SwordPositionSet();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_JumpAttack03SwordPositionReSet();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_JumpAttack03SwordPositionReSet();
+
+	//Normal Attack 01/////////////////////////////////////////////////////////////////
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* swordNormalAttack01V1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* swordNormalAttack01V2;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_NormalAttack01V1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_NormalAttack01V1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_NormalAttack01V2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_NormalAttack01V2();
+
+	//Normal Attack 02/////////////////////////////////////////////////////////////////
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* swordNormalAttack02V1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* swordNormalAttack02V2;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_NormalAttack02V1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_NormalAttack02V1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_NormalAttack02V2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_NormalAttack02V2();
+
+	//Normal Attack 03/////////////////////////////////////////////////////////////////
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* swordNormalAttack04;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_NormalAttack03V1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_NormalAttack03V1();
+
+	//Boss Forward Slash/////////////////////////////////////////////////////////////////
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* forwardSlashAttack;
+
+	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
+	class UNiagaraSystem* impactSwing;
+
+	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
+	class UNiagaraSystem* impactSwing2;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_ForwardSlashAttack();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_ForwardSlasAttack();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnNiagaraForwardSlash();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnNiagaraForwardSlash();
+
+	//Dodge Add Slash/////////////////////////////////////////////////////////////////
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* dodgeAndAttack01;
+
+	UPROPERTY(EditAnywhere, Category = "Niagara")
+	class UNiagaraSystem* doubleSwingNA2;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DodgeAndSlashAttack();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_DodgeAndSlashAttack();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnNiagaraDodgeAndSlash();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnNiagaraDodgeAndSlash();
+
+	//Double Swing/////////////////////////////////////////////////////////////////
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class UAnimMontage* doubleSwingAttack;
+
+	UPROPERTY(EditAnywhere, Category = "Niagara")
+	class UNiagaraSystem* doubleSwingV2;
+
+	UPROPERTY(EditAnywhere, Category = "Niagara")
+	class UNiagaraSystem* doubleSwingV3;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	TSubclassOf<UCameraShakeBase> cameraShakeOBJ2;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DoubleSwingAttack();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_DoubleSwingAttack();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnNiagaraDoubleSwing01();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnNiagaraDoubleSwing01();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnNiagaraDoubleSwing02();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnNiagaraDoubleSwing02();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DoubleSwingCameraShake();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_DoubleSwingCameraShake();
+
+	//Dodge01 [Right]/////////////////////////////////////////////////////////////////
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* dodge01;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DodgeRight();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_DodgeRight();
+
+	//Dodge02 [Left]/////////////////////////////////////////////////////////////////
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* dodge02;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DodgeLeft();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_DodgeLeft();
+
+	//Dodge03 [Back]/////////////////////////////////////////////////////////////////
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* dodge03;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DodgeBack();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_DodgeBack();
+
+	//Sting Attack/////////////////////////////////////////////////////////////////
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* stingAttack01;
+
+	UPROPERTY(EditAnywhere, Category = "Niagara")
+	class UNiagaraSystem* stingAttackNiagara;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	TSubclassOf<UCameraShakeBase> cameraShakeStingOBJ;
+
+
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_StingAttack();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_StingAttack();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnNiagaraStingAttack();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnNiagaraStingAttack();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_StingAttackCameraShake();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_StingAttackCameraShake();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_StingAttackSwordPositionSet();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_StingAttackSwordPositionSet();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_StingAttackSwordPositionReSet();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_StingAttackSwordPositionReSet();
+
+	//Far Jump Attack/////////////////////////////////////////////////////////////////
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* farStompAttack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	TSubclassOf<UCameraShakeBase> cameraShakeFarStompAttackOBJ;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class UParticleSystem* groundImpactParticle2;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class UNiagaraSystem* groundImpactNiagara2;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_FarJumpAttack();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_FarJumpAttack();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnNiagaraFarJumpAttack();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnNiagaraFarJumpAttack();
+
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_FarJumpAttackCameraShake();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_FarJumpAttackCameraShake();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_FarJumpAttackSwordPositionSet();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_FarJumpAttackSwordPositionSet();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_FarJumpAttackSwordPositionReSet();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_FarJumpAttackSwordPositionReSet();
+
+	//Boss First Equip Sword Scene/////////////////////////////////////////////////////////////////
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	class UAnimMontage* swordEquipMT;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SwordFirstEquip();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SwordFirstEquip();
 };

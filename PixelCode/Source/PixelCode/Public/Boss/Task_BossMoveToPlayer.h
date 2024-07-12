@@ -33,8 +33,10 @@ public:
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector canAttackBlackboardKey;
 
-   
+    UPROPERTY(EditAnywhere, Category = "MySettings")
+    class APixelCodeCharacter* player;
 
+    
     
 
     

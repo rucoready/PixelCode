@@ -35,17 +35,18 @@ EBTNodeResult::Type UTask_NormalAttack02::ExecuteTask(UBehaviorTreeComponent& Ow
 
     if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetOwner()))
     {
+        bossController->StopMovement();
         APawn* ControlledPawn = bossController->GetPawn();
         if (ControlledPawn)
         {
-            ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+            ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
 
             if (swordNormalAttack02 && boss->GetMesh() && boss->GetMesh()->GetAnimInstance())
             {
                 //애니메이션을 실행하되 Delegate로 애니메이션이 끝난후 EBTNodeResult::Succeeded를 리턴
                 UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
 
-                boss->PlayAnimMontage(swordNormalAttack02);
+                boss->ServerRPC_NormalAttack02V1();
 
                 if (ABossApernia* bossComponent = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
                 {
@@ -56,7 +57,14 @@ EBTNodeResult::Type UTask_NormalAttack02::ExecuteTask(UBehaviorTreeComponent& Ow
             }
         }
     }
-    APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+    TArray<AActor*> foundCharacters;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+    int32 randomIndex = FMath::RandRange(0, foundCharacters.Num() - 1);
+    player = Cast<APixelCodeCharacter>(foundCharacters[randomIndex]);
+
+
     if (player)
     {
         //플레이어의 위치를 얻어낸다
@@ -95,7 +103,7 @@ void UTask_NormalAttack02::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 
     if (currentTime > 1.8 && currentTime < 1.9)
     {
-        APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+       
         if (player)
         {
             //플레이어의 위치를 얻어낸다
@@ -131,14 +139,14 @@ void UTask_NormalAttack02::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
             APawn* ControlledPawn = bossController->GetPawn();
             if (ControlledPawn)
             {
-                ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+                ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
 
                 if (swordNormalAttack02 && boss->GetMesh() && boss->GetMesh()->GetAnimInstance() && !animOnceV2)
                 {
                     //애니메이션을 실행하되 Delegate로 애니메이션이 끝난후 EBTNodeResult::Succeeded를 리턴
                     UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
 
-                    boss->PlayAnimMontage(swordNormalAttack02V2);
+                    boss->ServerRPC_NormalAttack02V2();
                     animOnceV2 = true;
 
                 }
@@ -163,7 +171,7 @@ void UTask_NormalAttack02::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
         currentTime = 0.0f; // currentTime 초기화
         if (ABossApernia* bossComponent = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
         {
-            APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+            
             if (player)
             {
                 bossComponent->bossSwordComp->SetRelativeLocation(FVector(29.425722f, 55.060376f, 8.3646449f));

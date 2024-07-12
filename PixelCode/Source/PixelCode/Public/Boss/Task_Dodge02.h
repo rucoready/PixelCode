@@ -32,4 +32,7 @@ public:
     FBlackboardKeySelector dodgeLeftCoolTime;
 
     bool dodgeLeft;
+
+    UPROPERTY(EditAnywhere, Category = "MySettings")
+    class APixelCodeCharacter* player;
 };

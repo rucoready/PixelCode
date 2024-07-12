@@ -40,6 +40,12 @@ EBTNodeResult::Type UTTask_StingAttack::ExecuteTask(UBehaviorTreeComponent& Owne
         BossAIController->StopMovement();
     }
 
+    TArray<AActor*> foundCharacters;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+    int32 randomIndex = FMath::RandRange(0, foundCharacters.Num() - 1);
+    player = Cast<APixelCodeCharacter>(foundCharacters[randomIndex]);
+
     return EBTNodeResult::InProgress;
 }
 
@@ -55,8 +61,7 @@ void UTTask_StingAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 
     currentTime += DeltaSeconds;
 
-    //플레이어를 찾는다
-    APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    
     if (player)
     {
         //플레이어의 위치를 얻어낸다
@@ -84,11 +89,10 @@ void UTTask_StingAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
                     if (stingAttack01 && boss->GetMesh() && boss->GetMesh()->GetAnimInstance() && !animOnce)
                     {
                         UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
-                        boss->PlayAnimMontage(stingAttack01);
+                        boss->ServerRPC_StingAttack();
                         animOnce = true;
 
-                        boss->bossSwordComp->SetRelativeLocation(FVector(29.425722f, 55.060376f, 8.3646449f));
-                        boss->bossSwordComp->SetRelativeRotation(FRotator(4.826905f, 1.306981f, 8.324931f));
+                        boss->MulticastRPC_StingAttackSwordPositionSet();
 
                         
                     }
@@ -114,18 +118,8 @@ void UTTask_StingAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
                 {
                     if (ABossApernia* boss = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
                     {
-                        // 보스의 위치와 방향을 가져옴
-                        FVector bossLocation = boss->GetActorLocation();
-                        FVector bossForwardVector = boss->GetActorForwardVector();
-
-                        
-
-                        // 파티클을 스폰할 위치 계산
-                        FVector spawnLocation = bossLocation + bossForwardVector * 400.0f;
-
-
-                        UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), stingAttackNiagara, spawnLocation, FRotator::ZeroRotator, FVector(1.5f));
-
+                        boss->ServerRPC_StingAttackCameraShake();
+                        boss->ServerRPC_SpawnNiagaraStingAttack();
                         onceSpawnStingNiagara = true;
                     }
 
@@ -156,8 +150,7 @@ void UTTask_StingAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
         {
             if (currentTime > 1.7f)
             {
-                boss->bossSwordComp->SetRelativeLocation(FVector(29.425722f, 55.060376f, 8.3646449f));
-                boss->bossSwordComp->SetRelativeRotation(FRotator(4.826905f, 1.306981f, 8.324931f));
+                boss->ServerRPC_StingAttackSwordPositionReSet();
             }
         }
     }

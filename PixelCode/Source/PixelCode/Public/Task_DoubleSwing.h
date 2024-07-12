@@ -50,5 +50,8 @@ class PIXELCODE_API UTask_DoubleSwing : public UBTTask_BlackboardBase
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector doubleSwingAttackCoolTime;
 
+    UPROPERTY(EditAnywhere, Category = "MySettings")
+    class APixelCodeCharacter* player;
+
     bool doubleSwingAttack1;
 };

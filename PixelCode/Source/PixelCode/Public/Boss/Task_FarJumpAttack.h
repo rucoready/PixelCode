@@ -49,5 +49,6 @@ public:
 
     float speedAddMovement = 3200.0f;
 
-    
+    UPROPERTY(EditAnywhere, Category = "MySettings")
+    class APixelCodeCharacter* player;
 };

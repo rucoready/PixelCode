@@ -27,19 +27,27 @@ EBTNodeResult::Type UTask_Dodge02::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 {
     TickTask(OwnerComp, NodeMemory, 0.0f);
 
+    TArray<AActor*> foundCharacters;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+    int32 randomIndex = FMath::RandRange(0, foundCharacters.Num() - 1);
+    player = Cast<APixelCodeCharacter>(foundCharacters[randomIndex]);
+
+
     if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetOwner()))
     {
+        bossController->StopMovement();
         APawn* ControlledPawn = bossController->GetPawn();
         if (ControlledPawn)
         {
-            ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+            ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
 
             if (dodge02 && boss->GetMesh() && boss->GetMesh()->GetAnimInstance())
             {
                 //애니메이션을 실행하되 Delegate로 애니메이션이 끝난후 EBTNodeResult::Succeeded를 리턴
                 UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
 
-                boss->PlayAnimMontage(dodge02);
+                boss->ServerRPC_DodgeLeft();
 
                 // LaunchCharacter를 호출
                 FVector LaunchVelocity(0, -800, 0);
@@ -47,7 +55,7 @@ EBTNodeResult::Type UTask_Dodge02::ExecuteTask(UBehaviorTreeComponent& OwnerComp
                 boss->LaunchCharacter(LaunchVelocity, true, true);
                 
 
-                APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+                
                 if (player)
                 {
                     //플레이어의 위치를 얻어낸다

@@ -33,4 +33,7 @@ public:
 
     bool dodgeRight;
 
+    UPROPERTY(EditAnywhere, Category = "MySettings")
+    class APixelCodeCharacter* player;
+
 };

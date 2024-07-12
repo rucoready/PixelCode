@@ -17,17 +17,7 @@ UTask_SpecialAttack01::UTask_SpecialAttack01(FObjectInitializer const& ObjectIni
 {
     NodeName = TEXT("Jump Attack 02");
 
-    static ConstructorHelpers::FObjectFinder<UAnimMontage> montageObj(TEXT("/Script/Engine.AnimMontage'/Game/KMS_AI/Boss_Alpernia/Animations/AnimationFinish/AM_BossJumpAttack01.AM_BossJumpAttack01'"));
-    if (montageObj.Succeeded())
-    {
-        jumpAttack02 = montageObj.Object;
-    }
-
-    static ConstructorHelpers::FObjectFinder<UAnimMontage> montageObj2(TEXT("/Script/Engine.AnimMontage'/Game/KMS_AI/Boss_Alpernia/Animations/AnimationV2/AM_NormalSlashV5_Montage.AM_NormalSlashV5_Montage'"));
-    if (montageObj2.Succeeded())
-    {
-        jumpAttack02V2 = montageObj2.Object;
-    }
+    
     bNotifyTick = true;
 }
 
@@ -35,28 +25,13 @@ EBTNodeResult::Type UTask_SpecialAttack01::ExecuteTask(UBehaviorTreeComponent& O
 {
     TickTask(OwnerComp, NodeMemory, 0.0f);
 
+    TArray<AActor*> foundCharacters;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+    int32 randomIndex = FMath::RandRange(0, foundCharacters.Num() - 1);
+    player = Cast<APixelCodeCharacter>(foundCharacters[randomIndex]);
+
     
-    APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if (player)
-    {
-        //플레이어의 위치를 얻어낸다
-        playerLocation = player->GetActorLocation();
-        //보스컨트롤러를 캐스팅
-        ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
-        if (bossController)
-        {
-            APawn* bossPawn = bossController->GetPawn();
-            if (bossPawn)
-            {
-                // 방향 설정
-                FVector direction = playerLocation - bossPawn->GetActorLocation();
-                direction.Z = 0; // 보스가 수평으로만 회전하도록 Z축 회전 제거
-                FRotator newRotation = direction.Rotation();
-                bossPawn->SetActorRotation(newRotation);
-                
-            }
-        }
-    }
 
     return EBTNodeResult::InProgress;
 }
@@ -72,7 +47,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 
     if (currentTime > 0.0 && currentTime < 0.1)
     {
-        APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+       
         if (player)
         {
             //플레이어의 위치를 얻어낸다
@@ -81,6 +56,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
             if (bossController)
             {
+                bossController->StopMovement();
                 APawn* bossPawn = bossController->GetPawn();
                 if (bossPawn)
                 {
@@ -97,7 +73,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 
     if (currentTime > 1.9 && currentTime < 2.0)
     {
-        APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+        
         if (player)
         {
             //플레이어의 위치를 얻어낸다
@@ -129,14 +105,14 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             APawn* ControlledPawn = bossController->GetPawn();
             if (ControlledPawn)
             {
-                ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+                ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
 
-                if (jumpAttack02V2 && boss->GetMesh() && boss->GetMesh()->GetAnimInstance() && !animOnceV2)
+                if (boss->GetMesh() && boss->GetMesh()->GetAnimInstance() && !animOnceV2)
                 {
                     //애니메이션을 실행하되 Delegate로 애니메이션이 끝난후 EBTNodeResult::Succeeded를 리턴
                     UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
 
-                    boss->PlayAnimMontage(jumpAttack02V2);
+                    boss->ServerRPC_JumpAttack02V2();
                     animOnceV2 = true;
 
                 }
@@ -151,14 +127,14 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             APawn* ControlledPawn = bossController->GetPawn();
             if (ControlledPawn)
             {
-                ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+                ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
 
-                if (jumpAttack02 && boss->GetMesh() && boss->GetMesh()->GetAnimInstance() && !animOnce)
+                if (boss->GetMesh() && boss->GetMesh()->GetAnimInstance() && !animOnce)
                 {
                     //애니메이션을 실행하되 Delegate로 애니메이션이 끝난후 EBTNodeResult::Succeeded를 리턴
                     UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
 
-                    boss->PlayAnimMontage(jumpAttack02);
+                    boss->ServerRPC_JumpAttack02V1();
                     animOnce = true;
 
 
@@ -178,7 +154,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             APawn* ControlledPawn = bossController->GetPawn();
             if (ControlledPawn)
             {
-                ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+                ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
 
                 if (boss->GetMesh()&& !jumpOnce)
                 {
@@ -200,7 +176,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             APawn* ControlledPawn = bossController->GetPawn();
             if (ControlledPawn)
             {
-                ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+                ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
 
                 if (boss->GetMesh() && !jumpOnce2)
                 {
@@ -224,29 +200,8 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             APawn* ControlledPawn = bossController->GetPawn();
             if (ControlledPawn)
             {
-                ACharacter* boss = Cast<ACharacter>(ControlledPawn);
-
-                FVector bossLocation = boss->GetActorLocation();
-                FVector bossForwardVector = boss->GetActorForwardVector();
-
-                FVector bossSmashingLocation = bossLocation - FVector(0.0f, 0.0f, 500.0f);
-
-                // 현재 보스의 회전값을 가져옵니다.
-                FRotator bossRotation = boss->GetActorRotation();
-
-                // 현재 Pitch 축 값에 90도를 더한 회전값을 계산합니다.
-                float newPitch = bossRotation.Pitch + 270.f;
-
-                // Roll과 Yaw 축 값은 변하지 않도록 현재 값으로 설정합니다.
-                float roll = bossRotation.Roll;
-                float yaw = bossRotation.Yaw;
-
-                // 새로운 회전값을 FRotator로 설정합니다.
-                FRotator bossSmashingRotator(newPitch, yaw, roll);
-
-                bossSmashingRotator.Yaw += -90.0f;
-
-                UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), jumpSwing2, bossSmashingLocation, bossSmashingRotator, FVector(3.0f));
+                ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
+                boss->ServerRPC_SpawnJumpAttackNiagara2V1();
                 jumpNiagara1 = true;
             }
         }
@@ -259,29 +214,9 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             APawn* ControlledPawn = bossController->GetPawn();
             if (ControlledPawn)
             {
-                ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+                ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
 
-                FVector bossLocation = boss->GetActorLocation();
-                FVector bossForwardVector = boss->GetActorForwardVector();
-
-                FVector bossSmashingLocation = bossLocation - FVector(0.0f, 0.0f, 500.0f);
-
-                // 현재 보스의 회전값을 가져옵니다.
-                FRotator bossRotation = boss->GetActorRotation();
-
-                // 현재 Pitch 축 값에 90도를 더한 회전값을 계산합니다.
-                float newPitch = bossRotation.Pitch + -180.f;
-
-                // Roll과 Yaw 축 값은 변하지 않도록 현재 값으로 설정합니다.
-                float roll = bossRotation.Roll;
-                float yaw = bossRotation.Yaw;
-
-                // 새로운 회전값을 FRotator로 설정합니다.
-                FRotator bossSmashingRotator(newPitch, yaw, roll);
-
-                bossSmashingRotator.Yaw += -90.0f;
-
-                UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), jumpSwing3, bossSmashingLocation, bossSmashingRotator, FVector(3.0f));
+                boss->ServerRPC_SpawnJumpAttackNiagara2V2();
                 jumpNiagara2 = true;
             }
         }
@@ -294,29 +229,9 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             APawn* ControlledPawn = bossController->GetPawn();
             if (ControlledPawn)
             {
-                ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+                ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
 
-                FVector bossLocation = boss->GetActorLocation();
-                FVector bossForwardVector = boss->GetActorForwardVector();
-
-                FVector bossSmashingLocation = bossLocation - FVector(0.0f, 0.0f, 200.0f);
-
-                // 현재 보스의 회전값을 가져옵니다.
-                FRotator bossRotation = boss->GetActorRotation();
-
-                // 현재 Pitch 축 값에 90도를 더한 회전값을 계산합니다.
-                float newPitch = bossRotation.Pitch + -180.f;
-
-                // Roll과 Yaw 축 값은 변하지 않도록 현재 값으로 설정합니다.
-                float roll = bossRotation.Roll;
-                float yaw = bossRotation.Yaw;
-
-                // 새로운 회전값을 FRotator로 설정합니다.
-                FRotator bossSmashingRotator(newPitch, yaw, roll);
-
-                bossSmashingRotator.Yaw += -90.0f;
-
-                UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), jumpSwing3, bossSmashingLocation, bossSmashingRotator, FVector(3.0f));
+                boss->ServerRPC_SpawnJumpAttackNiagara2V3();
                 jumpNiagara3 = true;
             }
         }

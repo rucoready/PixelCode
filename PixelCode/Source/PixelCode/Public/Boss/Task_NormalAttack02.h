@@ -25,6 +25,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* swordNormalAttack02V2;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class APixelCodeCharacter* player;
+
 	FVector playerLocation;
 
 	bool animOnce;

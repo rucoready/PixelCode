@@ -32,7 +32,12 @@ EBTNodeResult::Type UTask_NormalAttack03::ExecuteTask(UBehaviorTreeComponent& Ow
 	TickTask(OwnerComp, NodeMemory, 0.0f);
 	animOnce = false;
 
-    APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    TArray<AActor*> foundCharacters;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+    int32 randomIndex = FMath::RandRange(0, foundCharacters.Num() - 1);
+    player = Cast<APixelCodeCharacter>(foundCharacters[randomIndex]);
+
     if (player)
     {
         //플레이어의 위치를 얻어낸다
@@ -56,6 +61,7 @@ EBTNodeResult::Type UTask_NormalAttack03::ExecuteTask(UBehaviorTreeComponent& Ow
     ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
     if (bossController)
     {
+        bossController->StopMovement();
         APawn* bossPawn = bossController->GetPawn();
         ABossApernia* boss = Cast<ABossApernia>(bossPawn);
         if (boss->GetMesh() && boss->GetMesh()->GetAnimInstance())
@@ -90,12 +96,12 @@ void UTask_NormalAttack03::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
             APawn* ControlledPawn = bossController->GetPawn();
             if (ControlledPawn)
             {
-                ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+                ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
 
                 if (swordNormalAttack04 && boss->GetMesh() && boss->GetMesh()->GetAnimInstance())
                 {
                     UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
-                    boss->PlayAnimMontage(swordNormalAttack04);
+                    boss->ServerRPC_NormalAttack03V1();
                     animOnce = true;
                 }
             }
@@ -114,7 +120,7 @@ void UTask_NormalAttack03::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
             if (currentTime >= 1.1f && currentTime <= 1.3f)
             {
                 // 1.1초에서 1.3초 사이에 플레이어의 위치를 다시 얻어와서 방향 설정
-                APixelCodeCharacter* player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+               
                 if (player)
                 {
                     playerLocation = player->GetActorLocation();

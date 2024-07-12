@@ -41,6 +41,9 @@ public:
 
     bool normalAttack03;
 
+    UPROPERTY(EditAnywhere, Category = "MySettings")
+    class APixelCodeCharacter* player;
+
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector normalAttack03CoolTime;
 };

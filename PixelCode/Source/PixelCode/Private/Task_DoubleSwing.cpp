@@ -42,6 +42,12 @@ EBTNodeResult::Type UTask_DoubleSwing::ExecuteTask(UBehaviorTreeComponent& Owner
     onceSpawnStingNiagara = false;
     onceSpawnStingNiagara2 = false;
 
+    TArray<AActor*> foundCharacters;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+    int32 randomIndex = FMath::RandRange(0, foundCharacters.Num() - 1);
+    player = Cast<APixelCodeCharacter>(foundCharacters[randomIndex]);
+
     // 애니메이션 재생 시작
     TickTask(OwnerComp, NodeMemory, 0.0f);
 
@@ -56,8 +62,7 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 
     currentTime += DeltaSeconds;
 
-    // 플레이어를 찾는다
-    APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+   
     if (player)
     {
         // 플레이어의 위치를 얻어낸다
@@ -66,6 +71,7 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
         ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
         if (bossController)
         {
+            bossController->StopMovement();
             APawn* bossPawn = bossController->GetPawn();
             if (bossPawn)
             {
@@ -111,7 +117,7 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
                     if (doubleSwingAttack && boss->GetMesh() && boss->GetMesh()->GetAnimInstance() && !animOnce)
                     {
                         UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
-                        boss->PlayAnimMontage(doubleSwingAttack);
+                        boss->ServerRPC_DoubleSwingAttack();
                         animOnce = true;
 
                     }
@@ -166,15 +172,7 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
                 {
                     if (ABossApernia* boss = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
                     {
-                        // 보스의 위치와 방향을 가져옴
-                        FVector bossLocation = boss->GetActorLocation();
-                        FVector bossForwardVector = boss->GetActorForwardVector();
-
-                        // 파티클을 스폰할 위치 계산 (Z축을 100만큼 올림)
-                        FVector spawnLocation = bossLocation + bossForwardVector * 500.0f;
-                        spawnLocation.Z += 100.0f;
-
-                        UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), doubleSwingNA, spawnLocation, FRotator::ZeroRotator, FVector(4.0f));
+                        boss->ServerRPC_SpawnNiagaraDoubleSwing01();
 
                         onceSpawnStingNiagara = true;
 
@@ -182,7 +180,7 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
                         if (pc != nullptr)
                         {
                             pc->ClientStartCameraShake(cameraShakeOBJ);
-
+                            boss->ServerRPC_DoubleSwingCameraShake();
                         }
                     }
                 }
@@ -192,15 +190,7 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
                 {
                     if (ABossApernia* boss = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
                     {
-                        // 보스의 위치와 방향을 가져옴
-                        FVector bossLocation = boss->GetActorLocation();
-                        FVector bossForwardVector = boss->GetActorForwardVector();
-
-                        // 파티클을 스폰할 위치 계산 (Z축을 100만큼 올림)
-                        FVector spawnLocation = bossLocation + bossForwardVector * 200.0f;
-                        spawnLocation.Z += 100.0f;
-
-                        UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), doubleSwingNA2, spawnLocation, FRotator::ZeroRotator, FVector(3.0f));
+                        boss->ServerRPC_SpawnNiagaraDoubleSwing02();
 
                         onceSpawnStingNiagara2 = true;
 
@@ -208,7 +198,7 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
                         if (pc != nullptr)
                         {
                             pc->ClientStartCameraShake(cameraShakeOBJ);
-
+                            boss->ServerRPC_DoubleSwingCameraShake();
                         }
                     }
                 }
@@ -230,7 +220,7 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
                     if (doubleSwingAttack && boss->GetMesh()&&boss->GetMesh()->GetAnimInstance() && !animOnce2)
                     {
                         UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
-                        boss->PlayAnimMontage(doubleSwingAttack);
+                        boss->ServerRPC_DoubleSwingAttack();
                         animOnce2 = true;
 
                        

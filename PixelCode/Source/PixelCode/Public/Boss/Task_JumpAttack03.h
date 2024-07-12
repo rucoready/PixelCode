@@ -17,14 +17,7 @@ public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)override;
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
-	class UAnimMontage* jumpAttack03;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
-	class UAnimMontage* jumpAttack03V2;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
-	class UAnimMontage* jumpAttack03V3;
+	
 
 	FVector playerLocation;
 
@@ -44,11 +37,9 @@ public:
 
 	bool niagaraOnce = false;
 
-	UPROPERTY(EditAnywhere, Category = "Niagara")
-	class UNiagaraSystem* groundImpacts;
+	bool cameraMovingOnce = false;
 
-	UPROPERTY(EditAnywhere, Category = "Particles")
-	UParticleSystem* groundImpactParticle;
+	
 
 	UPROPERTY(EditAnywhere, Category = "Particles")
 	UParticleSystem* groundImpactParticleV2;
@@ -58,6 +49,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
 	FBlackboardKeySelector jumpAttack3CoolTime;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class APixelCodeCharacter* player;
 
 	bool jumpAttack3;
 };

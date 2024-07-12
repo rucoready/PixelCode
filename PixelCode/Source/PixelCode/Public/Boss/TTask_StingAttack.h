@@ -54,4 +54,7 @@ public:
     FVector lastValidLocation;
     FVector savedTargetLocation;
 
+    UPROPERTY(EditAnywhere, Category = "MySettings")
+    class APixelCodeCharacter* player;
+
 };

@@ -11,23 +11,23 @@
 
 UTask_BossIdleMove::UTask_BossIdleMove(FObjectInitializer const& ObjectInitializer)
 {
-	NodeName = TEXT("Boss Idle Follow Move");
-	
+    NodeName = TEXT("Boss Idle Follow Move");
 
-	bNotifyTick = true;
+
+    bNotifyTick = true;
 }
 
 EBTNodeResult::Type UTask_BossIdleMove::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	TickTask(OwnerComp, NodeMemory, 0.0f);
-	return EBTNodeResult::InProgress;
+    TickTask(OwnerComp, NodeMemory, 0.0f);
+    return EBTNodeResult::InProgress;
 }
 
 void UTask_BossIdleMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
-	
-    
+    Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+
+
 
     ACharacter* const Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (Player)
@@ -46,24 +46,24 @@ void UTask_BossIdleMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 
                     // 블랙보드 키로부터 값을 가져옴
                     bool value = OwnerComp.GetBlackboardComponent()->GetValueAsBool(GetSelectedBlackboardKey());
-                    UE_LOG(LogTemp, Warning, TEXT("Bool : %d"),value);
-                    
+                    UE_LOG(LogTemp, Warning, TEXT("Bool : %d"), value);
+
                     // 조건 확인
                     if (value == true)
                     {
                         // 태스크 완료
-                     
+
                         FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
                         //return;
                     }
 
-                    
+
                 }
 
-                
+
             }
         }
 
     }
-    
+
 }

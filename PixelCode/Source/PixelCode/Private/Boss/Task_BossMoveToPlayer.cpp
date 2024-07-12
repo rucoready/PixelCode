@@ -24,40 +24,40 @@ EBTNodeResult::Type UTask_BossMoveToPlayer::ExecuteTask(UBehaviorTreeComponent& 
 {
     currentTime = 0.0f;
     TickTask(OwnerComp, NodeMemory, 0.0f);
-    
+
     return EBTNodeResult::InProgress;
     //return EBTNodeResult::Succeeded;
-    
-    
+
+
 }
 
 void UTask_BossMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
     Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
-    
+
     currentTime += DeltaSeconds;
 
     if (currentTime >= 5.f)
     {
-        
+
     }
 
     ACharacter* const Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (Player)
     {
-    FVector PlayerLocation = Player->GetActorLocation();
-    
-        
+        FVector PlayerLocation = Player->GetActorLocation();
+
+
         FNavLocation RandomLocation;
         if (UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld()))
         {
-            
+
             if (NavSys->GetRandomPointInNavigableRadius(PlayerLocation, searchRadius, RandomLocation))
             {
-                
+
                 OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), RandomLocation.Location);
-                    
+
 
                 // 블랙보드에서 키를 받아옴
                 bool value = OwnerComp.GetBlackboardComponent()->GetValueAsBool(canAttackBlackboardKey.SelectedKeyName);
@@ -67,16 +67,16 @@ void UTask_BossMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
                 if (value == true)
                 {
                     // 태스크 완료
-                        
-                    
+
+
                     FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-                    
-                    
+
+
                 }
 
             }
         }
-        
+
         else
         {
             OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), PlayerLocation);
@@ -85,10 +85,10 @@ void UTask_BossMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
     }
 
     return;
-    
-}
-    
-  
 
-    
+}
+
+
+
+
 

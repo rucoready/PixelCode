@@ -51,7 +51,7 @@ EBTNodeResult::Type UTask_BossFirstEquitSword::ExecuteTask(UBehaviorTreeComponen
             // 애니메이션 몽타주를 재생합니다.
             if (swordEquitMT && bossCharacter->GetMesh() && bossCharacter->GetMesh()->GetAnimInstance() && !bSwordEquit)
             {
-                bossCharacter->PlayAnimMontage(swordEquitMT);
+                bossCharacter->ServerRPC_SwordFirstEquip();
                 bSwordEquit = true;
 
                 OwnerComp.GetBlackboardComponent()->SetValueAsBool(GetSelectedBlackboardKey(), bSwordEquit);
@@ -63,16 +63,4 @@ EBTNodeResult::Type UTask_BossFirstEquitSword::ExecuteTask(UBehaviorTreeComponen
     
 }
 
-//void UTask_BossFirstEquitSword::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
-//{
-//    Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
-//    currentTime += DeltaSeconds;
-//    if (currentTime > 0.0f)
-//    {
-//        UE_LOG(LogTemp, Warning, TEXT("OverFour"));
 
-        
-//    }
-
-    
-//}

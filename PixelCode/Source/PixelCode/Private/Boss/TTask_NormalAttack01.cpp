@@ -15,18 +15,10 @@ UTTask_NormalAttack01::UTTask_NormalAttack01(FObjectInitializer const& ObjectIni
 {
 	NodeName = TEXT("NormalAttack 01");
 
-    static ConstructorHelpers::FObjectFinder<UAnimMontage> montageObj(TEXT("/Script/Engine.AnimMontage'/Game/KMS_AI/Boss_Alpernia/Animations/AnimationFinish/AS_BossNormalAttack01.AS_BossNormalAttack01'"));
-    if (montageObj.Succeeded())
-    {
-        swordNormalAttack01 = montageObj.Object;
-    }
-
-    static ConstructorHelpers::FObjectFinder<UAnimMontage> montageObj2(TEXT("/Script/Engine.AnimMontage'/Game/KMS_AI/Boss_Alpernia/Animations/AnimationV2/AM_NormalAttackV2_Montage.AM_NormalAttackV2_Montage'"));
-    if (montageObj2.Succeeded())
-    {
-        swordNormalAttack01V2 = montageObj2.Object;
-    }
+    
     bNotifyTick = true;
+
+    
 }
 
 
@@ -34,25 +26,33 @@ UTTask_NormalAttack01::UTTask_NormalAttack01(FObjectInitializer const& ObjectIni
 EBTNodeResult::Type UTTask_NormalAttack01::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
     TickTask(OwnerComp, NodeMemory, 0.0f);
-
+    
     if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetOwner()))
     {
         APawn* ControlledPawn = bossController->GetPawn();
         if (ControlledPawn)
         {
-            ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+            bossController->StopMovement();
+            if (ABossApernia* boss = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
 
-            if (swordNormalAttack01 && boss->GetMesh() && boss->GetMesh()->GetAnimInstance())
+            if (boss->GetMesh() && boss->GetMesh()->GetAnimInstance())
             {
                 //애니메이션을 실행하되 Delegate로 애니메이션이 끝난후 EBTNodeResult::Succeeded를 리턴
                 UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
-
-                boss->PlayAnimMontage(swordNormalAttack01);
+                
+                boss->ServerRPC_NormalAttack01V1();
 
             }
         }
     }
-    APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    
+    
+    TArray<AActor*> foundCharacters;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+    int32 randomIndex = FMath::RandRange(0, foundCharacters.Num() - 1);
+    player = Cast<APixelCodeCharacter>(foundCharacters[randomIndex]);
+
     if (player)
     {
         //플레이어의 위치를 얻어낸다
@@ -73,7 +73,6 @@ EBTNodeResult::Type UTTask_NormalAttack01::ExecuteTask(UBehaviorTreeComponent& O
             }
         }
     }
-
     return EBTNodeResult::InProgress;
   
 }
@@ -90,7 +89,7 @@ void UTTask_NormalAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 
     if (currentTime > 1.2 && currentTime < 1.6)
     {
-        APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+        
         if (player)
         {
             //플레이어의 위치를 얻어낸다
@@ -117,14 +116,14 @@ void UTTask_NormalAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             APawn* ControlledPawn = bossController->GetPawn();
             if (ControlledPawn)
             {
-                ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+                if (ABossApernia* boss = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
 
-                if (swordNormalAttack01 && boss->GetMesh() && boss->GetMesh()->GetAnimInstance()&&!animOnceV2)
+                if (boss->GetMesh() && boss->GetMesh()->GetAnimInstance()&&!animOnceV2)
                 {
                     //애니메이션을 실행하되 Delegate로 애니메이션이 끝난후 EBTNodeResult::Succeeded를 리턴
                     UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
 
-                    boss->PlayAnimMontage(swordNormalAttack01V2);
+                    boss->ServerRPC_NormalAttack01V2();
                     animOnceV2 = true;
 
                 }

@@ -39,19 +39,28 @@ EBTNodeResult::Type UTask_FarJumpAttack::ExecuteTask(UBehaviorTreeComponent& Own
 {
     TickTask(OwnerComp, NodeMemory, 0.0f);
 
+    TArray<AActor*> foundCharacters;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+    int32 randomIndex = FMath::RandRange(0, foundCharacters.Num() - 1);
+    player = Cast<APixelCodeCharacter>(foundCharacters[randomIndex]);
+
+
+
     if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetOwner()))
     {
+        bossController->StopMovement();
         APawn* ControlledPawn = bossController->GetPawn();
         if (ControlledPawn)
         {
-            ACharacter* boss = Cast<ACharacter>(ControlledPawn);
+            ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
 
             if (farStompAttack && boss->GetMesh() && boss->GetMesh()->GetAnimInstance())
             {
                 //애니메이션을 실행하되 Delegate로 애니메이션이 끝난후 EBTNodeResult::Succeeded를 리턴
                 UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
 
-                boss->PlayAnimMontage(farStompAttack);
+                boss->ServerRPC_FarJumpAttack();
 
                 // LaunchCharacter를 호출
                 FVector LaunchVelocity(0, 0, 1500);
@@ -59,7 +68,7 @@ EBTNodeResult::Type UTask_FarJumpAttack::ExecuteTask(UBehaviorTreeComponent& Own
                 boss->LaunchCharacter(LaunchVelocity, true, true);
                 
 
-                APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+               
                 if (player)
                 {
                     //플레이어의 위치를 얻어낸다
@@ -104,7 +113,7 @@ void UTask_FarJumpAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
     if (currentTime >= 1.0f && currentTime < 1.5f)
     {
-        APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
         if (player)
         {
             //플레이어의 위치를 얻어낸다
@@ -131,16 +140,14 @@ void UTask_FarJumpAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
     // 보스 객체를 얻음
     if (ABossApernia* boss = Cast<ABossApernia>(OwnerComp.GetAIOwner()->GetPawn()))
     {
-        // 플레이어 캐릭터를 얻어옴
-        APixelCodeCharacter* const player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+        
         if (player)
         {
             playerLocation = player->GetActorLocation();
 
             if (currentTime >= 1.0f && currentTime < 1.5f) // 1초 후 플레이어에게 다가가기 시작
             {
-                boss->bossSwordComp->SetRelativeLocation(FVector(41.750762f, 266.377071, 22.241364));
-                boss->bossSwordComp->SetRelativeRotation(FRotator(-4.150309f, -5.576854f, 180.027317f));
+                boss->ServerRPC_FarJumpAttackSwordPositionSet();
 
                 FVector DirectionToPlayer = playerLocation - boss->GetActorLocation();
                 DirectionToPlayer.Z = 0; // 수평 이동
@@ -174,20 +181,14 @@ void UTask_FarJumpAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
                 {
                     
                     pc->ClientStartCameraShake(cameraShakeOBJ);
+                    boss->ServerRPC_FarJumpAttackCameraShake();
                     onceCameraShake = true;
                 }
             }
 
             if (currentTime > 1.7f && !onceSpawnGroundParticle01)
             {
-                FVector bossLocation = boss->GetActorLocation();
-                FVector bossForwardVector = boss->GetActorForwardVector();
-
-                FVector bossGroundLocation = bossLocation - FVector(0.0f, 0.0f, boss->GetSimpleCollisionHalfHeight());
-                FVector spawnLocation = bossGroundLocation + bossForwardVector * 200.0f;
-
-                UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), groundImpactParticle, spawnLocation, FRotator::ZeroRotator, FVector(0.7f));
-                UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), groundImpactNiagara, spawnLocation, FRotator::ZeroRotator, FVector(0.5f));
+                boss->ServerRPC_SpawnNiagaraFarJumpAttack();
 
                 onceSpawnGroundParticle01 = true;
             }
@@ -195,8 +196,7 @@ void UTask_FarJumpAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
         if (currentTime > 3.5f)
         {
-            boss->bossSwordComp->SetRelativeLocation(FVector(29.425722f, 55.060376f, 8.3646449f));
-            boss->bossSwordComp->SetRelativeRotation(FRotator(4.826905f, 1.306981f, 8.324931f));
+            boss->ServerRPC_FarJumpAttackSwordPositionReSet();
         }
     }
 

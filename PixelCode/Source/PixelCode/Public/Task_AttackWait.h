@@ -25,4 +25,7 @@ public:
 	float currentTime;
 
 	bool taskOnceMove = false;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class APixelCodeCharacter* player;
 };

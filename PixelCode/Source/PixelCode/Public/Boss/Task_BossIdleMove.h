@@ -21,4 +21,9 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "MySettings")
     float searchRadius = 150.0f;
+
+    UPROPERTY(EditAnywhere, Category = "MySettings")
+    class APixelCodeCharacter* player;
+
+    float currentTime;
 };

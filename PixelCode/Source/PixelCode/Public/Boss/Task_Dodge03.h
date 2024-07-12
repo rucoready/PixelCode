@@ -28,4 +28,7 @@ public:
     bool animOnce;
 
     FVector playerLocation;
+
+    UPROPERTY(EditAnywhere, Category = "MySettings")
+    class APixelCodeCharacter* player;
 };
