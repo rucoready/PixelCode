@@ -629,7 +629,7 @@ void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHi
 
 void APixelCodeCharacter::SpawnBuilding()
 {
-	FString StrbInBuildMode = bInBuildMode ? TEXT("true") : TEXT("false");
+	/*FString StrbInBuildMode = bInBuildMode ? TEXT("true") : TEXT("false");
 	UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding bInBuildMode : %s"), *StrbInBuildMode);
 
 	FString StrBuilder = Builder ? TEXT("true") : TEXT("false");
@@ -637,37 +637,53 @@ void APixelCodeCharacter::SpawnBuilding()
 	if (bInBuildMode && Builder)
 	{
 		Builder->SpawnBuilding();
+	}*/
+
+	UE_LOG(LogTemp, Warning, TEXT("21"));
+	// 2차
+	//SetBuildPosition(const FHitResult & HitResult);
+	// 1차
+	if (bInBuildMode && Builder)
+	{
+		// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
+		if (Builder->BuildingClass && !Builder->IsHidden())
+
+			Builder->SpawnBuilding();
+
+		ServerRPC_SpawnBuilding();
+
+		// IsHidden() --> return bHidden;
 	}
 }
 
 void APixelCodeCharacter::OnSpawnBuildingPressed()
 {
-	if (IsLocallyControlled() && !HasAuthority())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------IsLocallyControlled"));
-		ServerRPC_SpawnBuilding();
-
-	}
-
-	if (HasAuthority())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------HasAuthority"));
-		ServerRPC_SpawnBuilding();
-		NetMulticastRPC_SpawnBuilding();
+		UE_LOG(LogTemp, Warning, TEXT("22"));
+		UE_LOG(LogTemp, Warning, TEXT("PRESSED SpawnBuilding START"));
+		SpawnBuilding();
+		UE_LOG(LogTemp, Warning, TEXT("PRESSED SpawnBuilding END"));
 	}
 }
 
 void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------ServerRPC_SpawnBuilding"));
-	SpawnBuilding();
-	//NetMulticastRPC_SpawnBuilding();
+	UE_LOG(LogTemp, Warning, TEXT("23"));
+	UE_LOG(LogTemp, Warning, TEXT("SERVER_SPAWNBUILDING_IMPLEMENT TOP"));
+	//SpawnBuilding();
+
+
+
+	UE_LOG(LogTemp, Warning, TEXT("SERVER_SPAWNBUILDING_IMPLEMENT MIDDLE"));
+	NetMulticastRPC_SpawnBuilding();
 }
 
 void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------NetMulticastRPC_SpawnBuilding"));
-	SpawnBuilding();
+	UE_LOG(LogTemp, Warning, TEXT("24"));
+	UE_LOG(LogTemp, Warning, TEXT("MULTICAST_SPAWNBUILDING_IMPLEMENT TOP"));
+	Builder->SpawnBuilding();
+	UE_LOG(LogTemp, Warning, TEXT("MULTICAST_SPAWNBUILDING_IMPLEMENT BOTTOM"));
 }
 
 // 서휘-----------------------------------------------------------------------------------------------------끝
