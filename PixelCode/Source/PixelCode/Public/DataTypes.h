@@ -24,7 +24,7 @@ struct FBuildingVisualType
  	UPROPERTY(EditDefaultsOnly, Category = KSH)
  	class UStaticMesh* BuildingMesh;
 
-	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	UPROPERTY( EditDefaultsOnly, Category = KSH)
 	EBuildType BuildType;
 
 	UPROPERTY(EditDefaultsOnly, Category = KSH)

@@ -144,6 +144,9 @@ class APixelCodeCharacter : public APlayerOrganism
 	UInputAction* IA_SpawnBuilding; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
+	UInputAction* IA_CycleMesh; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
 	UInputAction* IA_Weapon; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
@@ -252,20 +255,16 @@ protected:
 	TScriptInterface<IInteractionInterface> TargetInteractable;
 
 	// 서휘-----------------------------------------------------------------------------------------------------
-	void PerformLineTrace(float Distance = 650.0f, bool DrawDebug = false);
+	FHitResult PerformLineTrace(float Distance = 650.0f, bool DrawDebug = false);
 
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_PerformLineTrace(float Distance, bool DrawDebug);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticastRPC_PerformLineTrace(const FHitResult& HitResult, float Distance, bool DrawDebug);
-
-
-	UPROPERTY(BlueprintReadOnly, Category = KSH)
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = KSH)
 	bool bInBuildMode;
 
 	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
 	TSubclassOf<ABuildingVisual> BuildingClass;
+
+	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
+	TSubclassOf<ABuilding> BuildingC;
 
 	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	ABuildingVisual* Builder;
@@ -273,10 +272,9 @@ protected:
 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	ABuilding* Buildings;
 
-
-	FVector BuildLoc;
-
-	
+// 	FVector BuildLoc;
+// 
+// 	void SetBuildPosition(const FHitResult& HitResult);
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
 
@@ -328,7 +326,7 @@ public:
 	// 저장 품목
 	AItemStorage* GetItemStorage();
 
-	// 아이템 테스트 들감
+	
 	UPROPERTY(EditAnywhere, Category = "KYH")
 	class AParentItem* Iteminfo;
 
@@ -354,15 +352,31 @@ public:
 	UPROPERTY()
 	UInventoryComponent* OwningInventory;
 
+
 	// 서휘-----------------------------------------------------------------------------------------------------
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void SetBuildMode(bool Enabled);
 
+	UFUNCTION(Server, Reliable)
+ 	void ServerRPC_SetBuildMode();
+
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_SetBuildMode();
+
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	bool GetBuildMode() const { return bInBuildMode; }
 
+	UFUNCTION()
+	void OnCycleMeshPressed();
+
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void CycleBuildingMesh();
+
+	UFUNCTION(Server, Reliable)
+ 	void ServerRPC_CycleBuildingMesh();
+
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_CycleBuildingMesh();
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void SpawnBuilding();
@@ -385,20 +399,20 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_RemoveFoliage(const FHitResult& HitResult);
 
-	UFUNCTION(BlueprintCallable, Category = KSH)
+	UFUNCTION()
 	void OnSpawnBuildingPressed();
 
-	UFUNCTION(BlueprintCallable, Server, Reliable, Category = KSH)
-	void ServerRPC_SpawnBuilding();
+// 	UFUNCTION(Server, Reliable)
+// 	void ServerRPC_SpawnBuilding(FVector _BuildLoc);
 
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = KSH)
+ 	UFUNCTION(Server, Reliable)
+ 	void ServerRPC_SpawnBuilding();
+
+	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_SpawnBuilding();
 
-	UFUNCTION(BlueprintCallable, Server, Reliable, Category = KSH)
-	void ServerRPC_CycleBuildingMesh();
-
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = KSH)
-	void NetMulticastRPC_CycleBuildingMesh();
+// 	UFUNCTION(Client, Reliable)
+// 	void ClientRPC_SpawnBuilding();
 
 	UPROPERTY(EditAnywhere, Category=KSH)
 	TSubclassOf<class APickup> pickupItem;

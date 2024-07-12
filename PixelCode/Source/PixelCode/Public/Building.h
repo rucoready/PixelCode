@@ -14,16 +14,16 @@ public:
 	ABuilding();
 
 protected:
-	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	class UInstancedStaticMeshComponent* FoundationInstancedMesh;
 
-	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	class UInstancedStaticMeshComponent* WallInstancedMesh;
 
-	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	class UInstancedStaticMeshComponent* CeilingInstancedMesh;
 
-	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	class UInstancedStaticMeshComponent* WoodenPilarInstancedMesh;
 
 	UPROPERTY(Replicated)
@@ -46,20 +46,6 @@ public:
 	 int32 GetHitIndex(const FHitResult& HitResult);
 
 	 FBuildingSocketData GetHitSocketTransform(const FHitResult& HitResult, const FName& Filter, float ValidHitDistance = 100.0f);
-
-
-	 UFUNCTION(BlueprintCallable, Server, Reliable, Category = KSH)
-	void ServerRPC_GetHitSocketTransform(FBuildingSocketData SocketData,const FHitResult& HitResult, const FName& Filter, float ValidHitDistance);
-
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = KSH)
-	void NetMulticastRPC_GetHitSocketTransform(FBuildingSocketData SocketData,const FHitResult& HitResult, const FName& Filter, float ValidHitDistance);
-
-	UFUNCTION(BlueprintCallable, Server, Reliable, Category = KSH)
-	void ServerRPC_AddInstance(const FBuildingSocketData& BuildingSocketData, EBuildType BuildType);
-
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = KSH)
-	void NetMulticastRPC_AddInstance(const FBuildingSocketData& BuildingSocketData, EBuildType BuildType);
-
 
 	 void AddInstance(const FBuildingSocketData& BuildingSocketData, EBuildType BuildType);
 

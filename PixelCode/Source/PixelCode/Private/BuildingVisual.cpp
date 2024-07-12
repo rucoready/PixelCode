@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Components/InstancedStaticMeshComponent.h>
+#include "Player/PixelCodeCharacter.h"
 
 
 // Sets default values
@@ -41,18 +42,16 @@ void ABuildingVisual::BeginPlay()
 		bMaterialIsTrue = true;
 		BuildMesh->SetMaterial(0, MaterialTrue);
 	}
-	UE_LOG(LogTemp, Warning, TEXT("1"));
+
 }
 
 ABuilding* ABuildingVisual::GetHitBuildingActor(const FHitResult& HitResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("2"));
 	return Cast<ABuilding>(HitResult.GetActor());
 }
 
 void ABuildingVisual::SetMeshTo(EBuildType BuildType)
 {
-	UE_LOG(LogTemp, Warning, TEXT("3"));
 	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
 	bReturnedMesh = false;
 	for (const FBuildingVisualType& Building : BuildingTypes)
@@ -67,7 +66,6 @@ void ABuildingVisual::SetMeshTo(EBuildType BuildType)
 
 void ABuildingVisual::ReturnMeshToSelected()
 {
-	UE_LOG(LogTemp, Warning, TEXT("4"));
 	UE_LOG(LogTemp, Warning, TEXT("ReturnMeshToSelected"));
 
 	bReturnedMesh = true;
@@ -77,14 +75,12 @@ void ABuildingVisual::ReturnMeshToSelected()
 	}
 }
 
-
 void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("5"));
 	if (HitResult.bBlockingHit)
 	{
 		SetActorHiddenInGame(false);
-		InteractingBuilding = GetHitBuildingActor(HitResult);
+		InteractingBuilding = GetHitBuildingActor(HitResult); 
 
 		// #19 건축 자재 스냅시키기
 		if (InteractingBuilding)
@@ -93,19 +89,16 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 			{
 				ReturnMeshToSelected();
 			}
-
+			
 			SocketData = InteractingBuilding->GetHitSocketTransform(HitResult, BuildingTypes[BuildingTypeIndex].FilterCharacter, 25.0f);
-			InteractingBuilding->ServerRPC_GetHitSocketTransform(SocketData, HitResult, BuildingTypes[BuildingTypeIndex].FilterCharacter, 25.0f);
+
 			if (!SocketData.SocketTransform.Equals(FTransform()))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("wpqkf"));
 				SetActorTransform(SocketData.SocketTransform);
-				UE_LOG(LogTemp, Warning, TEXT("tlqkf"));
 				if (MaterialTrue && !bMaterialIsTrue)
 				{
 					bMaterialIsTrue = true;
 					BuildMesh->SetMaterial(0, MaterialTrue);
-					NetMulticastRPC_SetBuildPosition(HitResult);
 				}
 				return;
 			}
@@ -126,7 +119,7 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 				SetMeshTo(EBuildType::Foundation);
 			}
 
-			SetActorLocation(HitResult.Location);
+			SetActorLocation(HitResult.ImpactPoint);
 		}
 	}
 	else
@@ -134,59 +127,44 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 		InteractingBuilding = nullptr;
 		SetActorHiddenInGame(true);
 	}
-
-}
-
-void ABuildingVisual::ServerRPC_SetBuildPosition_Implementation(const FHitResult& HitResult)
-{
-	UE_LOG(LogTemp, Warning, TEXT("6"));
-	NetMulticastRPC_SetBuildPosition(HitResult);
-	SetBuildPosition(HitResult);
-}
-
-void ABuildingVisual::NetMulticastRPC_SetBuildPosition_Implementation(const FHitResult& HitResult)
-{
-	UE_LOG(LogTemp, Warning, TEXT("7"));
-	SetBuildPosition(HitResult);
-	
-
-	//UE_LOG(LogTemp, Warning, TEXT("Server SetBuildPosition"));	
 }
 
 void ABuildingVisual::SpawnBuilding()
 {
-	UE_LOG(LogTemp, Warning, TEXT("8"));
+	UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL SpawnBuilding"));
+
+	FString StrBuildingClass = BuildingClass ? TEXT("true") : TEXT("false");
+	UE_LOG(LogTemp, Warning, TEXT("------------------BUILDINGVISUAL BuildingClass : %s"), *StrBuildingClass);
+
+	FString StrInteractingBuilding = InteractingBuilding ? TEXT("true") : TEXT("false");
+	UE_LOG(LogTemp, Warning, TEXT("------------------BUILDINGVISUAL InteractingBuilding : %s"), *StrInteractingBuilding);
+
 	// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
-	//if (BuildingClass && !IsHidden())
+	if (BuildingClass && !IsHidden())
 		// IsHidden() --> return bHidden;
-		UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 1ST IF"));
-	//{
+	{
 		// ABuilding 인스턴스 = 건축자재가 있을 때
-	if (InteractingBuilding)
+		if (InteractingBuilding)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 2ND IF"));
-
 			// preview가 초록일 때
-	if (bMaterialIsTrue)
+			if (bMaterialIsTrue)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 3RD IF"));
-
 				// ABuildind 클래스의 AddInstance() 호출
-				InteractingBuilding->ServerRPC_AddInstance(SocketData, BuildingTypes[BuildingTypeIndex].BuildType);
+ 				InteractingBuilding->AddInstance(SocketData, BuildingTypes[BuildingTypeIndex].BuildType);
+				UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Add Instance"));
 			}
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL ELSE"));
-			UE_LOG(LogTemp, Warning, TEXT("tlqkf1"));
 			GetWorld()->SpawnActor<ABuilding>(BuildingClass, GetActorTransform());
+			UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Spawn Actor"));
+
 		}
-	//}
+	}
 }
 
 void ABuildingVisual::DestroyInstance(const FHitResult& HitResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("9"));
 	if (InteractingBuilding)
 	{
 		if ( UInstancedStaticMeshComponent* InstancedStaticMeshComponent = Cast<UInstancedStaticMeshComponent>(HitResult.GetComponent()))
@@ -202,10 +180,17 @@ void ABuildingVisual::DestroyInstance(const FHitResult& HitResult)
 
 void ABuildingVisual::CycleMesh()
 {
-	UE_LOG(LogTemp, Warning, TEXT("10"));
+	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDINGVISUAL CycleMesh"));
+
 	if (bReturnedMesh)
 	{
 		// 건축자재 인덱스 스크롤로 돌리기
+		FString StrBuildingTypes = BuildingTypeIndex ? TEXT("true") : TEXT("false");
+		UE_LOG(LogTemp, Warning, TEXT("************************BuildingTypeIndex : %s"), *StrBuildingTypes);
+
+		FString StrBuildMesh = BuildMesh ? TEXT("true") : TEXT("false");
+		UE_LOG(LogTemp, Warning, TEXT("************************BuildMesh : %s"), *StrBuildMesh);
+
 		if (++BuildingTypeIndex >= BuildingTypes.Num())
 		{
 			BuildingTypeIndex = 0;
@@ -214,6 +199,8 @@ void ABuildingVisual::CycleMesh()
 		if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
 		{
 			BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
+			UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDINGVISUAL SetStaticMesh"));
+
 		}
 	}	
 }
@@ -233,4 +220,5 @@ void ABuildingVisual::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(ABuildingVisual, SocketData);
 	DOREPLIFETIME(ABuildingVisual, bReturnedMesh);
 }
+
 

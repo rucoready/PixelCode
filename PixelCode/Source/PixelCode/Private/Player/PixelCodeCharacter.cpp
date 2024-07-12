@@ -42,6 +42,7 @@
 #include "../../../FX/Niagara/Source/Niagara/Public/NiagaraFunctionLibrary.h"
 #include <../../../../../../../Plugins/FX/Niagara/Source/Niagara/Public/NiagaraComponent.h>
 #include "Player/World/Pickup.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -182,19 +183,7 @@ void APixelCodeCharacter::BeginPlay()
 }
 
 // 서휘-----------------------------------------------------------------------------------------------------
-void APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug)
-{
-	ServerRPC_PerformLineTrace(Distance, DrawDebug);
-
-
-	//if (DrawDebug)
-	//{
-	//	DrawDebugLine(GetWorld(), Start, End, FColor::Red);
-	//}
-
-}
-
-void APixelCodeCharacter::ServerRPC_PerformLineTrace_Implementation(float Distance, bool DrawDebug)
+FHitResult APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug)
 {
 	FVector Start = GetFollowCamera()->GetComponentLocation();
 	FVector End = Start + GetFollowCamera()->GetForwardVector() * Distance;
@@ -204,20 +193,14 @@ void APixelCodeCharacter::ServerRPC_PerformLineTrace_Implementation(float Distan
 	Params.AddIgnoredActor(this);
 
 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
-	NetMulticastRPC_PerformLineTrace(HitResult, Distance, DrawDebug);
 
-	//NetMulticastRPC_PerformLineTrace(Distance,DrawDebug);
-	
+	if (DrawDebug)
+	{
+		DrawDebugLine(GetWorld(), Start, End, FColor::Red);
+	}
+	//BuildLoc = HitResult.ImpactPoint;
+	return HitResult;
 }
-
-void APixelCodeCharacter::NetMulticastRPC_PerformLineTrace_Implementation(const FHitResult& HitResult, float Distance, bool DrawDebug)
-{
-	//PerformLineTrace(Distance, DrawDebug);
-	
-	Builder->ServerRPC_SetBuildPosition(HitResult);
-	//HitResult?
-}
-
 // 서휘-----------------------------------------------------------------------------------------------------끝
 
 void APixelCodeCharacter::ServerRPC_ToggleCombat_Implementation()
@@ -447,7 +430,7 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 			//OwningInventory->HandleStackableItems();
 			//BeginInteract();
 			//CraftedItem->Destroy();
-			
+
 
 		}
 	}
@@ -457,11 +440,6 @@ AItemStorage* APixelCodeCharacter::GetItemStorage()
 {
 	return ItemStorage;
 }
-
-
-
-
-
 
 //TArray<UItemBase> APixelCodeCharacter::GetInventory() const
 //{
@@ -506,41 +484,110 @@ AItemStorage* APixelCodeCharacter::GetItemStorage()
 //				}
 //			}
 //		}
-		 
-		 
-		 //FItemInfo = 아이템 베이스 , itemamount 우리 이름 방식 대로 변경
+
+
+		 //FItemInfo = 
 	//}
 //}
 
 // 서휘-----------------------------------------------------------------------------------------------------
-void APixelCodeCharacter::SetBuildMode(bool Enabled)
-{
-	// B키 누르면 Enabled
-	bInBuildMode = Enabled;
-	UE_LOG(LogTemp, Warning, TEXT("No Builder"));
 
-	if (Builder)
+void APixelCodeCharacter::OnSetBuildModePressed()
+{
+	// SetBuildMode(!GetBuildMode());
+	if (IsLocallyControlled())
 	{
-		// 건축자재 preview On
-		Builder->SetActorHiddenInGame(!bInBuildMode);
-		UE_LOG(LogTemp, Warning, TEXT("SetBuildMode"));
-	}	
+		ServerRPC_SetBuildMode();
+	}
+	if (HasAuthority())
+	{
+		SetBuildMode(!GetBuildMode());
+	}
 }
 
+void APixelCodeCharacter::SetBuildMode(bool Enabled)
+{
+	bInBuildMode = Enabled;
+	if (Builder)
+	{
+		Builder->SetActorHiddenInGame(!bInBuildMode);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode NoBuilder"));
+	}
+}
 
+void APixelCodeCharacter::ServerRPC_SetBuildMode_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("------------------ServerRPC_SetBuildMode"));
 
+	SetBuildMode(!GetBuildMode());
+
+	ClientRPC_SetBuildMode();
+}
+
+void APixelCodeCharacter::ClientRPC_SetBuildMode_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("------------------ClientRPC_SetBuildMode"));
+	SetBuildMode(!GetBuildMode());
+}
+
+//client
+/*RPC(this, true);
+
+void RPC(char* _client, bool _somthing);
+{
+	_client->somthing = _somthing;
+}*/
+
+void APixelCodeCharacter::OnCycleMeshPressed()
+{
+	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------WheelDown"));
+
+	if (IsLocallyControlled())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CycleMesh Local"));
+		ServerRPC_CycleBuildingMesh();
+	}
+	if (HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CycleMesh Auth"));
+		CycleBuildingMesh();
+	}
+}
+
+void APixelCodeCharacter::CycleBuildingMesh()
+{
+	if (bInBuildMode && Builder)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CycleBuildingMesh"));
+
+		// ABuildingVisual ->CycleMesh 불러옴
+		// CycleMesh() = 스크롤에 따라 건축자재 메시 변경해서 preview로 보이기 
+		Builder->CycleMesh();
+	}
+}
+
+void APixelCodeCharacter::ServerRPC_CycleBuildingMesh_Implementation()
+{
+	CycleBuildingMesh();
+	ClientRPC_CycleBuildingMesh();
+}
+
+void APixelCodeCharacter::ClientRPC_CycleBuildingMesh_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CycleMesh ClientRPC"));
+	CycleBuildingMesh();
+	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CycleMesh ClientRPC END"));
+}
 
 void APixelCodeCharacter::DestroyBuildingInstance()
 {
 	if (bInBuildMode && Builder)
 	{
-		//Builder->DestroyInstance(PerformLineTrace());
+		Builder->DestroyInstance(PerformLineTrace());
 	}
-}
-
-void APixelCodeCharacter::OnSetBuildModePressed()
-{
-	SetBuildMode(!bInBuildMode);
 }
 
 void APixelCodeCharacter::OnRemoveFoliagePressed()
@@ -564,7 +611,7 @@ void APixelCodeCharacter::RemoveFoliage(const FHitResult& HitResult)
 
 void APixelCodeCharacter::ServerRPC_RemoveFoliage_Implementation()
 {
-	//RemoveFoliage(PerformLineTrace());
+	RemoveFoliage(PerformLineTrace());
 }
 
 void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHitResult& HitResult)
@@ -580,84 +627,47 @@ void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHi
 	}
 }
 
-void APixelCodeCharacter::CycleBuildingMesh()
-{
-
-	if (bInBuildMode && Builder)
-	{
-		// ABuildingVisual ->CycleMesh 불러옴
-		// CycleMesh() = 스크롤에 따라 건축자재 메시 변경해서 preview로 보이기 
-		Builder->CycleMesh();
-		ServerRPC_CycleBuildingMesh();
-	}
-}
-
-void APixelCodeCharacter::ServerRPC_CycleBuildingMesh_Implementation()
-{
-	NetMulticastRPC_CycleBuildingMesh();
-
-}
-
-void APixelCodeCharacter::NetMulticastRPC_CycleBuildingMesh_Implementation()
-{
-
-	Builder->CycleMesh();
-
-}
-
-
 void APixelCodeCharacter::SpawnBuilding()
 {
-	UE_LOG(LogTemp, Warning, TEXT("21"));
-	// 2차
-	//SetBuildPosition(const FHitResult & HitResult);
-	// 1차
-	if ( bInBuildMode && Builder)
-	{ 
-		// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
-		if (Builder->BuildingClass && !Builder->IsHidden())
-		
-			Builder->SpawnBuilding();
+	FString StrbInBuildMode = bInBuildMode ? TEXT("true") : TEXT("false");
+	UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding bInBuildMode : %s"), *StrbInBuildMode);
 
-			ServerRPC_SpawnBuilding();
-		
-		// IsHidden() --> return bHidden;
-		UE_LOG(LogTemp, Warning, TEXT("---------------------------------------BUILDINGVISUAL 1ST IF"));
-	
-		UE_LOG(LogTemp, Warning, TEXT("SPAWNBUILDING TOP"));
-	
-		UE_LOG(LogTemp, Warning, TEXT("SPAWNBUILDING BOTTOM"));
-		
-
+	FString StrBuilder = Builder ? TEXT("true") : TEXT("false");
+	UE_LOG(LogTemp, Warning, TEXT("------------------Builder : %s"), *StrBuilder);
+	if (bInBuildMode && Builder)
+	{
+		Builder->SpawnBuilding();
 	}
 }
 
-	void APixelCodeCharacter::OnSpawnBuildingPressed()
+void APixelCodeCharacter::OnSpawnBuildingPressed()
+{
+	if (IsLocallyControlled() && !HasAuthority())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("22"));
-		UE_LOG(LogTemp, Warning, TEXT("PRESSED SpawnBuilding START"));
-		SpawnBuilding();
-		UE_LOG(LogTemp, Warning, TEXT("PRESSED SpawnBuilding END"));
+		UE_LOG(LogTemp, Warning, TEXT("------------------IsLocallyControlled"));
+		ServerRPC_SpawnBuilding();
+
 	}
 
-	void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
+	if (HasAuthority())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("23"));
-		UE_LOG(LogTemp, Warning, TEXT("SERVER_SPAWNBUILDING_IMPLEMENT TOP"));
-		//SpawnBuilding();
-
-		
-
-		UE_LOG(LogTemp, Warning, TEXT("SERVER_SPAWNBUILDING_IMPLEMENT MIDDLE"));
+		UE_LOG(LogTemp, Warning, TEXT("------------------HasAuthority"));
+		ServerRPC_SpawnBuilding();
 		NetMulticastRPC_SpawnBuilding();
 	}
+}
+
+void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("------------------ServerRPC_SpawnBuilding"));
+	SpawnBuilding();
+	//NetMulticastRPC_SpawnBuilding();
+}
 
 void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("24"));
-	UE_LOG(LogTemp, Warning, TEXT("MULTICAST_SPAWNBUILDING_IMPLEMENT TOP"));
-	Builder->SpawnBuilding();
-	UE_LOG(LogTemp, Warning, TEXT("MULTICAST_SPAWNBUILDING_IMPLEMENT BOTTOM"));
+	UE_LOG(LogTemp, Warning, TEXT("------------------NetMulticastRPC_SpawnBuilding"));
+	SpawnBuilding();
 }
 
 // 서휘-----------------------------------------------------------------------------------------------------끝
@@ -680,7 +690,6 @@ void APixelCodeCharacter::NetMulticastRPC_Interact_Implementation(const TScriptI
 
 	this->Interact();
 }
-
 
 float APixelCodeCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
@@ -731,7 +740,8 @@ void APixelCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(APixelCodeCharacter, TargetInteractable);
 	DOREPLIFETIME(APixelCodeCharacter, BuildingClass);
 	DOREPLIFETIME(APixelCodeCharacter, Builder);
-	DOREPLIFETIME(APixelCodeCharacter, Buildings);
+	DOREPLIFETIME(APixelCodeCharacter, Buildings); 
+	DOREPLIFETIME(APixelCodeCharacter, bInBuildMode); 
 
 }
 
@@ -742,8 +752,6 @@ void APixelCodeCharacter::UpdateInteractionWidget() const
 		HUD->UpdateInteractionWidget(TargetInteractable->InteractableData); // 포인터(*)확인해볼것
 	}
 }
-
-
 
 void APixelCodeCharacter::ToggleMenu()
 {
@@ -847,6 +855,7 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(IA_SetBuildMode, ETriggerEvent::Started, this, &APixelCodeCharacter::OnSetBuildModePressed);
 		EnhancedInputComponent->BindAction(IA_RemoveFoliage, ETriggerEvent::Started, this, &APixelCodeCharacter::OnRemoveFoliagePressed);
 		EnhancedInputComponent->BindAction(IA_SpawnBuilding, ETriggerEvent::Started, this, &APixelCodeCharacter::OnSpawnBuildingPressed);
+		EnhancedInputComponent->BindAction(IA_CycleMesh, ETriggerEvent::Started, this, &APixelCodeCharacter::OnCycleMeshPressed);
 
 		EnhancedInputComponent->BindAction(IA_Weapon, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon);
 		EnhancedInputComponent->BindAction(IA_Weapon2, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon2);
@@ -1169,8 +1178,7 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		///FHitResult result;
 		//result = PerformLineTrace(650.0f, false);
 		//UE_LOG(LogTemp,Warning,TEXT("%s"), result);
-		//Builder->ServerRPC_SetBuildPosition(PerformLineTrace(650.0f, false));
-		PerformLineTrace(650.0f, false);
+		Builder->SetBuildPosition(PerformLineTrace(650.0f, false));
 		//UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"), result.ImpactPoint.X,result.ImpactPoint.Y,result.ImpactPoint.Z);
 	}
 	// 서휘-----------------------------------------------------------------------------------------------------끝
