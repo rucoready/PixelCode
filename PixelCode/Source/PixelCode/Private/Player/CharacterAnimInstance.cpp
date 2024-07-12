@@ -101,3 +101,21 @@ void UCharacterAnimInstance::AnimNotify_NSR()
 
 
 
+void UCharacterAnimInstance::AnimNotify_BossGroggy()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bBossGroggy = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_notBossGroggy()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bBossGroggy = false;
+	}
+}
+
+
+

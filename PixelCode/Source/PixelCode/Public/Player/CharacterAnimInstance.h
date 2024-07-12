@@ -29,7 +29,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bDie = false;
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
 	FVector moveDirection;
 
@@ -64,6 +63,13 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_NSR();
+
+	UFUNCTION()
+	void AnimNotify_BossGroggy();
+
+	UFUNCTION()
+	void AnimNotify_notBossGroggy();
+
 };
 
 

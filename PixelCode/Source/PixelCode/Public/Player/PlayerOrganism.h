@@ -143,6 +143,8 @@ public:
 	bool bSkillNSQ = false;
 	bool bSkillNSR = false;
 
+	bool bBossGroggy = false;
+
 
 
 	 // 목표 위치 변수
