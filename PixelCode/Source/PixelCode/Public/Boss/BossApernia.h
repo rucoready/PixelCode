@@ -81,13 +81,26 @@ public:
 	class UAnimMontage* bossTakeDamageMT2;
 
 	bool bStiffness = false;
+	//////Boss Damage System
+	UFUNCTION()
+	void BossTakeDamage(float Damage);
+
+	UFUNCTION()
+	void BossFallDown();
+
+	bool bBossAttackFallDownAttack = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* FallDown;
+
 	///////////////////////////////////////////////////////////////////////////////////////////////Network//////////////////////////////////////////////////////
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 
-	UFUNCTION()
-	void BossTakeDamage(float Damage);
+	
+
+
 
 	//Forward Slash//////////////////////////////////////////////////////////
 

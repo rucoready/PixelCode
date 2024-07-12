@@ -2,6 +2,7 @@
 
 
 #include "Boss/BossApernia.h"
+#include "Boss/BossAIController.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 #include "Components/StaticMeshComponent.h"
@@ -378,24 +379,38 @@ void ABossApernia::SwordCollisionDeactive()
 
 void ABossApernia::BossTakeDamage(float Damage)
 {
-    if (bStiffness)
-    {
+    
         bossCurrentHP = bossCurrentHP - Damage;
         int32 value = FMath::RandRange(1, 2);
         if (value == 1)
         {
-            PlayAnimMontage(bossTakeDamageMT01);
+            //PlayAnimMontage(bossTakeDamageMT01);
         }
         else
         {
-            PlayAnimMontage(bossTakeDamageMT2);
+            //PlayAnimMontage(bossTakeDamageMT2);
         }
 
-        bStiffness = false;
-    }
+        //bStiffness = false;
+        BossFallDown();
+    
     
     
     UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage2"));
+}
+
+void ABossApernia::BossFallDown()
+{
+    if (bBossAttackFallDownAttack)
+    {
+        PlayAnimMontage(FallDown);
+        if (ABossAIController* bossController = Cast<ABossAIController>(GetController())) // GetOwner() 대신 GetController() 사용
+        {
+            bossController->StopMovement();
+            bBossAttackFallDownAttack = false;
+        }
+    }
+    
 }
 
 void ABossApernia::ServerRPC_JumpAttack01V2_Implementation()
