@@ -107,6 +107,12 @@ APixelCodeCharacter::APixelCodeCharacter()
 	bInBuildMode = false;
 
 	// 서휘-----------------------------------------------------------------------------------------------------끝
+
+
+
+	// 요한 =======================================================================================================
+	MaxInventorySlot = 30;
+
 	
 }
 
@@ -423,23 +429,50 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 
 		FVector SpawnLoc = FVector(6797.037641f, -38828.846065f, 3000.503557f);
 		APickup* CraftedItem = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
+
 		if (CraftedItem)
 		{
-			//UItemBase info = CraftedItem->GetItemData();
+			UItemBase* info = CraftedItem->GetItemData();
+
+
+			////CraftedItem->Destroy();
+			info->Quantity = Item.CraftedItemAmount;
+			//PickupItems->InitializePickup(info, )
+
 			UE_LOG(LogTemp, Warning, TEXT("Success Spawn"));
-			//OwningInventory->HandleStackableItems();
-			//BeginInteract();
-			//CraftedItem->Destroy();
-
-
 		}
 	}
+}
+
+void APixelCodeCharacter::PickUpItemUp(const UItemBase& Iteminfomation)
+{
+	//	bool bAddNewItem = Iteminfomation.ItemType == EItemName::EIN_Wood
+	//	if(bAddNewItem)
+	//	{
+	//		AddItemToInventory(Iteminfomation);
+	//	}
+	//	//OwningInventory.Add(Iteminfo)
+
+}
+
+void APixelCodeCharacter::AddItemToInventory(const UItemBase& Iteminfomations)
+{
+	if (Inventory.Num() == MaxInventorySlot)
+	{
+		return;
+	}
+	//Inventory.Add(Iteminfo);
 }
 
 AItemStorage* APixelCodeCharacter::GetItemStorage()
 {
 	return ItemStorage;
 }
+
+
+
+
+
 
 //TArray<UItemBase> APixelCodeCharacter::GetInventory() const
 //{
@@ -459,36 +492,36 @@ AItemStorage* APixelCodeCharacter::GetItemStorage()
 //	return Amount;
 //}
 //
-//void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes)
-//{
-//	for (const FRecipe& Recipe : Recipes)
-//	{
-//		uint8 RecipeAmount = Recipe.Amount;
-//		for (UItemBase& Item : Inventory)
-//		{
-//			if (Item.ItemName == Recipe.ItemType)
-//			{
-//				if(Item.Quantity - Recipe.Amount < 0)
-//				{
-//				
-//				}
-//				else
-//				{
-//					Item.Quantity -= Recipe.Amount;
-//					RecipeAmount -= Recipe.Amount;
-//					if(Item.Quantity == 0)
-//					{
-//						Inventory.Remove(Item);
-//					}
-//					break;
-//				}
-//			}
-//		}
+void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes)
+{
+	/*for (const FRecipe& Recipe : Recipes)
+	{
+		uint8 RecipeAmount = Recipe.Amount;
+		for (Iteminfos& Item : Inventory )
+		{
+			if (Item.ItemName == Recipe.ItemType)
+			{
+				if (Item.Quantity - Recipe.Amount < 0)
+				{
+
+				}
+				else
+				{
+					Item.Quantity -= Recipe.Amount;
+					RecipeAmount -= Recipe.Amount;
+					if (Item.Quantity == 0)
+					{
+						Inventory.Remove(Item);
+					}
+					break;
+				}
+			}
+		}*/
 
 
-		 //FItemInfo = 
-	//}
-//}
+		//FItemInfo = 아이템 베이스, itemamount 우리 이름 방식 대로 변경
+	//s}
+}
 
 // 서휘-----------------------------------------------------------------------------------------------------
 

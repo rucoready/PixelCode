@@ -314,6 +314,7 @@ public:
 	void Interact();
 
 	// 요한
+	// 요한
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "camera", meta )
 
 	UFUNCTION()
@@ -323,16 +324,26 @@ public:
 	UFUNCTION()
 	void CraftItem(const FCraftItem& Item);
 
+	void PickUpItemUp(const UItemBase& Iteminfomation);
+	
+	void AddItemToInventory(const UItemBase& Iteminfomations);
+
 	// 저장 품목
 	AItemStorage* GetItemStorage();
 
-	
+	// 아이템 테스트 들감
 	UPROPERTY(EditAnywhere, Category = "KYH")
 	class AParentItem* Iteminfo;
 
-	/*
 	UPROPERTY(EditAnywhere, Category = "KYH")
-	class UItemBase* ItemBase;*/
+	class UItemBase* Iteminfos;
+
+	UPROPERTY(EditAnywhere, Category = "KYH")
+	class APickup* PickupItems;
+
+	UPROPERTY(EditAnywhere, Category = "KYH")
+	TArray<UItemBase*> Inventory;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = KYH)
 	AItemStorage* ItemStorage;
@@ -342,7 +353,7 @@ public:
 
 	//TArray<UItemBase> Inventory;
 
-	//void ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes);
+	void ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes);
 
 	///TArray<UItemBase> GetInventory() const;
 
@@ -351,6 +362,10 @@ public:
 
 	UPROPERTY()
 	UInventoryComponent* OwningInventory;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	uint8 MaxInventorySlot;
+
 
 
 	// 서휘-----------------------------------------------------------------------------------------------------
