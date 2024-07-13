@@ -81,6 +81,18 @@ void UBossAnimInstance::AnimNotify_CollisionOff()
 	attackCoolTime = false;
 }
 
+void UBossAnimInstance::AnimNotify_Counter1On()
+{
+	boss->SetCounterMaterial();
+	canCounterAttack = true;
+}
+
+void UBossAnimInstance::AnimNotify_Counter1Off()
+{
+	boss->SetOriginMaterial();
+	canCounterAttack = false;
+}
+
 
 
 

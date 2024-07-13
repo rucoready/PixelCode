@@ -49,6 +49,14 @@ public:
 	UFUNCTION()
 	void AnimNotify_CollisionOff();
 
+	UFUNCTION()
+	void AnimNotify_Counter1On();
+
+	UFUNCTION()
+	void AnimNotify_Counter1Off();
+
+	bool canCounterAttack = false;
+
 	FTimerHandle timerhandle_OverlapCoolTime;
 
 	float currentTime;

@@ -88,10 +88,59 @@ public:
 	UFUNCTION()
 	void BossFallDown();
 
+	void RepocessBehaviorTree();
+
+	void RepocessBehaviorTreeRe();
+
+	UPROPERTY(EditAnywhere, Category="MySettings",Replicated)
+	class APlayerOrganism* Player;
+
 	bool bBossAttackFallDownAttack = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+    UBehaviorTreeComponent* savedBTComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+    FVector savedLocation;
+
+	FTimerHandle timerhandle_RepocessBehaviorTree;
+
+	void BossFallDownReset();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* FallDown;
+
+	UPROPERTY(EditAnywhere, Category="MyMaterial")
+	class UMaterial* originalMaterial;
+	UPROPERTY(EditAnywhere, Category="MyMaterial")
+	class UMaterial* originalMaterial2;
+
+	UPROPERTY(EditAnywhere, Category="MyMaterial")
+	class UMaterial* damageMaterial;
+
+	UPROPERTY(EditAnywhere, Category="MyMaterial")
+	class UMaterial* counterMaterial;
+
+	UPROPERTY(EditAnywhere, Category="MyMaterial")
+	class UMaterial* counterMaterial2;
+
+	UPROPERTY(EditAnywhere, Category="MyMesh")
+	USkeletalMeshComponent* meshComponent;
+
+	void SetOriginMaterial();
+
+	void SetCounterMaterial();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* counterGroggy;
+
+	bool bossHitCounterAttack = false;
+
+	void ReflagCounterAttack();
+
+	FTimerHandle timerhandle_ReflagCounterAttack;
+
+	FTimerHandle timerhandle_SetOriginMatetrial;
 
 	///////////////////////////////////////////////////////////////////////////////////////////////Network//////////////////////////////////////////////////////
 
@@ -130,6 +179,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
 	class UNiagaraSystem* groundImpactV1Niagara;
+
+	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
+	class UNiagaraSystem* bissHitNA;
 
 
 	UFUNCTION(Server, Reliable)
@@ -248,6 +300,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	TSubclassOf<UCameraShakeBase> cameraShakeOBJ;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	TSubclassOf<UCameraShakeBase> cameraShakeHitPlayerOBJ;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	TSubclassOf<UCameraShakeBase> cameraShakeCounterOBJ;
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_JumpAttack03V1();
@@ -552,4 +610,15 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_SwordFirstEquip();
+
+	//Boss Falldown//
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	class UAnimMontage* bossFallDownMT;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_BossFallDown(float Damage);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_BossFallDown(float Damage);
+
 };

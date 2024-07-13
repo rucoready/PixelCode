@@ -45,6 +45,9 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
     }
 
 
+
+
+
     if (currentTime > 0.0 && currentTime < 0.1)
     {
        
@@ -112,8 +115,12 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
                     //애니메이션을 실행하되 Delegate로 애니메이션이 끝난후 EBTNodeResult::Succeeded를 리턴
                     UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
 
-                    boss->ServerRPC_JumpAttack02V2();
-                    animOnceV2 = true;
+                    if (boss->bossHitCounterAttack == false)
+                    {
+                        boss->ServerRPC_JumpAttack02V2();
+                        animOnceV2 = true;
+                    }
+                    
 
                 }
             }
@@ -134,8 +141,12 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
                     //애니메이션을 실행하되 Delegate로 애니메이션이 끝난후 EBTNodeResult::Succeeded를 리턴
                     UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
 
-                    boss->ServerRPC_JumpAttack02V1();
-                    animOnce = true;
+                    if (boss->bossHitCounterAttack == false)
+                    {
+                        boss->ServerRPC_JumpAttack02V1();
+                        animOnce = true;
+                    }
+                    
 
 
                 }
@@ -158,12 +169,16 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 
                 if (boss->GetMesh()&& !jumpOnce)
                 {
-                    // LaunchCharacter를 호출하여 보스를 z축으로 30만큼 날려줌
-                    FVector LaunchVelocity(0, 0, 900);
+                    if (boss->bossHitCounterAttack == false)
+                    {
+                        // LaunchCharacter를 호출하여 보스를 z축으로 30만큼 날려줌
+                        FVector LaunchVelocity(0, 0, 900);
 
-                    boss->LaunchCharacter(LaunchVelocity, true, true);
-                    UE_LOG(LogTemp, Warning, TEXT("Launch Characters22222!"));
-                    jumpOnce = true;
+                        boss->LaunchCharacter(LaunchVelocity, true, true);
+                        UE_LOG(LogTemp, Warning, TEXT("Launch Characters22222!"));
+                        jumpOnce = true;
+                    }
+                    
 
                 }
             }
@@ -182,10 +197,13 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
                 {
                     // LaunchCharacter를 호출하여 보스를 z축으로 30만큼 날려줌
                     FVector LaunchVelocity(0, 0, -4000);
-
-                    boss->LaunchCharacter(LaunchVelocity, true, true);
-                    UE_LOG(LogTemp, Warning, TEXT("Launch Characters!"));
-                    jumpOnce2 = true;
+                    if (boss->bossHitCounterAttack == false)
+                    {
+                        boss->LaunchCharacter(LaunchVelocity, true, true);
+                        UE_LOG(LogTemp, Warning, TEXT("Launch Characters!"));
+                        jumpOnce2 = true;
+                    }
+                    
 
                 }
             }
@@ -201,8 +219,12 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             if (ControlledPawn)
             {
                 ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
-                boss->ServerRPC_SpawnJumpAttackNiagara2V1();
-                jumpNiagara1 = true;
+                if (boss->bossHitCounterAttack == false)
+                {
+                    boss->ServerRPC_SpawnJumpAttackNiagara2V1();
+                    jumpNiagara1 = true;
+                }
+                
             }
         }
     }
@@ -215,9 +237,12 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             if (ControlledPawn)
             {
                 ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
-
-                boss->ServerRPC_SpawnJumpAttackNiagara2V2();
-                jumpNiagara2 = true;
+                if (boss->bossHitCounterAttack == false)
+                {
+                    boss->ServerRPC_SpawnJumpAttackNiagara2V2();
+                    jumpNiagara2 = true;
+                }
+                
             }
         }
     }
@@ -230,14 +255,45 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             if (ControlledPawn)
             {
                 ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
+                if (boss->bossHitCounterAttack == false)
+                {
+                    
 
-                boss->ServerRPC_SpawnJumpAttackNiagara2V3();
-                jumpNiagara3 = true;
+                    boss->ServerRPC_SpawnJumpAttackNiagara2V3();
+                    jumpNiagara3 = true;
+                }
+                
             }
         }
     }
-    
+    if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetOwner()))
+    {
+        APawn* ControlledPawn = bossController->GetPawn();
+        if (ControlledPawn)
+        {
+            ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
+            if (boss->bossHitCounterAttack == true)
+            {
+                currentTime = 0.0f; // currentTime 초기화
+                jumpOnce = false;
+                jumpOnce2 = false;
+                jumpNiagara1 = false;
+                jumpNiagara2 = false;
+                jumpNiagara3 = false;
+                jumpAttack2 = false;
+                animOnce = false;
+                animOnceV2 = false;
+                UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
+                BlackboardComp = OwnerComp.GetBlackboardComponent();
+                if (BlackboardComp)
+                {
+                    BlackboardComp->SetValueAsBool(jumpAttack2CoolTime.SelectedKeyName, jumpAttack2);
+                }
+                FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 
+            }
+        }
+    }
     // 1.8초가 지나면 태스크 완료
     if (currentTime >= 5.1f)
     {

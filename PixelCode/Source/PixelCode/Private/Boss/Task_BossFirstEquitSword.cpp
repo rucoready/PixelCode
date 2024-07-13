@@ -16,9 +16,9 @@
 UTask_BossFirstEquitSword::UTask_BossFirstEquitSword(FObjectInitializer const& ObjectInitializer)
 {
     NodeName = TEXT("Boss First Equit Sword Scene");
-    //currentTime = 0.0f;
+    currentTime = 0.0f;
     //escapeTime = 3.0f;
-    //bNotifyTick = true;
+    bNotifyTick = true;
     
 }
 
@@ -59,8 +59,24 @@ EBTNodeResult::Type UTask_BossFirstEquitSword::ExecuteTask(UBehaviorTreeComponen
         }
     }
     //TickTask(OwnerComp, NodeMemory, 0.0f);
-    return EBTNodeResult::Succeeded;
+    return EBTNodeResult::InProgress;
     
+}
+
+void UTask_BossFirstEquitSword::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+    if (currentTime == 0.0f)
+    {
+        
+    }
+    currentTime += DeltaSeconds;
+
+    // 3.5초가 지나면 태스크 완료
+    if (currentTime >= 3.5f)
+    {
+        FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+        
+    }
 }
 
 

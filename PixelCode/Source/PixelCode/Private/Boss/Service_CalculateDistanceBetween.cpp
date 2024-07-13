@@ -46,12 +46,12 @@ void UService_CalculateDistanceBetween::TickNode(UBehaviorTreeComponent& OwnerCo
             // 선택된 플레이어의 위치를 로그로 출력
             if (player)
             {
-                FVector playerLocation = player->GetActorLocation();
-                UE_LOG(LogTemp, Warning, TEXT("Selected PlayerLocation: X=%f, Y=%f, Z=%f"), playerLocation.X, playerLocation.Y, playerLocation.Z);
+				FVector playerLocation = player->GetActorLocation();
+				UE_LOG(LogTemp, Warning, TEXT("Selected PlayerLocation: X=%f, Y=%f, Z=%f"), playerLocation.X, playerLocation.Y, playerLocation.Z);
             }
         }
     }
-
+    
     if (player)
     {
         // BossApernia와 PixelCodeCharacter 사이의 거리 계산

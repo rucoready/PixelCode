@@ -19,6 +19,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "GameFramework/Character.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Player/PlayerOrganism.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "Boss/BossAnimInstance.h"
 
 
 // Sets default values
@@ -218,6 +223,12 @@ ABossApernia::ABossApernia()
     {
         swordEquipMT = montageObj24.Object;
     }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> montageObj25(TEXT("/Script/Engine.AnimMontage'/Game/KMS_AI/Boss_Alpernia/Animations/AnimationDrop/AM_BossDownAndUp.AM_BossDownAndUp'"));
+    if (montageObj25.Succeeded())
+    {
+        bossFallDownMT = montageObj25.Object;
+    }
     ////////////////NIAGARA////////////////////////
     static ConstructorHelpers::FObjectFinder<UNiagaraSystem> niagaraObj1(TEXT("/Script/Niagara.NiagaraSystem'/Game/NiagaraMagicalSlashes/Fx/Slashes/NS_Blade_Sl_10.NS_Blade_Sl_10'"));
     if (niagaraObj1.Succeeded())
@@ -304,7 +315,33 @@ ABossApernia::ABossApernia()
     }
 
 
-
+    //Material
+    
+    static ConstructorHelpers::FObjectFinder<UMaterial> OriginalMaterialFinder(TEXT("/Script/Engine.Material'/Game/KMS_AI/Boss_Alpernia/M_Alpernia/mn_ldea_01_mi.mn_ldea_01_mi'"));
+    static ConstructorHelpers::FObjectFinder<UMaterial> OriginalMaterialFinder2(TEXT("/Script/Engine.Material'/Game/KMS_AI/Boss_Alpernia/M_Alpernia/mn_ldea_01-1_mi.mn_ldea_01-1_mi'"));
+    static ConstructorHelpers::FObjectFinder<UMaterial> DamageMaterialFinder(TEXT("/Script/Engine.Material'/Game/KMS_AI/Boss_Alpernia/M_Alpernia/TestBoss/mn_ldea_01-1_m222222222.mn_ldea_01-1_m222222222'"));
+    static ConstructorHelpers::FObjectFinder<UMaterial> counterMaterialFinder(TEXT("/Script/Engine.Material'/Game/KMS_AI/Boss_Alpernia/M_Alpernia/TestBoss/mn_ldea_01_Counter.mn_ldea_01_Counter'"));
+    static ConstructorHelpers::FObjectFinder<UMaterial> counterMaterial2Finder(TEXT("/Script/Engine.Material'/Game/KMS_AI/Boss_Alpernia/M_Alpernia/TestBoss/mn_ldea_01-1_Counter.mn_ldea_01-1_Counter'"));
+    if (OriginalMaterialFinder.Succeeded())
+    {
+        originalMaterial = OriginalMaterialFinder.Object;
+    }
+    if (OriginalMaterialFinder2.Succeeded())
+    {
+        originalMaterial = OriginalMaterialFinder.Object;
+    }
+    if (DamageMaterialFinder.Succeeded())
+    {
+        damageMaterial = DamageMaterialFinder.Object;
+    }
+    if (counterMaterialFinder.Succeeded())
+    {
+        counterMaterial = counterMaterialFinder.Object;
+    }
+    if (counterMaterial2Finder.Succeeded())
+    {
+        counterMaterial2 = counterMaterial2Finder.Object;
+    }
 
 
 }
@@ -377,38 +414,224 @@ void ABossApernia::SwordCollisionDeactive()
 
 }
 
+void ABossApernia::BossFallDownReset()
+{
+    bBossAttackFallDownAttack = false;
+}
+
+void ABossApernia::SetOriginMaterial()
+{
+    if (originalMaterial)
+    {
+        USkeletalMeshComponent* MeshComp = GetMesh(); // SkeletalMeshComponent를 가져옵니다.
+        if (MeshComp)
+        {
+            // 기존에 있는 머티리얼 슬롯 인덱스를 확인하고 적절히 설정합니다.
+            int32 MaterialIndex = 0; // 적절한 슬롯 인덱스 지정
+            int32 MaterialIndex2 = 1; // 적절한 슬롯 인덱스 지정
+            MeshComp->SetMaterial(MaterialIndex, originalMaterial);
+            MeshComp->SetMaterial(MaterialIndex2, originalMaterial);
+        }
+    }
+}
+
+void ABossApernia::SetCounterMaterial()
+{
+    // Material 변경
+    if (damageMaterial)
+    {
+        USkeletalMeshComponent* MeshComp = GetMesh(); // SkeletalMeshComponent를 가져옵니다.
+        if (MeshComp)
+        {
+            // 기존에 있는 머티리얼 슬롯 인덱스를 확인하고 적절히 설정합니다.
+            int32 MaterialIndex = 0; // 적절한 슬롯 인덱스 지정
+            int32 MaterialIndex2 = 1; // 적절한 슬롯 인덱스 지정
+            MeshComp->SetMaterial(MaterialIndex, counterMaterial);
+            MeshComp->SetMaterial(MaterialIndex2, counterMaterial2);
+
+
+        }
+    }
+}
+
+void ABossApernia::ReflagCounterAttack()
+{
+    bossHitCounterAttack = false;
+    UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
+    if (animInstance)
+    {
+        // BossAnimInstance 타입으로 캐스팅합니다.
+        UBossAnimInstance* bossInstance = Cast<UBossAnimInstance>(animInstance);
+        if (bossInstance)
+        {
+            bossInstance->canCounterAttack = false;
+        }
+    }
+}
+
 void ABossApernia::BossTakeDamage(float Damage)
 {
+    bossCurrentHP = bossCurrentHP - Damage;
+    Player = Cast<APlayerOrganism>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
     
-        bossCurrentHP = bossCurrentHP - Damage;
-        int32 value = FMath::RandRange(1, 2);
-        if (value == 1)
+    if (Player->bBossGroggy == true)
+    {
+        ServerRPC_BossFallDown(Damage);
+    }
+
+    // 애니메이션 인스턴스를 가져옵니다.
+    UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
+    if (animInstance)
+    {
+        // BossAnimInstance 타입으로 캐스팅합니다.
+        UBossAnimInstance* bossInstance = Cast<UBossAnimInstance>(animInstance);
+        if (bossInstance)
         {
-            //PlayAnimMontage(bossTakeDamageMT01);
+            if (bossInstance->canCounterAttack == true)
+            {
+                bossHitCounterAttack = true;
+                bossInstance->canCounterAttack = false;
+                PlayAnimMontage(counterGroggy);
+
+                TArray<AActor*> foundCharacters;
+                UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+                for (AActor* actor : foundCharacters)
+                {
+                    APixelCodeCharacter* player = Cast<APixelCodeCharacter>(actor);
+                    if (player)
+                    {
+                        APlayerController* pc = player->GetController<APlayerController>();
+                        if (pc != nullptr)
+                        {
+                            UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
+                            pc->ClientStartCameraShake(cameraShakeCounterOBJ);
+
+
+                        }
+                    }
+                }
+                bossInstance->AnimNotify_CollisionOff();
+                GetWorldTimerManager().SetTimer(timerhandle_ReflagCounterAttack, this, &ABossApernia::ReflagCounterAttack, 7.f, false);
+
+                if (ABossAIController* bossController = Cast<ABossAIController>(GetController()))
+                {
+                    bossController->ClearFocus(EAIFocusPriority::Default);
+                    bossController->StopMovement();
+                    FRotator currentRotation = GetActorRotation();
+                    SetActorRotation(currentRotation);
+
+
+                    if (UBehaviorTreeComponent* BTComponent = bossController->FindComponentByClass<UBehaviorTreeComponent>())
+                    {
+                        savedBTComponent = BTComponent;
+                        savedLocation = GetActorLocation(); 
+                        BTComponent->StopTree(EBTStopMode::Safe);
+                    }
+                    GetWorldTimerManager().SetTimer(timerhandle_RepocessBehaviorTree, this, &ABossApernia::RepocessBehaviorTreeRe, 5.0f, false);
+
+                }
+            }
         }
-        else
+    }
+    // Material 변경
+    if (damageMaterial)
+    {
+        USkeletalMeshComponent* MeshComp = GetMesh(); // SkeletalMeshComponent를 가져옵니다.
+        if (MeshComp)
         {
-            //PlayAnimMontage(bossTakeDamageMT2);
+            // 기존에 있는 머티리얼 슬롯 인덱스를 확인하고 적절히 설정합니다.
+            int32 MaterialIndex = 0; // 적절한 슬롯 인덱스 지정
+            int32 MaterialIndex2 = 1; // 적절한 슬롯 인덱스 지정
+            MeshComp->SetMaterial(MaterialIndex, damageMaterial);
+            MeshComp->SetMaterial(MaterialIndex2, damageMaterial);
+
+            GetWorldTimerManager().SetTimer(timerhandle_SetOriginMatetrial, this, &ABossApernia::SetOriginMaterial, 0.38f, false);
         }
 
-        //bStiffness = false;
-        BossFallDown();
+        TArray<AActor*> foundCharacters;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+        for (AActor* actor : foundCharacters)
+        {
+            APixelCodeCharacter* player = Cast<APixelCodeCharacter>(actor);
+            if (player)
+            {
+                APlayerController* pc = player->GetController<APlayerController>();
+                if (pc != nullptr)
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
+                    pc->ClientStartCameraShake(cameraShakeHitPlayerOBJ);
+
+
+                }
+            }
+        }
+    }
+
+    UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), bissHitNA, GetActorLocation(), GetActorRotation(), FVector(5.0f));
     
-    
-    
-    UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage2"));
 }
 
 void ABossApernia::BossFallDown()
 {
-    if (bBossAttackFallDownAttack)
+    PlayAnimMontage(bossFallDownMT);
+    if (ABossAIController* bossController = Cast<ABossAIController>(GetController()))
     {
-        PlayAnimMontage(FallDown);
-        if (ABossAIController* bossController = Cast<ABossAIController>(GetController())) // GetOwner() 대신 GetController() 사용
+        bossController->ClearFocus(EAIFocusPriority::Default);
+        bossController->StopMovement();
+        FRotator currentRotation = GetActorRotation();
+        SetActorRotation(currentRotation);
+        
+
+        if (UBehaviorTreeComponent* BTComponent = bossController->FindComponentByClass<UBehaviorTreeComponent>())
         {
-            bossController->StopMovement();
-            bBossAttackFallDownAttack = false;
+            savedBTComponent = BTComponent; // Save the BTComponent
+            savedLocation = GetActorLocation(); // Save the current location
+            BTComponent->StopTree(EBTStopMode::Safe);
         }
+        GetWorldTimerManager().SetTimer(timerhandle_RepocessBehaviorTree, this, &ABossApernia::RepocessBehaviorTree, 6.0f, false);
+        bBossAttackFallDownAttack = true;
+    }
+}
+
+void ABossApernia::RepocessBehaviorTree()
+{ 
+    UE_LOG(LogTemp, Warning, TEXT("RepocessBehaviorTree called"));
+
+    if (ABossAIController* bossController = Cast<ABossAIController>(GetController()))
+    {
+        if (savedBTComponent)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Restarting Behavior Tree"));
+            bossController->BrainComponent->RestartLogic();
+            SetActorLocation(savedLocation); // Restore the saved location if necessary
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("Saved BT Component is null"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Boss AI Controller not found"));
+    }
+    
+}
+
+void ABossApernia::RepocessBehaviorTreeRe()
+{
+    UE_LOG(LogTemp, Warning, TEXT("RepocessBehaviorTreeRe called"));
+
+    if (ABossAIController* bossController = Cast<ABossAIController>(GetController()))
+    {
+        if (savedBTComponent && tree)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Restarting Behavior Tree from the beginning"));
+            bossController->BrainComponent->RestartLogic();
+            bossController->RunBehaviorTree(tree);
+        }
+       
     }
     
 }
@@ -433,6 +656,20 @@ void ABossApernia::MulticastRPC_JumpAttack01V1_Implementation()
     PlayAnimMontage(jumpAttack01V1);
 }
 
+//if (UBehaviorTreeComponent* BTComponent = bossController->FindComponentByClass<UBehaviorTreeComponent>())
+//{
+    // Behavior Tree를 다시 실행하기 위해 로컬 변수로 선언
+   // UBehaviorTree* BehaviorTree = GetBehaviorTree();
+    //if (BehaviorTree)
+    //{
+     //   BTComponent->StartTree(*BehaviorTree);
+    //}
+//}
+
+
+
+
+
 
 
 void ABossApernia::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -441,6 +678,7 @@ void ABossApernia::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 
     DOREPLIFETIME(ABossApernia, swordComboAttack1);
     DOREPLIFETIME(ABossApernia, jumpAttack01V1);
+    DOREPLIFETIME(ABossApernia, Player);
 }
 
 void ABossApernia::ServerRPC_ForwardSlash_Implementation()
@@ -1156,4 +1394,45 @@ void ABossApernia::MulticastRPC_SpawnJumpAttackSwordPositionReSet_Implementation
 {
     bossSwordComp->SetRelativeLocation(FVector(29.425722f, 55.060376f, 8.3646449f));
     bossSwordComp->SetRelativeRotation(FRotator(4.826905f, 1.306981f, 8.324931f));
+}
+
+
+
+
+
+void ABossApernia::ServerRPC_BossFallDown_Implementation(float Damage)
+{
+    MulticastRPC_BossFallDown(Damage);
+}
+
+void ABossApernia::MulticastRPC_BossFallDown_Implementation(float Damage)
+{
+    bossCurrentHP = bossCurrentHP - Damage;
+    Player = Cast<APlayerOrganism>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+
+    if (Player->bBossGroggy == true)
+    {
+        BossFallDown();
+
+
+        PlayAnimMontage(bossFallDownMT);
+        if (ABossAIController* bossController = Cast<ABossAIController>(GetController()))
+        {
+            bossController->ClearFocus(EAIFocusPriority::Default);
+            bossController->StopMovement();
+            FRotator currentRotation = GetActorRotation();
+            SetActorRotation(currentRotation);
+
+
+            if (UBehaviorTreeComponent* BTComponent = bossController->FindComponentByClass<UBehaviorTreeComponent>())
+            {
+                savedBTComponent = BTComponent; // Save the BTComponent
+                savedLocation = GetActorLocation(); // Save the current location
+                BTComponent->StopTree(EBTStopMode::Safe);
+            }
+            GetWorldTimerManager().SetTimer(timerhandle_RepocessBehaviorTree, this, &ABossApernia::RepocessBehaviorTree, 6.0f, false);
+            bBossAttackFallDownAttack = true;
+        }
+    }
+    
 }
