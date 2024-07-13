@@ -326,7 +326,7 @@ public:
 
 	void PickUpItemUp(const UItemBase& Iteminfomation);
 	
-	//void AddItemToInventory(const UItemBase& Iteminfomations, uint8 ItemIndex = 100);
+	void AddItemToInventory(const UItemBase& Iteminfomation); //uint8 ItemIndex /*= 100*/);
 
 	// 历厘 前格
 	AItemStorage* GetItemStorage();
@@ -355,16 +355,13 @@ public:
 
 	void ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes);
 
-	///TArray<UItemBase> GetInventory() const;
-
-
-	//int32  GetSpecifictItemAmount(EItemName ItemsName);
-
-	UPROPERTY()
-	UInventoryComponent* OwningInventory;
+	///TArray<UItemBase> GetInv;
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	uint8 MaxInventorySlot;
+
+	UPROPERTY()
+	UInventoryComponent* OwningInventory; // 牢亥配府
 
 
 
