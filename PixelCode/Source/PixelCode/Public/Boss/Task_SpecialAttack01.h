@@ -28,6 +28,8 @@ public:
 
 	bool animOnceV2;
 
+	bool animOnceV3;
+
 	float currentTime;
 
 	bool jumpOnce = false;

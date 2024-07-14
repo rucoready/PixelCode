@@ -45,6 +45,9 @@ EBTNodeResult::Type UTask_AttackWait::ExecuteTask(UBehaviorTreeComponent& OwnerC
                 ABossApernia* bossCharacter = Cast<ABossApernia>(bossPawn);
                 if (bossCharacter)
                 {
+                    bossCharacter->bossSwordComp->SetRelativeLocation(FVector(17.137708f, 57.508425f, 23.246429f));
+                    bossCharacter->bossSwordComp->SetRelativeRotation(FRotator(28.852794f, 169.726741f, 183.362852f));
+                 
                     UCharacterMovementComponent* movementComponent = bossCharacter->GetCharacterMovement();
                     if (movementComponent)
                     {

@@ -31,7 +31,26 @@ EBTNodeResult::Type UTask_SpecialAttack01::ExecuteTask(UBehaviorTreeComponent& O
     int32 randomIndex = FMath::RandRange(0, foundCharacters.Num() - 1);
     player = Cast<APixelCodeCharacter>(foundCharacters[randomIndex]);
 
-    
+    if (player)
+    {
+        //플레이어의 위치를 얻어낸다
+        playerLocation = player->GetActorLocation();
+        //보스컨트롤러를 캐스팅
+        ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
+        if (bossController)
+        {
+            APawn* bossPawn = bossController->GetPawn();
+            if (bossPawn)
+            {
+
+                // 방향 설정
+                FVector direction = playerLocation - bossPawn->GetActorLocation();
+                direction.Z = 0; // 보스가 수평으로만 회전하도록 Z축 회전 제거
+                FRotator newRotation = direction.Rotation();
+                bossPawn->SetActorRotation(newRotation);
+            }
+        }
+    }
 
     return EBTNodeResult::InProgress;
 }
@@ -43,12 +62,31 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
     {
         animOnce = false;
     }
+    currentTime += DeltaSeconds;
+    // 애니메이션 실행
+    if (currentTime < 1.0f && !animOnceV3)
+    {
+        AAIController* bossController = Cast<AAIController>(OwnerComp.GetOwner());
+        if (bossController)
+        {
+            APawn* ControlledPawn = bossController->GetPawn();
+            if (ControlledPawn)
+            {
+                ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
+
+                if (boss->GetMesh() && boss->GetMesh()->GetAnimInstance())
+                {
+                    UAnimInstance* AnimInstance = boss->GetMesh()->GetAnimInstance();
+                    boss->ServerRPC_CounterPrecursor();
+                    animOnceV3 = true;
+                }
+            }
+        }
+    }
 
 
 
-
-
-    if (currentTime > 0.0 && currentTime < 0.1)
+    if (currentTime > 1.5 && currentTime < 1.6)
     {
        
         if (player)
@@ -74,7 +112,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
         }
     }
 
-    if (currentTime > 1.9 && currentTime < 2.0)
+    if (currentTime > 3.4 && currentTime < 3.5)
     {
         
         if (player)
@@ -99,7 +137,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
         }
     }
 
-    if (currentTime > 0.0 && currentTime < 2.0)
+    if (currentTime > 1.5 && currentTime < 3.5)
     {
 
 
@@ -127,7 +165,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
         }
     }
 
-    if (currentTime > 2.1 && currentTime < 3.2)
+    if (currentTime > 3.6 && currentTime < 4.7)
     {
         if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetOwner()))
         {
@@ -157,8 +195,8 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
     
 
 
-    currentTime += DeltaSeconds;
-    if (currentTime > 2.3f)
+    
+    if (currentTime > 3.8f)
     {
         if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetOwner()))
         {
@@ -184,7 +222,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             }
         }
     }
-    if (currentTime > 3.8f)
+    if (currentTime > 5.3f)
     {
         if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetOwner()))
         {
@@ -211,7 +249,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
     }
     ////////////////////////////////////////////////////////////
     //첫번쨰
-    if (currentTime > 3.6f && !jumpNiagara1)
+    if (currentTime > 5.1f && !jumpNiagara1)
     {
         if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetOwner()))
         {
@@ -229,7 +267,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
         }
     }
     //두번쨰
-    if (currentTime > 3.7f && !jumpNiagara2)
+    if (currentTime > 5.2f && !jumpNiagara2)
     {
         if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetOwner()))
         {
@@ -247,7 +285,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
         }
     }
     //세번쨰
-    if (currentTime > 3.9f && !jumpNiagara3)
+    if (currentTime > 5.4f && !jumpNiagara3)
     {
         if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetOwner()))
         {
@@ -283,6 +321,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
                 jumpAttack2 = false;
                 animOnce = false;
                 animOnceV2 = false;
+                animOnceV3 = false;
                 UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
                 BlackboardComp = OwnerComp.GetBlackboardComponent();
                 if (BlackboardComp)
@@ -295,7 +334,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
         }
     }
     // 1.8초가 지나면 태스크 완료
-    if (currentTime >= 5.1f)
+    if (currentTime >= 6.6f)
     {
         currentTime = 0.0f; // currentTime 초기화
         jumpOnce = false;
@@ -306,6 +345,7 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
         jumpAttack2 = false;
         animOnce = false;
         animOnceV2 = false;
+        animOnceV3 = false;
         UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
         BlackboardComp = OwnerComp.GetBlackboardComponent();
         if (BlackboardComp)

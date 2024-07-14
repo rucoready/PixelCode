@@ -142,6 +142,9 @@ public:
 
 	FTimerHandle timerhandle_SetOriginMatetrial;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* counterSound; // 
+
 	///////////////////////////////////////////////////////////////////////////////////////////////Network//////////////////////////////////////////////////////
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -620,5 +623,25 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_BossFallDown(float Damage);
+
+	//Boss CounterPrecursor
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* counterPrecursor;
+
+	UPROPERTY(EditAnywhere, Category = "Particles")
+	class UParticleSystem* counterImpactParticle;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_CounterPrecursor();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_CounterPrecursor();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_CounterPrecursorSpawnParticle();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_CounterPrecursorSpawnParticle();
 
 };

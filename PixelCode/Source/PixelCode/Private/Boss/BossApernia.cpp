@@ -23,6 +23,8 @@
 #include "Player/PlayerOrganism.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Sound/SoundBase.h" 
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Boss/BossAnimInstance.h"
 
 
@@ -229,6 +231,12 @@ ABossApernia::ABossApernia()
     {
         bossFallDownMT = montageObj25.Object;
     }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> MontageObj26(TEXT("/Script/Engine.AnimMontage'/Game/KMS_AI/Boss_Alpernia/Animations/AnimationCounter/AS_BossCounterDeclare_Montage.AS_BossCounterDeclare_Montage'"));
+    if (MontageObj26.Succeeded())
+    {
+        counterPrecursor = MontageObj26.Object;
+    }
     ////////////////NIAGARA////////////////////////
     static ConstructorHelpers::FObjectFinder<UNiagaraSystem> niagaraObj1(TEXT("/Script/Niagara.NiagaraSystem'/Game/NiagaraMagicalSlashes/Fx/Slashes/NS_Blade_Sl_10.NS_Blade_Sl_10'"));
     if (niagaraObj1.Succeeded())
@@ -305,6 +313,12 @@ ABossApernia::ABossApernia()
     if (particleObj2.Succeeded())
     {
         groundImpactParticle2 = particleObj2.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UParticleSystem> particleObj3(TEXT("/Script/Engine.ParticleSystem'/Game/KMS_AI/Boss_Alpernia/Effects/CounterHit.CounterHit'"));
+    if (particleObj3.Succeeded())
+    {
+        counterImpactParticle = particleObj3.Object;
     }
 
     ////////////////Camera////////////////////////
@@ -489,6 +503,8 @@ void ABossApernia::BossTakeDamage(float Damage)
         {
             if (bossInstance->canCounterAttack == true)
             {
+                bossBackSwordComp->SetRelativeLocation(FVector(-28.945981f, -235.270012f, 29.204212f));
+                bossBackSwordComp->SetRelativeRotation(FRotator(-0.016692f, 0.044553f, 20.539312f));
                 bossHitCounterAttack = true;
                 bossInstance->canCounterAttack = false;
                 PlayAnimMontage(counterGroggy);
@@ -506,11 +522,22 @@ void ABossApernia::BossTakeDamage(float Damage)
                         {
                             UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
                             pc->ClientStartCameraShake(cameraShakeCounterOBJ);
+                            FVector ForwardVector = GetActorForwardVector();  // 현재 액터의 forwardVector 가져오기
+               
+                            float PulseStrength = 5200.0f;  // 펄스의 세기 
 
+                            ServerRPC_CounterPrecursorSpawnParticle();
 
+                            FVector LaunchDirection = -GetActorForwardVector(); // 뒷 방향으로 설정
+                            LaunchCharacter(LaunchDirection * PulseStrength, true, true);
+                            
                         }
                     }
                 }
+
+
+
+
                 bossInstance->AnimNotify_CollisionOff();
                 GetWorldTimerManager().SetTimer(timerhandle_ReflagCounterAttack, this, &ABossApernia::ReflagCounterAttack, 7.f, false);
 
@@ -1435,4 +1462,29 @@ void ABossApernia::MulticastRPC_BossFallDown_Implementation(float Damage)
         }
     }
     
+}
+
+void ABossApernia::ServerRPC_CounterPrecursor_Implementation()
+{
+    MulticastRPC_CounterPrecursor();
+}
+
+void ABossApernia::MulticastRPC_CounterPrecursor_Implementation()
+{
+    PlayAnimMontage(counterPrecursor);
+    
+    
+
+
+}
+
+void ABossApernia::ServerRPC_CounterPrecursorSpawnParticle_Implementation()
+{
+    MulticastRPC_CounterPrecursorSpawnParticle();
+}
+
+void ABossApernia::MulticastRPC_CounterPrecursorSpawnParticle_Implementation()
+{
+    UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), counterImpactParticle, GetActorLocation(), GetActorRotation(), FVector(2.0f));
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), counterSound, GetActorLocation());
 }
