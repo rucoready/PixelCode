@@ -13,14 +13,10 @@ class PIXELCODE_API ABuilding : public AActor
 public:	
 	ABuilding();
 
-
-
 protected:
 
 	UPROPERTY(Replicated)
 	TArray<FName> MeshInstancedSockets;
-
-	
 
 	virtual void BeginPlay() override;
 
@@ -29,8 +25,6 @@ protected:
 public:
 	
 	class APixelCodeCharacter* pc;
-
-
 
 	UPROPERTY(Replicated)
 	TArray<FInstanceSocketCheck> InstanceSocketsCheck;
@@ -46,6 +40,7 @@ public:
 
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
 	class UInstancedStaticMeshComponent* WoodenPilarInstancedMesh;
+
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void DestroyInstance(const FBuildingSocketData& BuildingSocketData);
 

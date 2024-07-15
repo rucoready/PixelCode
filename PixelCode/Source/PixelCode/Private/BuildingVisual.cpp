@@ -163,12 +163,6 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 
 void ABuildingVisual::SpawnBuilding()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL SpawnBuilding"));
-
-	//FString StrBuildingClass = BuildingClass ? TEXT("true") : TEXT("false");
-	//UE_LOG(LogTemp, Warning, TEXT("------------------BUILDINGVISUAL BuildingClass : %s"), *StrBuildingClass);
-
-	//FString StrInteractingBuilding = InteractingBuilding ? TEXT("true") : TEXT("false");
 	//UE_LOG(LogTemp, Warning, TEXT("------------------BUILDINGVISUAL InteractingBuilding : %s"), *StrInteractingBuilding);
 
 	// ABuilding ÀÌ ¼û±èÀÌ ¾Æ´Ò ¶§ = °ÇÃàÀÚÀç°¡ preview »óÅÂÀÏ ¶§
@@ -232,7 +226,6 @@ void ABuildingVisual::CycleMesh()
 		{
 			BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
 			UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDINGVISUAL CYCLE MESH SetStaticMesh"));
-
 		}
 	}	
 }

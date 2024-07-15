@@ -22,6 +22,7 @@ ABuilding::ABuilding()
 	CeilingInstancedMesh->SetIsReplicated(true);
 
 	WoodenPilarInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WoodenPilarInstancedStaticMeshComponent"));
+	WoodenPilarInstancedMesh->SetIsReplicated(true);
 
 	bReplicates = true;
 	bAlwaysRelevant = true;
@@ -217,45 +218,32 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 		}
 	}
 
-// 	FString StrBuildType = BuildType ? TEXT("true") : TEXT("false");
-// 	UE_LOG(LogTemp, Warning, TEXT("***************************************************BuildType : %s"), *StrBuildType);
-// 	switch (BuildType)
-//  	{
-// // 		case EBuildType::Foundation: FoundationInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
-// 		case EBuildType::Foundation: FoundationInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform); break;
-// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************AddInstanceWorldSpace"));
-// 
-// 		case EBuildType::Wall: WallInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true); break;
-// 		case EBuildType::Ceiling: CeilingInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true); break;
-// 		case EBuildType::WoodenPilar: WoodenPilarInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true); break;
-// 	}
-
 	FTransform transform = BuildingSocketData.SocketTransform;
+	FString StrBuildType;
 
-	FString enumBuildType;
 	switch (BuildType)
 	{		
 		case EBuildType::Foundation:
 		FoundationInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-		enumBuildType=TEXT("FoundationInstancedMesh");
+		StrBuildType=TEXT("FoundationInstancedMesh");
 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Foundation Instance added"));
 		break;
 
 		case EBuildType::Wall:
 		WallInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-		enumBuildType = TEXT("WallInstancedMesh");
+		StrBuildType = TEXT("WallInstancedMesh");
 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wall instance added"));
 		break;
 
 		case EBuildType::Ceiling:
 		CeilingInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-		enumBuildType = TEXT("CeilingInstancedMesh");
+		StrBuildType = TEXT("CeilingInstancedMesh");
 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Ceiling instance added"));
 		break;
 
 		case EBuildType::WoodenPilar:
 		WoodenPilarInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-		enumBuildType = TEXT("WoodenPilarInstancedMesh");
+		StrBuildType = TEXT("WoodenPilarInstancedMesh");
 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar instance added"));
 		break;
 
@@ -263,21 +251,20 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Unknown BuildType"));
 		break;
 	}
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, enumBuildType);
-	UE_LOG(LogTemp, Warning, TEXT("**************************************************BuildType %s"), *enumBuildType);
+
+	UE_LOG(LogTemp, Warning, TEXT("**************************************************BuildType %s"), *StrBuildType);
 
 	auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 	FString StrPc = Pc ? TEXT("OOOOO") : TEXT("XXXXX");
-	UE_LOG(LogTemp, Warning, TEXT("Pc????? : %s"), *StrPc);
+	UE_LOG(LogTemp, Warning, TEXT("Pc? : %s"), *StrPc);
 
 	if (Pc)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
 		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
 		pc->NetMulticastRPC_SpawnBuilding(BuildType, transform);
-	}
-	
+	}	
 }
 
 void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

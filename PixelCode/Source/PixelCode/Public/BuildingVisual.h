@@ -17,7 +17,6 @@ class PIXELCODE_API ABuildingVisual : public AActor
 public:	
 	ABuildingVisual();
 
-
 	virtual void BeginPlay() override;
 
 	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadOnly, Category = KSH)

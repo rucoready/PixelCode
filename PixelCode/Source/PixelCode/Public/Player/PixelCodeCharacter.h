@@ -21,6 +21,7 @@ class UInventoryComponent;
 class UItemBase;
 class AItemStorage;
 class UPlayerStatWidget;
+class ABuildingVisual;
 class ABuilding;
 class UNormallyWidget;
 class ABaseWeapon;
@@ -59,15 +60,6 @@ struct FInteractionData
 // Áø¿øe
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
-
-
-
-
-// ¼­ÈÖ-----------------------------------------------------------------------------------------------------
-class ABuildingVisual;
-// ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
-
-
 
 UCLASS(config=Game)
 class APixelCodeCharacter : public APlayerOrganism

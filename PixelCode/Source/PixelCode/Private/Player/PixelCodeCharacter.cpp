@@ -160,7 +160,9 @@ void APixelCodeCharacter::BeginPlay()
 	{
 		Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass);
 	}
-	
+
+	FString StrBuildingC = BuildingC ? TEXT("true") : TEXT("false");
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay BuildingC : % s"), *StrBuildingC);
 	if (BuildingC)
 	{
 		Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC);
@@ -609,14 +611,7 @@ void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recip
 void APixelCodeCharacter::OnSetBuildModePressed()
 {
 	// SetBuildMode(!GetBuildMode());
-	if (IsLocallyControlled())
-	{
-		ServerRPC_SetBuildMode();
-	}
-	if (HasAuthority())
-	{
-		SetBuildMode(!GetBuildMode());
-	}
+	ServerRPC_SetBuildMode();
 }
 
 void APixelCodeCharacter::SetBuildMode(bool Enabled)
@@ -628,17 +623,21 @@ void APixelCodeCharacter::SetBuildMode(bool Enabled)
 	}
 	else
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode NoBuilder"));
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode NoBuilder"));
 	}
 }
 
 void APixelCodeCharacter::ServerRPC_SetBuildMode_Implementation()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("------------------ServerRPC_SetBuildMode"));
-
-	SetBuildMode(!GetBuildMode());
-
-	ClientRPC_SetBuildMode();
+	if (HasAuthority())
+	{
+		SetBuildMode(!GetBuildMode());
+	}
+	else
+	{
+		ClientRPC_SetBuildMode();
+	}
 }
 
 void APixelCodeCharacter::ClientRPC_SetBuildMode_Implementation()
@@ -738,11 +737,6 @@ void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHi
 
 void APixelCodeCharacter::SpawnBuilding()
 {
-// 	FString StrbInBuildMode = bInBuildMode ? TEXT("true") : TEXT("false");
-// 	UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding bInBuildMode : %s"), *StrbInBuildMode);
-// 
-// 	FString StrBuilder = Builder ? TEXT("true") : TEXT("false");
-// 	UE_LOG(LogTemp, Warning, TEXT("------------------Builder : %s"), *StrBuilder);
 	if (bInBuildMode && Builder)
 	{
 		Builder->SpawnBuilding();
@@ -768,7 +762,10 @@ void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
 
 void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildType BuildType, FTransform transf)
 {
-	
+	UE_LOG(LogTemp, Warning, TEXT("Location : %d"), *transf.ToString());
+	FString StrBuildings = Buildings ? TEXT("true") : TEXT("false");
+	UE_LOG(LogTemp, Warning, TEXT("MultiCast Buildings : % s"), *StrBuildings);
+
 	if (Buildings)
 	{
 		switch (BuildType)
@@ -798,7 +795,6 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 			break;
 		}
 	}
-	
 }
 
 // º≠»÷-----------------------------------------------------------------------------------------------------≥°
@@ -1349,11 +1345,7 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	// º≠»÷-----------------------------------------------------------------------------------------------------
 	if (bInBuildMode && Builder)
 	{
-		///FHitResult result;
-		//result = PerformLineTrace(650.0f, false);
-		//UE_LOG(LogTemp,Warning,TEXT("%s"), result);
 		Builder->SetBuildPosition(PerformLineTrace(650.0f, false));
-		//UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"), result.ImpactPoint.X,result.ImpactPoint.Y,result.ImpactPoint.Z);
 	}
 	// º≠»÷-----------------------------------------------------------------------------------------------------≥°
 
