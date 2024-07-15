@@ -35,7 +35,7 @@ public:
 	class UBossCollisionComponent* bossCollisionComponent;
 
 	UPROPERTY(EditAnywhere, Category="MySettings")
-	class APlayerOrganism* Player;
+	class APixelCodeCharacter* Player;
 
 	
 	UPROPERTY(EditAnywhere, Category="MySettings")

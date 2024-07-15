@@ -25,6 +25,8 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "Sound/SoundBase.h" 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "BossMaInUI.h"
+#include "Blueprint/UserWidget.h"
 #include "Boss/BossAnimInstance.h"
 
 
@@ -367,7 +369,7 @@ void ABossApernia::BeginPlay()
 
     //set boss maxHP
     bossCurrentHP = bossMaxHP;
-
+    InitMainUI();
 }
 
 // Called every frame
@@ -488,11 +490,17 @@ void ABossApernia::BossTakeDamage(float Damage)
     bossCurrentHP = bossCurrentHP - Damage;
     Player = Cast<APlayerOrganism>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
     
-    if (Player->bBossGroggy == true)
-    {
-        ServerRPC_BossFallDown(Damage);
-    }
-
+    bossMainWidget->UpdateHPBar(bossCurrentHP);
+    //if (Player->bBossGroggy == true)
+    //{
+    //    ServerRPC_BossFallDown(Damage);
+    //}
+    
+    //if (bossMainWidget != nullptr)
+    //{
+    //    bossMainWidget->UpdateHPBar(bossCurrentHP);
+    //}
+    
     // 애니메이션 인스턴스를 가져옵니다.
     UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
     if (animInstance)
@@ -698,6 +706,19 @@ void ABossApernia::MulticastRPC_JumpAttack01V1_Implementation()
 
 
 
+
+void ABossApernia::InitMainUI()
+{
+    if (MainUIFactory)
+    {
+       bossMainWidget = CreateWidget<UBossMaInUI>(GetWorld(), MainUIFactory);
+       if (bossMainWidget)
+       {
+           bossMainWidget->AddToViewport();
+       }
+    }
+    bossMainWidget->UpdateHPBar(bossCurrentHP);
+}
 
 void ABossApernia::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

@@ -4,7 +4,7 @@
 #include "Task_CounterPrecursor.h"
 #include "Kismet/GameplayStatics.h"
 #include "Boss/BossAIController.h"
-#include "Player/PixelCodeCharacter.h" //Ä³¸¯ÅÍ ÀÓ½Ã
+#include "Player/PixelCodeCharacter.h" //Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ó½ï¿½
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Animation/AnimInstance.h"
@@ -33,9 +33,9 @@ EBTNodeResult::Type UTask_CounterPrecursor::ExecuteTask(UBehaviorTreeComponent& 
 
     if (player)
     {
-        //ÇÃ·¹ÀÌ¾îÀÇ À§Ä¡¸¦ ¾ò¾î³½´Ù
+        //ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½î³½ï¿½ï¿½
         playerLocation = player->GetActorLocation();
-        //º¸½ºÄÁÆ®·Ñ·¯¸¦ Ä³½ºÆÃ
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½Ñ·ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
         ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
         if (bossController)
         {
@@ -43,9 +43,9 @@ EBTNodeResult::Type UTask_CounterPrecursor::ExecuteTask(UBehaviorTreeComponent& 
             if (bossPawn)
             {
 
-                // ¹æÇâ ¼³Á¤
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 FVector direction = playerLocation - bossPawn->GetActorLocation();
-                direction.Z = 0; // º¸½º°¡ ¼öÆòÀ¸·Î¸¸ È¸ÀüÇÏµµ·Ï ZÃà È¸Àü Á¦°Å
+                direction.Z = 0; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¸ï¿½ È¸ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ Zï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 FRotator newRotation = direction.Rotation();
                 bossPawn->SetActorRotation(newRotation);
             }
@@ -60,7 +60,7 @@ void UTask_CounterPrecursor::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
     Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
     currentTime += DeltaSeconds;
 
-    // ¾Ö´Ï¸ÞÀÌ¼Ç ½ÇÇà
+    // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
     if (currentTime < 1.0f && !animOnce)
     {
         AAIController* bossController = Cast<AAIController>(OwnerComp.GetOwner());
@@ -81,11 +81,11 @@ void UTask_CounterPrecursor::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
         }
     }
 
-    // 3ÃÊ°¡ Áö³ª¸é ÅÂ½ºÅ© ¿Ï·á
+    // 3ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Â½ï¿½Å© ï¿½Ï·ï¿½
     if (currentTime >= 2.0f)
     {
         animOnce = false;
-        currentTime = 0.0f; // currentTime ÃÊ±âÈ­
+        currentTime = 0.0f; // currentTime ï¿½Ê±ï¿½È­
         FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
     }
 }

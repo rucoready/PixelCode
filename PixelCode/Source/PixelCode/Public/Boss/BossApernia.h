@@ -10,6 +10,7 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
+
 #include "BossApernia.generated.h"
 
 UCLASS()
@@ -67,7 +68,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	TSubclassOf<class ABossSword> bossSwordclass;
 
-	float bossMaxHP = 200.0f;
+	float bossMaxHP = 500.0f;
 
 	float bossCurrentHP;
 
@@ -144,6 +145,17 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class USoundBase* counterSound; // 
+
+	//////////////////////////UI
+
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class UBossMaInUI* bossMainWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MySettings")
+	TSubclassOf<class UBossMaInUI> MainUIFactory;
+
+	void InitMainUI();
 
 	///////////////////////////////////////////////////////////////////////////////////////////////Network//////////////////////////////////////////////////////
 
@@ -643,5 +655,7 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_CounterPrecursorSpawnParticle();
+
+	//Boss TakeDamage
 
 };
