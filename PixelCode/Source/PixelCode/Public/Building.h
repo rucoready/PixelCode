@@ -13,30 +13,39 @@ class PIXELCODE_API ABuilding : public AActor
 public:	
 	ABuilding();
 
+
+
 protected:
-	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
-	class UInstancedStaticMeshComponent* FoundationInstancedMesh;
-
-	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
-	class UInstancedStaticMeshComponent* WallInstancedMesh;
-
-	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
-	class UInstancedStaticMeshComponent* CeilingInstancedMesh;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
-	class UInstancedStaticMeshComponent* WoodenPilarInstancedMesh;
 
 	UPROPERTY(Replicated)
 	TArray<FName> MeshInstancedSockets;
 
-	UPROPERTY(Replicated)
-	TArray<FInstanceSocketCheck> InstanceSocketsCheck;
+	
 
 	virtual void BeginPlay() override;
 
 	bool IsValidSocket(UInstancedStaticMeshComponent* HitComponent, int32 Index, const FName& Filter, const FName& SocketName);
 
 public:
+	
+	class APixelCodeCharacter* pc;
+
+
+
+	UPROPERTY(Replicated)
+	TArray<FInstanceSocketCheck> InstanceSocketsCheck;
+
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
+	class UInstancedStaticMeshComponent* FoundationInstancedMesh;
+
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
+	class UInstancedStaticMeshComponent* WallInstancedMesh;
+
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
+	class UInstancedStaticMeshComponent* CeilingInstancedMesh;
+
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
+	class UInstancedStaticMeshComponent* WoodenPilarInstancedMesh;
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void DestroyInstance(const FBuildingSocketData& BuildingSocketData);
 

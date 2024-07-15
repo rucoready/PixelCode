@@ -43,6 +43,7 @@
 #include <../../../../../../../Plugins/FX/Niagara/Source/Niagara/Public/NiagaraComponent.h>
 #include "Player/World/Pickup.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
+#include "DataTypes.h"
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -54,7 +55,6 @@ APixelCodeCharacter::APixelCodeCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -79,9 +79,6 @@ APixelCodeCharacter::APixelCodeCharacter()
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 500.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-
-	
-
 
 	CreateInventory();
 
@@ -109,15 +106,10 @@ APixelCodeCharacter::APixelCodeCharacter()
 
 	// 서휘-----------------------------------------------------------------------------------------------------
 	bInBuildMode = false;
-
 	// 서휘-----------------------------------------------------------------------------------------------------끝
-
-
-
+	
 	// 요한 =======================================================================================================
 	MaxInventorySlot = 30;
-
-	
 }
 
 void APixelCodeCharacter::BeginPlay()
@@ -167,6 +159,11 @@ void APixelCodeCharacter::BeginPlay()
 	if (BuildingClass)
 	{
 		Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass);
+	}
+	
+	if (BuildingC)
+	{
+		Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC);
 	}
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
@@ -406,6 +403,7 @@ void APixelCodeCharacter::Interact()
 
 }
 
+
 // 요한 ------------------------------------------------------------------------------------------
 
 void APixelCodeCharacter::OnCraftingPressed()
@@ -574,6 +572,7 @@ AItemStorage* APixelCodeCharacter::GetItemStorage()
 //	return Amount;
 //}
 //
+
 void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes)
 {
 	/*for (const FRecipe& Recipe : Recipes)
@@ -629,13 +628,13 @@ void APixelCodeCharacter::SetBuildMode(bool Enabled)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode NoBuilder"));
+		//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode NoBuilder"));
 	}
 }
 
 void APixelCodeCharacter::ServerRPC_SetBuildMode_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------ServerRPC_SetBuildMode"));
+	//UE_LOG(LogTemp, Warning, TEXT("------------------ServerRPC_SetBuildMode"));
 
 	SetBuildMode(!GetBuildMode());
 
@@ -644,7 +643,7 @@ void APixelCodeCharacter::ServerRPC_SetBuildMode_Implementation()
 
 void APixelCodeCharacter::ClientRPC_SetBuildMode_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------ClientRPC_SetBuildMode"));
+	//UE_LOG(LogTemp, Warning, TEXT("------------------ClientRPC_SetBuildMode"));
 	SetBuildMode(!GetBuildMode());
 }
 
@@ -659,24 +658,14 @@ void RPC(char* _client, bool _somthing);
 void APixelCodeCharacter::OnCycleMeshPressed()
 {
 	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------WheelDown"));
-
-	if (IsLocallyControlled())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CycleMesh Local"));
-		ServerRPC_CycleBuildingMesh();
-	}
-	if (HasAuthority())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CycleMesh Auth"));
-		CycleBuildingMesh();
-	}
+	ServerRPC_CycleBuildingMesh();
 }
 
 void APixelCodeCharacter::CycleBuildingMesh()
 {
 	if (bInBuildMode && Builder)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CycleBuildingMesh"));
+		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CYCLE BUILDING MESH"));
 
 		// ABuildingVisual ->CycleMesh 불러옴
 		// CycleMesh() = 스크롤에 따라 건축자재 메시 변경해서 preview로 보이기 
@@ -686,15 +675,20 @@ void APixelCodeCharacter::CycleBuildingMesh()
 
 void APixelCodeCharacter::ServerRPC_CycleBuildingMesh_Implementation()
 {
+	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CYCLE BUILDING MESH SERVER RPC"));
+
 	CycleBuildingMesh();
-	ClientRPC_CycleBuildingMesh();
+
+	if (!HasAuthority())
+	{
+		ClientRPC_CycleBuildingMesh();
+	}
 }
 
 void APixelCodeCharacter::ClientRPC_CycleBuildingMesh_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CycleMesh ClientRPC"));
+	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CYCLE BUILDING MESH CLIENT RPC"));
 	CycleBuildingMesh();
-	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CycleMesh ClientRPC END"));
 }
 
 void APixelCodeCharacter::DestroyBuildingInstance()
@@ -744,61 +738,67 @@ void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHi
 
 void APixelCodeCharacter::SpawnBuilding()
 {
-	/*FString StrbInBuildMode = bInBuildMode ? TEXT("true") : TEXT("false");
-	UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding bInBuildMode : %s"), *StrbInBuildMode);
-
-	FString StrBuilder = Builder ? TEXT("true") : TEXT("false");
-	UE_LOG(LogTemp, Warning, TEXT("------------------Builder : %s"), *StrBuilder);
+// 	FString StrbInBuildMode = bInBuildMode ? TEXT("true") : TEXT("false");
+// 	UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding bInBuildMode : %s"), *StrbInBuildMode);
+// 
+// 	FString StrBuilder = Builder ? TEXT("true") : TEXT("false");
+// 	UE_LOG(LogTemp, Warning, TEXT("------------------Builder : %s"), *StrBuilder);
 	if (bInBuildMode && Builder)
 	{
 		Builder->SpawnBuilding();
-	}*/
-
-	UE_LOG(LogTemp, Warning, TEXT("21"));
-	// 2차
-	//SetBuildPosition(const FHitResult & HitResult);
-	// 1차
-	if (bInBuildMode && Builder)
-	{
-		// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
-		if (Builder->BuildingClass && !Builder->IsHidden())
-
-			Builder->SpawnBuilding();
-
-		ServerRPC_SpawnBuilding();
-
-		// IsHidden() --> return bHidden;
 	}
 }
 
 void APixelCodeCharacter::OnSpawnBuildingPressed()
 {
-	{
-		UE_LOG(LogTemp, Warning, TEXT("22"));
-		UE_LOG(LogTemp, Warning, TEXT("PRESSED SpawnBuilding START"));
-		SpawnBuilding();
-		UE_LOG(LogTemp, Warning, TEXT("PRESSED SpawnBuilding END"));
-	}
+	ServerRPC_SpawnBuilding();
 }
 
 void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("23"));
-	UE_LOG(LogTemp, Warning, TEXT("SERVER_SPAWNBUILDING_IMPLEMENT TOP"));
-	//SpawnBuilding();
+	if (this == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation called on nullptr instance"));
+		return;
+	}
 
-
-
-	UE_LOG(LogTemp, Warning, TEXT("SERVER_SPAWNBUILDING_IMPLEMENT MIDDLE"));
-	NetMulticastRPC_SpawnBuilding();
+	UE_LOG(LogTemp, Warning, TEXT("------------------ServerRPC_SpawnBuilding"));
+	SpawnBuilding();
 }
 
-void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation()
+void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildType BuildType, FTransform transf)
 {
-	UE_LOG(LogTemp, Warning, TEXT("24"));
-	UE_LOG(LogTemp, Warning, TEXT("MULTICAST_SPAWNBUILDING_IMPLEMENT TOP"));
-	Builder->SpawnBuilding();
-	UE_LOG(LogTemp, Warning, TEXT("MULTICAST_SPAWNBUILDING_IMPLEMENT BOTTOM"));
+	
+	if (Buildings)
+	{
+		switch (BuildType)
+		{
+			case EBuildType::Foundation:
+			Buildings->FoundationInstancedMesh->AddInstance(transf, true);
+			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST Foundation Instance added"));
+			break;
+
+			case EBuildType::Wall:
+			Buildings->WallInstancedMesh->AddInstance(transf, true);
+			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST Wall instance added"));
+			break;
+
+			case EBuildType::Ceiling:
+			Buildings->CeilingInstancedMesh->AddInstance(transf, true);
+			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST Ceiling instance added"));
+			break;
+
+			case EBuildType::WoodenPilar:
+			Buildings->WoodenPilarInstancedMesh->AddInstance(transf, true);
+			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST Wooden Pilar instance added"));
+			break;
+
+			default:
+			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST Unknown BuildType"));
+			break;
+		}
+	}
+	
 }
 
 // 서휘-----------------------------------------------------------------------------------------------------끝
@@ -1291,7 +1291,6 @@ void APixelCodeCharacter::NetMulticastRPC_PlayerRoll_Implementation()
 	bRoll = true;
 	UE_LOG(LogTemp, Warning, TEXT("Start"));
 }
-
 
 void APixelCodeCharacter::PlayerRun(const FInputActionValue& Value)
 {	

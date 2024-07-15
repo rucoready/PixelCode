@@ -3,6 +3,8 @@
 #include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetMathLibrary.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Components/InstancedStaticMeshComponent.h>
+#include "Player/PixelCodeCharacter.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 
 ABuilding::ABuilding()
 {
@@ -10,12 +12,19 @@ ABuilding::ABuilding()
 
 	FoundationInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("FoundationInstancedStaticMeshComponent"));
 	RootComponent = FoundationInstancedMesh;
+	FoundationInstancedMesh->SetIsReplicated(true);
 
 	WallInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WallInstancedStaticMeshComponent"));
+	WallInstancedMesh->SetIsReplicated(true);
+
 
 	CeilingInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("CeilingInstancedStaticMeshComponent"));
+	CeilingInstancedMesh->SetIsReplicated(true);
 
 	WoodenPilarInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WoodenPilarInstancedStaticMeshComponent"));
+
+	bReplicates = true;
+	bAlwaysRelevant = true;
 }
 
 void ABuilding::BeginPlay()
@@ -163,11 +172,9 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 {
 	for (FInstanceSocketCheck& InstanceSocket : InstanceSocketsCheck)
 	{
-		if (InstanceSocket.InstancedComponent == BuildingSocketData.InstancedComponent)
+		if (InstanceSocket.InstancedComponent == BuildingSocketData.InstancedComponent) // 인스턴스 소켓의 메시가 = 인자로 넘겨받은 소켓의 메시랑 같을 때
 		{
 			bool bFoundMatchingIndex = false;
- 			FString StrFoundMatchingIndex = bFoundMatchingIndex ? TEXT("true") : TEXT("false");
- 			UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------------------------The value of bFoundMatchingIndex is: %s"), *StrFoundMatchingIndex);
 			for (FBuildIndexSockets& IndexSockets : InstanceSocket.InstanceSocketInformation)
 			{
 				if (IndexSockets.Index == BuildingSocketData.Index)
@@ -189,9 +196,7 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 
 			if (!bFoundMatchingIndex)
 			{
- 				UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------------------------222222222222The value of bFoundMatchingIndex is: %s"), *StrFoundMatchingIndex);
-
-				FBuildIndexSockets BuildIndexSockets;
+ 				FBuildIndexSockets BuildIndexSockets;
 				BuildIndexSockets.Index = BuildingSocketData.Index;
 
 				FSocketInformation SocketInformation;
@@ -225,25 +230,32 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 // 		case EBuildType::WoodenPilar: WoodenPilarInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true); break;
 // 	}
 
+	FTransform transform = BuildingSocketData.SocketTransform;
+
+	FString enumBuildType;
 	switch (BuildType)
-	{
+	{		
 		case EBuildType::Foundation:
-		FoundationInstancedMesh->AddInstanceWorldSpace(BuildingSocketData.SocketTransform);
+		FoundationInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+		enumBuildType=TEXT("FoundationInstancedMesh");
 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Foundation Instance added"));
 		break;
 
 		case EBuildType::Wall:
 		WallInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+		enumBuildType = TEXT("WallInstancedMesh");
 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wall instance added"));
 		break;
 
 		case EBuildType::Ceiling:
 		CeilingInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+		enumBuildType = TEXT("CeilingInstancedMesh");
 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Ceiling instance added"));
 		break;
 
 		case EBuildType::WoodenPilar:
 		WoodenPilarInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+		enumBuildType = TEXT("WoodenPilarInstancedMesh");
 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar instance added"));
 		break;
 
@@ -251,6 +263,21 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Unknown BuildType"));
 		break;
 	}
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, enumBuildType);
+	UE_LOG(LogTemp, Warning, TEXT("**************************************************BuildType %s"), *enumBuildType);
+
+	auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	FString StrPc = Pc ? TEXT("OOOOO") : TEXT("XXXXX");
+	UE_LOG(LogTemp, Warning, TEXT("Pc????? : %s"), *StrPc);
+
+	if (Pc)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
+		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
+		pc->NetMulticastRPC_SpawnBuilding(BuildType, transform);
+	}
+	
 }
 
 void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

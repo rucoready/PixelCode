@@ -196,7 +196,7 @@ public:
 	void SkillZ();
 
 	void SkillRightMouse();
-
+	
 	FVector CachedDestination;
 	void Mousehit();
 
@@ -275,12 +275,6 @@ protected:
 	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	ABuildingVisual* Builder;
 	
-	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
-	ABuilding* Buildings;
-
-// 	FVector BuildLoc;
-// 
-// 	void SetBuildPosition(const FHitResult& HitResult);
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
 
@@ -323,7 +317,6 @@ public:
 	void Interact();
 
 	// 요한
-	// 요한
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "camera", meta )
 
 	UFUNCTION()
@@ -334,7 +327,7 @@ public:
 	void CraftItem(const FCraftItem& Item);
 
 	void PickUpItemUp(const UItemBase& Iteminfomation);
-	
+
 	void AddItemToInventory(const UItemBase& Iteminfomation); //uint8 ItemIndex /*= 100*/);
 
 	// 저장 품목
@@ -352,7 +345,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "KYH")
 	TArray<UItemBase*> Inventory;
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = KYH)
 	AItemStorage* ItemStorage;
@@ -372,9 +364,10 @@ public:
 	UPROPERTY()
 	UInventoryComponent* OwningInventory; // 인벤토리
 
-
-
 	// 서휘-----------------------------------------------------------------------------------------------------
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
+	ABuilding* Buildings;
+
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void SetBuildMode(bool Enabled);
 
@@ -423,18 +416,12 @@ public:
 	UFUNCTION()
 	void OnSpawnBuildingPressed();
 
-// 	UFUNCTION(Server, Reliable)
-// 	void ServerRPC_SpawnBuilding(FVector _BuildLoc);
-
  	UFUNCTION(Server, Reliable)
  	void ServerRPC_SpawnBuilding();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticastRPC_SpawnBuilding();
-
-// 	UFUNCTION(Client, Reliable)
-// 	void ClientRPC_SpawnBuilding();
-
+	void NetMulticastRPC_SpawnBuilding (EBuildType BuildType, FTransform transf);
+	
 	UPROPERTY(EditAnywhere, Category=KSH)
 	TSubclassOf<class APickup> pickupItem;
 
@@ -477,11 +464,8 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-
-private:
-	FVector camPosition = FVector(-500,0,60);
-
-	
+	private:
+		FVector camPosition = FVector(-500, 0, 60);
 };
 
 

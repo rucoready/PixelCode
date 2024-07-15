@@ -54,6 +54,12 @@ public:
 
 	void  SetMeshTo(EBuildType BuildType);
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SetMeshTo(EBuildType BuildType);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMultiRPC_SetMeshTo(EBuildType BuildType);
+
 	void ReturnMeshToSelected();
 	
 	UPROPERTY(Replicated)
