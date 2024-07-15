@@ -181,7 +181,7 @@ public:
 	bool bRoll = false;
 
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
+	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
 	class UAnimMontage* RollAnim;
 
 	float RollTime = 0;
@@ -196,7 +196,7 @@ public:
 	void SkillZ();
 
 	void SkillRightMouse();
-	
+
 	FVector CachedDestination;
 	void Mousehit();
 
@@ -232,6 +232,12 @@ protected:
 	void ToggleCombatFunction(const FInputActionValue& Value);
 
 	void PlayerRoll(const FInputActionValue& Value);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerRoll();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerRoll();
 
 	void PlayerRun(const FInputActionValue& Value);
 
@@ -310,6 +316,9 @@ protected:
 	APixelCodeCharacter* self = this;
 
 public:
+
+	// 카메라 조절
+	void CheckObstacles();
 
 	void Interact();
 
@@ -467,6 +476,10 @@ public:
 	virtual void CreateInventory() override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+
+private:
+	FVector camPosition = FVector(-500,0,60);
 
 	
 };

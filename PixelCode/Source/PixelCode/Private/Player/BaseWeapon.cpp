@@ -167,13 +167,9 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 		bHit = true;
 		
 		UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage1"));
+
 	}
-	
-	Player = Cast<APlayerOrganism>(hitActor);
-	if (Player)
-	{
-		Player->GetHit(lastHitStruct.ImpactPoint);
-	}
+
 
 	auto interfaceCheck = Cast<ICombatInterface>(hitActor);
 

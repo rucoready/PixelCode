@@ -65,7 +65,7 @@ void UCollisionComponent::CollisionTrace()
 	FVector endSocketLocation = collisionMeshComponent->GetSocketLocation(endSocketName);
 
 	TArray<FHitResult> arrayHits;
-
+	
 	UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), startSocketLocation, endSocketLocation, traceRadius, collisionObjectTypes, false, actorsToIgnore, drawDebugType, arrayHits, true, FLinearColor::Red, FLinearColor::Green, 1.0f);
 
 	for (const FHitResult& elem : arrayHits)

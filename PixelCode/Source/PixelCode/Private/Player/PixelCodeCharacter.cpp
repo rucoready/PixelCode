@@ -55,6 +55,7 @@ APixelCodeCharacter::APixelCodeCharacter()
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
+
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -78,6 +79,9 @@ APixelCodeCharacter::APixelCodeCharacter()
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 500.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+
+	
+
 
 	CreateInventory();
 
@@ -869,7 +873,7 @@ void APixelCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(APixelCodeCharacter, Builder);
 	DOREPLIFETIME(APixelCodeCharacter, Buildings); 
 	DOREPLIFETIME(APixelCodeCharacter, bInBuildMode); 
-
+	DOREPLIFETIME(APixelCodeCharacter, RollAnim);
 }
 
 void APixelCodeCharacter::UpdateInteractionWidget() const
@@ -1263,11 +1267,29 @@ void APixelCodeCharacter::PlayerRoll(const FInputActionValue& Value)
 			AddControllerYawInput(LookAxisVector.X);
 			AddControllerPitchInput(LookAxisVector.Y);
 		}
-		GetMesh()->GetAnimInstance()->Montage_Play(RollAnim);
-		GetCharacterMovement()->MaxWalkSpeed = 500.f;
-		bRoll = true;
-		UE_LOG(LogTemp, Warning, TEXT("Start"));
+		ServerRPC_PlayerRoll();
 	}
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerRoll_Implementation()
+{
+	FTimerHandle handle;
+
+	NetMulticastRPC_PlayerRoll();
+
+	GetWorldTimerManager().SetTimer(handle, [&]() {
+		float PurseStrength = 3000.0f;
+		FVector CharacterForwardVector = GetActorForwardVector();
+		LaunchCharacter(CharacterForwardVector * PurseStrength, true, true);
+		}, 0.2f, false);
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerRoll_Implementation()
+{
+	GetMesh()->GetAnimInstance()->Montage_Play(RollAnim);
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	bRoll = true;
+	UE_LOG(LogTemp, Warning, TEXT("Start"));
 }
 
 

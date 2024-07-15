@@ -168,7 +168,7 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 			UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Attack By : %s"), *DamageCauser->GetActorNameOrLabel()));
 		}
 	}
-
+	
 	
 
 	return 0.0f;
@@ -213,6 +213,11 @@ void APlayerOrganism::GetHit(const FVector& ImpactPoint)
 	{
 		Theta *= -1.f;
 		UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
+		
+		if (hitPaticle != nullptr)
+		{ 
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitPaticle, GetActorLocation() + CrossProduct * 100.f);
+		}
 	}
 
 	FName Section("HitBack");

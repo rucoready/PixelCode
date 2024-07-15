@@ -189,6 +189,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	USoundBase* HitSound;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UParticleSystem* hitPaticle;
+
 	UPROPERTY(Replicated)
 	int32 itemRandNums = 0;
 
