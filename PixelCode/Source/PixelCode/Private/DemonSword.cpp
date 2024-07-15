@@ -55,13 +55,13 @@ void ADemonSword::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	upLoc = GetActorLocation() + FVector(0, 0, 500);
+	upLoc = GetActorLocation() + FVector(0, 0, 800);
 
 	// 현재 위치와 upLoc 사이의 방향 벡터를 계산합니다.
 	direction = (upLoc - GetActorLocation()).GetSafeNormal();
 
 	// 이동 속도를 계산합니다.
-	upNewLocation = GetActorLocation() + FVector(0, 0, 500);
+	upNewLocation = GetActorLocation() + FVector(0, 0, 800);
 
 	
 	damageBox->OnComponentBeginOverlap.AddDynamic(this, &ADemonSword::OnBeginOverlapSwordFloor);
@@ -133,7 +133,7 @@ void ADemonSword::Tick(float DeltaTime)
 		FVector downDirection = -newQuat.GetUpVector();
 
 		// 속도 설정 (200 units per second)
-		float speed = 7000.0f;
+		float speed = 9000.0f;
 
 		// DeltaTime을 사용하여 이동 거리 계산
 		FVector movement = downDirection * speed * DeltaTime;
@@ -152,32 +152,34 @@ void ADemonSword::Tick(float DeltaTime)
 void ADemonSword::OnBeginOverlapSwordFloor(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	
-	if (OtherActor->GetName().Contains("Floor"))
+	if (OtherActor->GetName().Contains("Floor")|| OtherActor->GetName().Contains("Player")|| OtherActor->GetName().Contains("Cube") &&currentTime > 7.0f)
 	{
 		Destroy();
 		UE_LOG(LogTemp, Warning, TEXT("OVerlap Floor"));
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), grounSwordImpact2, GetActorLocation(), GetActorRotation(), FVector(1.0f));
 		//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), groundSwordImpact, GetActorLocation(), GetActorRotation(), FVector(3.0f));
-	}
+		TArray<AActor*> foundCharacters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
 
-	TArray<AActor*> foundCharacters;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
-
-	for (AActor* actor : foundCharacters)
-	{
-		player = Cast<APixelCodeCharacter>(actor);
-		if (player)
+		for (AActor* actor : foundCharacters)
 		{
-			APlayerController* pc = player->GetController<APlayerController>();
-			if (pc != nullptr)
+			player = Cast<APixelCodeCharacter>(actor);
+			if (player)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
-				pc->ClientStartCameraShake(cameraShakeOBJ);
+				APlayerController* pc = player->GetController<APlayerController>();
+				if (pc != nullptr)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
+					pc->ClientStartCameraShake(cameraShakeOBJ);
 
 
+				}
 			}
 		}
+
 	}
+
+	
 	
 	
 }
