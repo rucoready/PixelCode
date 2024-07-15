@@ -1011,7 +1011,7 @@ void APixelCodeCharacter::CharacterJump(const FInputActionValue& Value)
 
 void APixelCodeCharacter::SkillQ()
 {
-	if (!bQskillCooltime)
+	if (!bQskillCoolTime)
 	{ 
 		Mousehit();
 	
@@ -1032,47 +1032,27 @@ void APixelCodeCharacter::SkillQ()
 			}
 		}
 
-		bQskillCooltime = true;
+		bQskillCoolTime = true;
 
-		GetWorldTimerManager().SetTimer(MyTimerHandle, this, &APixelCodeCharacter::TimerFunction, 1.0f, true);
+		GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::TimerFunction, 1.0f, true);
 
-		/*float eel = 0;
-		float Qin = 0;
-		FTimerHandle QtimerHandle;
-
-
-		GetWorldTimerManager().SetTimer(QtimerHandle, [&]()
-		{
-			Qin = ++eel;
-			UE_LOG(LogTemp, Warning, TEXT("Qin::%f"), Qin);
-			UE_LOG(LogTemp, Warning, TEXT("eel::%f"), eel);
-
-
-				if (Qin == 6)
-				{
-					bQskillCooltime = false;
-					GetWorld()->GetTimerManager().ClearTimer(QtimerHandle);
-					UE_LOG(LogTemp, Warning, TEXT("Timer Function ON"));
-				}
-			UE_LOG(LogTemp, Warning, TEXT("Timer Function Called"));
-
-		}, 1.0f, false);
-	*/}
+		
+	}
 }
 
 void APixelCodeCharacter::TimerFunction()
 {
-	if (CurrentIteration >= NumIterations)
+	if (CurrentQSkillCoolTime >= QSkillCoolTime)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Timer Function off"));
 		// Stop the timer
-		bQskillCooltime = false;
-		CurrentIteration = 0;
-		GetWorldTimerManager().ClearTimer(MyTimerHandle);
+		bQskillCoolTime = false;
+		CurrentQSkillCoolTime = 0;
+		GetWorldTimerManager().ClearTimer(QSkillTimer);
 		return;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Timer Function ON"));
-	CurrentIteration++;
+	CurrentQSkillCoolTime++;
 }
 
 

@@ -197,17 +197,17 @@ public:
 
 	void SkillRightMouse();
 
-	bool bQskillCooltime = false;
-	bool bEskillCooltime = false;
-	bool bRskillCooltime = false;
-	bool bZskillCooltime = false;
+	bool bQskillCoolTime = false;
+	bool bEskillCoolTime = false;
+	bool bRskillCoolTime = false;
+	bool bZskillCoolTime = false;
 	
 	void TimerFunction();
 
 
-	FTimerHandle MyTimerHandle;
-	int32 NumIterations = 6;
-	int32 CurrentIteration = 0;
+	FTimerHandle QSkillTimer;
+	int32 QSkillCoolTime = 6;
+	int32 CurrentQSkillCoolTime = 0;
 
 
 	FVector CachedDestination;
