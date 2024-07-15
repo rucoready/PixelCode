@@ -87,7 +87,6 @@ void UCharacterAnimInstance::AnimNotify_NSQ()
 	if (myCharacter != nullptr)
 	{
 		myCharacter->bSkillNSQ = true;
-		
 	}
 }
 

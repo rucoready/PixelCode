@@ -1009,29 +1009,72 @@ void APixelCodeCharacter::CharacterJump(const FInputActionValue& Value)
 	Super::Jump();
 }
 
-
-
 void APixelCodeCharacter::SkillQ()
 {
-	Mousehit();
+	if (!bQskillCooltime)
+	{ 
+		Mousehit();
 	
-	if (false == combatComponent->bCombatEnable)
+		if (false == combatComponent->bCombatEnable)
+		{
+			return;
+		}
+		if (combatComponent->bAttacking)
+		{
+			combatComponent->bAttackSaved = true;
+		}
+		else
+		{
+			if (bUseSkill)
+			{ 
+				PerformAttack(5, false);
+				combatComponent->attackCount = 0;
+			}
+		}
+
+		bQskillCooltime = true;
+
+		GetWorldTimerManager().SetTimer(MyTimerHandle, this, &APixelCodeCharacter::TimerFunction, 1.0f, true);
+
+		/*float eel = 0;
+		float Qin = 0;
+		FTimerHandle QtimerHandle;
+
+
+		GetWorldTimerManager().SetTimer(QtimerHandle, [&]()
+		{
+			Qin = ++eel;
+			UE_LOG(LogTemp, Warning, TEXT("Qin::%f"), Qin);
+			UE_LOG(LogTemp, Warning, TEXT("eel::%f"), eel);
+
+
+				if (Qin == 6)
+				{
+					bQskillCooltime = false;
+					GetWorld()->GetTimerManager().ClearTimer(QtimerHandle);
+					UE_LOG(LogTemp, Warning, TEXT("Timer Function ON"));
+				}
+			UE_LOG(LogTemp, Warning, TEXT("Timer Function Called"));
+
+		}, 1.0f, false);
+	*/}
+}
+
+void APixelCodeCharacter::TimerFunction()
+{
+	if (CurrentIteration >= NumIterations)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Timer Function off"));
+		// Stop the timer
+		bQskillCooltime = false;
+		CurrentIteration = 0;
+		GetWorldTimerManager().ClearTimer(MyTimerHandle);
 		return;
 	}
-	if (combatComponent->bAttacking)
-	{
-		combatComponent->bAttackSaved = true;
-	}
-	else
-	{
-		if (bUseSkill)
-		{ 
-			PerformAttack(5, false);
-			combatComponent->attackCount = 0;
-		}
-	}
+	UE_LOG(LogTemp, Warning, TEXT("Timer Function ON"));
+	CurrentIteration++;
 }
+
 
 void APixelCodeCharacter::SkillE()
 {
@@ -1124,6 +1167,9 @@ void APixelCodeCharacter::SkillRightMouse()
 		}
 	}
 }
+
+
+
 
 void APixelCodeCharacter::Mousehit()
 {
@@ -1274,14 +1320,14 @@ void APixelCodeCharacter::PlayerRoll(const FInputActionValue& Value)
 void APixelCodeCharacter::ServerRPC_PlayerRoll_Implementation()
 {
 	FTimerHandle handle;
-
+	
 	NetMulticastRPC_PlayerRoll();
 
 	GetWorldTimerManager().SetTimer(handle, [&]() {
 		float PurseStrength = 3000.0f;
 		FVector CharacterForwardVector = GetActorForwardVector();
 		LaunchCharacter(CharacterForwardVector * PurseStrength, true, true);
-		}, 0.2f, false);
+		}, 0.2f, true);
 }
 
 void APixelCodeCharacter::NetMulticastRPC_PlayerRoll_Implementation()

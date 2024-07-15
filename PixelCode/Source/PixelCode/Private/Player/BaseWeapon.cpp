@@ -170,6 +170,12 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 
 	}
 
+	Player = Cast<APlayerOrganism>(hitActor);
+	if (Player)
+	{
+		Player->GetHit(lastHitStruct.ImpactPoint);
+	}
+
 
 	auto interfaceCheck = Cast<ICombatInterface>(hitActor);
 

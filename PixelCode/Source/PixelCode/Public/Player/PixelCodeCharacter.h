@@ -196,8 +196,22 @@ public:
 	void SkillZ();
 
 	void SkillRightMouse();
+
+	bool bQskillCooltime = false;
+	bool bEskillCooltime = false;
+	bool bRskillCooltime = false;
+	bool bZskillCooltime = false;
 	
+	void TimerFunction();
+
+
+	FTimerHandle MyTimerHandle;
+	int32 NumIterations = 6;
+	int32 CurrentIteration = 0;
+
+
 	FVector CachedDestination;
+
 	void Mousehit();
 
 	void switchWeapon();
