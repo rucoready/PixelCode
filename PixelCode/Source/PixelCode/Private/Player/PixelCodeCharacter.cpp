@@ -1327,7 +1327,7 @@ void APixelCodeCharacter::ServerRPC_PlayerRoll_Implementation()
 		float PurseStrength = 3000.0f;
 		FVector CharacterForwardVector = GetActorForwardVector();
 		LaunchCharacter(CharacterForwardVector * PurseStrength, true, true);
-		}, 0.2f, true);
+		}, 0.2f, false);
 }
 
 void APixelCodeCharacter::NetMulticastRPC_PlayerRoll_Implementation()
