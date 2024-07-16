@@ -53,6 +53,7 @@ void APickup::InitializePickup(const TSubclassOf<UItemBase> BaseClass, const int
 		ItemReference->NumericData = ItemData->NumericData;
 		ItemReference->TextData = ItemData->TextData;
 		ItemReference->AssetData = ItemData->AssetData;
+		ItemReference->ItemName = ItemData->ItemName;
 
 		InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
 
@@ -142,16 +143,16 @@ void APickup::TakePickup(const APlayerOrganism* Taker)
 				default:
 					break;
 				}
-				UE_LOG(LogTemp, Warning, TEXT("%s"), *AddResult.ResultMessage.ToString());
+				//UE_LOG(LogTemp, Warning, TEXT("%s"), *AddResult.ResultMessage.ToString());
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Player inventory conponent is null!!")); // 인벤토리가 널
+				//UE_LOG(LogTemp, Warning, TEXT("Player inventory conponent is null!!")); // 인벤토리가 널
 			}
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Pickup internal item reference was somenow null!!")); // 픽업이 널
+			//UE_LOG(LogTemp, Warning, TEXT("Pickup internal item reference was somenow null!!")); // 픽업이 널
 		}
 	}
 
@@ -194,6 +195,12 @@ void APickup::SetInput(const APlayerOrganism* Taker)
 		//}
 	}
 }
+
+FInteractableData APickup::GetItemInfo()
+{
+	return FInteractableData();
+}
+
 
 
 

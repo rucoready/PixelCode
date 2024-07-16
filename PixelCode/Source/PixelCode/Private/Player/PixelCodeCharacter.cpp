@@ -436,144 +436,49 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 		APickup* CraftedItem = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
 		if (CraftedItem)
 		{
-			UItemBase* info = CraftedItem->GetItemData();
 
 
-			////CraftedItem->Destroy();
-			info->Quantity = Item.CraftedItemAmount;
-			//PickupItems->InitializePickup(info, 1)
-			//PickUpItemUp(*info);
-			//OwningInventory->HandleAddItem(info);
-			//OwningInventory->AddNewItem(info, 1);
+			UItemBase* ItemQuantity = CraftedItem->GetItemData();
+			Iteminfos = CraftedItem->GetItemData();
+
+			PlayerInventory->HandleAddItem(Iteminfos);
+			CraftedItem->Destroy();
+
 			UE_LOG(LogTemp, Warning, TEXT("Success Spawn"));
+
+
 		}
 	}
 }
 
-void APixelCodeCharacter::PickUpItemUp(const UItemBase& Iteminfomation)
-{
-	//bool bAddNewItem = Iteminfomation.ItemType == EItemType::Equipmentable; //|| ItemIndex == 100;
-	//if(bAddNewItem)
-	//{
-	//	for(uint8 i= 0; i < Iteminfos->Quantity; i++)
-	//	{ 
-	//		AddItemToInventory(Iteminfomation);
-	//	}
-	//}
-	//else
-	//{
-	//	AddItemToInventory(Iteminfomation /*,ItemIndex*/);
-	//}
-	//OwningInventory.Add(Iteminfo);
-	bool bAddNewItem = Iteminfomation.ItemType == EItemType::Equipmentable;
-
-	if (bAddNewItem)
-	{
-		if (Iteminfomation.Quantity > 0)
-		{
-			for (int32 i = 0; i < Iteminfomation.Quantity; ++i)
-			{
-				AddItemToInventory(Iteminfomation);
-			}
-		}
-	}
-	else
-	{
-		AddItemToInventory(Iteminfomation);
-	}
-}
-
-void APixelCodeCharacter::AddItemToInventory(const UItemBase& Iteminfomations) //uint8 ItemIndex /*= 100*/)
-{
-	//if (Inventory.Num() == MaxInventorySlot)
-	//{
-	//	return;
-	//}
-	//if(ItemIndex == 100)
-	//{
-	//	//Inventory.Add(Iteminfo);
-	//}
-	//else
-	//{
-	//	Inventory[ItemIndex]->Quantity += Iteminfos->Quantity;
-	//}
-	////Inventory.Add(Iteminfo);
-
-	//if (Inventory.Num() >= MaxInventorySlot)
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("Inventory is full. Cannot add more items."));
-	//	return; // 인벤토리가 꽉 찼으면 아무 처리 없이 함수 종료
-	//}
-
-	//// 기본 값인 100이 아닌 경우, 해당 인덱스의 아이템 수량을 증가시킴
-	//if (ItemIndex != 100)
-	//{
-	//	if (ItemIndex < Inventory.Num())
-	//	{
-	//		Inventory[ItemIndex]->Quantity += Iteminfomations.Quantity;
-	//		UE_LOG(LogTemp, Warning, TEXT("Added %d %s to existing stack in inventory."), Iteminfomations.Quantity, *Iteminfomations.TextData.Name.ToString());
-	//		return;
-	//	}
-	//	else if(ItemIndex == 100)
-	//	{
-	//		UE_LOG(LogTemp, Warning, TEXT("Invalid ItemIndex specified. Adding item to the end of inventory."));
-
-	//		// 인덱스가 100이거나 유효하지 않은 경우, 새로운 아이템을 추가
-	//		UItemBase* NewItem = DuplicateObject<UItemBase>(&Iteminfomations, nullptr);
-	//		NewItem->OwningInventory = OwningInventory; // 아이템의 소유 인벤토리 설정
-
-	//		// 인벤토리에 아이템 추가
-	//		Inventory.Add(NewItem);
-
-	//		UE_LOG(LogTemp, Warning, TEXT("Added %s to inventory."), *NewItem->TextData.Name.ToString());
-	//	}
-	//}
-
-
-
-
-
-	// 인덱스가 100이거나 유효하지 않은 경우, 새로운 아이템을 추가
-	UItemBase* NewItem = DuplicateObject<UItemBase>(&Iteminfomations, nullptr);
-	NewItem->OwningInventory = OwningInventory; // 아이템의 소유 인벤토리 설정
-
-	// 인벤토리에 아이템 추가
-	Inventory.Add(NewItem);
-
-	UE_LOG(LogTemp, Warning, TEXT("Added %s to inventory."), *NewItem->TextData.Name.ToString());
-
-
-
-}
 
 AItemStorage* APixelCodeCharacter::GetItemStorage()
 {
 	return ItemStorage;
 }
 
+TArray<UItemBase*> APixelCodeCharacter::GetInventory() const
+{
+	return Inventory;
+}
 
+uint32 APixelCodeCharacter::GetSpecificItemAmount(EItemName ItemName)
+{
+	uint32 Amount = 0;
+	TArray<UItemBase*> InventoryContentSArray = PlayerInventory->GetInventoryContents();  // 인벤토리 내용 배열로 가져옴
 
+	for (UItemBase* Item : InventoryContentSArray)
+	{
+		if (Item && Item->ItemName == ItemName)
+		{
+			Amount += Item->Quantity; // 해당 아이템의 수량 누적
+		}
+	}
+	UE_LOG(LogTemp, Warning, TEXT("amount play"));
 
+	return Amount;
 
-
-//TArray<UItemBase> APixelCodeCharacter::GetInventory() const
-//{
-//	return Inventory;
-//}
-//
-//int32 APixelCodeCharacter::GetSpecifictItemAmount(EItemName ItemsName)
-//{
-//	int32 Amount = 0;
-//	for(UItemBase& Info : Inventory)
-//	{
-//		if(Info.ItemName == ItemsName)
-//		{
-//			Amount += Info.Quantity;
-//		}
-//	}
-//	return Amount;
-//}
-//
+}
 
 void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes)
 {

@@ -13,7 +13,9 @@
 #include <../../../../../../../Source/Runtime/UMG/Public/Components/TextBlock.h>
 #include "Components/HorizontalBox.h"
 #include "CraftingSlotWidget.h"
+#include "Player/World/Pickup.h"
 #include "Components/Button.h"
+#include "Player/inventory/InventoryComponent.h"
 
 
 
@@ -23,6 +25,7 @@ void UCraftingWidget::NativeConstruct()
 
 
 	bCraftable = true;
+
 	SelectedIndex = 99;
 
 	CraftList->ClearChildren();
@@ -30,9 +33,10 @@ void UCraftingWidget::NativeConstruct()
 
 	Btn_Craft->OnClicked.AddUniqueDynamic(this, &UCraftingWidget::OnCraftClicked);
 
-	UE_LOG(LogTemp, Warning, TEXT("5555555555555"));
+	
 	//MakeCraftItem(1, FText::FromString("test item"));
 	//UPROPERTY(EditAnywhere, Category = "Item")MakeCraftItem(2, FText::FromString("test item"));
+	
 
 	Char = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if(Char)
@@ -91,6 +95,7 @@ void UCraftingWidget::SetCraftingInfo(uint8 Index)
 		//T_Stack->SetText(FText::AsNumber(Crafts[SelectedIndex].CraftedItemAmount));
 	}
 
+
 	InitializeCraftSlot();
 }
 
@@ -124,6 +129,8 @@ void UCraftingWidget::MakeCraftItem(uint16 Index, const FText& ItemName)
 	}
 }
 
+
+
 void UCraftingWidget::InitializeCraftSlot()
 {
 	item_Recipes->ClearChildren();
@@ -133,7 +140,7 @@ void UCraftingWidget::InitializeCraftSlot()
 	FCraftItem Info = Crafts[SelectedIndex];
 	for(FRecipe& Recipe : Info.CraftRecipes)
 	{
-		CreateCraftSlot(Recipe);
+		CreateCraftRecipeSlot(Recipe);
 	}
 
 }
@@ -144,9 +151,6 @@ void UCraftingWidget::OnCraftClicked()
 	{
 		return;
 	}
-
-
-
 
 	// 재료 사라짐
 	if(isCraftable())
@@ -166,12 +170,13 @@ void UCraftingWidget::OnCraftClicked()
 	
 }
 
-void UCraftingWidget::CreateCraftSlot(const FRecipe& Recipe)
+void UCraftingWidget::CreateCraftRecipeSlot(const FRecipe& Recipe)
 {
-	if(!CraftingSlotTemplate)
+	if(!CraftingSlotTemplate || !Char)
 	{
 		return;
 	}
+
 	TWeakObjectPtr<UCraftingSlotWidget> CraftsSlot = CreateWidget<UCraftingSlotWidget>(this , CraftingSlotTemplate);
 	if(CraftsSlot.IsValid())
 	{
@@ -189,16 +194,19 @@ void UCraftingWidget::CreateCraftSlot(const FRecipe& Recipe)
 				CraftsSlot->SetToolTip(Tooltip.Get());
 			}
 		}
-			/*if(Char->getspecificItemAmount(Recipe.ItemType) >= Recipe.Amount)
+			if(Char->GetSpecificItemAmount(Recipe.ItemType) >= Recipe.Amount) // 재료의 필요 개수보다 재료 아이템이 같거나 많다면 초록색으로 변경되게
 			{
+				// 색상 변경
 				CraftsSlot->SetBackgroundColorBase(true);
-
+				UE_LOG(LogTemp, Warning, TEXT("color green"));
 			}
 			else
 			{
-				bCraftable = false;
-				CraftsSlot->SetBackgroundColorBase(true);
-			}*/
+				// 색상 변경
+				//bCraftable = false;
+				CraftsSlot->SetBackgroundColorBase(false); // 그렇지 않다면 빨간색 기본
+				UE_LOG(LogTemp, Warning, TEXT("color red"));
+			}
 
 
 	}

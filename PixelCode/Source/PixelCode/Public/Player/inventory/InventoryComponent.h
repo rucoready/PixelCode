@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Player/inventory/ItemBase.h"
 #include "InventoryComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnInventoryUpdated); // 멀티캐스트 대리자선언
@@ -156,6 +157,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	TArray<TObjectPtr<UItemBase>> InventoryContents; // 많은 내부 포인터를 t개체 포인터로 대체
 
+	
+
 	//================================================================================
 	// FUNCTIONS
 	//================================================================================
@@ -169,6 +172,7 @@ protected:
 
 	void AddNewItem(UItemBase* Item, const int32 AmountToAdd);// 새항목추가
 	
+
 
 
 };

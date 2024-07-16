@@ -78,17 +78,13 @@ USTRUCT(BlueprintType)
 
 	// the craftitem amount.
 	UPROPERTY(EditAnywhere, Category = "Recipe")
-	uint8 CraftedItemAmount;
+	//uint8 CraftedItemAmount;
+	int32 CraftedItemAmount;
  
 	// the Recipe needed to craft the item.
 	UPROPERTY(EditAnywhere, Category = "Recipe")
 	TArray<FRecipe> CraftRecipes;
  };
-
-
-
-
- 
 
 
 

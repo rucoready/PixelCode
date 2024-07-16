@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "CreateItemData.h"
+#include "Player/inventory/InventoryComponent.h"
 #include "CraftingWidget.generated.h"
 
 class AItemStorage;
@@ -87,6 +88,12 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UButton* Btn_Craft;
 
+	UPROPERTY(EditAnywhere, Category = "KYH")
+	class APickup* PickupItems;
+
+	UPROPERTY()
+	UInventoryComponent* OwningInventory; 
+
 	// 아이템 만드는 함수
 	void MakeCraftItem(uint16 Index,const FText& ItemName);
 
@@ -94,7 +101,7 @@ protected:
 
 
 	// 레시피 슬롯 베이스
-	void CreateCraftSlot(const FRecipe& Recipe);
+	void CreateCraftRecipeSlot(const FRecipe& Recipe);
 	
 	
 	FText GetItemNameFromType(EItemName Name);

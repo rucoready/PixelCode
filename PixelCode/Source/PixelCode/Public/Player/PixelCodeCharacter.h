@@ -8,6 +8,7 @@
 #include "Logging/LogMacros.h" // ?
 #include "Player/PlayerOrganism.h"
 #include "Player/Interfaces/InteractionInterface.h" // cpp가아닌 헤더에 둬야함.
+#include "Player/inventory/ItemBase.h"
 #include "PixelCodeCharacter.generated.h"
 
 class USpringArmComponent;
@@ -332,17 +333,13 @@ public:
 	UFUNCTION()
 	void CraftItem(const FCraftItem& Item);
 
-	void PickUpItemUp(const UItemBase& Iteminfomation);
-
-	void AddItemToInventory(const UItemBase& Iteminfomation); //uint8 ItemIndex /*= 100*/);
+	TArray<UItemBase*> GetInventory() const;
 
 	// 저장 품목
 	AItemStorage* GetItemStorage();
 
 	// 아이템 테스트 들감
-	UPROPERTY(EditAnywhere, Category = "KYH")
-	class AParentItem* Iteminfo;
-
+	
 	UPROPERTY(EditAnywhere, Category = "KYH")
 	class UItemBase* Iteminfos;
 
@@ -358,17 +355,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
 	TSubclassOf<AActor>	ItemStorageTemplate;
 
-	//TArray<UItemBase> Inventory;
+	uint32 GetSpecificItemAmount(EItemName ItemName);
 
 	void ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes);
 
-	///TArray<UItemBase> GetInv;
+	
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	uint8 MaxInventorySlot;
 
 	UPROPERTY()
 	UInventoryComponent* OwningInventory; // 인벤토리
+
 
 	// 서휘-----------------------------------------------------------------------------------------------------
 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)

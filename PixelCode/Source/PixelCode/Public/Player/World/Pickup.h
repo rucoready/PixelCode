@@ -69,13 +69,7 @@ protected:
 	//================================================================================
 	// FUNCTIONS
 	//================================================================================
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void Interact(APixelCodeCharacter* PlayerCharacter) override;
-	void UpdateInteractableData();
-
-	void TakePickup(const APlayerOrganism* Taker); // 캐릭터의 인벤토리와 인터페이스해야함
+	
 
 #if WITH_EDITOR // 매크로
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
@@ -87,6 +81,19 @@ public:
 	FName DesiredItemID;
 
 	void SetInput(const APlayerOrganism* Taker);
+
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+
+	virtual void Interact(APixelCodeCharacter* PlayerCharacter) override;
+	void UpdateInteractableData();
+
+	void TakePickup(const APlayerOrganism* Taker); // 캐릭터의 인벤토리와 인터페이스해야함
+
+
+	FInteractableData GetItemInfo();
+
+
 
 
 };

@@ -38,6 +38,7 @@ void UInventoryComponent::BeginPlay()
 }
 
 
+
 void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -315,4 +316,7 @@ void UInventoryComponent::AddNewItem(UItemBase* Item, const int32 AmountToAdd)
 	OnInventoryUpdated.Broadcast(); // 모든 UI요소에 변경사항 적용
 
 }
+
+
+
 
