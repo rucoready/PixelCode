@@ -436,8 +436,6 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 		APickup* CraftedItem = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
 		if (CraftedItem)
 		{
-
-
 			UItemBase* ItemQuantity = CraftedItem->GetItemData();
 			Iteminfos = CraftedItem->GetItemData();
 
@@ -445,8 +443,6 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 			CraftedItem->Destroy();
 
 			UE_LOG(LogTemp, Warning, TEXT("Success Spawn"));
-
-
 		}
 	}
 }
@@ -479,6 +475,7 @@ uint32 APixelCodeCharacter::GetSpecificItemAmount(EItemName ItemName)
 	return Amount;
 
 }
+
 
 void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes)
 {
@@ -582,11 +579,11 @@ void APixelCodeCharacter::ServerRPC_CycleBuildingMesh_Implementation()
 	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CYCLE BUILDING MESH SERVER RPC"));
 
 	CycleBuildingMesh();
-
-// 	if (!HasAuthority())
-// 	{
- 		//ClientRPC_CycleBuildingMesh();
-// 	}
+	/*
+	if (!HasAuthority())
+	{
+		ClientRPC_CycleBuildingMesh();
+	}*/
 }
 
 void APixelCodeCharacter::ClientRPC_CycleBuildingMesh_Implementation(UStaticMesh* newMesh)
@@ -935,100 +932,166 @@ void APixelCodeCharacter::SkillQ()
 
 		bQskillCoolTime = true;
 
-		GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::TimerFunction, 1.0f, true);
+		GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
 
 		
 	}
 }
 
-void APixelCodeCharacter::TimerFunction()
+void APixelCodeCharacter::QskillTime()
 {
 	if (CurrentQSkillCoolTime >= QSkillCoolTime)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Timer Function off"));
+		UE_LOG(LogTemp, Warning, TEXT("Timer Function Qoff"));
 		// Stop the timer
 		bQskillCoolTime = false;
 		CurrentQSkillCoolTime = 0;
 		GetWorldTimerManager().ClearTimer(QSkillTimer);
 		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Timer Function ON"));
+	//UE_LOG(LogTemp, Warning, TEXT("%f"), GetWorld()->GetTimerManager().GetTimerElapsed(QSkillTimer)); 환록형이 알려준 코드 나중에 써보기, 1초마다 재주는 기능
+	UE_LOG(LogTemp, Warning, TEXT("Timer Function QON"));
 	CurrentQSkillCoolTime++;
 }
 
 
+
 void APixelCodeCharacter::SkillE()
 {
-	Mousehit();
+	if (!bEskillCoolTime)
+	{ 
+		Mousehit();
 
-	if (false == combatComponent->bCombatEnable)
+		if (false == combatComponent->bCombatEnable)
+		{
+			return;
+		}
+
+		if (combatComponent->bAttacking)
+		{
+			combatComponent->bAttackSaved = true;
+		}
+		else
+		{
+			if (bUseSkill)
+			{
+				PerformAttack(6, false);
+				combatComponent->attackCount = 0;
+			}
+		}
+
+		bEskillCoolTime = true;
+		
+		GetWorldTimerManager().SetTimer(ESkillTimer, this, &APixelCodeCharacter::EskillTime, 1.0f, true);
+	}
+}
+
+void APixelCodeCharacter::EskillTime()
+{
+	if (CurrentESkillCoolTime >= ESkillCoolTime)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Timer Function Eoff"));
+		// Stop the timer
+		bEskillCoolTime = false;
+		CurrentESkillCoolTime = 0;
+		GetWorldTimerManager().ClearTimer(ESkillTimer);
 		return;
 	}
-
-	if (combatComponent->bAttacking)
-	{
-		combatComponent->bAttackSaved = true;
-	}
-	else
-	{
-		if (bUseSkill)
-		{
-			PerformAttack(6, false);
-			combatComponent->attackCount = 0;
-		}
-	}
+	UE_LOG(LogTemp, Warning, TEXT("Timer Function EON"));
+	CurrentESkillCoolTime++;
 }
 
 void APixelCodeCharacter::SkillR()
 {
-	Mousehit();
+	if (!bRskillCoolTime)
+	{ 
+		Mousehit();
 
-	if (false == combatComponent->bCombatEnable)
-	{
-		return;
-	}
-
-	if (combatComponent->bAttacking)
-	{
-		combatComponent->bAttackSaved = true;
-	}
-	else
-	{
-		if (bUseSkill)
+		if (false == combatComponent->bCombatEnable)
 		{
-			PerformAttack(7, false);
-			combatComponent->attackCount = 0;
+			return;
 		}
+
+		if (combatComponent->bAttacking)
+		{
+			combatComponent->bAttackSaved = true;
+		}
+		else
+		{
+			if (bUseSkill)
+			{
+				PerformAttack(7, false);
+				combatComponent->attackCount = 0;
+			}
+		}
+
+		bRskillCoolTime = true;
+
+		GetWorldTimerManager().SetTimer(RSkillTimer, this, &APixelCodeCharacter::RskillTime, 1.0f, true);
 	}
 }
 
-void APixelCodeCharacter::SkillZ()
+void APixelCodeCharacter::RskillTime()
 {
-	Mousehit();
-	if (false == combatComponent->bCombatEnable)
+	if (CurrentRSkillCoolTime >= RSkillCoolTime)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Timer Function Roff"));
+		// Stop the timer
+		bRskillCoolTime = false;
+		CurrentRSkillCoolTime = 0;
+		GetWorldTimerManager().ClearTimer(RSkillTimer);
 		return;
 	}
+	UE_LOG(LogTemp, Warning, TEXT("Timer Function RON"));
+	CurrentRSkillCoolTime++;
+}
 
-	if (combatComponent->bAttacking)
+
+void APixelCodeCharacter::SkillZ()
+{
+	if (!bZskillCoolTime)
 	{
-		combatComponent->bAttackSaved = true;
-	}
-	else
-	{
-		if (bUseSkill)
+		Mousehit();
+		if (false == combatComponent->bCombatEnable)
 		{
-			PerformAttack(8, false);
-			combatComponent->attackCount = 0;
+			return;
 		}
+
+		if (combatComponent->bAttacking)
+		{
+			combatComponent->bAttackSaved = true;
+		}
+		else
+		{
+			if (bUseSkill)
+			{
+				PerformAttack(8, false);
+				combatComponent->attackCount = 0;
+			}
+		}
+		bZskillCoolTime = true;
+
+		GetWorldTimerManager().SetTimer(ZSkillTimer, this, &APixelCodeCharacter::ZskillTime, 1.0f, true);
 	}
+}
+
+void APixelCodeCharacter::ZskillTime()
+{
+	if (CurrentZSkillCoolTime >= ZSkillCoolTime)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Timer Function Zoff"));
+		// Stop the timer
+		bZskillCoolTime = false;
+		CurrentZSkillCoolTime = 0;
+		GetWorldTimerManager().ClearTimer(ZSkillTimer);
+		return;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Timer Function ZON"));
+	CurrentZSkillCoolTime++;
 }
 
 void APixelCodeCharacter::SkillRightMouse()
 {
-	
-	
 	Mousehit();
 	if (false == combatComponent->bCombatEnable)
 	{

@@ -190,17 +190,32 @@ public:
 
 	void SkillRightMouse();
 
+	// 스킬 쿨타임
+
 	bool bQskillCoolTime = false;
 	bool bEskillCoolTime = false;
 	bool bRskillCoolTime = false;
 	bool bZskillCoolTime = false;
 	
-	void TimerFunction();
-
+	void QskillTime();
+	void EskillTime();
+	void RskillTime();
+	void ZskillTime();
 
 	FTimerHandle QSkillTimer;
-	int32 QSkillCoolTime = 6;
-	int32 CurrentQSkillCoolTime = 0;
+	FTimerHandle ESkillTimer;
+	FTimerHandle RSkillTimer;
+	FTimerHandle ZSkillTimer;
+
+	float QSkillCoolTime = 6;
+	float ESkillCoolTime = 10;
+	float RSkillCoolTime = 8;
+	float ZSkillCoolTime = 20;
+
+	float CurrentQSkillCoolTime = 0;
+	float CurrentESkillCoolTime = 0;
+	float CurrentRSkillCoolTime = 0;
+	float CurrentZSkillCoolTime = 0;
 
 
 	FVector CachedDestination;
@@ -339,7 +354,6 @@ public:
 	AItemStorage* GetItemStorage();
 
 	// 아이템 테스트 들감
-	
 	UPROPERTY(EditAnywhere, Category = "KYH")
 	class UItemBase* Iteminfos;
 
@@ -359,14 +373,11 @@ public:
 
 	void ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes);
 
-	
-
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	uint8 MaxInventorySlot;
 
 	UPROPERTY()
 	UInventoryComponent* OwningInventory; // 인벤토리
-
 
 	// 서휘-----------------------------------------------------------------------------------------------------
 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)

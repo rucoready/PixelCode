@@ -7,9 +7,9 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetStringLibrary.h"
-#include "Player/PixelCodeCharacter.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
+#include "Player/PlayerOrganism.h"
 
 // Sets default values
 ABossSword::ABossSword()
@@ -47,7 +47,7 @@ void ABossSword::BeginPlay()
 	damageSphereComp->OnComponentBeginOverlap.AddDynamic(this, &ABossSword::OnBeginOverlapSwordCollision);
 	damageSphereComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//damageSphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	Player = Cast<APixelCodeCharacter>(GetOwner());
+	Player = Cast<APlayerOrganism>(GetOwner());
 	
 
 }
@@ -82,8 +82,13 @@ void ABossSword::OnBeginOverlapSwordCollision(UPrimitiveComponent* OverlappedCom
 {
 	if (OtherActor->GetName().Contains("Player"))
 	{
+		
+		Player = Cast<APlayerOrganism>(OtherActor);
+		if (Player)
+		{
+			Player->GetHit(SweepResult.ImpactPoint,true);
+		}
 		ApplyDamageToTarget(OtherActor, 20);
-		//Player->GetHit(SweepResult.ImpactPoint);
 	}
 	
 }

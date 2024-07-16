@@ -174,17 +174,8 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 	return 0.0f;
 }
 
-void APlayerOrganism::PlayHitReactMontage(const FName& SectionName)
-{
-	AnimInsatnce = GetMesh()->GetAnimInstance();
-	if (AnimInsatnce && hitReaction)
-	{
-		AnimInsatnce->Montage_Play(hitReaction);
-		AnimInsatnce->Montage_JumpToSection(SectionName, hitReaction);
-	}
-}
 
-void APlayerOrganism::GetHit(const FVector& ImpactPoint)
+void APlayerOrganism::GetHit(const FVector& ImpactPoint, bool bFallDown)
 {
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 8.f, 24, FColor::Orange, false, 5.f);
 
@@ -213,37 +204,73 @@ void APlayerOrganism::GetHit(const FVector& ImpactPoint)
 	{
 		Theta *= -1.f;
 		UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
-		
+	}
 		if (hitPaticle != nullptr)
-		{ 
+		{
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitPaticle, GetActorLocation() + CrossProduct * 100.f);
 		}
-	}
 
-	FName Section("HitBack");
+		if (bFallDown)
+		{
+			AnimInsatnce = GetMesh()->GetAnimInstance();
+			if (AnimInsatnce && hitFalldownReaction != nullptr)
+			{
+				if (Theta >= -45.f && Theta < 45.f)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Front"));
+				}
+				else if (Theta >= -135.f && Theta < -45.f)
+				{
+					SetActorRotation(GetActorRotation()-FRotator(0,-270,0));
+					UE_LOG(LogTemp, Warning, TEXT("Left"));
+				}
+				else if (Theta >= 45.f && Theta < 135.f)
+				{
+					SetActorRotation(GetActorRotation() - FRotator(0,-90,0));
+					UE_LOG(LogTemp, Warning, TEXT("Right"));
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Back"));
+					SetActorRotation(GetActorRotation() - FRotator(0, -180, 0));
+				}
+				if (GEngine)
+				{
+					// 화면 디버그 기능
+					GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta));
+				}
+				
+				AnimInsatnce->Montage_Play(hitFalldownReaction);
+				return;
+			}
+		}
+		else
+		{ 
 
-	if (Theta >= -45.f && Theta < 45.f)
-	{
-		Section = FName("HitForward");
-		UE_LOG(LogTemp, Warning, TEXT("Front"));
-	}
-	else if (Theta >= -135.f && Theta < -45.f)
-	{
-		Section = FName("HitLeft");
-		UE_LOG(LogTemp, Warning, TEXT("Left"));
-	}
-	else if (Theta >= 45.f && Theta < 135.f)
-	{
-		Section = FName("HitRight");
-		UE_LOG(LogTemp, Warning, TEXT("Right"));
-	}
-	else
-	{
+		FName Section("HitBack");
+
+		if (Theta >= -45.f && Theta < 45.f)
+		{
+			Section = FName("HitForward");
+			UE_LOG(LogTemp, Warning, TEXT("Front"));
+		}
+		else if (Theta >= -135.f && Theta < -45.f)
+		{
+			Section = FName("HitLeft");
+			UE_LOG(LogTemp, Warning, TEXT("Left"));
+		}
+		else if (Theta >= 45.f && Theta < 135.f)
+		{
+			Section = FName("HitRight");
+			UE_LOG(LogTemp, Warning, TEXT("Right"));
+		}
+		else
+		{
 		UE_LOG(LogTemp, Warning, TEXT("Back"));
-	}
+		}
 
-	PlayHitReactMontage(Section);
-
+		PlayHitReactMontage(Section);
+		}
 	if (GEngine)
 	{
 		// 화면 디버그 기능
@@ -252,6 +279,16 @@ void APlayerOrganism::GetHit(const FVector& ImpactPoint)
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.0f, 5.f, FColor::Red, 5.f);
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
 
+}
+
+void APlayerOrganism::PlayHitReactMontage(const FName& SectionName)
+{
+	AnimInsatnce = GetMesh()->GetAnimInstance();
+	if (AnimInsatnce && hitReaction)
+	{
+		AnimInsatnce->Montage_Play(hitReaction);
+		AnimInsatnce->Montage_JumpToSection(SectionName, hitReaction);
+	}
 }
 
 void APlayerOrganism::ContinueAttack_Implementation()

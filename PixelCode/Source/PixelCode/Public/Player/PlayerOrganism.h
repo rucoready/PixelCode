@@ -76,9 +76,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "MySettings")
 	UAnimMontage* hitReaction;	
 
+	UPROPERTY(EditDefaultsOnly, Category = "MySettings")
+	UAnimMontage* hitFalldownReaction;
+
 	class UAnimInstance* AnimInsatnce;
 
-	void GetHit(const FVector& ImpactPoint);
+	void GetHit(const FVector& ImpactPoint, bool bFallDown);
 
 	UPROPERTY(Replicated, BlueprintReadWrite)
 	ECharacterMotionState motionState = ECharacterMotionState::Idle;
