@@ -67,12 +67,12 @@ void UCraftingWidget::NativeConstruct()
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("item storage is invalid"))
+			//UE_LOG(LogTemp, Warning, TEXT("item storage is invalid"))
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player character is invalid"))
+		//UE_LOG(LogTemp, Warning, TEXT("Player character is invalid"))
 	}
 }
 
@@ -100,17 +100,18 @@ void UCraftingWidget::SetCraftingInfo(uint8 Index)
 }
 
 
-
+// 크래프트 또는 실패 bool 값
 bool UCraftingWidget::isCraftable()
 {
 	if(!bCraftable)
 	{
 		return false;
 	}
-	/*else if(Char->isinventoryFull())
-	{
-		return false;
-	}*/
+	//else if(FItemAddResult infAddedAll())
+	//{
+	////(Char->isinventoryFull())
+	//	return false;
+	//}
 	return true;
 }
 
@@ -156,6 +157,8 @@ void UCraftingWidget::OnCraftClicked()
 	if(isCraftable())
 	{
 		Char->CraftItem(Crafts[SelectedIndex]);
+
+		InitializeCraftSlot();
 	}
 	else
 	{
@@ -198,14 +201,14 @@ void UCraftingWidget::CreateCraftRecipeSlot(const FRecipe& Recipe)
 			{
 				// 색상 변경
 				CraftsSlot->SetBackgroundColorBase(true);
-				UE_LOG(LogTemp, Warning, TEXT("color green"));
+				//UE_LOG(LogTemp, Warning, TEXT("color green"));
 			}
 			else
 			{
 				// 색상 변경
-				//bCraftable = false;
+				bCraftable = false;
 				CraftsSlot->SetBackgroundColorBase(false); // 그렇지 않다면 빨간색 기본
-				UE_LOG(LogTemp, Warning, TEXT("color red"));
+				//UE_LOG(LogTemp, Warning, TEXT("color red"));
 			}
 
 

@@ -448,7 +448,7 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 }
 
 
-AItemStorage* APixelCodeCharacter::GetItemStorage()
+AItemStorage* APixelCodeCharacter::GetItemStorage() 
 {
 	return ItemStorage;
 }
@@ -470,7 +470,7 @@ uint32 APixelCodeCharacter::GetSpecificItemAmount(EItemName ItemName)
 			Amount += Item->Quantity; // 해당 아이템의 수량 누적
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("amount play"));
+	//UE_LOG(LogTemp, Warning, TEXT("amount play"));
 
 	return Amount;
 
@@ -479,33 +479,42 @@ uint32 APixelCodeCharacter::GetSpecificItemAmount(EItemName ItemName)
 
 void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes)
 {
-	/*for (const FRecipe& Recipe : Recipes)
+	for (const FRecipe& Recipe : Recipes)
 	{
+		TArray<UItemBase*> InventoryContentSArray = PlayerInventory->GetInventoryContents();
 		uint8 RecipeAmount = Recipe.Amount;
-		for (Iteminfos& Item : Inventory)
-		{
-			if (Item.ItemName == Recipe.ItemType)
-			{
-				if (Item.Quantity - Recipe.Amount < 0)
-				{
+		uint8 Index = 0;
+		TArray<uint8> RemoveedIndex;
+		
 
+		for (UItemBase* Item : InventoryContentSArray)
+		{
+			if (Item && Item->ItemName == Recipe.ItemType)
+			{
+				if (Item->Quantity - Recipe.Amount < 0)
+				{
+					RecipeAmount -= Item->Quantity; 
+					RemoveedIndex.Add(Index);
 				}
 				else
 				{
-					Item.Quantity -= Recipe.Amount;
-					RecipeAmount -= Recipe.Amount;
-					if (Item.Quantity == 0)
+					Item->Quantity -= RecipeAmount;
+					RecipeAmount -= RecipeAmount;
+					if (Item->Quantity == 0)
 					{
-						Inventory.Remove(Item);
+						InventoryContentSArray.RemoveAt(Index);
 					}
 					break;
 				}
 			}
-		}*/
-
-
-		//FItemInfo = 아이템 베이스, itemamount 우리 이름 방식 대로 변경
-	//s}
+			Index++;
+		}
+		for(int8 i = RemoveedIndex.Num() -1; i > -1; i--)
+		{
+			// 재고가 삭제된 인벤토리
+			InventoryContentSArray.RemoveAt(RemoveedIndex[i]);
+		}
+	}
 }
 
 // 서휘-----------------------------------------------------------------------------------------------------

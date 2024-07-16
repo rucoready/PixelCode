@@ -122,6 +122,7 @@ void APlayerHUD::ShowOrHideCrafting()
 		creatwidgets();
 		const FInputModeGameOnly InputMode;
 		Crafting->SetVisibility(ESlateVisibility::Visible);
+		Crafting->InitializeCraftSlot();
 		bIsCreatVisible = true;
 		GetOwningPlayerController()->SetShowMouseCursor(true);
 		GetOwningPlayerController()->SetInputMode(InputMode);
@@ -132,7 +133,7 @@ void APlayerHUD::HideCrafting()
 {
 	if (Crafting)
 	{
-		Crafting->SetVisibility(ESlateVisibility::Collapsed);
+		Crafting->SetVisibility(ESlateVisibility::Collapsed); 
 		bIsCreatVisible = false;
 		const FInputModeGameOnly InputMode; // 게임화면만 클릭하도록 설정
 		GetOwningPlayerController()->SetInputMode(InputMode);
