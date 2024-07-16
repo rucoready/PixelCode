@@ -680,14 +680,14 @@ void APixelCodeCharacter::ServerRPC_CycleBuildingMesh_Implementation()
 
 // 	if (!HasAuthority())
 // 	{
- 		ClientRPC_CycleBuildingMesh();
+ 		//ClientRPC_CycleBuildingMesh();
 // 	}
 }
 
-void APixelCodeCharacter::ClientRPC_CycleBuildingMesh_Implementation()
+void APixelCodeCharacter::ClientRPC_CycleBuildingMesh_Implementation(UStaticMesh* newMesh)
 {
 	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CYCLE BUILDING MESH CLIENT RPC"));
-	CycleBuildingMesh();
+	Builder->BuildMesh->SetStaticMesh(newMesh);
 }
 
 void APixelCodeCharacter::DestroyBuildingInstance()

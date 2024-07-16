@@ -224,7 +224,14 @@ void ABuildingVisual::CycleMesh()
 			BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
 			UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDINGVISUAL CYCLE MESH SetStaticMesh"));
 		}
-	}	
+	}
+	
+	auto Pc = Cast <APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (Pc)
+	{
+		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
+		pc->ClientRPC_CycleBuildingMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
+	}
 }
 
 void ABuildingVisual::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

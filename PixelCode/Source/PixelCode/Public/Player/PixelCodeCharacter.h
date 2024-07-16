@@ -396,7 +396,7 @@ public:
  	void ServerRPC_CycleBuildingMesh();
 
 	UFUNCTION(Client, Reliable)
-	void ClientRPC_CycleBuildingMesh();
+	void ClientRPC_CycleBuildingMesh(UStaticMesh* newMesh);
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void SpawnBuilding();
