@@ -54,6 +54,21 @@ ABuilding* ABuildingVisual::GetHitBuildingActor(const FHitResult& HitResult)
 
 void ABuildingVisual::SetMeshTo(EBuildType BuildType)
 {
+ 	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
+ 	bReturnedMesh = false;
+ 	for (const FBuildingVisualType& Building : BuildingTypes)
+ 	{
+ 		if (Building.BuildType == BuildType)
+ 		{
+ 			BuildMesh->SetStaticMesh(Building.BuildingMesh);
+ 			return;
+ 		}
+ 	}
+	/*ServerRPC_SetMeshTo(BuildType);*/
+}
+
+// void ABuildingVisual::ServerRPC_SetMeshTo_Implementation(EBuildType BuildType)
+// {
 // 	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
 // 	bReturnedMesh = false;
 // 	for (const FBuildingVisualType& Building : BuildingTypes)
@@ -64,37 +79,22 @@ void ABuildingVisual::SetMeshTo(EBuildType BuildType)
 // 			return;
 // 		}
 // 	}
-	ServerRPC_SetMeshTo(BuildType);
-}
-
-void ABuildingVisual::ServerRPC_SetMeshTo_Implementation(EBuildType BuildType)
-{
-	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
-	bReturnedMesh = false;
-	for (const FBuildingVisualType& Building : BuildingTypes)
-	{
-		if (Building.BuildType == BuildType)
-		{
-			BuildMesh->SetStaticMesh(Building.BuildingMesh);
-			return;
-		}
-	}
-	NetMultiRPC_SetMeshTo(BuildType);
-}
-
-void ABuildingVisual::NetMultiRPC_SetMeshTo_Implementation(EBuildType BuildType)
-{
-	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
-	bReturnedMesh = false;
-	for (const FBuildingVisualType& Building : BuildingTypes)
-	{
-		if (Building.BuildType == BuildType)
-		{
-			BuildMesh->SetStaticMesh(Building.BuildingMesh);
-			return;
-		}
-	}
-}
+// 	NetMultiRPC_SetMeshTo(BuildType);
+// }
+// 
+// void ABuildingVisual::NetMultiRPC_SetMeshTo_Implementation(EBuildType BuildType)
+// {
+// 	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
+// 	bReturnedMesh = false;
+// 	for (const FBuildingVisualType& Building : BuildingTypes)
+// 	{
+// 		if (Building.BuildType == BuildType)
+// 		{
+// 			BuildMesh->SetStaticMesh(Building.BuildingMesh);
+// 			return;
+// 		}
+// 	}
+// }
 
 void ABuildingVisual::ReturnMeshToSelected()
 {
@@ -211,9 +211,6 @@ void ABuildingVisual::CycleMesh()
 	if (bReturnedMesh)
 	{
 		// 건축자재 인덱스 스크롤로 돌리기
-		FString StrBuildingTypes = BuildingTypeIndex ? TEXT("true") : TEXT("false");
-		UE_LOG(LogTemp, Warning, TEXT("************************CYCLE MESH BuildingTypeIndex : %s"), *StrBuildingTypes);
-
 		FString StrBuildMesh = BuildMesh ? TEXT("true") : TEXT("false");
 		UE_LOG(LogTemp, Warning, TEXT("************************CYCLE MESH BuildMesh : %s"), *StrBuildMesh);
 

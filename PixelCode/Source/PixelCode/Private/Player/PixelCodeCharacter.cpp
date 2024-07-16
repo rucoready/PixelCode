@@ -678,10 +678,10 @@ void APixelCodeCharacter::ServerRPC_CycleBuildingMesh_Implementation()
 
 	CycleBuildingMesh();
 
-	if (!HasAuthority())
-	{
-		ClientRPC_CycleBuildingMesh();
-	}
+// 	if (!HasAuthority())
+// 	{
+ 		ClientRPC_CycleBuildingMesh();
+// 	}
 }
 
 void APixelCodeCharacter::ClientRPC_CycleBuildingMesh_Implementation()
