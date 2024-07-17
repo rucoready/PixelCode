@@ -44,6 +44,7 @@
 #include "Player/World/Pickup.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
 #include "DataTypes.h"
+#include "Player/SpawnSkillActor/SpawnSwordQSkill.h"
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -1427,6 +1428,8 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	{ 
 		UNiagaraComponent* NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_SkillQ, GetActorLocation()+GetActorForwardVector()*330, GetActorRotation());
 		
+		
+		
 		bSkillNSQ = false;
 	}
 
@@ -1434,6 +1437,10 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_SkillR, GetActorLocation(), GetActorRotation());
 		bSkillNSR = false;
+
+		FActorSpawnParameters SpawnParams;
+		GetWorld()->SpawnActor<ASpawnSwordQSkill>(QSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+		UE_LOG(LogTemp, Warning, TEXT("spawnActor"));
 	}
 	// 지논------------------------------------------------------------------------------------------------------
 

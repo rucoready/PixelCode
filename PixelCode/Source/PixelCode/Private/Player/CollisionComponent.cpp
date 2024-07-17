@@ -39,7 +39,7 @@ void UCollisionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	}
 }
 
-void UCollisionComponent::SetCollisionMesh(UPrimitiveComponent * meshComp)
+void UCollisionComponent::SetCollisionMesh(UPrimitiveComponent* meshComp)
 {
 	collisionMeshComponent = meshComp;
 }

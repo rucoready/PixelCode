@@ -29,6 +29,7 @@ class ABaseWeapon;
 class UCreateItemData;
 class AParentItem;
 struct FRecipe;
+class ASpawnSwordQSkill;
 
 UENUM()
 enum class MyEnum : int8
@@ -219,6 +220,11 @@ public:
 	float CurrentRSkillCoolTime = 0;
 	float CurrentZSkillCoolTime = 0;
 
+	UPROPERTY()
+	ASpawnSwordQSkill* SpawnQSkillCollsion;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
+	TSubclassOf<ASpawnSwordQSkill> QSkillSpawn;
 
 
 	FVector CachedDestination;
