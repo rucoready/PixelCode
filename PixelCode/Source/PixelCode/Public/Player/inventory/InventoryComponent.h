@@ -10,6 +10,7 @@
 DECLARE_MULTICAST_DELEGATE(FOnInventoryUpdated); // 멀티캐스트 대리자선언
 
 class UItemBase;
+class APixelCodeCharacter;
 
 UENUM(BlueprintType)
 enum class EItemAddResult : uint8
@@ -91,6 +92,11 @@ public:
 	UInventoryComponent();
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	//======요한=============
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	APixelCodeCharacter* Char;
+
 
 	UFUNCTION(Category = "Inventory")
 	FItemAddResult HandleAddItem(UItemBase* InputItem);

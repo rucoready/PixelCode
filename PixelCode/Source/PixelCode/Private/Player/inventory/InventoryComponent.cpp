@@ -3,6 +3,7 @@
 
 #include "Player/inventory/InventoryComponent.h"
 #include "Player/inventory/ItemBase.h"
+#include "Player/PixelCodeCharacter.h"
 
 
 // Sets default values for this component's properties
@@ -261,10 +262,16 @@ FItemAddResult UInventoryComponent::HandleAddItem(UItemBase* InputItem)
 	if (GetOwner())
 	{
 		const int32 InitialRequestedAddAmount = InputItem->Quantity;
+		UItemBase *TempInfo = InputItem;
 		// handle non-stackable items
 		if (!InputItem->NumericData.bisStackable)
 		{
 			return HandleNonStackableItems(InputItem);
+			TempInfo->Quantity -= 1;
+		}
+		else
+		{
+			Char->DropedItem(TempInfo);
 		}
 
 		// handle stakckable °ª Ãß°¡

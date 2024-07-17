@@ -357,6 +357,9 @@ public:
 	UFUNCTION()
 	void CraftItem(const FCraftItem& Item);
 
+	UFUNCTION()
+	void DropedItem(const UItemBase* Iteminfo);
+
 	TArray<UItemBase*> GetInventory() const;
 	
 	// 저장 품목

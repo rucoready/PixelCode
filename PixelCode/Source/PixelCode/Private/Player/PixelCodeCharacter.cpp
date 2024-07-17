@@ -451,6 +451,31 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 	}
 }
 
+void APixelCodeCharacter::DropedItem(const UItemBase* Iteminfo)
+{
+	if (ItemStorage)
+	{
+		TSubclassOf<AActor> Template = ItemStorage->GetTemplateOfItem(Iteminfo->ItemName);
+		if (Template)
+		{
+
+			//UInventoryComponent* OwningInventory; // 인벤토리
+			FActorSpawnParameters Params;
+			Params.Owner = this;
+			Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+			//FVector SpawnLoc = FVector(440.f, 0.f, 0.f);
+
+			FVector SpawnLoc = FVector(6797.037641f, -38828.846065f, 3000.503557f);
+			APickup* DropItemes = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
+			if (DropItemes)
+			{
+				//DropItemes->SetItemAmount(Iteminfo->Quantity);
+			}
+		}
+	}
+}
+
 
 AItemStorage* APixelCodeCharacter::GetItemStorage()
 {
