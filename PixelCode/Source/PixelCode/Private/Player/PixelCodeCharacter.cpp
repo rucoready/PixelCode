@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+ï»¿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Player/PixelCodeCharacter.h"
 #include "Engine/LocalPlayer.h"
@@ -18,7 +18,7 @@
 #include <../../../../../../../Source/Runtime/UMG/Public/Components/WidgetComponent.h>
 #include "Player/StateComponent.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Engine/EngineBaseTypes.h>
-#include "DrawDebugHelpers.h" // µğ¹ö±×¶óÀÎ
+#include "DrawDebugHelpers.h" // ë””ë²„ê·¸ë¼ì¸
 #include <../../../../../../../Source/Runtime/Core/Public/Math/UnrealMathUtility.h>
 #include "Player/World/Pickup.h"
 #include "Player/inventory/itemBase.h"
@@ -94,21 +94,21 @@ APixelCodeCharacter::APixelCodeCharacter()
 
 	characterName = TEXT("Player");
 
-	InteractionCheckFrequecy = 0.1; // ºóµµÈ®ÀÎ
+	InteractionCheckFrequecy = 0.1; // ë¹ˆë„í™•ì¸
 	InteractionCheckDistance = 225.0f;
 
-	BaseEyeHeight = 74.0f; // ÇÃ·¹ÀÌ¾î ´« ³ôÀÌÀ§·Î
+	BaseEyeHeight = 74.0f; // í”Œë ˆì´ì–´ ëˆˆ ë†’ì´ìœ„ë¡œ
 
 	//lootPanelWidget = CreateWidget<ULootPanel>(GetWorld(), ConstructorHelpers::FClassFinder<ULootPanel>(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Enemy/UserInterfaces/WBP_LootPanel.WBP_LootPanel_C'")).Class);
 	////lootPanelWidget->SetVisibility(ESlateVisibility::Collapsed);
 
 	int iTemp = 0;
 
-	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------
+	// ì„œíœ˜-----------------------------------------------------------------------------------------------------
 	bInBuildMode = false;
-	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
+	// ì„œíœ˜-----------------------------------------------------------------------------------------------------ë
 	
-	// ¿äÇÑ =======================================================================================================
+	// ìš”í•œ =======================================================================================================
 	MaxInventorySlot = 30;
 }
 
@@ -155,19 +155,22 @@ void APixelCodeCharacter::BeginPlay()
 
 
 	
-	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------
+	// ì„œíœ˜-----------------------------------------------------------------------------------------------------
 	if (BuildingClass)
 	{
 		Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass);
 	}
 
-	FString StrBuildingC = BuildingC ? TEXT("true") : TEXT("false");
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay BuildingC : % s"), *StrBuildingC);
 	if (BuildingC)
 	{
 		Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC);
 	}
-	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
+
+	FString sBuilder = Builder ? TEXT("Builder True") : TEXT("Builder False");
+	FString sBuildings = Buildings ? TEXT("Buildings True") : TEXT("Buildings False");
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay : %s : %s"), *sBuilder, *sBuildings);
+
+	// ì„œíœ˜-----------------------------------------------------------------------------------------------------ë
 
 	statWidget = CreateWidget<UPlayerStatWidget>(GetWorld(), StatWidgetClass);
 	if (StatWidgetClass)
@@ -183,7 +186,7 @@ void APixelCodeCharacter::BeginPlay()
 		NormallyWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 
-	// ¿äÇÑ----------------------------------------------------------------------
+	// ìš”í•œ----------------------------------------------------------------------
 
 	ItemStorage = GetWorld()->SpawnActor<AItemStorage>(ItemStorageTemplate, FVector::ZeroVector, FRotator::ZeroRotator);
 
@@ -191,7 +194,7 @@ void APixelCodeCharacter::BeginPlay()
 
 }
 
-// ¼­ÈÖ-----------------------------------------------------------------------------------------------------
+// ì„œíœ˜-----------------------------------------------------------------------------------------------------
 FHitResult APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug)
 {
 	FVector Start = GetFollowCamera()->GetComponentLocation();
@@ -210,7 +213,7 @@ FHitResult APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug
 	//BuildLoc = HitResult.ImpactPoint;
 	return HitResult;
 }
-// ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
+// ì„œíœ˜-----------------------------------------------------------------------------------------------------ë
 
 void APixelCodeCharacter::ServerRPC_ToggleCombat_Implementation()
 {
@@ -254,7 +257,7 @@ void APixelCodeCharacter::NetMulticastRPC_ToggleCombat_Implementation()
 		}
 	}
 
-	//<< SSK ÀÌ°Å ¸ÔÈ÷´ÂÁö Å×½ºÆ®´Â ÇØºÁ¾ß µÊ
+	//<< SSK ì´ê±° ë¨¹íˆëŠ”ì§€ í…ŒìŠ¤íŠ¸ëŠ” í•´ë´ì•¼ ë¨
 	FTimerHandle timerHandle;
 
 	GetWorldTimerManager().SetTimer(timerHandle, [&]()
@@ -272,10 +275,10 @@ void APixelCodeCharacter::PerformInteractionCheck()
 {
 	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
 
-	FVector TraceStart{ GetPawnViewLocation() }; // ¸í½ÃÀû ÃÊ±âÈ­, ´ë°ıÈ£
-	FVector TraceEnd{ TraceStart + (GetViewRotation().Vector() * InteractionCheckDistance) }; // ¸¶¿ì½º·Î º¸±â·Î º¯°æ
+	FVector TraceStart{ GetPawnViewLocation() }; // ëª…ì‹œì  ì´ˆê¸°í™”, ëŒ€ê´„í˜¸
+	FVector TraceEnd{ TraceStart + (GetViewRotation().Vector() * InteractionCheckDistance) }; // ë§ˆìš°ìŠ¤ë¡œ ë³´ê¸°ë¡œ ë³€ê²½
 
-	float LookDirection = FVector::DotProduct(GetActorForwardVector(), GetViewRotation().Vector()); // ³»ÀûÇÔ¼ö
+	float LookDirection = FVector::DotProduct(GetActorForwardVector(), GetViewRotation().Vector()); // ë‚´ì í•¨ìˆ˜
 
 	if (LookDirection > 0)
 	{
@@ -283,7 +286,7 @@ void APixelCodeCharacter::PerformInteractionCheck()
 
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(this);
-		FHitResult TraceHit; // ¶óÀÎÆ®·¹ÀÌ½º °á°ú ÀúÀåÇÏ´Âµ¥ »ç¿ë
+		FHitResult TraceHit; // ë¼ì¸íŠ¸ë ˆì´ìŠ¤ ê²°ê³¼ ì €ì¥í•˜ëŠ”ë° ì‚¬ìš©
 
 		if (GetWorld()->LineTraceSingleByChannel(TraceHit, TraceStart, TraceEnd, ECC_PhysicsBody, QueryParams))
 		{
@@ -321,50 +324,50 @@ void APixelCodeCharacter::PerformInteractionCheck()
 
 void APixelCodeCharacter::FoundInteractable(AActor* NewInteractable)
 {
-	if (IsInteracting()) // Ä³¸¯ÅÍ°¡ »óÈ£ÀÛ¿ëÇÏ´Â °æ¿ì È£ÃâÇÏ°í ½ÍÀº ±â´É
+	if (IsInteracting()) // ìºë¦­í„°ê°€ ìƒí˜¸ì‘ìš©í•˜ëŠ” ê²½ìš° í˜¸ì¶œí•˜ê³  ì‹¶ì€ ê¸°ëŠ¥
 	{
 		EndInteract();
 	}
 
-	if (InteractionData.CurrentInteractable)// »óÈ£ÀÛ¿ë µ¥ÀÌÅÍ°¡ ÀÖÀ¸¸é ÇöÀç »óÈ£ÀÛ¿ë °¡´ÉÇÏ´Ù°í ¾Ë¸²
+	if (InteractionData.CurrentInteractable)// ìƒí˜¸ì‘ìš© ë°ì´í„°ê°€ ìˆìœ¼ë©´ í˜„ì¬ ìƒí˜¸ì‘ìš© ê°€ëŠ¥í•˜ë‹¤ê³  ì•Œë¦¼
 	{
 		TargetInteractable = InteractionData.CurrentInteractable;
-		TargetInteractable->EndFocus(); // µ¿ÀÏÇÏÁö¾ÊÀº °ÍÀÌ ³ª¿ÔÀ»¶§ ÀÌÀü »óÈ£ÀÛ¿ë °¡´É Ç×¸ñÀ» Á¾·áÇÏ´ÂÁö È®ÀÎ
+		TargetInteractable->EndFocus(); // ë™ì¼í•˜ì§€ì•Šì€ ê²ƒì´ ë‚˜ì™”ì„ë•Œ ì´ì „ ìƒí˜¸ì‘ìš© ê°€ëŠ¥ í•­ëª©ì„ ì¢…ë£Œí•˜ëŠ”ì§€ í™•ì¸
 	}
 
-	// »óÈ£ÀÛ¿ë µ¥ÀÌÅÍ¸¦ ÇöÀç »óÈ£ÀÛ¿ë °¡´É Ç×¸ñÀ¸·Î °¡Á®¿À±â 
+	// ìƒí˜¸ì‘ìš© ë°ì´í„°ë¥¼ í˜„ì¬ ìƒí˜¸ì‘ìš© ê°€ëŠ¥ í•­ëª©ìœ¼ë¡œ ê°€ì ¸ì˜¤ê¸° 
 	InteractionData.CurrentInteractable = NewInteractable;
 	TargetInteractable = NewInteractable;
 
-	HUD->UpdateInteractionWidget(TargetInteractable->InteractableData); // ÂüÁ¶·Î Å¸°Ùµ¥ÀÌÅÍ Àü´Ş
+	HUD->UpdateInteractionWidget(TargetInteractable->InteractableData); // ì°¸ì¡°ë¡œ íƒ€ê²Ÿë°ì´í„° ì „ë‹¬
 
-	TargetInteractable->BeginFocus();// ´ÙÀ½ ´ë»ó »óÈ£ÀÛ¿ë °¡´É ½ÃÀÛ È£Ãâ
+	TargetInteractable->BeginFocus();// ë‹¤ìŒ ëŒ€ìƒ ìƒí˜¸ì‘ìš© ê°€ëŠ¥ ì‹œì‘ í˜¸ì¶œ
 }
 
 void APixelCodeCharacter::NoInteractableFound()
 {
-	if (IsInteracting())// È®ÀÎÇÏ°í ½ÍÀº°Í X
+	if (IsInteracting())// í™•ì¸í•˜ê³  ì‹¶ì€ê²ƒ X
 	{
-		GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Interaction); // Å¸ÀÌ¸Ó ÃÊ±âÈ­.
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Interaction); // íƒ€ì´ë¨¸ ì´ˆê¸°í™”.
 	}
 
-	if (InteractionData.CurrentInteractable) // ÇöÀç »óÈ£ÀÛ¿ë °¡´É Ç×¸ñÀÌ À¯È¿ÇÑ °æ¿ì
+	if (InteractionData.CurrentInteractable) // í˜„ì¬ ìƒí˜¸ì‘ìš© ê°€ëŠ¥ í•­ëª©ì´ ìœ íš¨í•œ ê²½ìš°
 	{
 		if (IsValid(TargetInteractable.GetObject()))
 		{
 			TargetInteractable->EndFocus();
 		}
 
-		HUD->HideInteractionWidget(); // ÇÊ¿ä¾ø´Â À§Á¬µ¥ÀÌÅÍ »èÁ¦
+		HUD->HideInteractionWidget(); // í•„ìš”ì—†ëŠ” ìœ„ì ¯ë°ì´í„° ì‚­ì œ
 
-		InteractionData.CurrentInteractable = nullptr; // ÇöÀç »óÈ£ÀÛ¿ë´ë»ó nullptr
-		TargetInteractable = nullptr; //´ë»ó »óÈ£ÀÛ¿ë °¡´ÉÇ×¸ñ nullptr
+		InteractionData.CurrentInteractable = nullptr; // í˜„ì¬ ìƒí˜¸ì‘ìš©ëŒ€ìƒ nullptr
+		TargetInteractable = nullptr; //ëŒ€ìƒ ìƒí˜¸ì‘ìš© ê°€ëŠ¥í•­ëª© nullptr
 	}
 }
 
 void APixelCodeCharacter::BeginInteract()
 {
-	// ÀÛ¿ë °¡´ÉÇÑ »óÅÂ¿¡ ¾Æ¹«°Íµµ º¯°æ¾ÈµÇ¾ú´ÂÁö È®ÀÎ
+	// ì‘ìš© ê°€ëŠ¥í•œ ìƒíƒœì— ì•„ë¬´ê²ƒë„ ë³€ê²½ì•ˆë˜ì—ˆëŠ”ì§€ í™•ì¸
 	PerformInteractionCheck();
 
 	if (focusedChar != nullptr)
@@ -378,15 +381,15 @@ void APixelCodeCharacter::BeginInteract()
 	}
 }
 
-// ¿ì¸®°¡ »óÈ£ÀÛ¿ë ÇÏ°íÀÖ´ÂÁö È®ÀÎÇÊ¿ä x
+// ìš°ë¦¬ê°€ ìƒí˜¸ì‘ìš© í•˜ê³ ìˆëŠ”ì§€ í™•ì¸í•„ìš” x
 void APixelCodeCharacter::EndInteract()
 {
 
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Interaction); // Å¸ÀÌ¸Ó ÃÊ±âÈ­.
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Interaction); // íƒ€ì´ë¨¸ ì´ˆê¸°í™”.
 
-	if (IsValid(TargetInteractable.GetObject())) // ¿©ÀüÈ÷ À¯È¿ÇÑ°æ¿ì
+	if (IsValid(TargetInteractable.GetObject())) // ì—¬ì „íˆ ìœ íš¨í•œê²½ìš°
 	{
-		TargetInteractable->EndInteract();// ÀÌÁ¦ ´ë»ó »óÈ£ÀÛ¿ë °¡´É, ´ë»ó »óÈ£ÀÛ¿ë Á¾·á
+		TargetInteractable->EndInteract();// ì´ì œ ëŒ€ìƒ ìƒí˜¸ì‘ìš© ê°€ëŠ¥, ëŒ€ìƒ ìƒí˜¸ì‘ìš© ì¢…ë£Œ
 	}
 
 	//lootPanelWidget->SetVisibility(ESlateVisibility::Collapsed);
@@ -396,17 +399,17 @@ void APixelCodeCharacter::EndInteract()
 
 void APixelCodeCharacter::Interact()
 {
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Interaction); // Å¸ÀÌ¸Ó ÃÊ±âÈ­.
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Interaction); // íƒ€ì´ë¨¸ ì´ˆê¸°í™”.
 
-	if (IsValid(TargetInteractable.GetObject())) // ¿©ÀüÈ÷ À¯È¿ÇÑ°æ¿ì
+	if (IsValid(TargetInteractable.GetObject())) // ì—¬ì „íˆ ìœ íš¨í•œê²½ìš°
 	{
-		TargetInteractable->Interact(this);// ÀÌÁ¦ ´ë»ó »óÈ£ÀÛ¿ë °¡´É, ´ë»ó »óÈ£ÀÛ¿ë Á¾·á
+		TargetInteractable->Interact(this);// ì´ì œ ëŒ€ìƒ ìƒí˜¸ì‘ìš© ê°€ëŠ¥, ëŒ€ìƒ ìƒí˜¸ì‘ìš© ì¢…ë£Œ
 	}
 
 }
 
 
-// ¿äÇÑ ------------------------------------------------------------------------------------------
+// ìš”í•œ ------------------------------------------------------------------------------------------
 
 void APixelCodeCharacter::OnCraftingPressed()
 {
@@ -425,7 +428,7 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 	if (Template)
 	{
 
-		//UInventoryComponent* OwningInventory; // ÀÎº¥Åä¸®
+		//UInventoryComponent* OwningInventory; // ì¸ë²¤í† ë¦¬
 		FActorSpawnParameters Params;
 		Params.Owner = this;
 		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -448,7 +451,7 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 }
 
 
-AItemStorage* APixelCodeCharacter::GetItemStorage() 
+AItemStorage* APixelCodeCharacter::GetItemStorage()
 {
 	return ItemStorage;
 }
@@ -461,13 +464,13 @@ TArray<UItemBase*> APixelCodeCharacter::GetInventory() const
 uint32 APixelCodeCharacter::GetSpecificItemAmount(EItemName ItemName)
 {
 	uint32 Amount = 0;
-	TArray<UItemBase*> InventoryContentSArray = PlayerInventory->GetInventoryContents();  // ÀÎº¥Åä¸® ³»¿ë ¹è¿­·Î °¡Á®¿È
+	TArray<UItemBase*> InventoryContentSArray = PlayerInventory->GetInventoryContents(); // ì¸ë²¤í† ë¦¬ ë‚´ìš© ë°°ì—´ë¡œ ê°€ì ¸ì˜´
 
 	for (UItemBase* Item : InventoryContentSArray)
 	{
 		if (Item && Item->ItemName == ItemName)
 		{
-			Amount += Item->Quantity; // ÇØ´ç ¾ÆÀÌÅÛÀÇ ¼ö·® ´©Àû
+			Amount += Item->Quantity; // í•´ë‹¹ ì•„ì´í…œì˜ ìˆ˜ëŸ‰ ëˆ„ì 
 		}
 	}
 	//UE_LOG(LogTemp, Warning, TEXT("amount play"));
@@ -475,7 +478,6 @@ uint32 APixelCodeCharacter::GetSpecificItemAmount(EItemName ItemName)
 	return Amount;
 
 }
-
 
 void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes)
 {
@@ -485,7 +487,7 @@ void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recip
 		uint8 RecipeAmount = Recipe.Amount;
 		uint8 Index = 0;
 		TArray<uint8> RemoveedIndex;
-		
+
 
 		for (UItemBase* Item : InventoryContentSArray)
 		{
@@ -493,7 +495,7 @@ void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recip
 			{
 				if (Item->Quantity - Recipe.Amount < 0)
 				{
-					RecipeAmount -= Item->Quantity; 
+					RecipeAmount -= Item->Quantity;
 					RemoveedIndex.Add(Index);
 				}
 				else
@@ -509,15 +511,15 @@ void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recip
 			}
 			Index++;
 		}
-		for(int8 i = RemoveedIndex.Num() -1; i > -1; i--)
+		for (int8 i = RemoveedIndex.Num() - 1; i > -1; i--)
 		{
-			// Àç°í°¡ »èÁ¦µÈ ÀÎº¥Åä¸®
+			// ì¬ê³ ê°€ ì‚­ì œëœ ì¸ë²¤í† ë¦¬
 			InventoryContentSArray.RemoveAt(RemoveedIndex[i]);
 		}
 	}
 }
 
-// ¼­ÈÖ-----------------------------------------------------------------------------------------------------
+// ì„œíœ˜-----------------------------------------------------------------------------------------------------
 
 void APixelCodeCharacter::OnSetBuildModePressed()
 {
@@ -565,10 +567,18 @@ void RPC(char* _client, bool _somthing);
 	_client->somthing = _somthing;
 }*/
 
+								//-----------------------------------Cycle Mesh Network
 void APixelCodeCharacter::OnCycleMeshPressed()
 {
 	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------WheelDown"));
-	ServerRPC_CycleBuildingMesh();
+	if (HasAuthority())
+	{
+		CycleBuildingMesh();
+	}
+	else
+	{
+		ServerRPC_CycleBuildingMesh();
+	}
 }
 
 void APixelCodeCharacter::CycleBuildingMesh()
@@ -576,9 +586,7 @@ void APixelCodeCharacter::CycleBuildingMesh()
 	if (bInBuildMode && Builder)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CYCLE BUILDING MESH"));
-
-		// ABuildingVisual ->CycleMesh ºÒ·¯¿È
-		// CycleMesh() = ½ºÅ©·Ñ¿¡ µû¶ó °ÇÃàÀÚÀç ¸Ş½Ã º¯°æÇØ¼­ preview·Î º¸ÀÌ±â 
+ 
 		Builder->CycleMesh();
 	}
 }
@@ -588,11 +596,11 @@ void APixelCodeCharacter::ServerRPC_CycleBuildingMesh_Implementation()
 	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CYCLE BUILDING MESH SERVER RPC"));
 
 	CycleBuildingMesh();
-	/*
-	if (!HasAuthority())
-	{
-		ClientRPC_CycleBuildingMesh();
-	}*/
+}
+
+void APixelCodeCharacter::NetMulticastRPC_CycleBuildingMesh_Implementation(UStaticMesh* newMesh)
+{
+	Builder->BuildMesh->SetStaticMesh(newMesh);
 }
 
 void APixelCodeCharacter::ClientRPC_CycleBuildingMesh_Implementation(UStaticMesh* newMesh)
@@ -601,13 +609,82 @@ void APixelCodeCharacter::ClientRPC_CycleBuildingMesh_Implementation(UStaticMesh
 	Builder->BuildMesh->SetStaticMesh(newMesh);
 }
 
-void APixelCodeCharacter::DestroyBuildingInstance()
+								//------------------------------------Destroy Building Network
+
+void APixelCodeCharacter::OnDestroyBuildingPressed()
 {
-	if (bInBuildMode && Builder)
+	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Pressed"));
+	ServerRPC_DestroyBuildingInstance();
+	NetMulticastRPC_DestroyBuildingInstance(PerformLineTrace());
+}
+
+void APixelCodeCharacter::DestroyBuildingInstance(const FHitResult& HitResult)
+{
+	/*if (bInBuildMode && Builder)*/
 	{
-		Builder->DestroyInstance(PerformLineTrace());
+		//Builder->DestroyInstance(PerformLineTrace());
+
+ 		FString blocking = HitResult.bBlockingHit ? TEXT("blocked") : TEXT("unblocked");
+ 		UE_LOG(LogTemp, Warning, TEXT("%s"), *blocking);
+ 		if (HitResult.bBlockingHit)
+ 		{
+ 			UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
+ 
+ 			FString instance = Instance ? TEXT("instance") : TEXT("none");
+ 			UE_LOG(LogTemp, Warning, TEXT("%s"), *instance);
+ 			if (Instance)
+ 			{
+ 				Instance->RemoveInstance(HitResult.Item);
+ 
+ 				UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Function %d"), HitResult.Item);
+ 				UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Function point : %f %f %f"), HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, HitResult.ImpactPoint.Z);
+ 			}
+ 		}
 	}
 }
+
+void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation()
+{
+	//UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Server"));
+	DestroyBuildingInstance(PerformLineTrace());
+// 	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Server %d"), HitResult.Item);
+// 	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Server point : %f %f %f"), HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, HitResult.ImpactPoint.Z);
+// 	FString blocking = HitResult.bBlockingHit ? TEXT("blocked") : TEXT("unblocked");
+// 	UE_LOG(LogTemp, Warning, TEXT("%s"), *blocking);
+// 	if (HitResult.bBlockingHit)
+// 	{
+// 		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
+// 
+// 		FString instance = Instance ? TEXT("instance") : TEXT("none");
+// 		UE_LOG(LogTemp, Warning, TEXT("%s"), *instance);
+// 		if (Instance)
+// 		{
+// 			Instance->RemoveInstance(HitResult.Item);
+// 		}
+// 	}
+}
+
+ void APixelCodeCharacter::NetMulticastRPC_DestroyBuildingInstance_Implementation(const FHitResult& HitResult)
+ {
+	// DestroyBuildingInstance(HitResult);
+	 UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Multi %d"), HitResult.Item);
+	 UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Multi point : %f %f %f"), HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, HitResult.ImpactPoint.Z);
+	 FString blocking = HitResult.bBlockingHit ? TEXT("blocked") : TEXT("unblocked");
+	 UE_LOG(LogTemp, Warning, TEXT("%s"), *blocking);
+	 if (HitResult.bBlockingHit)
+	 {
+		 UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
+
+		 FString instance = Instance ? TEXT("instance") : TEXT("none");
+		 UE_LOG(LogTemp, Warning, TEXT("%s"), *instance);
+		 if (Instance)
+		 {
+			 Instance->RemoveInstance(HitResult.Item);
+		 }
+	 }
+ }
+
+								//------------------------------------Remove Foliage Network
 
 void APixelCodeCharacter::OnRemoveFoliagePressed()
 {
@@ -646,8 +723,13 @@ void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHi
 	}
 }
 
+								//------------------------------------Spawn Building Network
+
 void APixelCodeCharacter::SpawnBuilding()
 {
+	FString sbInBuildMode = bInBuildMode ? TEXT("bInBuildMode true") : TEXT("bInBuildMode false");
+	FString sBuilder = Builder ? TEXT("Builder true") : TEXT("Builder false");
+	UE_LOG(LogTemp, Warning, TEXT("SpawnBuilding() ; %s : %s"), *sbInBuildMode, *sBuilder);
 	if (bInBuildMode && Builder)
 	{
 		Builder->SpawnBuilding();
@@ -667,15 +749,15 @@ void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
 		return;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("------------------ServerRPC_SpawnBuilding"));
+	//UE_LOG(LogTemp, Warning, TEXT("------------------ServerRPC_SpawnBuilding"));
 	SpawnBuilding();
 }
 
 void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildType BuildType, FTransform transf)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Location : %d"), *transf.ToString());
+	//UE_LOG(LogTemp, Warning, TEXT("Location : %d"), *transf.ToString());
 	FString StrBuildings = Buildings ? TEXT("true") : TEXT("false");
-	UE_LOG(LogTemp, Warning, TEXT("MultiCast Buildings : % s"), *StrBuildings);
+	//UE_LOG(LogTemp, Warning, TEXT("MultiCast Buildings : % s"), *StrBuildings);
 
 	if (Buildings)
 	{
@@ -683,22 +765,22 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 		{
 			case EBuildType::Foundation:
 			Buildings->FoundationInstancedMesh->AddInstance(transf, true);
-			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST Foundation Instance added"));
+			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST BuildType Foundation"));
 			break;
 
 			case EBuildType::Wall:
 			Buildings->WallInstancedMesh->AddInstance(transf, true);
-			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST Wall instance added"));
+			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST BuildType  Wall"));
 			break;
 
 			case EBuildType::Ceiling:
 			Buildings->CeilingInstancedMesh->AddInstance(transf, true);
-			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST Ceiling instance added"));
+			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST BuildType Ceiling"));
 			break;
 
 			case EBuildType::WoodenPilar:
 			Buildings->WoodenPilarInstancedMesh->AddInstance(transf, true);
-			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST Wooden Pilar instance added"));
+			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST BuildType Wooden"));
 			break;
 
 			default:
@@ -708,13 +790,13 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 	}
 }
 
-// ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
+// ì„œíœ˜-----------------------------------------------------------------------------------------------------ë
 
 void APixelCodeCharacter::ServerRPC_Interact_Implementation()
 {
-	if (InteractionData.CurrentInteractable) // »óÈ£ÀÛ¿ë µ¥ÀÌÅÍ°¡ ÇöÀç¶ó¸é ÇÁ·Î¼¼½º·Î µ¹¾Æ°¡°Ô
+	if (InteractionData.CurrentInteractable) // ìƒí˜¸ì‘ìš© ë°ì´í„°ê°€ í˜„ì¬ë¼ë©´ í”„ë¡œì„¸ìŠ¤ë¡œ ëŒì•„ê°€ê²Œ
 	{
-		if (IsValid(TargetInteractable.GetObject())) // ¿©ÀüÈ÷ À¯È¿ÇÑ°æ¿ì
+		if (IsValid(TargetInteractable.GetObject())) // ì—¬ì „íˆ ìœ íš¨í•œê²½ìš°
 		{
 			NetMulticastRPC_Interact(TargetInteractable);
 		}
@@ -723,7 +805,7 @@ void APixelCodeCharacter::ServerRPC_Interact_Implementation()
 
 void APixelCodeCharacter::NetMulticastRPC_Interact_Implementation(const TScriptInterface<IInteractionInterface>& Interactable)
 {
-	// Ãæµ¹ÀÌ ¹ß»ıÇÏ°í ´Ù½Ã »óÈ£ÀÛ¿ë °¡´ÉÇ×¸ñ À¯È¿ÇÑÁö È®ÀÎ ÈÄ »óÈ£ÀÛ¿ë °¡´É
+	// ì¶©ëŒì´ ë°œìƒí•˜ê³  ë‹¤ì‹œ ìƒí˜¸ì‘ìš© ê°€ëŠ¥í•­ëª© ìœ íš¨í•œì§€ í™•ì¸ í›„ ìƒí˜¸ì‘ìš© ê°€ëŠ¥
 	Interactable->BeginInteract();
 
 	this->Interact();
@@ -766,8 +848,8 @@ void APixelCodeCharacter::CreateInventory()
 		PlayerInventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("PlayerInventory"));
 	}
 
-	PlayerInventory->SetSlotsCapacity(60); //ÀÎº¥Åä¸® ½½·Ô 20°³»ı¼º
-	PlayerInventory->SetWeightCapacity(1000.0f); // ¹«°Ô¿ë·® 50¼³Á¤
+	PlayerInventory->SetSlotsCapacity(60); //ì¸ë²¤í† ë¦¬ ìŠ¬ë¡¯ 20ê°œìƒì„±
+	PlayerInventory->SetWeightCapacity(1000.0f); // ë¬´ê²Œìš©ëŸ‰ 50ì„¤ì •
 }
 
 void APixelCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -787,7 +869,7 @@ void APixelCodeCharacter::UpdateInteractionWidget() const
 {
 	if (IsValid(TargetInteractable.GetObject()))
 	{
-		HUD->UpdateInteractionWidget(TargetInteractable->InteractableData); // Æ÷ÀÎÅÍ(*)È®ÀÎÇØº¼°Í
+		HUD->UpdateInteractionWidget(TargetInteractable->InteractableData); // í¬ì¸í„°(*)í™•ì¸í•´ë³¼ê²ƒ
 	}
 }
 
@@ -813,7 +895,7 @@ void APixelCodeCharacter::StatMenu()
 
 void APixelCodeCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
-	// ÀÎº¥Åä¸® nullÀÌ ¾Æ´Ï¶ó¸é
+	// ì¸ë²¤í† ë¦¬ nullì´ ì•„ë‹ˆë¼ë©´
 	if (PlayerInventory->FindMatchingItem(ItemToDrop))
 	{
 		FActorSpawnParameters SpawnParams;
@@ -821,12 +903,12 @@ void APixelCodeCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityTo
 		SpawnParams.bNoFail = true;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-		// Ä³¸¯ÅÍ 50¾Õ¹æÇâ¿¡¼­ »ı¼ºµÊ
+		// ìºë¦­í„° 50ì•ë°©í–¥ì—ì„œ ìƒì„±ë¨
 		const FVector SpawnLocation{ GetActorLocation() + (GetActorForwardVector() * 50.0f) };
 
 		const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
 
-		// ¼ö·®Á¦°Å
+		// ìˆ˜ëŸ‰ì œê±°
 		const int32 RemoveQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
 
 		APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
@@ -857,15 +939,15 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APixelCodeCharacter::Look);
 
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &APixelCodeCharacter::LightAttackFunction);// ±âº»°ø°İ
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &APixelCodeCharacter::LightAttackFunction);// ê¸°ë³¸ê³µê²©
 
-		EnhancedInputComponent->BindAction(ToggleCombatAction, ETriggerEvent::Started, this, &APixelCodeCharacter::ToggleCombatFunction);// ¹«±â »©¼­ÀåÂø
+		EnhancedInputComponent->BindAction(ToggleCombatAction, ETriggerEvent::Started, this, &APixelCodeCharacter::ToggleCombatFunction);// ë¬´ê¸° ë¹¼ì„œì¥ì°©
 
-		// ÀÎº¥Åä¸® ¿­°í´İ±â
+		// ì¸ë²¤í† ë¦¬ ì—´ê³ ë‹«ê¸°
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &APixelCodeCharacter::ToggleMenu);
 
 
-		// ¹°Ã¼ »óÈ£ÀÛ¿ë
+		// ë¬¼ì²´ ìƒí˜¸ì‘ìš©
 		EnhancedInputComponent->BindAction(IA_Pressed, ETriggerEvent::Started, this, &APixelCodeCharacter::BeginInteract);
 
 
@@ -873,17 +955,17 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 		EnhancedInputComponent->BindAction(IA_Stat, ETriggerEvent::Started, this, &APixelCodeCharacter::StatMenu);
 
-		// ÇÃ·¹ÀÌ¾î ±¸¸£±â
+		// í”Œë ˆì´ì–´ êµ¬ë¥´ê¸°
 		EnhancedInputComponent->BindAction(IA_RollandRun, ETriggerEvent::Canceled, this, &APixelCodeCharacter::PlayerRoll);
 
-		// ÇÃ·¹ÀÌ¾î ¶Ù±â
+		// í”Œë ˆì´ì–´ ë›°ê¸°
 		EnhancedInputComponent->BindAction(IA_RollandRun, ETriggerEvent::Ongoing, this, &APixelCodeCharacter::PlayerRun);
 		EnhancedInputComponent->BindAction(IA_RollandRun, ETriggerEvent::Completed, this, &APixelCodeCharacter::PlayerRunEnd);
 
-		// ¿äÇÑ ==================
+		// ìš”í•œ ==================
 		EnhancedInputComponent->BindAction(IA_Crafting, ETriggerEvent::Started, this, &APixelCodeCharacter::OnCraftingPressed);
 
-		// ÇÃ·¹ÀÌ¾î ½ºÅ³
+		// í”Œë ˆì´ì–´ ìŠ¤í‚¬
 		EnhancedInputComponent->BindAction(IA_SkillQ, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillQ);
 		EnhancedInputComponent->BindAction(IA_SkillE, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillE);
 		EnhancedInputComponent->BindAction(IA_SkillR, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillR);
@@ -894,6 +976,7 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(IA_RemoveFoliage, ETriggerEvent::Started, this, &APixelCodeCharacter::OnRemoveFoliagePressed);
 		EnhancedInputComponent->BindAction(IA_SpawnBuilding, ETriggerEvent::Started, this, &APixelCodeCharacter::OnSpawnBuildingPressed);
 		EnhancedInputComponent->BindAction(IA_CycleMesh, ETriggerEvent::Started, this, &APixelCodeCharacter::OnCycleMeshPressed);
+		EnhancedInputComponent->BindAction(IA_DestroyBuilding, ETriggerEvent::Started, this, &APixelCodeCharacter::OnDestroyBuildingPressed);
 
 		EnhancedInputComponent->BindAction(IA_Weapon, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon);
 		EnhancedInputComponent->BindAction(IA_Weapon2, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon2);
@@ -958,17 +1041,15 @@ void APixelCodeCharacter::QskillTime()
 		GetWorldTimerManager().ClearTimer(QSkillTimer);
 		return;
 	}
-	//UE_LOG(LogTemp, Warning, TEXT("%f"), GetWorld()->GetTimerManager().GetTimerElapsed(QSkillTimer)); È¯·ÏÇüÀÌ ¾Ë·ÁÁØ ÄÚµå ³ªÁß¿¡ ½áº¸±â, 1ÃÊ¸¶´Ù ÀçÁÖ´Â ±â´É
-	UE_LOG(LogTemp, Warning, TEXT("Timer Function QON"));
+	//UE_LOG(LogTemp, Warning, TEXT("%f"), GetWorld()->GetTimerManager().GetTimerElapsed(QSkillTimer)); í™˜ë¡í˜•ì´ ì•Œë ¤ì¤€ ì½”ë“œ ë‚˜ì¤‘ì— ì¨ë³´ê¸°, 1ì´ˆë§ˆë‹¤ ì¬ì£¼ëŠ” ê¸°ëŠ¥
 	CurrentQSkillCoolTime++;
 }
-
 
 
 void APixelCodeCharacter::SkillE()
 {
 	if (!bEskillCoolTime)
-	{ 
+	{
 		Mousehit();
 
 		if (false == combatComponent->bCombatEnable)
@@ -990,7 +1071,7 @@ void APixelCodeCharacter::SkillE()
 		}
 
 		bEskillCoolTime = true;
-		
+
 		GetWorldTimerManager().SetTimer(ESkillTimer, this, &APixelCodeCharacter::EskillTime, 1.0f, true);
 	}
 }
@@ -1055,7 +1136,6 @@ void APixelCodeCharacter::RskillTime()
 	CurrentRSkillCoolTime++;
 }
 
-
 void APixelCodeCharacter::SkillZ()
 {
 	if (!bZskillCoolTime)
@@ -1098,6 +1178,7 @@ void APixelCodeCharacter::ZskillTime()
 	UE_LOG(LogTemp, Warning, TEXT("Timer Function ZON"));
 	CurrentZSkillCoolTime++;
 }
+
 
 void APixelCodeCharacter::SkillRightMouse()
 {
@@ -1319,14 +1400,14 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		PrintInfo();
 	}
 
-	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------
+	// ì„œíœ˜-----------------------------------------------------------------------------------------------------
 	if (bInBuildMode && Builder)
 	{
 		Builder->SetBuildPosition(PerformLineTrace(650.0f, false));
 	}
-	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
+	// ì„œíœ˜-----------------------------------------------------------------------------------------------------ë
 
-	// Áö³í------------------------------------------------------------------------------------------------------
+	// ì§€ë…¼------------------------------------------------------------------------------------------------------
 	if (bRoll)
 	{
 		RollTime += DeltaTime;
@@ -1354,7 +1435,7 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_SkillR, GetActorLocation(), GetActorRotation());
 		bSkillNSR = false;
 	}
-	// Áö³í------------------------------------------------------------------------------------------------------
+	// ì§€ë…¼------------------------------------------------------------------------------------------------------
 
 }
 

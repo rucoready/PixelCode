@@ -23,7 +23,7 @@ protected:
 	bool IsValidSocket(UInstancedStaticMeshComponent* HitComponent, int32 Index, const FName& Filter, const FName& SocketName);
 
 public:
-	
+
 	class APixelCodeCharacter* pc;
 
 	UPROPERTY(Replicated)
@@ -42,7 +42,7 @@ public:
 	class UInstancedStaticMeshComponent* WoodenPilarInstancedMesh;
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
-	void DestroyInstance(const FBuildingSocketData& BuildingSocketData);
+	void DestroyInstance(const FBuildingSocketData& BuildingSocketData, const FHitResult& HitResult);
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	 FTransform GetInstancedSocketTransform(UInstancedStaticMeshComponent* InstancedComponent, int32 InstanceIndex, const FName& SocketName);

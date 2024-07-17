@@ -59,12 +59,51 @@ void ABuilding::BeginPlay()
 	MeshInstancedSockets.Append(WoodenPilarInstancedMesh->GetAllSocketNames());	
 }
 
-void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData)
+void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData, const FHitResult& HitResult)
 {	
+	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDING DestroyInstance"));
+
 	if (BuildingSocketData.InstancedComponent)
 	{
 		BuildingSocketData.InstancedComponent->RemoveInstance(BuildingSocketData.Index);
+		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDING RemoveInstance"));
 	}
+
+	/*const int32 index = BuildingSocketData.Index -2;
+	UInstancedStaticMeshComponent* instcomp = BuildingSocketData.InstancedComponent;
+
+	auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	if (Pc)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
+		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
+		pc->NetMulticastRPC_DestroyBuildingInstance(instcomp, index);
+	}*/
+
+	/*FString comp = BuildingSocketData.InstancedComponent ? TEXT("comp true") : TEXT("comp false");
+	FString index = BuildingSocketData.Index ? TEXT("item true") : TEXT("item false");
+	UE_LOG(LogTemp, Warning, TEXT("%s___%s"), *comp, *index);*/
+	
+
+
+	/*auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	if (Pc)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
+		int32 maxInstanceIndex = BuildingSocketData.InstancedComponent->GetInstanceCount();
+
+		if (BuildingSocketData.Index >= 0 && BuildingSocketData.Index < maxInstanceIndex)
+		{
+			pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
+			pc->NetMulticastRPC_DestroyBuildingInstance(BuildingSocketData);
+		}	
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Invalid instance index: %d"), BuildingSocketData.Index);
+		}
+	}*/
 }
 
 FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent* InstancedComponent, int32 InstanceIndex, const FName& SocketName)
@@ -226,25 +265,25 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 		case EBuildType::Foundation:
 		FoundationInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType=TEXT("FoundationInstancedMesh");
-		UE_LOG(LogTemp, Warning, TEXT("**************************************************Foundation Instance added"));
+		UE_LOG(LogTemp, Warning, TEXT("**************************************************Foundation BuildType"));
 		break;
 
 		case EBuildType::Wall:
 		WallInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType = TEXT("WallInstancedMesh");
-		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wall instance added"));
+		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wall BuildType"));
 		break;
 
 		case EBuildType::Ceiling:
 		CeilingInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType = TEXT("CeilingInstancedMesh");
-		UE_LOG(LogTemp, Warning, TEXT("**************************************************Ceiling instance added"));
+		UE_LOG(LogTemp, Warning, TEXT("**************************************************Ceiling BuildType"));
 		break;
 
 		case EBuildType::WoodenPilar:
 		WoodenPilarInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType = TEXT("WoodenPilarInstancedMesh");
-		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar instance added"));
+		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
 		break;
 
 		default:
@@ -257,11 +296,11 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 	auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 	FString StrPc = Pc ? TEXT("OOOOO") : TEXT("XXXXX");
-	UE_LOG(LogTemp, Warning, TEXT("Pc? : %s"), *StrPc);
+	//UE_LOG(LogTemp, Warning, TEXT("Pc? : %s"), *StrPc);
 
 	if (Pc)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
+		//UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
 		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
 		pc->NetMulticastRPC_SpawnBuilding(BuildType, transform);
 	}	

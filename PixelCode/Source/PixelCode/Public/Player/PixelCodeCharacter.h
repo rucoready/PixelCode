@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+ï»¿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -7,7 +7,7 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h" // ?
 #include "Player/PlayerOrganism.h"
-#include "Player/Interfaces/InteractionInterface.h" // cpp°¡¾Æ´Ñ Çì´õ¿¡ µÖ¾ßÇÔ.
+#include "Player/Interfaces/InteractionInterface.h" // cppê°€ì•„ë‹Œ í—¤ë”ì— ë‘¬ì•¼í•¨.
 #include "Player/inventory/ItemBase.h"
 #include "PixelCodeCharacter.generated.h"
 
@@ -40,7 +40,7 @@ enum class MyEnum : int8
 	NM_MAX,
 };
 
-// Áø¿øs
+// ì§„ì›s
 USTRUCT()
 struct FInteractionData
 {	
@@ -55,10 +55,10 @@ struct FInteractionData
 	AActor* CurrentInteractable;
 
 	UPROPERTY()
-	float LastInteractionCheckTime; // »óÈ£ÀÛ¿ë °¡´ÉÇ×¸ñ Æ÷ÇÔ, ¸¶Áö¸· »óÈ£ÀÛ¿ë Æ÷ÇÔ, ½Ã°£È®ÀÎ
+	float LastInteractionCheckTime; // ìƒí˜¸ì‘ìš© ê°€ëŠ¥í•­ëª© í¬í•¨, ë§ˆì§€ë§‰ ìƒí˜¸ì‘ìš© í¬í•¨, ì‹œê°„í™•ì¸
 
 };
-// Áø¿øe
+// ì§„ì›e
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -140,6 +140,9 @@ class APixelCodeCharacter : public APlayerOrganism
 	UInputAction* IA_CycleMesh; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
+	UInputAction* IA_DestroyBuilding; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
 	UInputAction* IA_Weapon; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
@@ -147,8 +150,8 @@ class APixelCodeCharacter : public APlayerOrganism
 
 public:
 	APixelCodeCharacter();
-	// Áø¿ø S
-	FORCEINLINE bool IsInteracting() const {return GetWorld()->GetTimerManager().IsTimerActive(TimerHandle_Interaction); }; // ÇöÀç »óÈ£ÀÛ¿ëÁßÀÎÁö ¾Æ´ÑÁö
+	// ì§„ì› S
+	FORCEINLINE bool IsInteracting() const {return GetWorld()->GetTimerManager().IsTimerActive(TimerHandle_Interaction); }; // í˜„ì¬ ìƒí˜¸ì‘ìš©ì¤‘ì¸ì§€ ì•„ë‹Œì§€
 
 	void UpdateInteractionWidget() const;
 
@@ -170,7 +173,7 @@ public:
 
 	bool bIsStatVisible = true;
 
-	// ±¸¸£±â
+	// êµ¬ë¥´ê¸°
 	bool bRoll = false;
 
 	
@@ -179,7 +182,7 @@ public:
 
 	float RollTime = 0;
 
-	// ½ºÅ³
+	// ìŠ¤í‚¬
 	void SkillQ();
 
 	void SkillE();
@@ -190,13 +193,12 @@ public:
 
 	void SkillRightMouse();
 
-	// ½ºÅ³ ÄğÅ¸ÀÓ
+	// ï¿½ï¿½Å³ ï¿½ï¿½Å¸ï¿½ï¿½
 
 	bool bQskillCoolTime = false;
 	bool bEskillCoolTime = false;
 	bool bRskillCoolTime = false;
 	bool bZskillCoolTime = false;
-	
 	void QskillTime();
 	void EskillTime();
 	void RskillTime();
@@ -218,6 +220,7 @@ public:
 	float CurrentZSkillCoolTime = 0;
 
 
+
 	FVector CachedDestination;
 
 	void Mousehit();
@@ -234,13 +237,13 @@ public:
 
 	//void RollCharacterForward(APixelCodeCharacter* PixelCodeCharacter, float RollDistance);
 
-	// Áø¿ø E
+	// ì§„ì› E
 protected:
-	// Áø¿ø S
+	// ì§„ì› S
 	UPROPERTY()
 	APlayerHUD* HUD;
 
-	// Áø¿ø E
+	// ì§„ì› E
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
@@ -278,11 +281,11 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
-	// Áø¿ø s
+	// ì§„ì› s
 	UPROPERTY(Replicated, VisibleAnywhere, Category = "Character | Interaction")
 	TScriptInterface<IInteractionInterface> TargetInteractable;
 
-	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------
+	// ì„œíœ˜-----------------------------------------------------------------------------------------------------
 	FHitResult PerformLineTrace(float Distance = 650.0f, bool DrawDebug = false);
 
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = KSH)
@@ -297,12 +300,12 @@ protected:
 	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	ABuildingVisual* Builder;
 	
-	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
+	// ì„œíœ˜-----------------------------------------------------------------------------------------------------ë
 
 
 	float InteractionCheckFrequecy;
 
-	float InteractionCheckDistance; // ÃßÀûÀÌ Ä³¸¯ÅÍ¿¡¼­ ¾ó¸¶³ª ¸Ö¸® ¹ß»çµÉÁö
+	float InteractionCheckDistance; // ì¶”ì ì´ ìºë¦­í„°ì—ì„œ ì–¼ë§ˆë‚˜ ë©€ë¦¬ ë°œì‚¬ë ì§€
 
 	FTimerHandle TimerHandle_Interaction; 
 
@@ -314,11 +317,11 @@ protected:
 	void StatMenu();
 
 	void PerformInteractionCheck();
-	void FoundInteractable(AActor* NewInteractable); // »óÈ£ÀÛ¿ë °¡´ÉÇ×¸ñÈ£Ãâ, »õ »óÈ£ÀÛ¿ë °¡´ÉÇ×¸ñ °¡Á®¿À±â
-	void NoInteractableFound();// ÇÏÁö¸¸ Ã£Áö¸øÇÏ¸é È£ÃâX
+	void FoundInteractable(AActor* NewInteractable); // ìƒí˜¸ì‘ìš© ê°€ëŠ¥í•­ëª©í˜¸ì¶œ, ìƒˆ ìƒí˜¸ì‘ìš© ê°€ëŠ¥í•­ëª© ê°€ì ¸ì˜¤ê¸°
+	void NoInteractableFound();// í•˜ì§€ë§Œ ì°¾ì§€ëª»í•˜ë©´ í˜¸ì¶œX
 	void BeginInteract();
 	void EndInteract();
-	// Áø¿ø e
+	// ì§„ì› e
 		
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_Interact();
@@ -333,27 +336,27 @@ protected:
 
 public:
 
-	// Ä«¸Ş¶ó Á¶Àı
+	// ì¹´ë©”ë¼ ì¡°ì ˆ
 	void CheckObstacles();
 
 	void Interact();
 
-	// ¿äÇÑ
+	// ìš”í•œ
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "camera", meta )
 
 	UFUNCTION()
 	void OnCraftingPressed();
 
-	// ¾ÆÀÌÅÛ »ı¼º ÇÔ¼ö
+	// ì•„ì´í…œ ìƒì„± í•¨ìˆ˜
 	UFUNCTION()
 	void CraftItem(const FCraftItem& Item);
 
 	TArray<UItemBase*> GetInventory() const;
-
-	// ÀúÀå Ç°¸ñ
+	
+	// ì €ì¥ í’ˆëª©
 	AItemStorage* GetItemStorage();
 
-	// ¾ÆÀÌÅÛ Å×½ºÆ® µé°¨
+	// ì•„ì´í…œ í…ŒìŠ¤íŠ¸ ë“¤ê°
 	UPROPERTY(EditAnywhere, Category = "KYH")
 	class UItemBase* Iteminfos;
 
@@ -377,9 +380,9 @@ public:
 	uint8 MaxInventorySlot;
 
 	UPROPERTY()
-	UInventoryComponent* OwningInventory; // ÀÎº¥Åä¸®
+	UInventoryComponent* OwningInventory; // ì¸ë²¤í† ë¦¬
 
-	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------
+	// ì„œíœ˜-----------------------------------------------------------------------------------------------------
 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	ABuilding* Buildings;
 
@@ -404,14 +407,32 @@ public:
 	UFUNCTION(Server, Reliable)
  	void ServerRPC_CycleBuildingMesh();
 
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_CycleBuildingMesh(UStaticMesh* newMesh);
+
 	UFUNCTION(Client, Reliable)
 	void ClientRPC_CycleBuildingMesh(UStaticMesh* newMesh);
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void SpawnBuilding();
 
+	UFUNCTION()
+	void OnDestroyBuildingPressed();
+
 	UFUNCTION(BlueprintCallable, Category = KSH)
-	void DestroyBuildingInstance();
+	void DestroyBuildingInstance(const FHitResult& HitResult);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DestroyBuildingInstance();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_DestroyBuildingInstance(const FHitResult& HitResult);
+
+// 	UFUNCTION(NetMulticast, Reliable)
+// 	void NetMulticastRPC_DestroyBuildingInstance(UInstancedStaticMeshComponent* comp, const int32 index);
+	
+// 	UFUNCTION(NetMulticast, Reliable)
+// 	void NetMulticastRPC_DestroyBuildingInstance(const FHitResult& HitResult);
 
 	UFUNCTION()
 	void OnSetBuildModePressed();  
@@ -441,7 +462,7 @@ public:
 	TSubclassOf<class APickup> pickupItem;
 
 
-	// ¼­ÈÖ-----------------------------------------------------------------------------------------------------³¡
+	// ì„œíœ˜-----------------------------------------------------------------------------------------------------ë
 	/*UPROPERTY(EditAnywhere, Category="MySettings")
 	class UAnimMontage* rollMT;*/
 
@@ -458,7 +479,7 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	// Ä«¸Ş¶ó ¼Óµµ
+	// ì¹´ë©”ë¼ ì†ë„
     UPROPERTY(EditAnywhere, Category = Camera)
     float CameraLagSpeed;
 

@@ -55,46 +55,46 @@ ABuilding* ABuildingVisual::GetHitBuildingActor(const FHitResult& HitResult)
 void ABuildingVisual::SetMeshTo(EBuildType BuildType)
 {
  	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
- 	bReturnedMesh = false;
- 	for (const FBuildingVisualType& Building : BuildingTypes)
- 	{
- 		if (Building.BuildType == BuildType)
- 		{
- 			BuildMesh->SetStaticMesh(Building.BuildingMesh);
- 			return;
- 		}
- 	}
-	/*ServerRPC_SetMeshTo(BuildType);*/
+	/*bReturnedMesh = false;
+	for (const FBuildingVisualType& Building : BuildingTypes)
+	{
+		if (Building.BuildType == BuildType)
+		{
+			BuildMesh->SetStaticMesh(Building.BuildingMesh);
+			return;
+		}
+	}*/
+	ServerRPC_SetMeshTo(BuildType);
 }
 
-// void ABuildingVisual::ServerRPC_SetMeshTo_Implementation(EBuildType BuildType)
-// {
-// 	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
-// 	bReturnedMesh = false;
-// 	for (const FBuildingVisualType& Building : BuildingTypes)
-// 	{
-// 		if (Building.BuildType == BuildType)
-// 		{
-// 			BuildMesh->SetStaticMesh(Building.BuildingMesh);
-// 			return;
-// 		}
-// 	}
-// 	NetMultiRPC_SetMeshTo(BuildType);
-// }
-// 
-// void ABuildingVisual::NetMultiRPC_SetMeshTo_Implementation(EBuildType BuildType)
-// {
-// 	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
-// 	bReturnedMesh = false;
-// 	for (const FBuildingVisualType& Building : BuildingTypes)
-// 	{
-// 		if (Building.BuildType == BuildType)
-// 		{
-// 			BuildMesh->SetStaticMesh(Building.BuildingMesh);
-// 			return;
-// 		}
-// 	}
-// }
+void ABuildingVisual::ServerRPC_SetMeshTo_Implementation(EBuildType BuildType)
+{
+	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
+	bReturnedMesh = false;
+	for (const FBuildingVisualType& Building : BuildingTypes)
+	{
+		if (Building.BuildType == BuildType)
+		{
+			BuildMesh->SetStaticMesh(Building.BuildingMesh);
+			return;
+		}
+	}
+	NetMultiRPC_SetMeshTo(BuildType);
+}
+
+void ABuildingVisual::NetMultiRPC_SetMeshTo_Implementation(EBuildType BuildType)
+{
+	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
+	bReturnedMesh = false;
+	for (const FBuildingVisualType& Building : BuildingTypes)
+	{
+		if (Building.BuildType == BuildType)
+		{
+			BuildMesh->SetStaticMesh(Building.BuildingMesh);
+			return;
+		}
+	}
+}
 
 void ABuildingVisual::ReturnMeshToSelected()
 {
@@ -193,13 +193,34 @@ void ABuildingVisual::DestroyInstance(const FHitResult& HitResult)
 {
 	if (InteractingBuilding)
 	{
-		if ( UInstancedStaticMeshComponent* InstancedStaticMeshComponent = Cast<UInstancedStaticMeshComponent>(HitResult.GetComponent()))
+		if (HitResult.bBlockingHit)
 		{
-			FBuildingSocketData BuildingSocketData;
-			BuildingSocketData.InstancedComponent = InstancedStaticMeshComponent;
-			BuildingSocketData.Index = HitResult.Item;
+			if (UInstancedStaticMeshComponent* InstancedStaticMeshComponent = Cast<UInstancedStaticMeshComponent>(HitResult.GetComponent()))
+			{
+				FBuildingSocketData BuildingSocketData;
+				BuildingSocketData.InstancedComponent = InstancedStaticMeshComponent;
+				BuildingSocketData.Index = HitResult.Item;
+				UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDINGVISUAL DestroyInstance"));
+				UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDINGVISUAL index : %d"), HitResult.Item);
 
-			InteractingBuilding->DestroyInstance(BuildingSocketData);
+				UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDINGVISUAL point : %f %f %f"), HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, HitResult.ImpactPoint.Z);
+
+				InteractingBuilding->DestroyInstance(BuildingSocketData, HitResult);
+
+				FString comp = InstancedStaticMeshComponent ? TEXT("comp true") : TEXT("comp false");
+				FString index = HitResult.Item ? TEXT("item true") : TEXT("item false");
+				UE_LOG(LogTemp, Warning, TEXT("%s___%s"), *comp, *index);
+			}
+			
+			auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+
+			if (Pc)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
+				pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
+				pc->NetMulticastRPC_DestroyBuildingInstance(HitResult);
+			}
 		}
 	}
 }
@@ -230,7 +251,7 @@ void ABuildingVisual::CycleMesh()
 	if (Pc)
 	{
 		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
-		pc->ClientRPC_CycleBuildingMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
+		pc->NetMulticastRPC_CycleBuildingMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
 	}
 }
 
