@@ -70,11 +70,13 @@ void APlayerOrganism::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (SkillR)
+	if (SkillZ)
 	{
 		/*FVector Rdistance;
 		Rdistance = GetActorLocation()+(GetActorForwardVector() * 1000);
 		SetActorLocation(Rdistance);*/
+
+		SetActorRotation(GetActorRotation() + FRotator(0, -200, 0));
 
 		FVector CurrentLocation = GetActorLocation();
 		FVector NewLocation = FMath::Lerp(CurrentLocation, TargetLoc, dashSkillTime);
@@ -88,7 +90,7 @@ void APlayerOrganism::Tick(float DeltaTime)
 		if (dashSkillTime >= 1.0f)
 		{
 			dashSkillTime = 0.0f;
-			SkillR = false;
+			SkillZ = false;
 		}
 		
 	}
@@ -485,17 +487,79 @@ void APlayerOrganism::DieFunction()
 }
 
 
+void APlayerOrganism::StartTriangleDash()
+{
+	if (bCanDash)
+	{
+		bIsDashing = true;
+		CurrentDashIndex = 0;  // 초기 대쉬 인덱스 설정
+
+		// 첫 번째 대쉬 방향으로 이동 시작
+		MoveToNextDashPoint();
+	}
+}
+
+void APlayerOrganism::MoveToNextDashPoint()
+{
+	
+	if (CurrentDashIndex < 2)
+	{
+		FVector TargetLocation = TriangleDashPoints[CurrentDashIndex];
+
+		// 캐릭터를 대쉬 포인트로 이동
+		LaunchCharacter(TargetLocation - GetActorLocation(), true, true); // LaunchCharacter 함수를 사용하여 이동
+
+		//UE_LOG(LogTemp,Warning,TEXT("%f, %f, %f"), TriangleDashPoints[CurrentDashIndex]);
+
+		// 다음 대쉬 포인트로 이동하기 위해 타이머 설정
+		GetWorldTimerManager().SetTimer(DashTimerHandle, this, &APlayerOrganism::OnDashPointReached, DashDuration, false);
+
+		CurrentDashIndex++;
+	}
+	else
+	{
+		FinishTriangleDash();
+	}
+}
+
+void APlayerOrganism::OnDashPointReached()
+{
+	// 이동이 완료된 후 호출될 함수
+   // 다음 대쉬 포인트로 이동
+	MoveToNextDashPoint();
+}
+
+void APlayerOrganism::FinishTriangleDash()
+{
+	bIsDashing = false;
+	// 삼각형 대쉬가 완료된 후 처리할 로직 추가
+	// 예: 원래 위치로 복귀하도록 처리
+	
+	SetActorLocation(OriginalLocation);
+}
+
 void APlayerOrganism::CharcurrentLoc()
 {
+	//FVector ForwardNomalize = GetActorForwardVector().Normalize();
+	if (SkillZ)
+	{
+		OriginalLocation = GetActorLocation();  // 원래 위치 설정
+		
+
+		StartTriangleDash();
+
+		// 삼각형 대쉬 포인트들 초기화 (월드 좌표 기준으로 설정)
+		TriangleDashPoints[0] = FVector(GetActorLocation()+ FVector(GetActorForwardVector().X*300, GetActorRightVector().Y*200, GetActorLocation().Z));    // 첫 번째 포인트: 오른쪽으로 이동
+		TriangleDashPoints[1] = FVector(GetActorLocation() + FVector(GetActorForwardVector().X*-3000, GetActorRightVector().Y*800, GetActorLocation().Z));   // 두 번째 포인트: 오른쪽 아래로 이동
+
+	}
+
 	//CharLoc = GetActorLocation();
 	if (SkillE)
 	{ 
 		TargetLoc = GetActorLocation() + GetActorForwardVector() * 700;
 	}
-	else if (SkillR)
-	{
-		TargetLoc = GetActorLocation() + GetActorForwardVector() * 1000;
-	}
+
 	//TargetrangeLoc = GetActorLocation() + GetActorForwardVector() * 500;
 
 	

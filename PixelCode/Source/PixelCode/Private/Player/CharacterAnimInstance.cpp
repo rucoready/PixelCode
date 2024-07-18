@@ -41,16 +41,6 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 }
 
-
-void UCharacterAnimInstance::AnimNotify_RDash()
-{
-	if (myCharacter != nullptr)
-	{
-		myCharacter->SkillR = true;
-		myCharacter->CharcurrentLoc();
-	}
-}
-
 void UCharacterAnimInstance::AnimNotify_blockcounter()
 {
 	if (myCharacter != nullptr)
@@ -114,6 +104,16 @@ void UCharacterAnimInstance::AnimNotify_notBossGroggy()
 	{
 		myCharacter->bBossGroggy = false;
 	}
+}
+
+void UCharacterAnimInstance::AnimNotify_PlayerZSkillDash()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->SkillZ = true;
+		myCharacter->CharcurrentLoc();
+	}
+
 }
 
 

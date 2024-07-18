@@ -4,20 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SpawnSwordQSkill.generated.h"
+#include "SpawnSwordRSkill.generated.h"
 
+class UBoxComponent;
 class UNiagaraSystem;
 class USceneComponent;
 class ABossApernia;
 
 UCLASS()
-class PIXELCODE_API ASpawnSwordQSkill : public AActor
+class PIXELCODE_API ASpawnSwordRSkill : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ASpawnSwordQSkill();
+	ASpawnSwordRSkill();
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,24 +31,22 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Components")  // 보통 VisibleAnywhere로 선언하여 에디터에서 보이도록 설정
     USceneComponent* SceneComp;
 
-	UPROPERTY(EditAnywhere)
-	UNiagaraSystem* NS_SkillQ;
+	UPROPERTY(EditAnywhere, Category = "Components");
+	UBoxComponent* boxComp;
+
+	float Speed = 3100.f;
 
 	float DestroyTime = 0.0f;
-	float bhitTime = 0.0f;
 
 	bool bDestroy = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-    float DamageAmount = 4;
+    float DamageAmount = 50;
 
-	 UPROPERTY(EditDefaultsOnly, Category = "Skill")
-    float TraceDistance = 300.0f;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Skill")
-    float TraceRadius = 300.0f;
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* NS_SkillR;
 
 	UFUNCTION()
-    void DealDamageToActorsInTrace();
+	void OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 };

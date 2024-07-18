@@ -30,6 +30,7 @@ class UCreateItemData;
 class AParentItem;
 struct FRecipe;
 class ASpawnSwordQSkill;
+class ASpawnSwordRSkill;
 
 UENUM()
 enum class MyEnum : int8
@@ -194,7 +195,7 @@ public:
 
 	void SkillRightMouse();
 
-	// ��ų ��Ÿ��
+	// 스킬 쿨타임
 
 	bool bQskillCoolTime = false;
 	bool bEskillCoolTime = false;
@@ -223,8 +224,15 @@ public:
 	UPROPERTY()
 	ASpawnSwordQSkill* SpawnQSkillCollsion;
 
+	UPROPERTY()
+	ASpawnSwordRSkill* SpawnRSkillCollsion;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	TSubclassOf<ASpawnSwordQSkill> QSkillSpawn;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
+	TSubclassOf<ASpawnSwordRSkill> RSkillSpawn;
+
 
 	FVector CachedDestination;
 
@@ -233,12 +241,6 @@ public:
 	void switchWeapon();
 
 	void switchWeapon2();
-
-	UPROPERTY(EditAnywhere)
-	class UNiagaraSystem* NS_SkillQ;
-	
-	UPROPERTY(EditAnywhere)
-	class UNiagaraSystem* NS_SkillR;
 
 	//void RollCharacterForward(APixelCodeCharacter* PixelCodeCharacter, float RollDistance);
 
@@ -397,8 +399,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
 	TSet<ECraftArea> CraftAreas;
 
-
-
 	// craftareas 세트에 추가
 	void AddCraftArea(ECraftArea Area);
 
@@ -434,7 +434,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	bool GetBuildMode() const { return bInBuildMode; }
 
-	//------------------------------------------------------------------------------------------
 	UFUNCTION()
 	void OnCycleMeshPressed();
 
@@ -497,8 +496,8 @@ public:
 	UPROPERTY(EditAnywhere, Category=KSH)
 	TSubclassOf<class APickup> pickupItem;
 
-	// 서휘-----------------------------------------------------------------------------------------------------끝
 
+	// 서휘-----------------------------------------------------------------------------------------------------끝
 	/*UPROPERTY(EditAnywhere, Category="MySettings")
 	class UAnimMontage* rollMT;*/
 

@@ -43,9 +43,6 @@ public:
 	UPROPERTY()
 	class UCharacterMovementComponent* playerMovementComp;
 
-	//플레이어 R
-	UFUNCTION()
-	void AnimNotify_RDash(); 
 
 	//플레이어 E
 	UFUNCTION()
@@ -69,6 +66,10 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_notBossGroggy();
+
+	// 플레이어 z 스킬 대쉬
+	UFUNCTION()
+	void AnimNotify_PlayerZSkillDash();
 
 };
 

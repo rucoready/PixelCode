@@ -128,7 +128,7 @@ public:
 	UFUNCTION()
 	virtual void DieFunction();
 
-	bool SkillR = false;
+	bool SkillZ = false;
 
 	// 캐릭터가 현재 이동 중인지 여부
 	bool SkillE = false;
@@ -153,6 +153,33 @@ public:
 	 // 목표 위치 변수
     UPROPERTY(EditAnywhere, Category = "Movement")
     FVector TargetLoc;
+
+	// 삼각형 테스트
+	UFUNCTION(BlueprintCallable)
+    void StartTriangleDash();
+
+	  UPROPERTY(EditAnywhere, Category = "Triangle Dash")
+    float DashSpeed = 1500.0f;
+
+    UPROPERTY(EditAnywhere, Category = "Triangle Dash")
+    float DashDuration = 1.0f;
+
+	 UPROPERTY(EditAnywhere, Category = "Triangle Dash")
+    FVector TriangleDashPoints[3]; // 삼각형 대쉬 포인트들의 배열
+
+    bool bCanDash = true;
+    bool bIsDashing = false;
+    int32 CurrentDashIndex;
+    FTimerHandle DashTimerHandle;
+
+	FVector OriginalLocation;
+
+    void MoveToNextDashPoint();
+    void OnDashPointReached();
+    void FinishTriangleDash();
+
+	// 여기까지 테스트
+
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
     float MoveSpeed;

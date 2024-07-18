@@ -45,6 +45,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
 #include "DataTypes.h"
 #include "Player/SpawnSkillActor/SpawnSwordQSkill.h"
+#include "Player/SpawnSkillActor/SpawnSwordRSkill.h"
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -712,9 +713,9 @@ void APixelCodeCharacter::CycleBuildingMesh()
 {
 	FString sMode = bInBuildMode ? TEXT("Cycle_Auth BuildMode : ON") : TEXT("Cycle_Auth BuildMode : Off");
 	UE_LOG(LogTemp, Warning, TEXT("------------------ %s"), *sMode);
-
 	if (bInBuildMode && Builder)
 	{
+ 
 		Builder->CycleMesh();
 	}
 }
@@ -1166,7 +1167,6 @@ void APixelCodeCharacter::SkillQ()
 		bQskillCoolTime = true;
 
 		GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
-
 		
 	}
 }
@@ -1566,19 +1566,18 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 
 	if (bSkillNSQ)
 	{ 
-		UNiagaraComponent* NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_SkillQ, GetActorLocation()+GetActorForwardVector()*330, GetActorRotation());
-		
+		FActorSpawnParameters SpawnParams;
+		GetWorld()->SpawnActor<ASpawnSwordQSkill>(QSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+
 		bSkillNSQ = false;
 	}
 
 	if (bSkillNSR)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_SkillR, GetActorLocation(), GetActorRotation());
-		bSkillNSR = false;
-
 		FActorSpawnParameters SpawnParams;
-		GetWorld()->SpawnActor<ASpawnSwordQSkill>(QSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
-		UE_LOG(LogTemp, Warning, TEXT("spawnActor"));
+		GetWorld()->SpawnActor<ASpawnSwordRSkill>(RSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+
+		bSkillNSR = false;
 	}
 	// 지논------------------------------------------------------------------------------------------------------
 
