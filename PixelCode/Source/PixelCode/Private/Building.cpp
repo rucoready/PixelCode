@@ -225,7 +225,7 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 						if (SocketInformation.SocketName == BuildingSocketData.SocketName/*$.ToString()*/)
 						{
 							SocketInformation.bSocketInUse = true;
-							UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------------------------@@@@@@@@@@@@@@@@@@@@@@"));
+// 							UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------------------------@@@@@@@@@@@@@@@@@@@@@@"));
 
 							break;
 						}
@@ -248,7 +248,7 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 					if (SocketName.IsEqual(BuildingSocketData.SocketName))
 					{
 						SocketInformation.bSocketInUse = true;
-						UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------------------------########################"));
+// 						UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------------------------########################"));
 					}
 					BuildIndexSockets.SocketsInformation.Add(SocketInformation);
 				}
@@ -265,45 +265,45 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 		case EBuildType::Foundation:
 		FoundationInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType=TEXT("FoundationInstancedMesh");
-		UE_LOG(LogTemp, Warning, TEXT("**************************************************Foundation BuildType"));
+// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Foundation BuildType"));
 		break;
 
 		case EBuildType::Wall:
 		WallInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType = TEXT("WallInstancedMesh");
-		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wall BuildType"));
+// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wall BuildType"));
 		break;
 
 		case EBuildType::Ceiling:
 		CeilingInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType = TEXT("CeilingInstancedMesh");
-		UE_LOG(LogTemp, Warning, TEXT("**************************************************Ceiling BuildType"));
+// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Ceiling BuildType"));
 		break;
 
 		case EBuildType::WoodenPilar:
 		WoodenPilarInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType = TEXT("WoodenPilarInstancedMesh");
-		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
+// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
 		break;
 
 		default:
-		UE_LOG(LogTemp, Warning, TEXT("**************************************************Unknown BuildType"));
+// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Unknown BuildType"));
 		break;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("**************************************************BuildType %s"), *StrBuildType);
+	UE_LOG(LogTemp, Warning, TEXT("------------------BuildType %s"), *StrBuildType);
 
-	auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-	FString StrPc = Pc ? TEXT("OOOOO") : TEXT("XXXXX");
-	//UE_LOG(LogTemp, Warning, TEXT("Pc? : %s"), *StrPc);
-
-	if (Pc)
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
-		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
-		pc->NetMulticastRPC_SpawnBuilding(BuildType, transform);
-	}	
+ 	auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+ 
+ 	FString StrPc = Pc ? TEXT("OOOOO") : TEXT("XXXXX");
+ 	//UE_LOG(LogTemp, Warning, TEXT("Pc? : %s"), *StrPc);
+ 
+ 	if (Pc && ROLE_AutonomousProxy)
+ 	{
+ 		//UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
+ 		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
+ 		pc->NetMulticastRPC_SpawnBuilding(BuildType, transform);
+ 	}	
 }
 
 void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
