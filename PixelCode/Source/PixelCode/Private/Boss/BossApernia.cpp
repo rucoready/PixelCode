@@ -1508,4 +1508,5 @@ void ABossApernia::MulticastRPC_CounterPrecursorSpawnParticle_Implementation()
 {
     UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), counterImpactParticle, GetActorLocation(), GetActorRotation(), FVector(2.0f));
     UGameplayStatics::PlaySoundAtLocation(GetWorld(), counterSound, GetActorLocation());
+    //UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), counterHitNA2, GetActorLocation(), GetActorRotation(), FVector(1.0f));
 }

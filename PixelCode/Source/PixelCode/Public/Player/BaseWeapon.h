@@ -75,6 +75,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Initialization")
 	float weaponDamage;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class UNiagaraSystem* swordHitNA;
+
 	// Functions
 	void OnEquipped();
 

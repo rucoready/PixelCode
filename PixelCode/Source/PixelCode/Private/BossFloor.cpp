@@ -37,9 +37,9 @@ ABossFloor::ABossFloor()
 	floorComp->SetupAttachment(RootComponent);
 	floorComp->SetWorldScale3D(FVector(120.0f, 120.0f, 1.0f));
 
-    // 타이머를 초기화합니다.
-    spawnTimerInterval = 20.0f; // 20초 간격으로 스폰
-    spawnDelay = 1.0f; // 스폰 딜레이
+    // 타占싱머몌옙 占십깍옙화占쌌니댐옙.
+    spawnTimerInterval = 20.0f; 
+    spawnDelay = 1.0f; 
 }
 
 // Called when the game starts or when spawned
@@ -57,14 +57,14 @@ void ABossFloor::Tick(float DeltaTime)
     UE_LOG(LogTemp, Warning, TEXT("BossFloorTick"));
     currentTime += DeltaTime;
 
-    if (currentTime >= 5.0 && !bOnceActive)
+    if (currentTime >= 15.0 && !bOnceActive)
     {
         SpawnSword();
         currentTime = 0.0f;
         bOnceActive = true;
         
     }
-    if (currentTime >= 5.0 && bOnceActive)
+    if (currentTime >= 15.0 && bOnceActive)
     {
         bOnceActive = false;
     }
@@ -73,18 +73,18 @@ void ABossFloor::Tick(float DeltaTime)
 
 void ABossFloor::SpawnSword()
 {
-    // 데몬 소드를 3개 스폰합니다.
+    
     for (int32 i = 0; i < 3; ++i)
     {
-        // 특정 범위 내에서 랜덤 위치를 생성합니다.
-        FVector origin = GetActorLocation();  // 현재 액터의 위치를 가져옵니다.
-        float radius = 4000.0f;  // 랜덤 위치를 생성할 반경
+        
+        FVector origin = GetActorLocation();  
+        float radius = 4000.0f;  
         FVector ranLoc = origin + FVector(FMath::RandRange(-radius, radius), FMath::RandRange(-radius, radius), 0.0f);
 
-        // Debug 모드에서 랜덤 위치 반경을 sphere로 그립니다.
-        DrawDebugSphere(GetWorld(), ranLoc, 100.0f, 24, FColor::Green, true);
+     
+        //DrawDebugSphere(GetWorld(), ranLoc, 100.0f, 24, FColor::Green, true);
 
-        // 랜덤 위치에 데몬 소드를 스폰합니다.
+       
         if (demonSwordFactory)
         {
             AActor* spawnedSword = GetWorld()->SpawnActor<AActor>(demonSwordFactory, ranLoc, FRotator::ZeroRotator);

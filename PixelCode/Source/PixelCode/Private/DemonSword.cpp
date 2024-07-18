@@ -13,7 +13,9 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Particles/ParticleSystem.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+#include "CoreMinimal.h"
 #include "../../../../Plugins/FX/Niagara/Source/Niagara/Public/NiagaraFunctionLibrary.h"
 
 // Sets default values
@@ -47,7 +49,7 @@ ADemonSword::ADemonSword()
 	swordComp->SetWorldScale3D(FVector(2.0));
 
 	startLocation = swordComp->GetRelativeLocation();
-	targetLocation = startLocation + FVector(0, 0, -400);
+	targetLocation = startLocation + FVector(0, 0, -200);
 }
 
 // Called when the game starts or when spawned
@@ -66,6 +68,9 @@ void ADemonSword::BeginPlay()
 	
 	damageBox->OnComponentBeginOverlap.AddDynamic(this, &ADemonSword::OnBeginOverlapSwordFloor);
 	
+	
+	
+	swordCurrentHP = swordMaxHP;
 }
 
 // Called every frame
@@ -86,18 +91,18 @@ void ADemonSword::Tick(float DeltaTime)
 	swordComp->SetRelativeLocation(newLocation);
 
 
-	if (currentTime > 5.0f && currentTime <= 8.0f)
+	if (currentTime > 15.0f && currentTime <= 18.0f)
 	{		
 
 		// InterEaseOut를 사용하여 새로운 위치로 서서히 이동합니다.
-		FVector upNewLocation2 = FMath::InterpEaseOut(GetActorLocation(), upNewLocation, (currentTime - 5)/3 ,1.2f);
+		FVector upNewLocation2 = FMath::InterpEaseOut(GetActorLocation(), upNewLocation, (currentTime - 15)/3 ,1.2f);
 
 		// 새로운 위치로 이동합니다.
 		SetActorLocation(upNewLocation2);
 		
 	
 	}
-	if (currentTime > 4.0f &&!directionSet)
+	if (currentTime > 14.0f &&!directionSet)
 	{
 		TArray<AActor*> foundCharacters;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
@@ -111,7 +116,7 @@ void ADemonSword::Tick(float DeltaTime)
 		setDirection = player->GetActorLocation() - GetActorLocation();
 
 	}
-	if (currentTime > 5.5f && currentTime <= 7.0f)
+	if (currentTime > 15.5f && currentTime <= 17.0f)
 	{
 		
 		FVector directionToPlayer = player->GetActorLocation() - GetActorLocation();
@@ -122,12 +127,12 @@ void ADemonSword::Tick(float DeltaTime)
 		FQuat currentQuat = GetActorRotation().Quaternion();
 		FQuat targetQuat = baseRotation.Quaternion();
 
-		float lerpAlpha = FMath::Clamp((currentTime - 5.5f) / 2.5f, 0.0f, 1.0f);
+		float lerpAlpha = FMath::Clamp((currentTime - 15.5f) / 2.5f, 0.0f, 1.0f);
 
 		newQuat = FQuat::Slerp(currentQuat, targetQuat, lerpAlpha);
 		SetActorRotation(newQuat);
 	}
-	if (currentTime > 8.0f && currentTime < 15.f)
+	if (currentTime > 18.0f && currentTime <23.f)
 	{
 		// 현재 회전 방향을 가져옴
 		FVector downDirection = -newQuat.GetUpVector();
@@ -145,37 +150,76 @@ void ADemonSword::Tick(float DeltaTime)
 		SetActorLocation(stingLoc);
 	}
 
+	if (swordCurrentHP <= 0)
+	{
+		Destroy();
+	}
 	
-	
+}
+
+void ADemonSword::SwordTakeDamage(float Damage)
+{
+	swordCurrentHP -= Damage;
+	//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), swordHitNA, GetActorLocation(), GetActorRotation(), FVector(10.0f));
+	// Material 변경
+	if (damageMaterial)
+	{
+		if (swordComp)
+		{
+			int32 MaterialIndex = 0; // 적절한 슬롯 인덱스 지정
+			swordComp->SetMaterial(MaterialIndex, damageMaterial);
+
+			GetWorldTimerManager().SetTimer(timerhandle_SetOriginMatetrial, this, &ADemonSword::SetOriginMaterial, 0.28f, false);
+		}
+	}
+}
+
+void ADemonSword::SetOriginMaterial()
+{
+	if (originalMaterial)
+	{
+		if (swordComp)
+		{
+			int32 MaterialIndex = 0; // 적절한 슬롯 인덱스 지정
+			swordComp->SetMaterial(MaterialIndex, originalMaterial);
+		}
+	}
 }
 
 void ADemonSword::OnBeginOverlapSwordFloor(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
-	if (OtherActor->GetName().Contains("Floor")|| OtherActor->GetName().Contains("Player")|| OtherActor->GetName().Contains("Cube") &&currentTime > 7.0f)
+	if (currentTime > 15.0f)
 	{
-		Destroy();
-		UE_LOG(LogTemp, Warning, TEXT("OVerlap Floor"));
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), grounSwordImpact2, GetActorLocation(), GetActorRotation(), FVector(1.0f));
-		//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), groundSwordImpact, GetActorLocation(), GetActorRotation(), FVector(3.0f));
-		TArray<AActor*> foundCharacters;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
-
-		for (AActor* actor : foundCharacters)
+		UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!2"));
+	}
+	if (OtherActor->GetName().Contains("Floor")|| OtherActor->GetName().Contains("Player")|| OtherActor->GetName().Contains("Cube"))
+	{
+		if (currentTime > 16.0f)
 		{
-			player = Cast<APixelCodeCharacter>(actor);
-			if (player)
+			Destroy();
+			UE_LOG(LogTemp, Warning, TEXT("OVerlap Floor"));
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), grounSwordImpact2, GetActorLocation(), GetActorRotation(), FVector(1.0f));
+			//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), groundSwordImpact, GetActorLocation(), GetActorRotation(), FVector(3.0f));
+			TArray<AActor*> foundCharacters;
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+			for (AActor* actor : foundCharacters)
 			{
-				APlayerController* pc = player->GetController<APlayerController>();
-				if (pc != nullptr)
+				player = Cast<APixelCodeCharacter>(actor);
+				if (player)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
-					pc->ClientStartCameraShake(cameraShakeOBJ);
+					APlayerController* pc = player->GetController<APlayerController>();
+					if (pc != nullptr)
+					{
+
+						pc->ClientStartCameraShake(cameraShakeOBJ);
 
 
+					}
 				}
 			}
 		}
+		
 
 	}
 

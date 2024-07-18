@@ -170,6 +170,25 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 
 	}
 
+	if (demonSword && !bHit)
+	{
+		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.3, false);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), swordHitNA, GetActorLocation(), GetActorRotation(), FVector(10.0f));
+		demonSword->SwordTakeDamage(10.0f);
+		bHit = true;
+
+	}
+	if (grux && !bHit && grux->gruxDie == false)
+	{
+		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.3, false);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), swordHitNA, GetActorLocation(), GetActorRotation(), FVector(10.0f));
+		grux->GruxTakeDamage(10.0f);
+
+		grux->ServerRPC_TakeDamage();
+		bHit = true;
+
+	}
+
 	Player = Cast<APlayerOrganism>(hitActor);
 	if (Player)
 	{

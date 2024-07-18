@@ -32,6 +32,10 @@ public:
 	UPROPERTY(EditAnywhere, Category="MySettings")
 	class UBoxComponent* damageBox;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class UNiagaraSystem* swordHitNA;
+
+
 	float currentTime;
 
 	float moveDuration = 2.0f;
@@ -55,6 +59,22 @@ public:
 	FVector setplayerLoc;
 
 	FQuat newQuat;
+
+	float swordMaxHP = 30.0f;
+
+	float swordCurrentHP;
+
+	void SwordTakeDamage(float Damage);
+
+	UPROPERTY(EditAnywhere, Category="MyMaterial")
+	class UMaterial* damageMaterial;
+
+	FTimerHandle timerhandle_SetOriginMatetrial;
+
+	void SetOriginMaterial();
+
+	UPROPERTY(EditAnywhere, Category="MyMaterial")
+	class UMaterial* originalMaterial;
 
 	bool directionSet = false;
 

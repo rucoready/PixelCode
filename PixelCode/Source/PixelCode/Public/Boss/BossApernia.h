@@ -82,6 +82,11 @@ public:
 	class UAnimMontage* bossTakeDamageMT2;
 
 	bool bStiffness = false;
+
+
+
+	
+
 	//////Boss Damage System
 	UFUNCTION()
 	void BossTakeDamage(float Damage);
@@ -127,6 +132,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="MyMesh")
 	USkeletalMeshComponent* meshComponent;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class UNiagaraSystem* counterHitNA2;
 
 	void SetOriginMaterial();
 

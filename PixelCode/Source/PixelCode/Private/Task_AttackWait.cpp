@@ -96,7 +96,7 @@ void UTask_AttackWait::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
             if (ControlledPawn)
             {
                 ACharacter* boss = Cast<ACharacter>(ControlledPawn);
-                // 여기서 추가적인 로직이 필요하다면 구현
+               
             }
         }
     }

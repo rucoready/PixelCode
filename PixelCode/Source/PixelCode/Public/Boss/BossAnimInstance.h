@@ -24,8 +24,6 @@ public:
 	UPROPERTY(EditAnywhere, Category="MySettings")
 	class ABossSword* sword;
 
-	//UPROPERTY(EditAnywhere, Category = "MySettings")
-	//TSubclassOf<class ABossSword> sword;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MySettings")
 	float Horizontal;
