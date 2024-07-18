@@ -32,6 +32,8 @@ void UCraftingWidget::NativeConstruct()
 	item_Recipes->ClearChildren();
 
 	Btn_Craft->OnClicked.AddUniqueDynamic(this, &UCraftingWidget::OnCraftClicked);
+	Btn_Craft->OnHovered.AddUniqueDynamic(this, &UCraftingWidget::OnCraftHoverd);
+	Btn_Craft->OnUnhovered.AddUniqueDynamic(this, &UCraftingWidget::OnCraftUnHoverd);
 
 	
 	//MakeCraftItem(1, FText::FromString("test item"));
@@ -50,6 +52,11 @@ void UCraftingWidget::NativeConstruct()
 			Crafts = ItemStorage->GetAllCrafting();
 			for (FCraftItem& Item : Crafts)
 			{
+				if(Char->IsPlayerInCraftArea(Item.CraftCondition))
+				{
+					continue;
+				}
+				
 				MakeCraftItem(Index, GetItemNameFromType(Item.CraftedItem));
 	
 				if(Index == 0)
@@ -156,6 +163,13 @@ void UCraftingWidget::OnCraftClicked()
 	// Àç·á »ç¶óÁü
 	if(isCraftable())
 	{
+		if(CraftSuccessSound)
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), CraftSuccessSound);
+		}
+
+		UE_LOG(LogTemp, Warning, TEXT("CLICK"));
+
 		Char->CraftItem(Crafts[SelectedIndex]);
 
 		InitializeCraftSlot();
@@ -173,12 +187,28 @@ void UCraftingWidget::OnCraftClicked()
 	
 }
 
+void UCraftingWidget::OnCraftHoverd()
+{
+	bBulkCraft =true;
+}
+
+void UCraftingWidget::OnCraftUnHoverd()
+{
+	bBulkCraft = false;
+}
+
+void UCraftingWidget::OnCraftbulkPressed()
+{
+}
+
 void UCraftingWidget::CreateCraftRecipeSlot(const FRecipe& Recipe)
 {
 	if(!CraftingSlotTemplate || !Char)
 	{
 		return;
 	}
+
+	
 
 	TWeakObjectPtr<UCraftingSlotWidget> CraftsSlot = CreateWidget<UCraftingSlotWidget>(this , CraftingSlotTemplate);
 	if(CraftsSlot.IsValid())

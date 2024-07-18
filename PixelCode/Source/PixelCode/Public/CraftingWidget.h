@@ -17,6 +17,7 @@ class UImage;
 class UHorizontalBox;;
 class UCraftingSlotWidget;
 class UButton;
+class USoundBase;
 
 
 /**
@@ -39,6 +40,16 @@ public:
 	UFUNCTION()
 	void OnCraftClicked();
 
+	// 플레이어 커서 버튼이 있기
+	UFUNCTION()
+	void OnCraftHoverd();
+
+	UFUNCTION()
+	void OnCraftUnHoverd();
+
+		UFUNCTION()
+	void OnCraftbulkPressed();
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "CRAFT")
 	TSubclassOf<UCraftItemWidget>CraftItemTemplate;
@@ -57,6 +68,10 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category = "CRAFT")
 	bool bCraftable;
+
+	// 벌크 크래프트 유무
+	UPROPERTY(VisibleAnywhere, Category = "CRAFT")
+	bool bBulkCraft;
 
 	bool isCraftable();
 	
@@ -87,6 +102,10 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* Btn_Craft;
+
+	// 크래프팅 성공 사운드
+	UPROPERTY(EditDefaultsOnly)
+	USoundBase* CraftSuccessSound;
 
 	UPROPERTY(EditAnywhere, Category = "KYH")
 	class APickup* PickupItems;
