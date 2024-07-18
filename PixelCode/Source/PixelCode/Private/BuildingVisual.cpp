@@ -36,7 +36,7 @@ void ABuildingVisual::BeginPlay()
 
 	if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
 	{
-		BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
+		BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh); // 인덱스 초기 설정은 0 = Foundation
 	}
 
 	if (MaterialTrue)
@@ -54,22 +54,8 @@ ABuilding* ABuildingVisual::GetHitBuildingActor(const FHitResult& HitResult)
 
 void ABuildingVisual::SetMeshTo(EBuildType BuildType)
 {
- 	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
-	/*bReturnedMesh = false;
-	for (const FBuildingVisualType& Building : BuildingTypes)
-	{
-		if (Building.BuildType == BuildType)
-		{
-			BuildMesh->SetStaticMesh(Building.BuildingMesh);
-			return;
-		}
-	}*/
-	ServerRPC_SetMeshTo(BuildType);
-}
+ 	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo :"));
 
-void ABuildingVisual::ServerRPC_SetMeshTo_Implementation(EBuildType BuildType)
-{
-	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
 	bReturnedMesh = false;
 	for (const FBuildingVisualType& Building : BuildingTypes)
 	{
@@ -79,22 +65,37 @@ void ABuildingVisual::ServerRPC_SetMeshTo_Implementation(EBuildType BuildType)
 			return;
 		}
 	}
-	NetMultiRPC_SetMeshTo(BuildType);
+	//깃 ServerRPC_SetMeshTo(BuildType);
 }
 
-void ABuildingVisual::NetMultiRPC_SetMeshTo_Implementation(EBuildType BuildType)
-{
-	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
-	bReturnedMesh = false;
-	for (const FBuildingVisualType& Building : BuildingTypes)
-	{
-		if (Building.BuildType == BuildType)
-		{
-			BuildMesh->SetStaticMesh(Building.BuildingMesh);
-			return;
-		}
-	}
-}
+// void ABuildingVisual::ServerRPC_SetMeshTo_Implementation(EBuildType BuildType)
+// {
+// 	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
+// 	bReturnedMesh = false;
+// 	for (const FBuildingVisualType& Building : BuildingTypes)
+// 	{
+// 		if (Building.BuildType == BuildType)
+// 		{
+// 			BuildMesh->SetStaticMesh(Building.BuildingMesh);
+// 			return;
+// 		}
+// 	}
+// 	NetMultiRPC_SetMeshTo(BuildType);
+// }
+// 
+// void ABuildingVisual::NetMultiRPC_SetMeshTo_Implementation(EBuildType BuildType)
+// {
+// 	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo"));
+// 	bReturnedMesh = false;
+// 	for (const FBuildingVisualType& Building : BuildingTypes)
+// 	{
+// 		if (Building.BuildType == BuildType)
+// 		{
+// 			BuildMesh->SetStaticMesh(Building.BuildingMesh);
+// 			return;
+// 		}
+// 	}
+// }
 
 void ABuildingVisual::ReturnMeshToSelected()
 {
@@ -107,19 +108,45 @@ void ABuildingVisual::ReturnMeshToSelected()
 	}
 }
 
+// void ABuildingVisual::ServerRPC_ReturnMeshToSelected_Implementation()
+// {
+// 	UE_LOG(LogTemp, Warning, TEXT("ServerRPC_ReturnMeshToSelected"));
+// 
+// 	bReturnedMesh = true;
+// 	if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
+// 	{
+// 		BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
+// 	}
+// }
+// 
+// void ABuildingVisual::NetMultiRPC_ReturnMeshToSelected_Implementation()
+// {
+// 	UE_LOG(LogTemp, Warning, TEXT("NetMultiRPC_ReturnMeshToSelected"));
+// 
+// 	bReturnedMesh = true;
+// 	if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
+// 	{
+// 		BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
+// 	}
+// }
+
 void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 {
 	if (HitResult.bBlockingHit)
 	{
-		SetActorHiddenInGame(false);
-		InteractingBuilding = GetHitBuildingActor(HitResult); 
+		//$$ SetActorHiddenInGame(false); // BuildingVisual 프리뷰 보이기
+		InteractingBuilding = GetHitBuildingActor(HitResult); // HitResult를 Building의 Actor로 캐스팅
 
 		// #19 건축 자재 스냅시키기
 		if (InteractingBuilding)
 		{
+			FString sMode = bReturnedMesh ? TEXT("ReturnMesh : True") : TEXT("ReturnMesh : False");
+			//UE_LOG(LogTemp, Warning, TEXT("------------------ %s"), *sMode);
+
 			if (!bReturnedMesh)
 			{
-				ReturnMeshToSelected();
+				ReturnMeshToSelected(); // -> bReturnMesh = true
+				//깃 ServerRPC_ReturnMeshToSelected();
 			}
 			
 			SocketData = InteractingBuilding->GetHitSocketTransform(HitResult, BuildingTypes[BuildingTypeIndex].FilterCharacter, 25.0f);
@@ -148,16 +175,20 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 		{
 			if (bReturnedMesh)
 			{
-				SetMeshTo(EBuildType::Foundation);
+				//SetMeshTo(EBuildType::Foundation); // -> bReturnedMesh = false
+				// UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildPosition bReturnedMesh : true"));
+				if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
+				{
+					BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
+				}
 			}
-
 			SetActorLocation(HitResult.ImpactPoint);
 		}
 	}
 	else
 	{
 		InteractingBuilding = nullptr;
-		SetActorHiddenInGame(true);
+		//SetActorHiddenInGame(true);
 	}
 }
 
@@ -212,29 +243,27 @@ void ABuildingVisual::DestroyInstance(const FHitResult& HitResult)
 				UE_LOG(LogTemp, Warning, TEXT("%s___%s"), *comp, *index);
 			}
 			
-			auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-
-			if (Pc)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
-				pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
-				pc->NetMulticastRPC_DestroyBuildingInstance(HitResult);
-			}
+// 			auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+// 
+// 
+// 			if (Pc)
+// 			{
+// 				UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
+// 				pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
+// 				pc->NetMulticastRPC_DestroyBuildingInstance(HitResult);
+// 			}
 		}
 	}
 }
 
 void ABuildingVisual::CycleMesh()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDINGVISUAL CycleMesh"));
+	FString sMode = bReturnedMesh ? TEXT("ReturnMesh : True") : TEXT("ReturnMesh : False");
+	UE_LOG(LogTemp, Warning, TEXT("------------------ %s"), *sMode);
 
-	if (bReturnedMesh)
-	{
+//  	if (bReturnedMesh) //$$
+//  	{
 		// 건축자재 인덱스 스크롤로 돌리기
-		FString StrBuildMesh = BuildMesh ? TEXT("true") : TEXT("false");
-		UE_LOG(LogTemp, Warning, TEXT("************************CYCLE MESH BuildMesh : %s"), *StrBuildMesh);
-
 		if (++BuildingTypeIndex >= BuildingTypes.Num())
 		{
 			BuildingTypeIndex = 0;
@@ -243,16 +272,16 @@ void ABuildingVisual::CycleMesh()
 		if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
 		{
 			BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
-			UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDINGVISUAL CYCLE MESH SetStaticMesh"));
+			UE_LOG(LogTemp, Warning, TEXT("%d"), BuildingTypeIndex);
 		}
-	}
+// 	}
 	
-	auto Pc = Cast <APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	if (Pc)
-	{
-		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
-		pc->NetMulticastRPC_CycleBuildingMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
-	}
+// 	auto Pc = Cast <APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+// 	if (Pc && !HasAuthority())
+// 	{
+// 		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
+// 		pc->NetMulticastRPC_CycleBuildingMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
+// 	}
 }
 
 void ABuildingVisual::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

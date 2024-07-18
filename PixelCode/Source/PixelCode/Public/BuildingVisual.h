@@ -51,16 +51,25 @@ public:
 
 	class APixelCodeCharacter* pc;
 
+	//-------------------------------------------------------------------------------
 	void  SetMeshTo(EBuildType BuildType);
 
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_SetMeshTo(EBuildType BuildType);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void NetMultiRPC_SetMeshTo(EBuildType BuildType);
+// 	UFUNCTION(Server, Reliable)
+// 	void ServerRPC_SetMeshTo(EBuildType BuildType);
+// 
+// 	UFUNCTION(NetMulticast, Reliable)
+// 	void NetMultiRPC_SetMeshTo(EBuildType BuildType);
+	//-------------------------------------------------------------------------------
 
 	void ReturnMeshToSelected();
-	
+
+// 	UFUNCTION(Server, Reliable)
+// 	void ServerRPC_ReturnMeshToSelected();
+// 
+// 	UFUNCTION(NetMulticast, Reliable)
+// 	void NetMultiRPC_ReturnMeshToSelected();
+	//-------------------------------------------------------------------------------
+
 	UPROPERTY(Replicated)
 	bool bReturnedMesh;
 

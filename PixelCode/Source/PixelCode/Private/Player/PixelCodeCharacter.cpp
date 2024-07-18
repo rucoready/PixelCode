@@ -549,8 +549,19 @@ void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recip
 
 void APixelCodeCharacter::OnSetBuildModePressed()
 {
-	// SetBuildMode(!GetBuildMode());
-	ServerRPC_SetBuildMode();
+	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Pressed"));
+	if (HasAuthority())
+	{
+		FString sMode = !GetBuildMode() ? TEXT("BuildMode : ON") : TEXT("BuildMode : Off");
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Pressed : authority : %s"), *sMode);
+		SetBuildMode(!GetBuildMode());
+	}
+	else
+	{
+		FString sMode = !GetBuildMode() ? TEXT("BuildMode : ON") : TEXT("BuildMode : Off");
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Pressed : no-authority : %s"), *sMode);
+		ServerRPC_SetBuildMode(!GetBuildMode());
+	}
 }
 
 void APixelCodeCharacter::SetBuildMode(bool Enabled)
@@ -559,89 +570,217 @@ void APixelCodeCharacter::SetBuildMode(bool Enabled)
 	if (Builder)
 	{
 		Builder->SetActorHiddenInGame(!bInBuildMode);
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode NoBuilder"));
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
 	}
 }
 
-void APixelCodeCharacter::ServerRPC_SetBuildMode_Implementation()
+void APixelCodeCharacter::ClientRPC_ServerSetBuildMode_Implementation(bool enabled)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("------------------ServerRPC_SetBuildMode"));
-	if (HasAuthority())
+	bool bbInBuildMode = enabled;
+
+	FString sMode = bbInBuildMode ? TEXT("BuildMode : ON") : TEXT("BuildMode : Off");
+	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Server's Client : %s"), *sMode);
+
+	if (Builder)
 	{
-		SetBuildMode(!GetBuildMode());
+		Builder->SetActorHiddenInGame(!bbInBuildMode);
 	}
 	else
 	{
-		ClientRPC_SetBuildMode();
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode nullptr: Builder"));
 	}
 }
 
-void APixelCodeCharacter::ClientRPC_SetBuildMode_Implementation()
+void APixelCodeCharacter::ServerRPC_SetBuildMode_Implementation(bool mode)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("------------------ClientRPC_SetBuildMode"));
-	SetBuildMode(!GetBuildMode());
+ 	bInBuildMode = mode;
+
+	FString sMode = bInBuildMode ? TEXT("BuildMode : ON") : TEXT("BuildMode : Off");
+ 	
+ 	if (Builder)
+ 	{
+ 		Builder->SetActorHiddenInGame(!bInBuildMode);
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Server : %s"), *sMode);
+ 	}
+ 	else
+ 	{
+ 		UE_LOG(LogTemp, Warning, TEXT("------------------ServerRPC_SetBuildMode nullptr: Builder"));
+ 	}
+	ClientRPC_SetBuildMode(mode);
+
+	//MultiRPC_SetBuildMode(mode);
 }
 
-//client
-/*RPC(this, true);
-
-void RPC(char* _client, bool _somthing);
+void APixelCodeCharacter::ClientRPC_SetBuildMode_Implementation(bool mode)
 {
-	_client->somthing = _somthing;
-}*/
+	UE_LOG(LogTemp, Warning, TEXT("------------------ClientRPC_SetBuildMode"));
 
-								//-----------------------------------Cycle Mesh Network
+ 	bInBuildMode = mode;
+ 
+ 	FString sMode = bInBuildMode ? TEXT("BuildMode : ON") : TEXT("BuildMode : Off");
+ 	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Client : %s"), *sMode);
+ 
+ 	if (Builder)
+ 	{
+		Builder->SetActorHiddenInGame(!bInBuildMode);
+ 	}
+ 	else
+ 	{
+ 		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode nullptr: Builder"));
+ 	}
+}
+
+void APixelCodeCharacter::MultiRPC_SetBuildMode_Implementation(bool mode)
+{
+	UE_LOG(LogTemp, Warning, TEXT("------------------MultiRPC_SetBuildMode"));
+
+	bInBuildMode = mode;
+
+	FString sMode = bInBuildMode ? TEXT("BuildMode : ON") : TEXT("BuildMode : Off");
+	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Multi : %s"), *sMode);
+
+	if (Builder)
+	{
+		Builder->SetActorHiddenInGame(!bInBuildMode);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode nullptr: Builder"));
+	}
+}
+
+//-----------------------------------Cycle Mesh Network
+
 void APixelCodeCharacter::OnCycleMeshPressed()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------WheelDown"));
+	UE_LOG(LogTemp, Warning, TEXT("------------------CycleMesh Pressed"));
+
 	if (HasAuthority())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("------------------CycleMesh : authority"));
 		CycleBuildingMesh();
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("------------------CycleMesh : no authority"));
 		ServerRPC_CycleBuildingMesh();
 	}
 }
 
 void APixelCodeCharacter::CycleBuildingMesh()
 {
+	FString sMode = bInBuildMode ? TEXT("Cycle_Auth BuildMode : ON") : TEXT("Cycle_Auth BuildMode : Off");
+	UE_LOG(LogTemp, Warning, TEXT("------------------ %s"), *sMode);
+
 	if (bInBuildMode && Builder)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CYCLE BUILDING MESH"));
- 
 		Builder->CycleMesh();
 	}
 }
 
 void APixelCodeCharacter::ServerRPC_CycleBuildingMesh_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CYCLE BUILDING MESH SERVER RPC"));
-
 	CycleBuildingMesh();
+	ClientRPC_CycleBuildingMesh();
 }
 
 void APixelCodeCharacter::NetMulticastRPC_CycleBuildingMesh_Implementation(UStaticMesh* newMesh)
 {
-	Builder->BuildMesh->SetStaticMesh(newMesh);
 }
 
-void APixelCodeCharacter::ClientRPC_CycleBuildingMesh_Implementation(UStaticMesh* newMesh)
+void APixelCodeCharacter::ClientRPC_CycleBuildingMesh_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------CYCLE BUILDING MESH CLIENT RPC"));
-	Builder->BuildMesh->SetStaticMesh(newMesh);
+	CycleBuildingMesh();
 }
 
+										//------------------------------------Spawn Building Network
+
+void APixelCodeCharacter::OnSpawnBuildingPressed()
+{
+	if (HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding : authority"));
+		SpawnBuilding();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding : no authority"));
+		ServerRPC_SpawnBuilding();
+		//NetMulticastRPC_SpawnBuilding();
+	}
+}
+
+void APixelCodeCharacter::SpawnBuilding()
+{
+	FString sbInBuildMode = bInBuildMode ? TEXT("BuildMode On") : TEXT("BuildMode Off");
+	FString sBuilder = Builder ? TEXT("Builder true") : TEXT("Builder false");
+	UE_LOG(LogTemp, Warning, TEXT("SpawnBuilding() ; %s : %s"), *sbInBuildMode, *sBuilder);
+
+	if (bInBuildMode && Builder)
+	{
+		Builder->SpawnBuilding();
+	}
+}
+
+void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding : Server"));
+	SpawnBuilding();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildType BuildType, FTransform transf)
+{
+	FString StrBuildings = Buildings ? TEXT("true") : TEXT("false");
+	//UE_LOG(LogTemp, Warning, TEXT("MultiCast Buildings : % s"), *StrBuildings);
+
+	if (Buildings)
+	{
+		switch (BuildType)
+		{
+		case EBuildType::Foundation:
+			Buildings->FoundationInstancedMesh->AddInstance(transf, true);
+			break;
+
+		case EBuildType::Wall:
+			Buildings->WallInstancedMesh->AddInstance(transf, true);
+			break;
+
+		case EBuildType::Ceiling:
+			Buildings->CeilingInstancedMesh->AddInstance(transf, true);
+			break;
+
+		case EBuildType::WoodenPilar:
+			Buildings->WoodenPilarInstancedMesh->AddInstance(transf, true);
+			break;
+
+		default:
+			break;
+		}
+	}
+}
 								//------------------------------------Destroy Building Network
 
 void APixelCodeCharacter::OnDestroyBuildingPressed()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Pressed"));
-	ServerRPC_DestroyBuildingInstance();
-	NetMulticastRPC_DestroyBuildingInstance(PerformLineTrace());
+// 	ServerRPC_DestroyBuildingInstance();
+// 	NetMulticastRPC_DestroyBuildingInstance(PerformLineTrace());
+	UE_LOG(LogTemp, Warning, TEXT("------------------Destroy Pressed"));
+
+	if (HasAuthority())
+	{
+		DestroyBuildingInstance(PerformLineTrace());
+		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy : authority"));
+	}
+	else
+	{
+		ServerRPC_DestroyBuildingInstance(PerformLineTrace());
+		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy : no authority"));
+	}
+
 }
 
 void APixelCodeCharacter::DestroyBuildingInstance(const FHitResult& HitResult)
@@ -650,59 +789,63 @@ void APixelCodeCharacter::DestroyBuildingInstance(const FHitResult& HitResult)
 	{
 		//Builder->DestroyInstance(PerformLineTrace());
 
- 		FString blocking = HitResult.bBlockingHit ? TEXT("blocked") : TEXT("unblocked");
- 		UE_LOG(LogTemp, Warning, TEXT("%s"), *blocking);
+//  		FString blocking = HitResult.bBlockingHit ? TEXT("blocked") : TEXT("unblocked");
+//  		UE_LOG(LogTemp, Warning, TEXT("%s"), *blocking);
  		if (HitResult.bBlockingHit)
  		{
  			UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
  
- 			FString instance = Instance ? TEXT("instance") : TEXT("none");
- 			UE_LOG(LogTemp, Warning, TEXT("%s"), *instance);
+//  			FString instance = Instance ? TEXT("instance") : TEXT("none");
+//  			UE_LOG(LogTemp, Warning, TEXT("%s"), *instance);
  			if (Instance)
  			{
- 				Instance->RemoveInstance(HitResult.Item);
+				Instance->RemoveInstance(HitResult.Item);
  
- 				UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Function %d"), HitResult.Item);
- 				UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Function point : %f %f %f"), HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, HitResult.ImpactPoint.Z);
+//  				UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Function %d"), HitResult.Item);
+//  				UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Function point : %f %f %f"), HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, HitResult.ImpactPoint.Z);
  			}
  		}
 	}
 }
 
-void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation()
+void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation(const FHitResult& HitResult)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Server"));
-	DestroyBuildingInstance(PerformLineTrace());
-// 	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Server %d"), HitResult.Item);
-// 	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Server point : %f %f %f"), HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, HitResult.ImpactPoint.Z);
-// 	FString blocking = HitResult.bBlockingHit ? TEXT("blocked") : TEXT("unblocked");
-// 	UE_LOG(LogTemp, Warning, TEXT("%s"), *blocking);
-// 	if (HitResult.bBlockingHit)
-// 	{
-// 		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
-// 
-// 		FString instance = Instance ? TEXT("instance") : TEXT("none");
-// 		UE_LOG(LogTemp, Warning, TEXT("%s"), *instance);
-// 		if (Instance)
-// 		{
-// 			Instance->RemoveInstance(HitResult.Item);
-// 		}
-// 	}
+	if (HitResult.bBlockingHit)
+	{
+		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
+		if (Instance)
+		{
+			Instance->RemoveInstance(HitResult.Item);
+		}
+	}
+	ClientRPC_DestroyBuildingInstance(HitResult);
 }
 
  void APixelCodeCharacter::NetMulticastRPC_DestroyBuildingInstance_Implementation(const FHitResult& HitResult)
  {
 	// DestroyBuildingInstance(HitResult);
-	 UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Multi %d"), HitResult.Item);
-	 UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Multi point : %f %f %f"), HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, HitResult.ImpactPoint.Z);
-	 FString blocking = HitResult.bBlockingHit ? TEXT("blocked") : TEXT("unblocked");
-	 UE_LOG(LogTemp, Warning, TEXT("%s"), *blocking);
+// 	 UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Multi %d"), HitResult.Item);
+// 	 UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Multi point : %f %f %f"), HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, HitResult.ImpactPoint.Z);
+// 	 FString blocking = HitResult.bBlockingHit ? TEXT("blocked") : TEXT("unblocked");
+// 	 UE_LOG(LogTemp, Warning, TEXT("%s"), *blocking);
+
 	 if (HitResult.bBlockingHit)
 	 {
 		 UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
 
-		 FString instance = Instance ? TEXT("instance") : TEXT("none");
-		 UE_LOG(LogTemp, Warning, TEXT("%s"), *instance);
+		 if (Instance)
+		 {
+			Instance->RemoveInstance(HitResult.Item);
+		 }
+	 }
+ }
+
+ void APixelCodeCharacter::ClientRPC_DestroyBuildingInstance_Implementation(const FHitResult& HitResult)
+ {
+	 if (HitResult.bBlockingHit)
+	 {
+		 UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
+
 		 if (Instance)
 		 {
 			 Instance->RemoveInstance(HitResult.Item);
@@ -710,7 +853,7 @@ void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation()
 	 }
  }
 
-								//------------------------------------Remove Foliage Network
+ //------------------------------------Remove Foliage Network
 
 void APixelCodeCharacter::OnRemoveFoliagePressed()
 {
@@ -749,72 +892,7 @@ void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHi
 	}
 }
 
-								//------------------------------------Spawn Building Network
-
-void APixelCodeCharacter::SpawnBuilding()
-{
-	FString sbInBuildMode = bInBuildMode ? TEXT("bInBuildMode true") : TEXT("bInBuildMode false");
-	FString sBuilder = Builder ? TEXT("Builder true") : TEXT("Builder false");
-	UE_LOG(LogTemp, Warning, TEXT("SpawnBuilding() ; %s : %s"), *sbInBuildMode, *sBuilder);
-	if (bInBuildMode && Builder)
-	{
-		Builder->SpawnBuilding();
-	}
-}
-
-void APixelCodeCharacter::OnSpawnBuildingPressed()
-{
-	ServerRPC_SpawnBuilding();
-}
-
-void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
-{
-	if (this == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation called on nullptr instance"));
-		return;
-	}
-
-	//UE_LOG(LogTemp, Warning, TEXT("------------------ServerRPC_SpawnBuilding"));
-	SpawnBuilding();
-}
-
-void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildType BuildType, FTransform transf)
-{
-	//UE_LOG(LogTemp, Warning, TEXT("Location : %d"), *transf.ToString());
-	FString StrBuildings = Buildings ? TEXT("true") : TEXT("false");
-	//UE_LOG(LogTemp, Warning, TEXT("MultiCast Buildings : % s"), *StrBuildings);
-
-	if (Buildings)
-	{
-		switch (BuildType)
-		{
-			case EBuildType::Foundation:
-			Buildings->FoundationInstancedMesh->AddInstance(transf, true);
-			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST BuildType Foundation"));
-			break;
-
-			case EBuildType::Wall:
-			Buildings->WallInstancedMesh->AddInstance(transf, true);
-			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST BuildType  Wall"));
-			break;
-
-			case EBuildType::Ceiling:
-			Buildings->CeilingInstancedMesh->AddInstance(transf, true);
-			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST BuildType Ceiling"));
-			break;
-
-			case EBuildType::WoodenPilar:
-			Buildings->WoodenPilarInstancedMesh->AddInstance(transf, true);
-			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST BuildType Wooden"));
-			break;
-
-			default:
-			UE_LOG(LogTemp, Warning, TEXT("**************************************************MULTICAST Unknown BuildType"));
-			break;
-		}
-	}
-}
+							
 
 // 서휘-----------------------------------------------------------------------------------------------------끝
 
@@ -1452,8 +1530,6 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	if (bSkillNSQ)
 	{ 
 		UNiagaraComponent* NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_SkillQ, GetActorLocation()+GetActorForwardVector()*330, GetActorRotation());
-		
-		
 		
 		bSkillNSQ = false;
 	}
