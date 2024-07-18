@@ -352,6 +352,9 @@ public:
 	UFUNCTION()
 	void OnCraftingPressed();
 
+	UFUNCTION()
+	void OnCraftBulkPressed();
+
 	// 아이템 생성 함수
 	UFUNCTION()
 	void CraftItem(const FCraftItem& Item);
@@ -389,6 +392,21 @@ public:
 
 	UPROPERTY()
 	UInventoryComponent* OwningInventory; // 인벤토리
+
+	// 크래프팅 아레아 오버랩 되면 bool , 제작아이템 생성
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
+	TSet<ECraftArea> CraftAreas;
+
+
+
+	// craftareas 세트에 추가
+	void AddCraftArea(ECraftArea Area);
+
+	// craftareas 세트 삭제
+	void RemoveArea(ECraftArea Area);
+
+	// 공간안에서 크래프팅
+	bool IsPlayerInCraftArea(ECraftArea Area);
 
 	// 서휘-----------------------------------------------------------------------------------------------------
 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)

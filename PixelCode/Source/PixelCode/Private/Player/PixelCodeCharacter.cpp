@@ -412,6 +412,8 @@ void APixelCodeCharacter::Interact()
 
 // 요한 ------------------------------------------------------------------------------------------
 
+// 요한 ------------------------------------------------------------------------------------------
+
 void APixelCodeCharacter::OnCraftingPressed()
 {
 	if (HUD)
@@ -419,6 +421,20 @@ void APixelCodeCharacter::OnCraftingPressed()
 		//HUD->ShowOrHideCrafting();
 		HUD->ToggleCreate();
 	}
+}
+
+void APixelCodeCharacter::OnCraftBulkPressed()
+{
+	//UE_LOG(LogTemp,Warning,Text("sdsd"));
+	if (!HUD)
+	{
+		return;
+	}
+	//if(HUD->getopenedwidget() == ::EOW_Crafting)
+	//{
+	//	// uelog
+	//}
+
 }
 
 void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
@@ -475,6 +491,7 @@ void APixelCodeCharacter::DropedItem(const UItemBase* Iteminfo)
 		}
 	}
 }
+
 
 AItemStorage* APixelCodeCharacter::GetItemStorage()
 {
@@ -543,6 +560,27 @@ void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recip
 		}
 	}
 }
+
+void APixelCodeCharacter::AddCraftArea(ECraftArea Area)
+{
+	CraftAreas.Add(Area);
+}
+
+void APixelCodeCharacter::RemoveArea(ECraftArea Area)
+{
+	CraftAreas.Remove(Area);
+}
+
+bool APixelCodeCharacter::IsPlayerInCraftArea(ECraftArea Area)
+{
+	if (Area == ECraftArea::ECA_Anywhere)
+	{
+		return true;
+	}
+	return CraftAreas.Contains(Area);
+}
+
+//================================요 한 끝 ===================================================
 
 // 서휘-----------------------------------------------------------------------------------------------------
 

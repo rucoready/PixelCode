@@ -9,10 +9,25 @@
 /**
  * 
  */
+  UENUM(BlueprintType) // 공예 아이템
+  enum class ECraftArea : uint8
+  {
+		
+		ECA_Anywhere		UMETA(DisplayName = "Anywhere"),
+		ECA_Campfire		UMETA(DisplayName = "Campfire"),
+		ECA_Kitchen			UMETA(DisplayName = "kitchen"),
+
+
+
+		ECA_MAX				UMETA(DisplayName = "MAX"),
+
+  };
+
+
  UENUM(BlueprintType)
  enum class EItemName : uint8
  {
-	ETN_NONE = 0			UMETA(DisplayName = "NOne"),
+	ETN_NONE = 0			UMETA(DisplayName = "None"),
 	EIN_Wood = 2			UMETA(DisplayName = "Wood"),
 	ETN_Smalltwig = 3		UMETA(DisplayName = "Smalltwig"),
 	ETN_Stone = 4			UMETA(DisplayName = "Stone"),
@@ -84,6 +99,10 @@ USTRUCT(BlueprintType)
 	// the Recipe needed to craft the item.
 	UPROPERTY(EditAnywhere, Category = "Recipe")
 	TArray<FRecipe> CraftRecipes;
+
+	// 제작하는 데 특정 공간이 필요한지 여부를 확인
+	UPROPERTY(EditAnywhere, Category = "Recipe")
+	ECraftArea CraftCondition = ECraftArea::ECA_Anywhere;
  };
 
 
