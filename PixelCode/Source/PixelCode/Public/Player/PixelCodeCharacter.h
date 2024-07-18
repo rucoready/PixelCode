@@ -395,28 +395,19 @@ public:
 	ABuilding* Buildings;
 
 	//------------------------------------------------------------------------------------------
-	UFUNCTION()
-	void OnSetBuildModePressed();  
-
+	
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void SetBuildMode(bool Enabled);
 
-	UFUNCTION(Client, Reliable)
-	void ClientRPC_ServerSetBuildMode(bool enabled);
-
 	UFUNCTION(Server, Reliable)
- 	void ServerRPC_SetBuildMode(bool mode);
+ 	void ServerRPC_SetBuildMode();
 
 	UFUNCTION(Client, Reliable)
-	void ClientRPC_SetBuildMode(bool mode);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_SetBuildMode(bool mode);
+	void ClientRPC_SetBuildMode();
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	bool GetBuildMode() const { return bInBuildMode; }
 
-	//------------------------------------------------------------------------------------------
 	UFUNCTION()
 	void OnCycleMeshPressed();
 
@@ -430,25 +421,11 @@ public:
 	void NetMulticastRPC_CycleBuildingMesh(UStaticMesh* newMesh);
 
 	UFUNCTION(Client, Reliable)
-	void ClientRPC_CycleBuildingMesh();
-
-	//------------------------------------------------------------------------------------------
-	UFUNCTION()
-	void OnSpawnBuildingPressed();
+	void ClientRPC_CycleBuildingMesh(UStaticMesh* newMesh);
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void SpawnBuilding();
 
- 	UFUNCTION(Server, Reliable)
- 	void ServerRPC_SpawnBuilding();
-
-	//UFUNCTION(NetMulticast, Reliable)
-	//void NetMulticastRPC_SpawnBuilding ();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticastRPC_SpawnBuilding(EBuildType BuildType, FTransform transf);
-
-	//------------------------------------------------------------------------------------------
 	UFUNCTION()
 	void OnDestroyBuildingPressed();
 
@@ -456,14 +433,20 @@ public:
 	void DestroyBuildingInstance(const FHitResult& HitResult);
 
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_DestroyBuildingInstance(const FHitResult& HitResult);
+	void ServerRPC_DestroyBuildingInstance();
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_DestroyBuildingInstance(const FHitResult& HitResult);
 
-	UFUNCTION(Client, Reliable)
-	void ClientRPC_DestroyBuildingInstance(const FHitResult& HitResult);
-	//------------------------------------------------------------------------------------------
+// 	UFUNCTION(NetMulticast, Reliable)
+// 	void NetMulticastRPC_DestroyBuildingInstance(UInstancedStaticMeshComponent* comp, const int32 index);
+	
+// 	UFUNCTION(NetMulticast, Reliable)
+// 	void NetMulticastRPC_DestroyBuildingInstance(const FHitResult& HitResult);
+
+	UFUNCTION()
+	void OnSetBuildModePressed();  
+
 	UFUNCTION()
 	void OnRemoveFoliagePressed();  
 
@@ -476,11 +459,20 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_RemoveFoliage(const FHitResult& HitResult);
 
+	UFUNCTION()
+	void OnSpawnBuildingPressed();
+
+ 	UFUNCTION(Server, Reliable)
+ 	void ServerRPC_SpawnBuilding();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_SpawnBuilding (EBuildType BuildType, FTransform transf);
+	
 	UPROPERTY(EditAnywhere, Category=KSH)
 	TSubclassOf<class APickup> pickupItem;
 
-	// 서휘-----------------------------------------------------------------------------------------------------끝
 
+	// 서휘-----------------------------------------------------------------------------------------------------끝
 	/*UPROPERTY(EditAnywhere, Category="MySettings")
 	class UAnimMontage* rollMT;*/
 
