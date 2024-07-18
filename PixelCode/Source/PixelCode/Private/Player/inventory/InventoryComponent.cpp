@@ -262,17 +262,17 @@ FItemAddResult UInventoryComponent::HandleAddItem(UItemBase* InputItem)
 	if (GetOwner())
 	{
 		const int32 InitialRequestedAddAmount = InputItem->Quantity;
-		UItemBase *TempInfo = InputItem;
+		//UItemBase *TempInfo = InputItem;
 		// handle non-stackable items
 		if (!InputItem->NumericData.bisStackable)
 		{
 			return HandleNonStackableItems(InputItem);
-			TempInfo->Quantity -= 1;
+			//TempInfo->Quantity -= 1;
 		}
-		else
+		/*else
 		{
 			Char->DropedItem(TempInfo);
-		}
+		}*/
 
 		// handle stakckable °ª Ãß°¡
 		const int32 StackableAmountAdded = HandleStackableItems(InputItem, InitialRequestedAddAmount);
