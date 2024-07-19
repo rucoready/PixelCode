@@ -20,7 +20,7 @@ UCLASS()
 class PIXELCODE_API APickup : public AActor, public IInteractionInterface
 {
 	GENERATED_BODY()
-	s
+	
 public:	
 	//================================================================================
 	// PROPERTIES & VARIABLES
