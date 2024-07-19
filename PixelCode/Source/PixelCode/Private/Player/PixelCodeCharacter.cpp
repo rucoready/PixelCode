@@ -1003,8 +1003,11 @@ void APixelCodeCharacter::ServerRPC_Interact_Implementation()
 void APixelCodeCharacter::NetMulticastRPC_Interact_Implementation(const TScriptInterface<IInteractionInterface>& Interactable)
 {
 	// 충돌이 발생하고 다시 상호작용 가능항목 유효한지 확인 후 상호작용 가능
-	Interactable->BeginInteract();
-
+	
+	if (Interactable)
+	{ 
+		Interactable->BeginInteract();
+	}
 	this->Interact();
 }
 
