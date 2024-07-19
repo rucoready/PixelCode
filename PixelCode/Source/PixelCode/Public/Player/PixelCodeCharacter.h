@@ -159,7 +159,13 @@ public:
 
 	void UpdateInteractionWidget() const;
 
-	void DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
+	void DropItem();
+
+	UFUNCTION(Server, Reliable)
+ 	void ServerRPC_DropItem();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
 
 	class AInterfaceTestActor* InterfaceActor;
 

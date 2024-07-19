@@ -1073,27 +1073,16 @@ void APixelCodeCharacter::UpdateInteractionWidget() const
 	}
 }
 
-void APixelCodeCharacter::ToggleMenu()
+
+
+void APixelCodeCharacter::ServerRPC_DropItem_Implementation()
 {
-	HUD->ToggleMenu();
+	auto iteminfo = Iteminfos;
+	auto QuantityToDrop =Iteminfos->Quantity;
+	NetMulticastRPC_DropItem(iteminfo, QuantityToDrop);
 }
 
-void APixelCodeCharacter::StatMenu()
-{
-	if (bIsStatVisible)
-	{ 
-		statWidget->DisplayStat();
-		bIsStatVisible = false;
-	}
-	
-	else
-	{
-		statWidget->HideStat();
-		bIsStatVisible = true;
-	}
-}
-
-void APixelCodeCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop)
+void APixelCodeCharacter::NetMulticastRPC_DropItem_Implementation(UItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
 	// 인벤토리 null이 아니라면
 	if (PlayerInventory->FindMatchingItem(ItemToDrop))
@@ -1119,6 +1108,31 @@ void APixelCodeCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityTo
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Item to drop was Some how null"));
 	}
+}
+
+void APixelCodeCharacter::ToggleMenu()
+{
+	HUD->ToggleMenu();
+}
+
+void APixelCodeCharacter::StatMenu()
+{
+	if (bIsStatVisible)
+	{ 
+		statWidget->DisplayStat();
+		bIsStatVisible = false;
+	}
+	
+	else
+	{
+		statWidget->HideStat();
+		bIsStatVisible = true;
+	}
+}
+
+void APixelCodeCharacter::DropItem()
+{
+	ServerRPC_DropItem();
 }
 
 //////////////////////////////////////////////////////////////////////////
