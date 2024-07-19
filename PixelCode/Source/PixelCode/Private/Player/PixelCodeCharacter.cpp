@@ -46,6 +46,7 @@
 #include "DataTypes.h"
 #include "Player/SpawnSkillActor/SpawnSwordQSkill.h"
 #include "Player/SpawnSkillActor/SpawnSwordRSkill.h"
+#include "PCodeGameInstance.h"
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -192,7 +193,11 @@ void APixelCodeCharacter::BeginPlay()
 
 	ItemStorage = GetWorld()->SpawnActor<AItemStorage>(ItemStorageTemplate, FVector::ZeroVector, FRotator::ZeroRotator);
 
-
+	GameInst = Cast<UPCodeGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if(GameInst)
+	{
+		OwningInventoryntory = GameInst->LoadInventory();
+	}
 
 }
 
@@ -548,18 +553,24 @@ void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recip
 					if (Item->Quantity == 0)
 					{
 						InventoryContentSArray.RemoveAt(Index);
+						//PlayerInventory->RemoveAmountOfItem(Item, Index);
+						PlayerInventory->RemoveSingleInstanceOfItem(Item);
+						//PickupItems->UpdateInteractableData();
 					}
 					break;
 				}
 			}
 			Index++;
+			
 		}
 		for (int8 i = RemoveedIndex.Num() - 1; i > -1; i--)
 		{
-			// 재고가 삭제된 인벤토리
+			//재고가 삭제된 인벤토리
 			InventoryContentSArray.RemoveAt(RemoveedIndex[i]);
+			
 		}
 	}
+	
 }
 
 void APixelCodeCharacter::AddCraftArea(ECraftArea Area)
@@ -579,6 +590,15 @@ bool APixelCodeCharacter::IsPlayerInCraftArea(ECraftArea Area)
 		return true;
 	}
 	return CraftAreas.Contains(Area);
+}
+
+void APixelCodeCharacter::UpdateGameInstanceInventory()
+{
+	if(!GameInst)
+	{
+		return;
+	}
+	GameInst->UpdateInventory(OwningInventoryntory);
 }
 
 //================================요 한 끝 ===================================================

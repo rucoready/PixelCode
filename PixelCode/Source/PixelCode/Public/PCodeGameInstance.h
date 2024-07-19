@@ -7,6 +7,8 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Engine/DataTable.h"
 #include "OnlineSessionSettings.h"
+#include "Player/inventory/ItemBase.h"
+#include "Player/inventory/InventoryComponent.h"
 #include "PCodeGameInstance.generated.h"
 
 /**
@@ -115,5 +117,29 @@ class PIXELCODE_API UPCodeGameInstance : public UGameInstance
 	UDataTable* dt_parentItemDataTable;
 	// -------------------------------------------------- 진원
 
+
+
+	//======================================= 요한 SAVE ====================================================
+
+	public:
+	//UFUNCTION(BlueprintCallable)
+	//void UpdateInventory(const TArray<UItemBase*> InInventory);
+
+	//// 인벤토리 로드
+	//TArray<UItemBase*> LoadInventory();
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateInventory(const TArray<UInventoryComponent*> InInventory);
+
+
+	//인벤토리 로드
+	TArray<UInventoryComponent*> LoadInventory();
+
+	protected:
+	UPROPERTY(EditAnywhere, Category = "KYH")
+	TArray<UItemBase*> Inventory;
+
+	UPROPERTY(EditAnywhere, Category = "KYH")
+	TArray<UInventoryComponent*> PlayerInventory;
 };
 

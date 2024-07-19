@@ -122,7 +122,7 @@ void APlayerHUD::ShowOrHideCrafting()
 		creatwidgets();
 		const FInputModeGameOnly InputMode;
 		Crafting->SetVisibility(ESlateVisibility::Visible);
-		Crafting->InitializeCraftSlot();
+		Crafting->RefreshCraftingScreen();
 		bIsCreatVisible = true;
 		GetOwningPlayerController()->SetShowMouseCursor(true);
 		GetOwningPlayerController()->SetInputMode(InputMode);

@@ -79,6 +79,7 @@ void APickup::UpdateInteractableData()
 	InstanceInteractableData.Action = ItemReference->TextData.InteractionText;
 	InstanceInteractableData.Name = ItemReference->TextData.Name;
 	InstanceInteractableData.Quantity = ItemReference->Quantity;
+	InstanceInteractableData.ItemName = ItemReference->ItemName;
 	InteractableData = InstanceInteractableData;
 
 

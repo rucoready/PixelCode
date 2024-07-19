@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "CreateItemData.h"
 #include "InteractionInterface.generated.h"
 
-class APixelCodeCharacter; // 클래스전방선언, 다른곳에서 정의 될 것임을 알림
 
+class APixelCodeCharacter; // 클래스전방선언, 다른곳에서 정의 될 것임을 알림
+class UItemBase;
 UENUM()
 enum class EInteractableType : uint8
 {
@@ -29,7 +31,7 @@ struct FInteractableData
 	Name(FText::GetEmpty()), // FText 빈문자 다시반환
 	Action(FText::GetEmpty()),
 	Quantity(0), // 아이템갯수
-	InteractionDuration(0.0f) // 상호작용 시간
+	InteractionDuration(0.0f)// 상호작용 시간
 	{
 
 	}; // 생성자가 실행될 때 여기에서 첫 번째 작업을 수행
@@ -47,6 +49,9 @@ struct FInteractableData
 	// used Only for Pickups
 	UPROPERTY(EditInstanceOnly)
 	int8 Quantity;
+
+	UPROPERTY(EditAnywhere, Category = "Item")
+	EItemName ItemName;
 
 	// used for things like valves, doors, etc, that require an interaction timer
 	UPROPERTY(EditInstanceOnly)

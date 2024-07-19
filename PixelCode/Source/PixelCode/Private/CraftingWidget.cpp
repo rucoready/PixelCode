@@ -26,14 +26,12 @@ void UCraftingWidget::NativeConstruct()
 
 	bCraftable = true;
 
-	SelectedIndex = 99;
 
-	CraftList->ClearChildren();
-	item_Recipes->ClearChildren();
 
 	Btn_Craft->OnClicked.AddUniqueDynamic(this, &UCraftingWidget::OnCraftClicked);
 	Btn_Craft->OnHovered.AddUniqueDynamic(this, &UCraftingWidget::OnCraftHoverd);
 	Btn_Craft->OnUnhovered.AddUniqueDynamic(this, &UCraftingWidget::OnCraftUnHoverd);
+
 
 	
 	//MakeCraftItem(1, FText::FromString("test item"));
@@ -41,49 +39,10 @@ void UCraftingWidget::NativeConstruct()
 	
 
 	Char = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	if(Char)
-	{
-		ItemStorage = Char->GetItemStorage();
-		if(ItemStorage)
-		{
-			uint8 Index = 0;
-			
-			//UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemStorage->GetCraftItemInfoBasedOn(EItemName::EIN_Wood).ItemName.ToString());
-			Crafts = ItemStorage->GetAllCrafting();
-			for (FCraftItem& Item : Crafts)
-			{
-				if(Char->IsPlayerInCraftArea(Item.CraftCondition))
-				{
-					continue;
-				}
-				
-				MakeCraftItem(Index, GetItemNameFromType(Item.CraftedItem));
-	
-				if(Index == 0)
-				{
-					SetCraftingInfo(0);
-					if(CraftItems.IsValidIndex(0))
-					{
-						CraftItems[0]->ActivateButton(true);
-					}
-				}
-				Index++;
-				//UE_LOG(LogTemp, Warning, TEXT("3333333333"))
-				//UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemStorage->GetCraftItemInfoBasedOn(Item.CraftedItem).ItemName.ToString());
-			}
-		}
-		else
-		{
-			//UE_LOG(LogTemp, Warning, TEXT("item storage is invalid"))
-		}
-	}
-	else
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Player character is invalid"))
-	}
+	RefreshCraftItem();
 }
 
-void UCraftingWidget::SetCraftingInfo(uint8 Index)
+void UCraftingWidget::SetCraftingInfo(uint16 Index, uint16 ButtonIndex)
 {
 
 	if(CraftItems.IsValidIndex(SelectedIndex))
@@ -91,10 +50,12 @@ void UCraftingWidget::SetCraftingInfo(uint8 Index)
 		CraftItems[SelectedIndex]->ActivateButton(false);
 	}
 	
-	SelectedIndex = Index;
-	if(CraftItems.IsValidIndex(SelectedIndex))
+	SelectedIndex = ButtonIndex;
+	SelectedItemIndex = Index;
+
+	if(CraftItems.IsValidIndex(Index))
 	{ 
-		EItemName EnumName = Crafts[SelectedIndex].CraftedItem;
+		EItemName EnumName = Crafts[Index].CraftedItem;
 		const FText ItemName = GetItemNameFromType(EnumName);
 		TextBlock_ItemName->SetText(ItemName);
 		Image_Icon->SetBrush(GetItemIconFromType(EnumName));
@@ -122,14 +83,14 @@ bool UCraftingWidget::isCraftable()
 	return true;
 }
 
-void UCraftingWidget::MakeCraftItem(uint16 Index, const FText& ItemName)
-{
+void UCraftingWidget::MakeCraftItem(uint16 Index,uint16 ButtonIndex, const FText& ItemName)
+{    
 	if(CraftItemTemplate)
 	{
 		TWeakObjectPtr<UCraftItemWidget> CraftSlot = CreateWidget<UCraftItemWidget>(this, CraftItemTemplate);
 		if(CraftSlot.IsValid())
 		{
-			CraftSlot->SetData(Index,ItemName, this);
+			CraftSlot->SetData(Index, ButtonIndex ,ItemName, this);
 			CraftSlot->SetPadding(FMargin(0.f,10.f, 0.f, 0.f));
 			CraftItems.Add(CraftSlot);
 			CraftList->AddChild(CraftSlot.Get());
@@ -151,6 +112,58 @@ void UCraftingWidget::InitializeCraftSlot()
 		CreateCraftRecipeSlot(Recipe);
 	}
 
+}
+
+void UCraftingWidget::RefreshCraftItem()
+{
+	CraftList->ClearChildren(); 
+
+	if (Char)
+	{
+		ItemStorage = Char->GetItemStorage();
+		if (ItemStorage)
+		{
+			uint8 Index = 0;
+			uint16 ButtonIndex = 0;
+			Crafts.Empty();
+			CraftItems.Empty();
+
+			//UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemStorage->GetCraftItemInfoBasedOn(EItemName::EIN_Wood).ItemName.ToString());
+			Crafts = ItemStorage->GetAllCrafting();
+			for (FCraftItem& Item : Crafts)
+			{
+				if (Char->IsPlayerInCraftArea(Item.CraftCondition))
+				{
+					Index++;
+					continue;
+				}
+
+				MakeCraftItem(Index,ButtonIndex, GetItemNameFromType(Item.CraftedItem));
+
+				if (Index == 0)
+				{
+					SetCraftingInfo(0, 0);
+					if (CraftItems.IsValidIndex(0))
+					{
+						CraftItems[0]->ActivateButton(true);
+					}
+				}
+				Index++;
+				ButtonIndex++;
+				//UE_LOG(LogTemp, Warning, TEXT("3333333333"))
+				//UE_LOG(LogTemp, Warning, TEXT("%s"), *ItemStorage->GetCraftItemInfoBasedOn(Item.CraftedItem).ItemName.ToString());
+			}
+		}
+		else
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("item storage is invalid"))
+		}
+	}
+	else
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Player character is invalid"))
+	}
+	
 }
 
 void UCraftingWidget::OnCraftClicked()
@@ -199,6 +212,15 @@ void UCraftingWidget::OnCraftUnHoverd()
 
 void UCraftingWidget::OnCraftbulkPressed()
 {
+}
+
+void UCraftingWidget::RefreshCraftingScreen()
+{
+	SelectedIndex = 99;
+	CraftList->ClearChildren();
+	item_Recipes->ClearChildren();
+
+	RefreshCraftItem();
 }
 
 void UCraftingWidget::CreateCraftRecipeSlot(const FRecipe& Recipe)

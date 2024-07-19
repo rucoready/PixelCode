@@ -17,14 +17,15 @@ void UCraftItemWidget::OnCraftItemClicked()
 {
 	if(CraftingWidget.IsValid())
 	{
-		CraftingWidget->SetCraftingInfo(ItemIndex);
+		CraftingWidget->SetCraftingInfo(ItemIndex, ButtonIndex);
 		ActivateButton(true);
 	}
 }
 
-void UCraftItemWidget::SetData(uint16 Index, const FText& ItemName, TWeakObjectPtr<UCraftingWidget> Craft)
+void UCraftItemWidget::SetData(uint16 Index, uint16 InButtonIndex, const FText& ItemName, TWeakObjectPtr<UCraftingWidget> Craft)
 {
 	ItemIndex = Index;
+	ButtonIndex = InButtonIndex;
 	CraftingWidget = Craft;
 	T_CraftItemName->SetText(ItemName); 
 }

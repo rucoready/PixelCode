@@ -31,6 +31,8 @@ class AParentItem;
 struct FRecipe;
 class ASpawnSwordQSkill;
 class ASpawnSwordRSkill;
+class UPCodeGameInstance;
+
 
 UENUM()
 enum class MyEnum : int8
@@ -392,8 +394,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	uint8 MaxInventorySlot;
 
-	UPROPERTY()
-	UInventoryComponent* OwningInventory; // 인벤토리
+
+
+
+	UPROPERTY(EditAnywhere, Category = "KYH")
+	TArray<UInventoryComponent*> OwningInventoryntory;
 
 	// 크래프팅 아레아 오버랩 되면 bool , 제작아이템 생성
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = KYH)
@@ -407,6 +412,13 @@ public:
 
 	// 공간안에서 크래프팅
 	bool IsPlayerInCraftArea(ECraftArea Area);
+
+	// ======== 게임 저장 =============
+
+	UPROPERTY(EditDefaultsOnly,Category = KYH)
+	UPCodeGameInstance* GameInst;
+
+	 void UpdateGameInstanceInventory();
 
 	// 서휘-----------------------------------------------------------------------------------------------------
 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)

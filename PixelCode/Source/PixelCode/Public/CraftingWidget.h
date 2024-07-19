@@ -32,10 +32,13 @@ public:
 
 	virtual void NativeConstruct() override;
 
-	void SetCraftingInfo(uint8 Index);
+	void SetCraftingInfo(uint16 Index, uint16 ButtonIndex);
 
 	// 크래프트 슬롯 초기화
 	void InitializeCraftSlot();
+
+	// 
+	void RefreshCraftItem();
 
 	UFUNCTION()
 	void OnCraftClicked();
@@ -47,8 +50,11 @@ public:
 	UFUNCTION()
 	void OnCraftUnHoverd();
 
-		UFUNCTION()
+	UFUNCTION()
 	void OnCraftbulkPressed();
+
+	// 크래프팅 새로고침
+	void RefreshCraftingScreen();
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "CRAFT")
@@ -63,6 +69,10 @@ protected:
 	// 아이템 인덱스 선택
 	UPROPERTY(VisibleAnywhere, Category = "CRAFT")
 	uint8 SelectedIndex;
+
+	UPROPERTY(VisibleAnywhere, Category = "CRAFT")
+	uint8 SelectedItemIndex;
+	
 	
 
 	
@@ -114,7 +124,7 @@ protected:
 	UInventoryComponent* OwningInventory; 
 
 	// 아이템 만드는 함수
-	void MakeCraftItem(uint16 Index,const FText& ItemName);
+	void MakeCraftItem(uint16 Index, uint16 ButtonIndex, const FText& ItemName);
 
 	
 

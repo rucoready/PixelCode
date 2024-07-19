@@ -30,13 +30,16 @@ public:
 
 	// 아이템 제작 번호 설정
 	UFUNCTION() 
-	void SetData(uint16 Index, const FText&ItemName, TWeakObjectPtr<UCraftingWidget> Craft);
+	void SetData(uint16 Index, uint16 InButtonIndex, const FText&ItemName, TWeakObjectPtr<UCraftingWidget> Craft);
 
 	void ActivateButton(bool bActive);
 		
 	// 아이템 번호 
 	UPROPERTY(meta = (BindWidget))
 	uint16 ItemIndex;
+
+	UPROPERTY(meta = (BindWidget))
+	uint16 ButtonIndex;
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* Button_CItem;

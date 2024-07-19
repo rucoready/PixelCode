@@ -243,3 +243,16 @@ FParentItemInfo UPCodeGameInstance::GetParentItemDataTable(const FString& rowNam
 
 	return FParentItemInfo();
 }
+
+void UPCodeGameInstance::UpdateInventory(const TArray<UInventoryComponent*> InInventory)
+{
+	PlayerInventory = InInventory;
+}
+
+
+TArray<UInventoryComponent*> UPCodeGameInstance::LoadInventory()
+{
+	return PlayerInventory;
+}
+
+//============================================================================================================
