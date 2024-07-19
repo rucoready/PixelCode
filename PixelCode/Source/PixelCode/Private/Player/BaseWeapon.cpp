@@ -10,6 +10,8 @@
 #include "Boss/BossApernia.h"
 #include "Player/AnimInstance_Interface.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
+#include "DemonSword.h"
+#include "Grux.h"
 #include "Player/PlayerOrganism.h"
 
 ABaseWeapon::ABaseWeapon()
@@ -156,12 +158,14 @@ void ABaseWeapon::OnEquippedTarget(UCombatComponent* combatcomp)
 void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnHitCollisionComponent Called"));
-
+	
 	AActor* hitActor = lastHitStruct.GetActor();
 	ABossApernia* boss = Cast<ABossApernia>(hitActor);
+	ADemonSword* demonSword = Cast<ADemonSword>(hitActor);
+	AGrux* grux = Cast<AGrux>(hitActor);
 	if (boss && !bHit)
 	{		
-		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 1.0, false);
+		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.5, false);
 
 		boss->BossTakeDamage(10.0f);
 		bHit = true;
@@ -169,7 +173,6 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 		UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage1"));
 
 	}
-
 	if (demonSword && !bHit)
 	{
 		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.3, false);
@@ -178,7 +181,7 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 		bHit = true;
 
 	}
-	if (grux && !bHit && grux->gruxDie == false)
+	if (grux && !bHit&&grux->gruxDie == false)
 	{
 		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.3, false);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), swordHitNA, GetActorLocation(), GetActorRotation(), FVector(10.0f));
@@ -192,7 +195,7 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 	Player = Cast<APlayerOrganism>(hitActor);
 	if (Player)
 	{
-		Player->GetHit(lastHitStruct.ImpactPoint,true);
+		Player->GetHit(lastHitStruct.ImpactPoint);
 	}
 
 
