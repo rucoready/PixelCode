@@ -21,6 +21,7 @@
 #include <../../../../../../../Source/Runtime/Core/Public/UObject/NameTypes.h>
 
 
+
 // Sets default values
 APlayerOrganism::APlayerOrganism()
 {
@@ -72,33 +73,34 @@ void APlayerOrganism::Tick(float DeltaTime)
 
 	if (SkillZ)
 	{
-		/*FVector Rdistance;
-		Rdistance = GetActorLocation()+(GetActorForwardVector() * 1000);
-		SetActorLocation(Rdistance);*/
-
-		SetActorRotation(GetActorRotation() + FRotator(0, -200, 0));
-
-		FVector CurrentLocation = GetActorLocation();
-		FVector NewLocation = FMath::Lerp(CurrentLocation, TargetLoc, dashSkillTime);
-		SetActorLocation(NewLocation);
-
-		// 이동 속도와 델타 타임을 기반으로 Lerp 알파 값을 증가
-		float LerpDelta = MoveSpeed * DeltaTime / FVector::Dist(CurrentLocation, TargetLoc);
-		dashSkillTime = FMath::Clamp(dashSkillTime + LerpDelta, 0.0f, 1.0f);
-
-		// 목표 위치에 도달했는지 확인
-		if (dashSkillTime >= 1.0f)
+		if (bDash)
 		{
-			dashSkillTime = 0.0f;
-			SkillZ = false;
+			dashSkillTime += DeltaTime;
+			//if (bfirstDash)
+			//{
+				//FVector NewLocation = FMath::Lerp(CurrentLocation, firstDashLoc, FMath::Clamp(InterpSpeed * DeltaTime, 0.0f, 1.0f));
+				//SetActorLocation(NewLocation);
+			//}
+			//else if (bsecendDash)
+			//{
+				
+				
+			//}
+
+			if (dashSkillTime >= 1.0f)
+			{
+				bDash = false;
+				bfirstDash = false;
+				SkillZTarget();
+				dashSkillTime = 0.0f;
+			}
 		}
-		
 	}
 
 	if (SkillE)
 	{
 		// 선형 보간을 사용하여 캐릭터 위치 업데이트
-		FVector CurrentLocation = GetActorLocation();
+		CurrentLocation = GetActorLocation();
 		FVector NewLocation = FMath::Lerp(CurrentLocation, TargetLoc, dashSkillTime);
 		SetActorLocation(NewLocation);
 
@@ -487,55 +489,61 @@ void APlayerOrganism::DieFunction()
 }
 
 
-void APlayerOrganism::StartTriangleDash()
+
+void APlayerOrganism::SkillZTarget()
 {
-	if (bCanDash)
+	if (CurrentDashIndex == 2) 
 	{
-		bIsDashing = true;
-		CurrentDashIndex = 0;  // 초기 대쉬 인덱스 설정
-
-		// 첫 번째 대쉬 방향으로 이동 시작
-		MoveToNextDashPoint();
+		SetActorLocation(VS);
+		SetActorRotation(RS);
+		dashSkillTime = 0.0f;
+		CurrentDashIndex = 0;
+		return;
 	}
-}
 
-void APlayerOrganism::MoveToNextDashPoint()
-{
-	
-	if (CurrentDashIndex < 2)
+	bDash = true;
+
+	if (CurrentDashIndex == 0)
 	{
-		FVector TargetLocation = TriangleDashPoints[CurrentDashIndex];
+		//bfirstDash = true;
+		//firstDashLoc = GetActorLocation() + ((GetActorForwardVector() + GetActorRightVector() * 0.5f) * 500);
 
-		// 캐릭터를 대쉬 포인트로 이동
-		LaunchCharacter(TargetLocation - GetActorLocation(), true, true); // LaunchCharacter 함수를 사용하여 이동
+		TargetLoc = GetActorLocation() + ((GetActorForwardVector() + GetActorRightVector() * 0.5f) * 500);
 
-		//UE_LOG(LogTemp,Warning,TEXT("%f, %f, %f"), TriangleDashPoints[CurrentDashIndex]);
+		FQuat CurrentQuatRotation = FQuat(GetActorRotation()); // 현재 오브젝트의 로테이션을 쿼터니언으로 변환
+		FRotator RelativeRotation(0.f, 270.f, 0.f); // 상대적으로 회전할 양 설정
 
-		// 다음 대쉬 포인트로 이동하기 위해 타이머 설정
-		GetWorldTimerManager().SetTimer(DashTimerHandle, this, &APlayerOrganism::OnDashPointReached, DashDuration, false);
+		// 상대 회전 적용
+		FQuat RelativeQuatRotation = FQuat(RelativeRotation);
+		FQuat NewQuatRotation = CurrentQuatRotation * RelativeQuatRotation;
 
-		CurrentDashIndex++;
+		FRotator NewRotation = NewQuatRotation.Rotator();
+		SetActorRotation(NewRotation); // 새로운 회전 설정
+		SetActorLocation(TargetLoc);
 	}
-	else
+	else if (CurrentDashIndex == 1)
 	{
-		FinishTriangleDash();
+		TargetLoc = GetActorLocation() + (GetActorForwardVector() * 500);
+
+		FQuat CurrentQuatRotation = FQuat(GetActorRotation()); // 현재 오브젝트의 로테이션을 쿼터니언으로 변환
+		FRotator RelativeRotation(0.f, -90.0f, 0.f); // 상대적으로 회전할 양 설정
+
+		// 상대 회전 적용
+		FQuat RelativeQuatRotation = FQuat(RelativeRotation);
+		FQuat NewQuatRotation = CurrentQuatRotation * RelativeQuatRotation;
+
+		FRotator NewRotation = NewQuatRotation.Rotator();
+		SetActorRotation(NewRotation); // 새로운 회전 설정
+
+		SetActorLocation(TargetLoc);
 	}
-}
 
-void APlayerOrganism::OnDashPointReached()
-{
-	// 이동이 완료된 후 호출될 함수
-   // 다음 대쉬 포인트로 이동
-	MoveToNextDashPoint();
-}
+	FVector PlayerLocation = GetActorLocation();
+	FString LocationString = PlayerLocation.ToString();
+	UE_LOG(LogTemp, Warning, TEXT("SkillZ: %s"), *LocationString);
 
-void APlayerOrganism::FinishTriangleDash()
-{
-	bIsDashing = false;
-	// 삼각형 대쉬가 완료된 후 처리할 로직 추가
-	// 예: 원래 위치로 복귀하도록 처리
-	
-	SetActorLocation(OriginalLocation);
+	UE_LOG(LogTemp, Warning, TEXT("SkillZ: %d"), CurrentDashIndex);
+	CurrentDashIndex++;
 }
 
 void APlayerOrganism::CharcurrentLoc()
@@ -543,14 +551,17 @@ void APlayerOrganism::CharcurrentLoc()
 	//FVector ForwardNomalize = GetActorForwardVector().Normalize();
 	if (SkillZ)
 	{
-		OriginalLocation = GetActorLocation();  // 원래 위치 설정
-		
-
-		StartTriangleDash();
-
-		// 삼각형 대쉬 포인트들 초기화 (월드 좌표 기준으로 설정)
-		TriangleDashPoints[0] = FVector(GetActorLocation()+ FVector(GetActorForwardVector().X*300, GetActorRightVector().Y*200, GetActorLocation().Z));    // 첫 번째 포인트: 오른쪽으로 이동
-		TriangleDashPoints[1] = FVector(GetActorLocation() + FVector(GetActorForwardVector().X*-3000, GetActorRightVector().Y*800, GetActorLocation().Z));   // 두 번째 포인트: 오른쪽 아래로 이동
+		//TargetLoc = ((GetActorForwardVector() + GetActorRightVector()) / 2) * 500;
+		//TargetLoc = GetActorLocation();
+		VS = GetActorLocation();
+		RS = GetActorRotation();
+		//CurrentLocation = GetActorLocation();
+		//firstDashLoc = GetActorLocation() + ((GetActorForwardVector() + GetActorRightVector() * 0.5f) * 500);
+		SkillZTarget();
+	
+		FVector PlayerLocation = GetActorLocation();
+		FString LocationString = PlayerLocation.ToString();
+		UE_LOG(LogTemp, Warning, TEXT("getLoc: %s"), *LocationString);
 
 	}
 

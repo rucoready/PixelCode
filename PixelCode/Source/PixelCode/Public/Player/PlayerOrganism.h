@@ -134,7 +134,7 @@ public:
 	bool SkillE = false;
 
 	// Lerp 알파 변수 (보간 제어)
-	float dashSkillTime;
+	float dashSkillTime = 0.0f;
 
 	// 플레이어 공격중 회전 막기
 	bool bRotation = false;
@@ -148,35 +148,39 @@ public:
 
 	bool bBossGroggy = false;
 
-
+	float InterpSpeed = 2.0f;
 
 	 // 목표 위치 변수
     UPROPERTY(EditAnywhere, Category = "Movement")
     FVector TargetLoc;
 
 	// 삼각형 테스트
-	UFUNCTION(BlueprintCallable)
-    void StartTriangleDash();
 
-	  UPROPERTY(EditAnywhere, Category = "Triangle Dash")
-    float DashSpeed = 1500.0f;
+	float ZSkillTimer = 0.0f;
 
-    UPROPERTY(EditAnywhere, Category = "Triangle Dash")
-    float DashDuration = 1.0f;
+	bool bDash = false;
 
-	 UPROPERTY(EditAnywhere, Category = "Triangle Dash")
-    FVector TriangleDashPoints[3]; // 삼각형 대쉬 포인트들의 배열
+	bool bfirstDash = false;
+	bool bsecendDash = false;
 
-    bool bCanDash = true;
-    bool bIsDashing = false;
-    int32 CurrentDashIndex;
+
+    int32 CurrentDashIndex = 0;
+
     FTimerHandle DashTimerHandle;
 
-	FVector OriginalLocation;
+	FVector VS;
+	FRotator RS;
 
-    void MoveToNextDashPoint();
-    void OnDashPointReached();
-    void FinishTriangleDash();
+	FVector CurrentLocation;
+
+	FVector firstDashLoc;
+	FVector secendDashLoc;
+
+   void SkillZTarget();
+
+   
+	
+	
 
 	// 여기까지 테스트
 

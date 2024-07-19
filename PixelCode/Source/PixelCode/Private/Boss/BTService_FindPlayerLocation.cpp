@@ -38,17 +38,17 @@ void UBTService_FindPlayerLocation::TickNode(UBehaviorTreeComponent& OwnerComp, 
     }
 
     // 현재 관찰 대상 설정 (여기서는 플레이어)
-    AActor* Actor = OwnerComp.GetOwner();
-    if (Actor)
-    {
-        // Actor가 ThirdPerson인지 확인
-        if (Actor->GetActorLabel().Contains("ThirdPerson"))
-        {
-            // Actor의 방향을 플레이어 방향으로 설정
-            FVector PlayerDirection = PlayerCharacter->GetActorLocation() - Actor->GetActorLocation();
-            PlayerDirection.Normalize();
-            FRotator PlayerRotation = PlayerDirection.Rotation();
-            Actor->SetActorRotation(PlayerRotation);
-        }
-    }
+//     AActor* Actor = OwnerComp.GetOwner();
+//     if (Actor)
+//     {
+//         // Actor가 ThirdPerson인지 확인
+//         if (Actor->GetActorLabel().Contains("ThirdPerson"))
+//         {
+//             // Actor의 방향을 플레이어 방향으로 설정
+//             FVector PlayerDirection = PlayerCharacter->GetActorLocation() - Actor->GetActorLocation();
+//             PlayerDirection.Normalize();
+//             FRotator PlayerRotation = PlayerDirection.Rotation();
+//             Actor->SetActorRotation(PlayerRotation);
+//         }
+//     }
 }
