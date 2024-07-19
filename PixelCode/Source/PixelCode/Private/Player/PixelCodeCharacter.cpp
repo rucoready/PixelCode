@@ -1063,6 +1063,7 @@ void APixelCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(APixelCodeCharacter, Buildings); 
 	DOREPLIFETIME(APixelCodeCharacter, bInBuildMode); 
 	DOREPLIFETIME(APixelCodeCharacter, RollAnim);
+	DOREPLIFETIME(APixelCodeCharacter, Iteminfos);
 }
 
 void APixelCodeCharacter::UpdateInteractionWidget() const
@@ -1079,7 +1080,10 @@ void APixelCodeCharacter::ServerRPC_DropItem_Implementation()
 {
 	auto iteminfo = Iteminfos;
 	auto QuantityToDrop =Iteminfos->Quantity;
+	if(iteminfo , QuantityToDrop)
+	{ 
 	NetMulticastRPC_DropItem(iteminfo, QuantityToDrop);
+	}
 }
 
 void APixelCodeCharacter::NetMulticastRPC_DropItem_Implementation(UItemBase* ItemToDrop, const int32 QuantityToDrop)

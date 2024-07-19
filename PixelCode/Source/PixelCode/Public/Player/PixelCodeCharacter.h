@@ -378,7 +378,7 @@ public:
 	AItemStorage* GetItemStorage();
 
 	// 아이템 테스트 들감
-	UPROPERTY(EditAnywhere, Category = "KYH")
+	UPROPERTY(Replicated, EditAnywhere, Category = "KYH")
 	class UItemBase* Iteminfos;
 
 	UPROPERTY(EditAnywhere, Category = "KYH")

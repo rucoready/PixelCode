@@ -21,6 +21,8 @@ FCraftItemInfo UItemBase::GetCraftItemInfoBasedOn(EItemName Name)
 	return CraftItemData[Name];
 }
 
+
+
 UItemBase::UItemBase() : bIsCopy(false), bIsPickup(false) // 생성자가 생성되는 동시에 값을 넣어줌.
 {
 
@@ -73,4 +75,21 @@ void UItemBase::Use(APixelCodeCharacter* Character)
 {
 
 
+}
+
+void UItemBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	/*DOREPLIFETIME(UItemBase, Quantity);
+	DOREPLIFETIME(UItemBase, ID);
+	DOREPLIFETIME(UItemBase, ItemType);
+	DOREPLIFETIME(UItemBase, ItemQuality);
+	DOREPLIFETIME(UItemBase, ItemName);
+	DOREPLIFETIME(UItemBase, ItemStatistics);
+	DOREPLIFETIME(UItemBase, TextData);
+	DOREPLIFETIME(UItemBase, NumericData);
+	DOREPLIFETIME(UItemBase, AssetData);
+	DOREPLIFETIME(UItemBase, CraftItemData);
+	DOREPLIFETIME(UItemBase, Crafting);*/
 }

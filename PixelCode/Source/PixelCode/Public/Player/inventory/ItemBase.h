@@ -69,6 +69,8 @@ class PIXELCODE_API UItemBase : public UObject // object·Î C++¸¸µë
 	bool bIsCopy;
 	bool bIsPickup;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	//================================================================================
 	// FUNCTIONS
 	//================================================================================
