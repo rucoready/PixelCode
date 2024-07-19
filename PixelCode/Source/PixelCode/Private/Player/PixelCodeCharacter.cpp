@@ -159,20 +159,24 @@ void APixelCodeCharacter::BeginPlay()
 
 	
 	// 서휘-----------------------------------------------------------------------------------------------------
-	if (BuildingClass)
+	if (!Builder)
 	{
-		Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass);
+		if (BuildingClass)
+		{
+			Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass);
+		}
 	}
-
-	if (BuildingC)
+	if (!Buildings)
 	{
-		Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC);
+		if (BuildingC)
+		{
+			Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC);
+		}
 	}
 
 	FString sBuilder = Builder ? TEXT("Builder True") : TEXT("Builder False");
 	FString sBuildings = Buildings ? TEXT("Buildings True") : TEXT("Buildings False");
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay : %s : %s"), *sBuilder, *sBuildings);
-
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
 	statWidget = CreateWidget<UPlayerStatWidget>(GetWorld(), StatWidgetClass);
@@ -607,17 +611,27 @@ void APixelCodeCharacter::UpdateGameInstanceInventory()
 
 void APixelCodeCharacter::OnSetBuildModePressed()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Pressed"));
+	FString sbInBuildMode = !bInBuildMode ? TEXT("bInBuildMode : true") : TEXT("bInBuildMode : false");
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *sbInBuildMode);
+
 	if (HasAuthority())
 	{
-		FString sMode = !GetBuildMode() ? TEXT("BuildMode : ON") : TEXT("BuildMode : Off");
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Pressed : authority : %s"), *sMode);
-		SetBuildMode(!GetBuildMode());
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server player"));
+
+		bInBuildMode = !GetBuildMode();
+		if (Builder)
+		{
+			Builder->SetActorHiddenInGame(!bInBuildMode);
+			UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server On"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
+		}
 	}
 	else
 	{
-		FString sMode = !GetBuildMode() ? TEXT("BuildMode : ON") : TEXT("BuildMode : Off");
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Pressed : no-authority : %s"), *sMode);
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @client player"));
 		ServerRPC_SetBuildMode(!GetBuildMode());
 	}
 }
@@ -634,80 +648,58 @@ void APixelCodeCharacter::SetBuildMode(bool Enabled)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
 	}
-}
 
-void APixelCodeCharacter::ClientRPC_ServerSetBuildMode_Implementation(bool enabled)
-{
-	bool bbInBuildMode = enabled;
-
-	FString sMode = bbInBuildMode ? TEXT("BuildMode : ON") : TEXT("BuildMode : Off");
-	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Server's Client : %s"), *sMode);
-
-	if (Builder)
-	{
-		Builder->SetActorHiddenInGame(!bbInBuildMode);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode nullptr: Builder"));
-	}
 }
 
 void APixelCodeCharacter::ServerRPC_SetBuildMode_Implementation(bool mode)
 {
- 	bInBuildMode = mode;
+ 	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ServerRPC"));
+   	bInBuildMode = mode;
+   	if (Builder)
+   	{
+   		Builder->SetActorHiddenInGame(!bInBuildMode);
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ServerRPC On"));
+   	}
+   	else
+   	{
+   		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
+   	}
 
-	FString sMode = bInBuildMode ? TEXT("BuildMode : ON") : TEXT("BuildMode : Off");
- 	
- 	if (Builder)
- 	{
- 		Builder->SetActorHiddenInGame(!bInBuildMode);
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Server : %s"), *sMode);
- 	}
- 	else
- 	{
- 		UE_LOG(LogTemp, Warning, TEXT("------------------ServerRPC_SetBuildMode nullptr: Builder"));
- 	}
-	ClientRPC_SetBuildMode(mode);
-
-	//MultiRPC_SetBuildMode(mode);
-}
-
-void APixelCodeCharacter::ClientRPC_SetBuildMode_Implementation(bool mode)
-{
-	UE_LOG(LogTemp, Warning, TEXT("------------------ClientRPC_SetBuildMode"));
-
- 	bInBuildMode = mode;
- 
- 	FString sMode = bInBuildMode ? TEXT("BuildMode : ON") : TEXT("BuildMode : Off");
- 	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Client : %s"), *sMode);
- 
- 	if (Builder)
- 	{
-		Builder->SetActorHiddenInGame(!bInBuildMode);
- 	}
- 	else
- 	{
- 		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode nullptr: Builder"));
- 	}
+ 	MultiRPC_SetBuildMode(mode);
+// 	ClientRPC_SetBuildMode(mode);
 }
 
 void APixelCodeCharacter::MultiRPC_SetBuildMode_Implementation(bool mode)
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------MultiRPC_SetBuildMode"));
+	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode MultiRPC"));
 
 	bInBuildMode = mode;
+  	if (Builder)
+  	{
+  		Builder->SetActorHiddenInGame(!bInBuildMode);
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode MultiRPC On"));
 
-	FString sMode = bInBuildMode ? TEXT("BuildMode : ON") : TEXT("BuildMode : Off");
-	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode Multi : %s"), *sMode);
+	}
+  	else
+  	{
+  		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
+  	}
+}
 
+void APixelCodeCharacter::ClientRPC_SetBuildMode_Implementation(bool mode)
+{
+	UE_LOG(LogTemp, Warning, TEXT("------------------ClientRPC"));
+
+	//bInBuildMode = mode;
 	if (Builder)
 	{
 		Builder->SetActorHiddenInGame(!bInBuildMode);
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ClientRPC On"));
+
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode nullptr: Builder"));
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
 	}
 }
 
@@ -748,6 +740,8 @@ void APixelCodeCharacter::ServerRPC_CycleBuildingMesh_Implementation()
 
 void APixelCodeCharacter::NetMulticastRPC_CycleBuildingMesh_Implementation(UStaticMesh* newMesh)
 {
+	CycleBuildingMesh();
+
 }
 
 void APixelCodeCharacter::ClientRPC_CycleBuildingMesh_Implementation()
@@ -768,7 +762,6 @@ void APixelCodeCharacter::OnSpawnBuildingPressed()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding : no authority"));
 		ServerRPC_SpawnBuilding();
-		//NetMulticastRPC_SpawnBuilding();
 	}
 }
 
@@ -792,9 +785,6 @@ void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
 
 void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildType BuildType, FTransform transf)
 {
-	FString StrBuildings = Buildings ? TEXT("true") : TEXT("false");
-	//UE_LOG(LogTemp, Warning, TEXT("MultiCast Buildings : % s"), *StrBuildings);
-
 	if (Buildings)
 	{
 		switch (BuildType)
@@ -820,49 +810,92 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 		}
 	}
 }
-								//------------------------------------Destroy Building Network
+
+void APixelCodeCharacter::ClientRPC_SpawnBuilding_Implementation(EBuildType BuildType, FTransform transf)
+{
+	if (Buildings)
+	{
+		switch (BuildType)
+		{
+		case EBuildType::Foundation:
+			Buildings->FoundationInstancedMesh->AddInstance(transf, true);
+			break;
+
+		case EBuildType::Wall:
+			Buildings->WallInstancedMesh->AddInstance(transf, true);
+			break;
+
+		case EBuildType::Ceiling:
+			Buildings->CeilingInstancedMesh->AddInstance(transf, true);
+			break;
+
+		case EBuildType::WoodenPilar:
+			Buildings->WoodenPilarInstancedMesh->AddInstance(transf, true);
+			break;
+
+		default:
+			break;
+		}
+	}
+}
+
+//------------------------------------Destroy Building Network
 
 void APixelCodeCharacter::OnDestroyBuildingPressed()
 {
-// 	ServerRPC_DestroyBuildingInstance();
-// 	NetMulticastRPC_DestroyBuildingInstance(PerformLineTrace());
 	UE_LOG(LogTemp, Warning, TEXT("------------------Destroy Pressed"));
 
+// 	if (HasAuthority())
+// 	{
+// 		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy : @server"));
+// 
+// 		FHitResult HitResult = PerformLineTrace();
+// 		FVector HitPoint = HitResult.ImpactPoint;
+// 
+// 		if (HitResult.bBlockingHit)
+// 		{
+// 			UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
+// 
+// 			if (Instance)
+// 			{
+// 				Instance->RemoveInstance(HitResult.Item);
+// 			}
+// 		}
+// 
+// 		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetFirstBlockingHit());
+// 
+// 		NetMulticastRPC_DestroyBuildingInstance(PerformLineTrace());
+// 	}
+// 	else
+// 	{
+// 		ServerRPC_DestroyBuildingInstance(PerformLineTrace());
+// 		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy : @client"));
+// 	}
 	if (HasAuthority())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy @@ server"));
+
 		DestroyBuildingInstance(PerformLineTrace());
-		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy : authority"));
+		//NetMulticastRPC_DestroyBuildingInstance(PerformLineTrace());
 	}
 	else
 	{
-		ServerRPC_DestroyBuildingInstance(PerformLineTrace());
-		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy : no authority"));
-	}
+		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy @@ client"));
 
+		ServerRPC_DestroyBuildingInstance(PerformLineTrace());
+	}
 }
 
 void APixelCodeCharacter::DestroyBuildingInstance(const FHitResult& HitResult)
 {
-	/*if (bInBuildMode && Builder)*/
+	if (HitResult.bBlockingHit)
 	{
-		//Builder->DestroyInstance(PerformLineTrace());
+		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
 
-//  		FString blocking = HitResult.bBlockingHit ? TEXT("blocked") : TEXT("unblocked");
-//  		UE_LOG(LogTemp, Warning, TEXT("%s"), *blocking);
- 		if (HitResult.bBlockingHit)
- 		{
- 			UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
- 
-//  			FString instance = Instance ? TEXT("instance") : TEXT("none");
-//  			UE_LOG(LogTemp, Warning, TEXT("%s"), *instance);
- 			if (Instance)
- 			{
-				Instance->RemoveInstance(HitResult.Item);
- 
-//  				UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Function %d"), HitResult.Item);
-//  				UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Function point : %f %f %f"), HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, HitResult.ImpactPoint.Z);
- 			}
- 		}
+		if (Instance)
+		{
+			Instance->RemoveInstance(HitResult.bBlockingHit);
+		}
 	}
 }
 
@@ -873,27 +906,27 @@ void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation(const
 		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
 		if (Instance)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("------------------Destroy ServerRPC"));
+			
 			Instance->RemoveInstance(HitResult.Item);
+			UE_LOG(LogTemp, Warning, TEXT("------------------Destroy MultiRPC @@ not ROLE_Authority"));
+
+			ClientRPC_DestroyBuildingInstance(PerformLineTrace());
 		}
 	}
-	ClientRPC_DestroyBuildingInstance(HitResult);
 }
 
  void APixelCodeCharacter::NetMulticastRPC_DestroyBuildingInstance_Implementation(const FHitResult& HitResult)
  {
-	// DestroyBuildingInstance(HitResult);
-// 	 UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Multi %d"), HitResult.Item);
-// 	 UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------Destroy Multi point : %f %f %f"), HitResult.ImpactPoint.X, HitResult.ImpactPoint.Y, HitResult.ImpactPoint.Z);
-// 	 FString blocking = HitResult.bBlockingHit ? TEXT("blocked") : TEXT("unblocked");
-// 	 UE_LOG(LogTemp, Warning, TEXT("%s"), *blocking);
-
 	 if (HitResult.bBlockingHit)
 	 {
 		 UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
 
 		 if (Instance)
 		 {
-			Instance->RemoveInstance(HitResult.Item);
+			 UE_LOG(LogTemp, Warning, TEXT("------------------Destroy MultiRPC"));
+
+			 Instance->RemoveInstance(HitResult.Item);
 		 }
 	 }
  }
@@ -906,6 +939,8 @@ void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation(const
 
 		 if (Instance)
 		 {
+			 UE_LOG(LogTemp, Warning, TEXT("------------------Destroy ClientRPC"));
+
 			 Instance->RemoveInstance(HitResult.Item);
 		 }
 	 }

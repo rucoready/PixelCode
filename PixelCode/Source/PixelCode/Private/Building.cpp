@@ -68,42 +68,6 @@ void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData, c
 		BuildingSocketData.InstancedComponent->RemoveInstance(BuildingSocketData.Index);
 		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDING RemoveInstance"));
 	}
-
-	/*const int32 index = BuildingSocketData.Index -2;
-	UInstancedStaticMeshComponent* instcomp = BuildingSocketData.InstancedComponent;
-
-	auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-	if (Pc)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
-		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
-		pc->NetMulticastRPC_DestroyBuildingInstance(instcomp, index);
-	}*/
-
-	/*FString comp = BuildingSocketData.InstancedComponent ? TEXT("comp true") : TEXT("comp false");
-	FString index = BuildingSocketData.Index ? TEXT("item true") : TEXT("item false");
-	UE_LOG(LogTemp, Warning, TEXT("%s___%s"), *comp, *index);*/
-	
-
-
-	/*auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-	if (Pc)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
-		int32 maxInstanceIndex = BuildingSocketData.InstancedComponent->GetInstanceCount();
-
-		if (BuildingSocketData.Index >= 0 && BuildingSocketData.Index < maxInstanceIndex)
-		{
-			pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
-			pc->NetMulticastRPC_DestroyBuildingInstance(BuildingSocketData);
-		}	
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Invalid instance index: %d"), BuildingSocketData.Index);
-		}
-	}*/
 }
 
 FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent* InstancedComponent, int32 InstanceIndex, const FName& SocketName)
@@ -225,7 +189,7 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 						if (SocketInformation.SocketName == BuildingSocketData.SocketName/*$.ToString()*/)
 						{
 							SocketInformation.bSocketInUse = true;
-// 							UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------------------------@@@@@@@@@@@@@@@@@@@@@@"));
+ 							UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------------------------@@@@@@@@@@@@@@@@@@@@@@"));
 
 							break;
 						}
@@ -248,7 +212,7 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 					if (SocketName.IsEqual(BuildingSocketData.SocketName))
 					{
 						SocketInformation.bSocketInUse = true;
-// 						UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------------------------########################"));
+ 						UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------------------------########################"));
 					}
 					BuildIndexSockets.SocketsInformation.Add(SocketInformation);
 				}
@@ -302,7 +266,8 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
  	{
  		//UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
  		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
- 		pc->NetMulticastRPC_SpawnBuilding(BuildType, transform);
+  		pc->NetMulticastRPC_SpawnBuilding(BuildType, transform);
+//  		pc->ClientRPC_SpawnBuilding(BuildType, transform);
  	}	
 }
 

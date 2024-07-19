@@ -431,17 +431,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void SetBuildMode(bool Enabled);
 
-	UFUNCTION(Client, Reliable)
-	void ClientRPC_ServerSetBuildMode(bool enabled);
-
 	UFUNCTION(Server, Reliable)
  	void ServerRPC_SetBuildMode(bool mode);
 
-	UFUNCTION(Client, Reliable)
-	void ClientRPC_SetBuildMode(bool mode);
+//  	UFUNCTION(Client, Reliable)
+//  	void ClientRPC_SetBuildMode(bool mode);
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_SetBuildMode(bool mode);
+
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_SetBuildMode(bool mode);
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	bool GetBuildMode() const { return bInBuildMode; }
@@ -476,6 +476,9 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_SpawnBuilding(EBuildType BuildType, FTransform transf);
+
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_SpawnBuilding(EBuildType BuildType, FTransform transf);
 
 	//------------------------------------------------------------------------------------------
 	UFUNCTION()
