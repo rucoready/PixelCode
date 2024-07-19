@@ -6,17 +6,21 @@
 #include "GameFramework/Actor.h"
 #include "Player/Interfaces/InteractionInterface.h"
 #include "CreateItemData.h"
+#include "DataTypes.h"
 #include "Pickup.generated.h"
+
 
 class UDataTable;
 class UItemBase;
 class APlayerOrganism;
+class ABuilding;
+class UMaterialInstance;
 
 UCLASS()
 class PIXELCODE_API APickup : public AActor, public IInteractionInterface
 {
 	GENERATED_BODY()
-	
+	s
 public:	
 	//================================================================================
 	// PROPERTIES & VARIABLES
@@ -64,6 +68,19 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Item")
 	EItemName ItemName;
+
+	
+	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	TArray<FBuildingVisualType> BuildingTypes;
+
+	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	TSubclassOf<ABuilding> BuildingClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	UMaterialInstance* MaterialFalse;
+
+	UPROPERTY(EditDefaultsOnly, Category = KSH)
+	UMaterialInstance* MaterialTrue;
 
 
 	//================================================================================

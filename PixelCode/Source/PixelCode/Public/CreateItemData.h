@@ -77,6 +77,8 @@ struct FCraftItemInfo
 	// the item icon
 	UPROPERTY(EditAnywhere, Category = "Recipe")
 	FSlateBrush ItemIcon;
+
+
 };
 
 //TMap<EItemName, FCraftItemInfo> CraftItemData;
