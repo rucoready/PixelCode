@@ -76,21 +76,24 @@ void APlayerOrganism::Tick(float DeltaTime)
 		if (bDash)
 		{
 			dashSkillTime += DeltaTime;
-			//if (bfirstDash)
-			//{
-				//FVector NewLocation = FMath::Lerp(CurrentLocation, firstDashLoc, FMath::Clamp(InterpSpeed * DeltaTime, 0.0f, 1.0f));
-				//SetActorLocation(NewLocation);
-			//}
-			//else if (bsecendDash)
-			//{
-				
-				
-			//}
+			if (bfirstDash)
+			{
+				//firstDashLoc = GetActorLocation() + ((GetActorForwardVector() + GetActorRightVector() * 0.5f) * 500);
+				NewLocation = FMath::Lerp(VS, firstDashLoc, FMath::Clamp(InterpSpeed * dashSkillTime, 0.0f, 1.0f));
+				SetActorLocation(NewLocation);
+			}
+			else if (bsecendDash)
+			{
+				//secendDashLoc = GetActorLocation() + (GetActorForwardVector() * 500);
+				NewLocation = FMath::Lerp(firstDashLoc, secendDashLoc, FMath::Clamp(InterpSpeed * dashSkillTime, 0.0f, 1.0f));
+				SetActorLocation(NewLocation);
+			}
 
 			if (dashSkillTime >= 1.0f)
 			{
 				bDash = false;
 				bfirstDash = false;
+				bsecendDash = false;
 				SkillZTarget();
 				dashSkillTime = 0.0f;
 			}
@@ -101,7 +104,7 @@ void APlayerOrganism::Tick(float DeltaTime)
 	{
 		// 선형 보간을 사용하여 캐릭터 위치 업데이트
 		CurrentLocation = GetActorLocation();
-		FVector NewLocation = FMath::Lerp(CurrentLocation, TargetLoc, dashSkillTime);
+		NewLocation = FMath::Lerp(CurrentLocation, TargetLoc, dashSkillTime);
 		SetActorLocation(NewLocation);
 
 		// 이동 속도와 델타 타임을 기반으로 Lerp 알파 값을 증가
@@ -505,13 +508,14 @@ void APlayerOrganism::SkillZTarget()
 
 	if (CurrentDashIndex == 0)
 	{
-		//bfirstDash = true;
-		//firstDashLoc = GetActorLocation() + ((GetActorForwardVector() + GetActorRightVector() * 0.5f) * 500);
+		bfirstDash = true;
+		firstDashLoc = GetActorLocation() + ((GetActorForwardVector() + GetActorRightVector() * 0.5f) * 500);
+		
 
-		TargetLoc = GetActorLocation() + ((GetActorForwardVector() + GetActorRightVector() * 0.5f) * 500);
+		//TargetLoc = GetActorLocation() + ((GetActorForwardVector() + GetActorRightVector() * 0.5f) * 500);
 
 		FQuat CurrentQuatRotation = FQuat(GetActorRotation()); // 현재 오브젝트의 로테이션을 쿼터니언으로 변환
-		FRotator RelativeRotation(0.f, 270.f, 0.f); // 상대적으로 회전할 양 설정
+		FRotator RelativeRotation(0.f, 250.f, 0.f); // 상대적으로 회전할 양 설정
 
 		// 상대 회전 적용
 		FQuat RelativeQuatRotation = FQuat(RelativeRotation);
@@ -519,11 +523,14 @@ void APlayerOrganism::SkillZTarget()
 
 		FRotator NewRotation = NewQuatRotation.Rotator();
 		SetActorRotation(NewRotation); // 새로운 회전 설정
-		SetActorLocation(TargetLoc);
+		//SetActorLocation(NewLocation);
 	}
 	else if (CurrentDashIndex == 1)
 	{
+		bsecendDash = true;
 		TargetLoc = GetActorLocation() + (GetActorForwardVector() * 500);
+		secendDashLoc = GetActorLocation() + ((GetActorForwardVector() + GetActorRightVector() * 0.5f) * 500);
+		
 
 		FQuat CurrentQuatRotation = FQuat(GetActorRotation()); // 현재 오브젝트의 로테이션을 쿼터니언으로 변환
 		FRotator RelativeRotation(0.f, -90.0f, 0.f); // 상대적으로 회전할 양 설정
@@ -534,8 +541,8 @@ void APlayerOrganism::SkillZTarget()
 
 		FRotator NewRotation = NewQuatRotation.Rotator();
 		SetActorRotation(NewRotation); // 새로운 회전 설정
-
-		SetActorLocation(TargetLoc);
+		//SetActorLocation(NewLocation);
+		//SetActorLocation(TargetLoc);
 	}
 
 	FVector PlayerLocation = GetActorLocation();
@@ -543,6 +550,9 @@ void APlayerOrganism::SkillZTarget()
 	UE_LOG(LogTemp, Warning, TEXT("SkillZ: %s"), *LocationString);
 
 	UE_LOG(LogTemp, Warning, TEXT("SkillZ: %d"), CurrentDashIndex);
+
+
+
 	CurrentDashIndex++;
 }
 

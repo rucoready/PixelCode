@@ -148,7 +148,7 @@ public:
 
 	bool bBossGroggy = false;
 
-	float InterpSpeed = 2.0f;
+	float InterpSpeed = 10.0f;
 
 	 // 목표 위치 변수
     UPROPERTY(EditAnywhere, Category = "Movement")
@@ -172,6 +172,8 @@ public:
 	FRotator RS;
 
 	FVector CurrentLocation;
+
+	FVector NewLocation;
 
 	FVector firstDashLoc;
 	FVector secendDashLoc;
