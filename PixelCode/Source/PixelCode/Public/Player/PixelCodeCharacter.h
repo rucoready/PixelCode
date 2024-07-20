@@ -549,8 +549,17 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 
+	void InitMainUI();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_Die();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_Die();
+
 	virtual void DieFunction() override;
 
+	virtual void PossessedBy(AController* NewController) override;
 
 	virtual void CreateInventory() override;
 

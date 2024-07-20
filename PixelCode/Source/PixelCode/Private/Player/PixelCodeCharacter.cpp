@@ -47,6 +47,7 @@
 #include "Player/SpawnSkillActor/SpawnSwordQSkill.h"
 #include "Player/SpawnSkillActor/SpawnSwordRSkill.h"
 #include "PCodeGameInstance.h"
+#include "PCodePlayerController.h"
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -1015,7 +1016,39 @@ float APixelCodeCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	
+
 	return 0.0f;
+}
+
+void APixelCodeCharacter::InitMainUI()
+{
+	FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
+	FString hasController = Controller ? TEXT("HasCont") : TEXT("NoCont");
+
+	UE_LOG(LogTemp, Warning, TEXT("[%s] %s - InitMainUI"), *netMode, *hasController);
+
+	if (IsLocallyControlled() && NormallyWidgetClass)
+	{
+		auto* pc = Cast<APCodePlayerController>(Controller);
+		if (nullptr == pc->NormallyWidget)
+		{
+			pc->NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+			pc->NormallyWidget->AddToViewport();
+		}
+
+		NormallyWidget = pc->NormallyWidget;
+	}
+}
+
+void APixelCodeCharacter::ServerRPC_Die_Implementation()
+{
+	MultiRPC_Die();
+}
+
+void APixelCodeCharacter::MultiRPC_Die_Implementation()
+{
+	DieFunction();
 }
 
 void APixelCodeCharacter::DieFunction()
@@ -1025,19 +1058,46 @@ void APixelCodeCharacter::DieFunction()
 
 	GetMesh()->SetCollisionResponseToChannels(param);
 
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// UI -> 리스폰 / 종료
 	if (IsLocallyControlled())
 	{
-		auto pc = Cast<APlayerController>(Controller);
-
+		auto pc = Cast<APCodePlayerController>(Controller);
+		FollowCamera->PostProcessSettings.ColorSaturation = FVector4(0, 0, 0, 1);
+		
 		if (pc)
 		{
+			pc->SetInputMode(FInputModeUIOnly());
+			pc->SetShowMouseCursor(true);
 			DisableInput(pc);
+			if (NormallyWidget)
+			{
+				NormallyWidget->SetActiveGameOverUI(true);
+			}
 		}
 	}
 
 	motionState = ECharacterMotionState::Die;
 
 	Super::DieFunction();
+}
+
+void APixelCodeCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
+	FString hasController = Controller ? TEXT("HasCont") : TEXT("NoCont");
+
+	UE_LOG(LogTemp, Warning, TEXT("[%s] %s - PossessedBy"), *netMode, *hasController);
+
+	// 내가 로컬이라면
+	//if (IsLocallyControlled())
+	{
+		InitMainUI();
+	}
 }
 
 void APixelCodeCharacter::CreateInventory()

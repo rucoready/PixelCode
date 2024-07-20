@@ -203,6 +203,8 @@ FString UPCodeGameInstance::StringBase64Decode(const FString& str)
 	return UTF8_TO_TCHAR(ut8String.c_str());
 }
 
+// 진원 ----------------------------------------------------------------------
+
 FCharacterStat UPCodeGameInstance::GetCharacterDataTable(const FString& rowName)
 {
 	if (dt_characerStatDataTable != nullptr)
@@ -243,6 +245,23 @@ FParentItemInfo UPCodeGameInstance::GetParentItemDataTable(const FString& rowNam
 
 	return FParentItemInfo();
 }
+
+void UPCodeGameInstance::ExitRoom()
+{
+	ServerExitRoom();
+}
+
+void UPCodeGameInstance::ServerExitRoom_Implementation()
+{
+	MultiExitRoom();
+}
+
+void UPCodeGameInstance::MultiExitRoom_Implementation()
+{
+	sessionInterface->DestroySession(FName(*mySessionName));
+}
+
+// 진원 끝--------------------------------------------------------------------
 
 void UPCodeGameInstance::UpdateInventory(const TArray<UInventoryComponent*> InInventory)
 {

@@ -10,11 +10,12 @@ class UProgressBar;
 class UStateComponent;
 class ApixelPlayerState;
 class APixelCodeCharacter;
-class APlayerController;
+class APCodePlayerController;
 class UImage;
 class UMaterialInstance;
 class UMaterialInstanceDynamic;
-
+class UCanvasPanel;
+class UButton;
 /**
  * 
  */
@@ -50,7 +51,7 @@ public:
 	APixelCodeCharacter* Player;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Player")
-	APlayerController* PlayerController;
+	APCodePlayerController* PlayerController;
 
 	UPROPERTY(EditDefaultsOnly, Category = "SKillCollTime", meta = (BindWidget))
 	UImage* BP_QSkillbar;
@@ -63,6 +64,15 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "SKillCollTime", meta = (BindWidget))
 	UImage* BP_ZSkillbar;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Respawn", meta = (BindWidget))
+	UCanvasPanel* CP_GameOverUI;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Respawn", meta = (BindWidget))
+	UButton* BTN_Respawn;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Respawn", meta = (BindWidget))
+	UButton* BTN_Quit;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Material")
 	UMaterialInstance* MI_RoundProgressbar;
@@ -93,6 +103,12 @@ public:
 	void RSetPercent();
 	void ZSetPercent();
 
+	UFUNCTION()
+	void OnMyButtonRespawn();
 
+	UFUNCTION()
+	void OnMyButtonQuit();
+
+	void SetActiveGameOverUI(bool value);
 
 };

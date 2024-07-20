@@ -10,6 +10,10 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/Materials/MaterialInstance.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Materials/MaterialInstanceDynamic.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Materials/Material.h>
+#include "PCodePlayerController.h"
+#include "PCodeGameInstance.h"
+#include "Components/CanvasPanel.h"
+#include "Components/Button.h"
 
 
 
@@ -50,6 +54,10 @@ void UNormallyWidget::NativeConstruct()
 	BP_RSkillbar->SetBrushFromMaterial(RDynamicMaterial);
 	BP_ZSkillbar->SetBrushFromMaterial(ZDynamicMaterial);
 
+	// 리스폰
+	BTN_Respawn->OnClicked.AddDynamic(this, &UNormallyWidget::OnMyButtonRespawn);
+	BTN_Quit->OnClicked.AddDynamic(this, &UNormallyWidget::OnMyButtonQuit);
+	
 	firstUpdate();
 
 }
@@ -119,7 +127,6 @@ void UNormallyWidget::ESetPercent()
 			EDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), 1.0f - Player->CurrentESkillCoolTime / Player->ESkillCoolTime);
 		}
 
-		// BP_QSkillbar가 UImage인 경우 SetBrushFromMaterial을 사용할 수 있습니다.
 		BP_ESkillbar->SetBrushFromMaterial(EDynamicMaterial);
 	}
 	
@@ -137,7 +144,7 @@ void UNormallyWidget::RSetPercent()
 			RDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), 1.0f - Player->CurrentRSkillCoolTime / Player->RSkillCoolTime);
 		}
 
-		// BP_QSkillbar가 UImage인 경우 SetBrushFromMaterial을 사용할 수 있습니다.
+	
 		BP_RSkillbar->SetBrushFromMaterial(RDynamicMaterial);
 	}
 }
@@ -152,9 +159,40 @@ void UNormallyWidget::ZSetPercent()
 			ZDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), 1.0f - Player->CurrentZSkillCoolTime / Player->ZSkillCoolTime);
 		}
 
-		// BP_QSkillbar가 UImage인 경우 SetBrushFromMaterial을 사용할 수 있습니다.
+		
 		BP_ZSkillbar->SetBrushFromMaterial(ZDynamicMaterial);
 	}
+}
+
+void UNormallyWidget::OnMyButtonRespawn()
+{
+	// 게임오버UI를 보이지않게하고
+	SetActiveGameOverUI(false);
+	auto* pc = Cast<APCodePlayerController>(GetWorld()->GetFirstPlayerController());
+	if (pc)
+	{
+		// 플레이어컨트롤러를 통해 재시작하고싶다.
+		pc->SetInputMode(FInputModeGameOnly());
+		pc->SetShowMouseCursor(false);
+		pc->ServerRPC_RespawnPlayer();
+		//pc->ServerRPC_ChangeSpectator();
+	}
+}
+
+void UNormallyWidget::OnMyButtonQuit()
+{
+	//UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
+
+	auto* gi = Cast<UPCodeGameInstance>(GetWorld()->GetGameInstance());
+	if (gi)
+	{
+		gi->ExitRoom();
+	}
+}
+
+void UNormallyWidget::SetActiveGameOverUI(bool value)
+{
+	CP_GameOverUI ->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }
 
 

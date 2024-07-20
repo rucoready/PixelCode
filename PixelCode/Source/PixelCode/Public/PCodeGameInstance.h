@@ -108,13 +108,23 @@ class PIXELCODE_API UPCodeGameInstance : public UGameInstance
 
 	UFUNCTION(BlueprintCallable)
 	FParentItemInfo GetParentItemDataTable(const FString& rowName);
-
 		
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
 	UDataTable* dt_characerStatDataTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
 	UDataTable* dt_parentItemDataTable;
+
+	void ExitRoom();
+
+	bool IsInRoom();
+
+	UFUNCTION(Server, Reliable)
+	void ServerExitRoom();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiExitRoom();
+
 	// -------------------------------------------------- Áø¿ø
 
 
