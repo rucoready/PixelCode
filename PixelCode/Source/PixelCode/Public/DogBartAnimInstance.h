@@ -33,4 +33,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MySettings")
 	bool bAttack = false;
+
+	UFUNCTION(BlueprintCallable)
+	void AnimNotify_CollisionOn();
+
+	UFUNCTION()
+	void AnimNotify_CollisionOff();
 };

@@ -30,3 +30,14 @@ void UDogBartAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	
 }
+
+void UDogBartAnimInstance::AnimNotify_CollisionOn()
+{
+	dogBart->DamageCollisionActive();
+
+}
+
+void UDogBartAnimInstance::AnimNotify_CollisionOff()
+{
+	dogBart->DamageCollisionDeactive();
+}

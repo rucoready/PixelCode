@@ -10,6 +10,7 @@
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 #include "Components/StaticMeshComponent.h"
+#include "Player/PlayerOrganism.h"
 #include "BossSword.h"
 #include "Player/PixelCodeCharacter.h"
 #include "Components/ChildActorComponent.h"
@@ -36,7 +37,11 @@
 #include "Components/BoxComponent.h"
 #include "GruxAnimInstance.h"
 #include "Components/CapsuleComponent.h"
+#include "DogBartAIController.h"
+#include "Player/pixelPlayerState.h"
+#include "GameFramework/GameStateBase.h"
 #include "Boss/BossAnimInstance.h"
+
 
 
 // Sets default values
@@ -80,7 +85,10 @@ ADogBart::ADogBart()
 	
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 	
-	
+	damageBox = CreateDefaultSubobject<UBoxComponent>(TEXT("damageBox"));
+	damageBox->SetupAttachment(GetMesh(), TEXT("BARGHEST_-Head"));
+	damageBox->SetRelativeLocation(FVector(50, -20, 0));
+	damageBox->SetWorldScale3D(FVector(1.25,1.0,1.25));
 	
 
 
@@ -97,13 +105,44 @@ ADogBart::ADogBart()
 void ADogBart::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	damageBox->OnComponentBeginOverlap.AddDynamic(this, &ADogBart::OnBeginOverlapDamageCollision);
+
+	currentHp = maxHp;
 }
 
 // Called every frame
 void ADogBart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (currentHp <= 0.0f && !onceDie)
+	{
+		onceDie = true;
+		
+		ServerRPC_Die();
+		
+		
+		
+
+		
+
+
+		GetWorldTimerManager().SetTimer(timerhandle_Destroy, this, &ADogBart::DestroySelf, 3.0f, false);
+		
+
+
+		if (ADogBartAIController* dogBartController = Cast<ADogBartAIController>(GetController()))
+		{
+			dogBartController->ClearFocus(EAIFocusPriority::Default);
+			dogBartController->StopMovement();
+
+
+			if (UBehaviorTreeComponent* BTComponent = dogBartController->FindComponentByClass<UBehaviorTreeComponent>())
+			{
+				BTComponent->StopTree(EBTStopMode::Safe);
+			}
+		}
+	}
 
 }
 
@@ -114,9 +153,64 @@ void ADogBart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void ADogBart::ApplyDamageToTarget(AActor* OtherActor, float DamageAmount)
+{
+	if (IsValid(OtherActor))
+	{
+		Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		UGameplayStatics::ApplyDamage(OtherActor, DamageAmount, Pc, Player, UDamageType::StaticClass());
+	}
+}
+
+void ADogBart::DestroySelf()
+{
+	Destroy();
+
+}
+
+void ADogBart::DogBartTakeDamage(float Damage)
+{
+	currentHp = currentHp - Damage;
+}
+
+void ADogBart::DamageCollisionActive()
+{
+	damageBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	GetWorldTimerManager().SetTimer(Timerhandle_CooltimeDamageCollisionActive, this, &ADogBart::DamageCollisionDeactive, 0.5f, false);
+}
+
+void ADogBart::DamageCollisionDeactive()
+{
+	damageBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void ADogBart::OnBeginOverlapDamageCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->GetName().Contains("Player"))
+	{
+
+		Player = Cast<APlayerOrganism>(OtherActor);
+		if (Player)
+		{
+				Player->GetHit(SweepResult.ImpactPoint, true);
+		}
+		ApplyDamageToTarget(OtherActor, 5);
+	}
+}
+
 UBehaviorTree* ADogBart::GetBehaviorTree() const
 {
 	return tree;
+}
+
+void ADogBart::ServerRPC_TakeDamage_Implementation()
+{
+	MulticastRPC_TakeDamage();
+}
+
+void ADogBart::MulticastRPC_TakeDamage_Implementation()
+{
+	PlayAnimMontage(takeDamage1);
 }
 
 void ADogBart::ServerRPC_JumpAttack_Implementation()
@@ -152,3 +246,12 @@ void ADogBart::MulticastRPC_MeleeAttack_Implementation()
 	
 }
 
+void ADogBart::ServerRPC_Die_Implementation()
+{
+	MulticastRPC_Die();
+}
+
+void ADogBart::MulticastRPC_Die_Implementation()
+{
+	PlayAnimMontage(die);
+}
