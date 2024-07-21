@@ -10,11 +10,13 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/Materials/MaterialInstance.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Materials/MaterialInstanceDynamic.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Materials/Material.h>
+#include <../../../../../../../Source/Runtime/UMG/Public/Components/TextBlock.h>
 #include "PCodePlayerController.h"
 #include "PCodeGameInstance.h"
 #include "Components/CanvasPanel.h"
 #include "Components/Button.h"
 #include "MyGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 
 
 
@@ -24,21 +26,9 @@ void UNormallyWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	PlayerController = nullptr;
-	PlayerState = nullptr;
+	
 
-	// GetOwningPlayer() 함수를 사용하여 Widget이 속한 Player를 가져옵니다.
-	auto* OwningPlayer = GetOwningPlayer();
-	if (OwningPlayer)
-	{
-		// OwningPlayer에서 MyCharacter로 다운캐스팅합니다.
-		Player = Cast<APixelCodeCharacter>(OwningPlayer->GetPawn());
-		if (Player!=nullptr)
-		{
-			PlayerState = Cast<ApixelPlayerState>(Player->GetPlayerState());
-		}
-	}
-
+	
 	BaseMaterial = LoadObject<UMaterial>(nullptr, TEXT("/Script/Engine.Material'/Game/Player/PlayerWidget/M_RoundProgressbar.M_RoundProgressbar'_C"));
 
 	
@@ -64,9 +54,7 @@ void UNormallyWidget::NativeConstruct()
 	BTN_Respawn->OnClicked.AddDynamic(this, &UNormallyWidget::OnMyButtonRespawn);
 	BTN_Quit->OnClicked.AddDynamic(this, &UNormallyWidget::OnMyButtonQuit);
 	
-	firstUpdate();
-
-	currentExpUpdate();
+	//firstUpdate();
 
 }
 
@@ -82,31 +70,35 @@ void UNormallyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 }
 
 
-void UNormallyWidget::firstUpdate()
+void UNormallyWidget::firstUpdate(UStateComponent* PlayerStateComp)
 {
 	
-	PB_HP->SetPercent(Player->stateComp->MaxHP);
-	PB_MP->SetPercent(Player->stateComp->MaxMP);
+	PB_HP->SetPercent(PlayerStateComp->MaxHP);
+	PB_MP->SetPercent(PlayerStateComp->MaxMP);
 	UE_LOG(LogTemp, Warning, TEXT("PlayerStateNonull"));
-	PB_Exp->SetPercent(PlayerState->currentEXP);
+	//PB_Exp->SetPercent(PlayerState->currentEXP);
 	
-	/*if (Player->stateComp == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerStatenull"));
-	}*/
-
+	//LEVEL = FString::FromInt(PlayerState->Level);  // float을 FString으로 변환
+	//TB_LEVEL->SetText(FText::FromString(LEVEL));  // FString을 FText로 변환하여 UTextBlock에 설정
 }
 
 
-void UNormallyWidget::currentStatUpdate()
+void UNormallyWidget::currentStatUpdate(UStateComponent* PlayerStateComp)
 {
-	PB_HP->SetPercent(Player->stateComp->currentHP/Player->stateComp->MaxHP);
-	PB_MP->SetPercent(Player->stateComp->MaxMP/Player->stateComp->currentMP);
+		PB_HP->SetPercent(PlayerStateComp->currentHP/PlayerStateComp->MaxHP);
+		PB_MP->SetPercent(PlayerStateComp->MaxMP/PlayerStateComp->currentMP);
 }
 
-void UNormallyWidget::currentExpUpdate()
+void UNormallyWidget::currentExpUpdate(float currentEXP,float totalEXP)
 {
-	PB_Exp->SetPercent(PlayerState->currentEXP/ PlayerState->totalEXP);
+	PB_Exp->SetPercent(currentEXP/totalEXP);
+	//UE_LOG(LogTemp, Warning, TEXT("UPdateEXP"));
+}
+
+void UNormallyWidget::currentLevelUpdate(int32 Level)
+{
+	LEVEL = FString::FromInt(Level); 
+	TB_LEVEL->SetText(FText::FromString(LEVEL));  
 }
 
 void UNormallyWidget::QSetPercent()

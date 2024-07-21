@@ -52,6 +52,7 @@
 #include "MyGameModeBase.h"
 
 
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -126,18 +127,24 @@ void APixelCodeCharacter::BeginPlay()
 	CameraBoom->bEnableCameraLag = true;
 	CameraBoom->CameraLagSpeed = 10.0f;
 
-	PlayerState = Cast<ApixelPlayerState>(GetPlayerState());
+
+	
 
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
-		//PlayerState = Cast<ApixelPlayerState>(PlayerController->PlayerState);
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
 
+	
+
+	
+	
+
+	
 	FActorSpawnParameters spawnParam;
 	spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
@@ -185,19 +192,20 @@ void APixelCodeCharacter::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay : %s : %s"), *sBuilder, *sBuildings);
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
-	statWidget = CreateWidget<UPlayerStatWidget>(GetWorld(), StatWidgetClass);
-	if (StatWidgetClass)
-	{
-		statWidget->AddToViewport(1);
-		statWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
+	//if (false == HasAuthority())
+	//{
+	//	InitMainUI();
+	//}
 
-	NormallyWidget = CreateWidget<UNormallyWidget>(GetWorld(), NormallyWidgetClass);
-	if (NormallyWidgetClass)
-	{
-		NormallyWidget->AddToViewport(2);
-		NormallyWidget->SetVisibility(ESlateVisibility::Visible);
-	}
+	
+	Pc = Cast<APCodePlayerController>(Controller);
+
+	if (Pc != nullptr)
+	{ 
+		Pc->StartUI();
+		//Pc->ServerRPC_StartUI();
+	}	
+	
 
 	// 요한----------------------------------------------------------------------
 
@@ -1029,7 +1037,7 @@ float APixelCodeCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 
 void APixelCodeCharacter::InitMainUI()
 {
-	FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
+	/*FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
 	FString hasController = Controller ? TEXT("HasCont") : TEXT("NoCont");
 
 	UE_LOG(LogTemp, Warning, TEXT("[%s] %s - InitMainUI"), *netMode, *hasController);
@@ -1044,7 +1052,7 @@ void APixelCodeCharacter::InitMainUI()
 		}
 
 		NormallyWidget = pc->NormallyWidget;
-	}
+	}*/
 }
 
 void APixelCodeCharacter::ServerRPC_Die_Implementation()
@@ -1101,9 +1109,10 @@ void APixelCodeCharacter::PossessedBy(AController* NewController)
 
 	// 내가 로컬이라면
 	//if (IsLocallyControlled())
-	{
-		InitMainUI();
-	}
+	
+		//InitMainUI(); 나중에 활성화?
+		UE_LOG(LogTemp, Warning, TEXT("Normal2"));
+	
 }
 
 void APixelCodeCharacter::CreateInventory()
@@ -1187,17 +1196,8 @@ void APixelCodeCharacter::ToggleMenu()
 
 void APixelCodeCharacter::StatMenu()
 {
-	if (bIsStatVisible)
-	{ 
-		statWidget->DisplayStat();
-		bIsStatVisible = false;
-	}
-	
-	else
-	{
-		statWidget->HideStat();
-		bIsStatVisible = true;
-	}
+	Pc->StatMenu();
+	UE_LOG(LogTemp, Warning, TEXT("K"));
 }
 
 void APixelCodeCharacter::DropItem()
@@ -1264,6 +1264,7 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 		EnhancedInputComponent->BindAction(IA_Weapon, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon);
 		EnhancedInputComponent->BindAction(IA_Weapon2, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon2);
+		EnhancedInputComponent->BindAction(IA_ExpUp, ETriggerEvent::Started, this, &APixelCodeCharacter::PlayerExpUp);
 
 
 	}
@@ -1282,6 +1283,7 @@ void APixelCodeCharacter::CharacterJump(const FInputActionValue& Value)
 
 	Super::Jump();
 }
+
 
 void APixelCodeCharacter::SkillQ()
 {
@@ -1309,7 +1311,6 @@ void APixelCodeCharacter::SkillQ()
 		bQskillCoolTime = true;
 
 		GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
-		
 	}
 }
 
@@ -1645,6 +1646,7 @@ void APixelCodeCharacter::ServerRPC_PlayerRoll_Implementation()
 		FVector CharacterForwardVector = GetActorForwardVector();
 		LaunchCharacter(CharacterForwardVector * PurseStrength, true, true);
 		}, 0.2f, false);
+
 }
 
 void APixelCodeCharacter::NetMulticastRPC_PlayerRoll_Implementation()
@@ -1653,6 +1655,7 @@ void APixelCodeCharacter::NetMulticastRPC_PlayerRoll_Implementation()
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	bRoll = true;
 	UE_LOG(LogTemp, Warning, TEXT("Start"));
+
 }
 
 void APixelCodeCharacter::PlayerRun(const FInputActionValue& Value)
@@ -1664,6 +1667,15 @@ void APixelCodeCharacter::PlayerRun(const FInputActionValue& Value)
 void APixelCodeCharacter::PlayerRunEnd(const FInputActionValue& Value)
 {	
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+}
+
+void APixelCodeCharacter::PlayerExpUp(const FInputActionValue& Value)
+{
+	if (Pc != nullptr)
+	{
+		Pc->ExpUpUI();
+	}
+
 }
 
 void APixelCodeCharacter::Tick(float DeltaTime)
@@ -1701,10 +1713,6 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		}
 	}
 	
-	if (NormallyWidgetClass)
-	{
-		NormallyWidget->currentStatUpdate();
-	}
 
 	if (bSkillNSQ)
 	{ 

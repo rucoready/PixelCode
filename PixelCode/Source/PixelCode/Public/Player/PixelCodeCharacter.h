@@ -153,6 +153,9 @@ class APixelCodeCharacter : public APlayerOrganism
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
 	UInputAction* IA_Weapon2; 
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
+	UInputAction* IA_ExpUp; 
+
 public:
 	APixelCodeCharacter();
 	// 진원 S
@@ -173,16 +176,18 @@ public:
 	UPROPERTY()
 	UPlayerStatWidget* statWidget;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<UPlayerStatWidget> StatWidgetClass;
+	/*UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UPlayerStatWidget> StatWidgetClass;*/
 
 	UPROPERTY()
 	UNormallyWidget* NormallyWidget;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<UNormallyWidget> NormallyWidgetClass;
+	//UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	//TSubclassOf<UNormallyWidget> NormallyWidgetClass;
 
-	bool bIsStatVisible = true;
+	bool bWidget = false;
+
+	class APCodePlayerController* Pc;
 
 	// 구르기
 	bool bRoll = false;
@@ -283,6 +288,8 @@ protected:
 	void PlayerRun(const FInputActionValue& Value);
 
 	void PlayerRunEnd(const FInputActionValue& Value);
+
+	void PlayerExpUp(const FInputActionValue& Value);
 
 	bool bInventorystate = false;
 

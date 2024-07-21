@@ -107,6 +107,7 @@ public:
 	UPROPERTY(EditAnywhere, Category="MySettings")
 	class APixelCodeCharacter* Player;
 
+	class ApixelPlayerState* PlayerState;
 	
 	UPROPERTY(EditAnywhere, Category="MySettings")
 	class APlayerController* Pc;

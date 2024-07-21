@@ -15,72 +15,65 @@
 void UPlayerStatWidget::DisplayStat()
 {
 	SetVisibility(ESlateVisibility::Visible);
+	UE_LOG(LogTemp, Warning, TEXT("StatWidgetOn"));
 }
 
 void UPlayerStatWidget::HideStat()
 {
 	SetVisibility(ESlateVisibility::Collapsed);
+	UE_LOG(LogTemp, Warning, TEXT("StatWidgetOff"));
 }
 
 void UPlayerStatWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	PlayerController = nullptr;
 
-	//auto* GM = Cast<AMyGameModeBase>(GetWorld()->GetAuthGameMode());
-	// GetOwningPlayer() 함수를 사용하여 Widget이 속한 Player를 가져옵니다.
-	auto* OwningPlayer = GetOwningPlayer();
-	if (OwningPlayer)
-	{
-		// OwningPlayer에서 MyCharacter로 다운캐스팅합니다.
-		Player = Cast<APixelCodeCharacter>(OwningPlayer->GetPawn());
-		if (Player != nullptr)
-		{
-			PlayerState = Cast<ApixelPlayerState>(Player->PlayerState);
-		}
-	}
 
 	
 	
 
-	UpdateStat();
+	//UpdateStat();
 }
 
-void UPlayerStatWidget::UpdateStat()
+void UPlayerStatWidget::UpdateStat(UStateComponent* PlayerStateComp)
 {
-	LEVEL = FString::FromInt(PlayerState->Level);  // float을 FString으로 변환
-	TB_LEVEL->SetText(FText::FromString(LEVEL));  // FString을 FText로 변환하여 UTextBlock에 설정
-
-	HP = FString::FromInt(Player->stateComp->MaxHP); 
+	HP = FString::FromInt(PlayerStateComp->MaxHP);
 	TB_HP->SetText(FText::FromString(HP));  
 
-	MP = FString::FromInt(Player->stateComp->MaxMP);  
+	MP = FString::FromInt(PlayerStateComp->MaxMP);
 	TB_MP->SetText(FText::FromString(MP));  
 
-	ATK = FString::FromInt(Player->stateComp->currentATK); 
+	ATK = FString::FromInt(PlayerStateComp->currentATK);
 	TB_ATK->SetText(FText::FromString(ATK));  
 
-	DEF = FString::FromInt(Player->stateComp->currentDEF); 
+	DEF = FString::FromInt(PlayerStateComp->currentDEF);
 	TB_DEF->SetText(FText::FromString(DEF)); 
 
-	CRITICAL = FString::FromInt(Player->stateComp->currentCritical);  
+	CRITICAL = FString::FromInt(PlayerStateComp->currentCritical);
 	TB_Critical->SetText(FText::FromString(CRITICAL)); 
 
-	STR = FString::FromInt(Player->stateComp->currentSTR);  
+	STR = FString::FromInt(PlayerStateComp->currentSTR);
 	TB_STR->SetText(FText::FromString(STR));  
 
-	DEX = FString::FromInt(Player->stateComp->currentDex); 
+	DEX = FString::FromInt(PlayerStateComp->currentDex);
 	TB_DEX->SetText(FText::FromString(DEX)); 
 
-	INT = FString::FromInt(Player->stateComp->currentInt); 
+	INT = FString::FromInt(PlayerStateComp->currentInt);
 	TB_INT->SetText(FText::FromString(INT));  
 
-	LUCK = FString::FromInt(Player->stateComp->currentluck);  
+	LUCK = FString::FromInt(PlayerStateComp->currentluck);
 	TB_LUCK->SetText(FText::FromString(LUCK)); 
 
-	CON = FString::FromInt(Player->stateComp->currentCon); 
+	CON = FString::FromInt(PlayerStateComp->currentCon);
 	TB_CON->SetText(FText::FromString(CON));  
+}
+
+void UPlayerStatWidget::UpdateLevel(int32 Level)
+{
+	LEVEL = FString::FromInt(Level);  // float을 FString으로 변환
+	TB_LEVEL->SetText(FText::FromString(LEVEL));  // FString을 FText로 변환하여 UTextBlock에 설정	
+	UE_LOG(LogTemp, Warning, TEXT("UPdateLEvel"));
 }
 
 

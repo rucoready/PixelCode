@@ -14,13 +14,14 @@ AMyGameModeBase::AMyGameModeBase()
 
 }
 
-void AMyGameModeBase::EXPmanagement(float EXP)
+void AMyGameModeBase::EXPmanagement(float EXP, ApixelPlayerState* PlayerState)
 {
 	currentEXP += EXP;
 
 	if (PlayerState->totalEXP <= currentEXP)
 	{
 		PlayerState->LevelUP();
+		PlayerState->currentEXP = 0;
 	}
 
 }

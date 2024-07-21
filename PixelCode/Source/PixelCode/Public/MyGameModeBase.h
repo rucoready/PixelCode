@@ -19,12 +19,11 @@ class PIXELCODE_API AMyGameModeBase : public AGameModeBase
 public:
 	AMyGameModeBase();
 
-	ApixelPlayerState* PlayerState;
 
 	float totalEXP = 0;
 	float currentEXP = 0;
 
-	void EXPmanagement(float EXP);
+	void EXPmanagement(float EXP, ApixelPlayerState* PlayerState);
 	
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 

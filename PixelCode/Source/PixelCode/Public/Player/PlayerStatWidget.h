@@ -79,7 +79,8 @@ public:
 
 	APixelCodeCharacter* Player;
 
-	ApixelPlayerState* PlayerState;
+	TWeakObjectPtr<class ApixelPlayerState> PlayerState;
+
 
 	AMyGameModeBase* GM;
 
@@ -88,6 +89,8 @@ public:
 
 	virtual void NativeConstruct() override;
 
-	void UpdateStat();
+	void UpdateStat(UStateComponent* PlayerStateComp);
+
+	void UpdateLevel(int32 Level);
 
 };

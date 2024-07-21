@@ -17,6 +17,7 @@ class UMaterialInstanceDynamic;
 class UCanvasPanel;
 class UButton;
 class AMyGameModeBase;
+class UTextBlock;
 /**
  * 
  */
@@ -42,16 +43,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Stat", meta = (BindWidget))
 	UProgressBar* PB_Exp;
 
+	UPROPERTY(VisibleAnywhere, Category = "Stat", meta = (BindWidget))
+	UTextBlock* TB_LEVEL;
+
+	FString LEVEL;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Stat")
 	UStateComponent* statComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "GM")
 	AMyGameModeBase* GM;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Exp")
-	ApixelPlayerState* PlayerState;
-
-	TWeakObjectPtr<class ApixelPlayerState> CurrentPlayerState;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Player")
 	APixelCodeCharacter* Player;
@@ -98,11 +99,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Material")
 	UMaterialInstanceDynamic* ZDynamicMaterial;
 
-	void firstUpdate();
+	void firstUpdate(UStateComponent* PlayerStateComp);
 	
+	TWeakObjectPtr<class ApixelPlayerState> PlayerState;
 
-	void currentStatUpdate();
-	void currentExpUpdate();
+	void currentStatUpdate(UStateComponent* PlayerStateComp);
+	void currentExpUpdate(float currentEXP, float totalEXP);
+	void currentLevelUpdate(int32 Level);
 	
 	void QSetPercent();
 	void ESetPercent();

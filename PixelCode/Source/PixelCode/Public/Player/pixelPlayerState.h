@@ -11,7 +11,7 @@ class UStateComponent;
 class AMyGameModeBase;
 class UDataTable;
 class UNormallyWidget;
-
+class UPlayerStatWidget;
 /**
  * 
  */
@@ -37,27 +37,82 @@ public:
 	
 	ApixelPlayerState();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+
+    void SetaddUpEXP(float AcquireEXP); // float 타입으로 변경
+    void LevelUP();
+    void InitPlayerData();
+
+	float GetCurrentExp() const;
+
+    int32 GetCharacterLevel() const;
+
+    UPROPERTY(ReplicatedUsing = OnRep_totalEXP)
+    int32 totalEXP;
+
+    UPROPERTY(ReplicatedUsing = OnRep_currentEXP)
+    float currentEXP;
+
+    UPROPERTY(Replicated)
+    int32 Level;
+
+    void maxEXP();
+
+    UFUNCTION()
+    void OnRep_totalEXP(int32 OldEXP);
+
+    UFUNCTION()
+    void OnRep_currentEXP(float OldEXP);
+
+
+
+	UNormallyWidget* PlayerMainUI;
+
+	UPlayerStatWidget* PlayerStatUI;
+
+	UStateComponent* stateComp;
+
+
+
+
+
+
+
+	// 잠시주석
+	//virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	/* UPROPERTY(ReplicatedUsing = OnRep_addUpEXP)
 	float totalEXP = 0;
+
+	 UPROPERTY(ReplicatedUsing = OnRep_addUpEXP)
 	float currentEXP = 0;
 
-	UPROPERTY(Transient) // 네트워크 통해 전송 x, 게임저장파일에 저장 x
+	 UPROPERTY(ReplicatedUsing = OnRep_addUpEXP)
 	int32 Level;
+
+	UFUNCTION()
+	void OnRep_addUpEXP(float AcquireEXP);
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerState")
+	void SetaddUpEXP(float AcquireEXP);
 
 
 	int32 GetCharacterLevel() const;
 
+
+
 	void InitPlayerData();
 
-	
 
-	void addUpEXP(float AcquireEXP);
+
+
 	void maxEXP();
 	void LevelUP();
-	
+
 	UStateComponent* stateComp;
 
-	UNormallyWidget* PlayerMainUI;
 
-	AMyGameModeBase* GM;
+	AMyGameModeBase* GM;*/
 	
 };
