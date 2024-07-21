@@ -92,6 +92,36 @@ public:
 
 	float startTime;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* UpSwordSound1;
+
+	bool onceSound = false;
+
+	bool onceSound2 = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* UpSwordSound2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* UpSwordSound3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* swingSwordSound1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* swingSwordSound2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* swingSwordSound3;
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void ApplyDamageToTarget(AActor* OtherActor, float DamageAmount);
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class APlayerController* Pc;
+
+	
+
 	UFUNCTION()
 	void OnBeginOverlapSwordFloor(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

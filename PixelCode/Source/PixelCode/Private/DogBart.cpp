@@ -121,7 +121,7 @@ void ADogBart::Tick(float DeltaTime)
 		
 		ServerRPC_Die();
 		
-		
+		UGameplayStatics::PlaySoundAtLocation(this, dieSound, GetActorLocation());
 		
 
 		
@@ -159,7 +159,14 @@ void ADogBart::ApplyDamageToTarget(AActor* OtherActor, float DamageAmount)
 	{
 		Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		UGameplayStatics::ApplyDamage(OtherActor, DamageAmount, Pc, Player, UDamageType::StaticClass());
+
+
 	}
+}
+
+void ADogBart::Redamage()
+{
+	reDamage = false;
 }
 
 void ADogBart::DestroySelf()
@@ -171,6 +178,18 @@ void ADogBart::DestroySelf()
 void ADogBart::DogBartTakeDamage(float Damage)
 {
 	currentHp = currentHp - Damage;
+
+	int32 valueWhining = FMath::RandRange(1, 2);
+	{
+		if (valueWhining == 1)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, whiningSound1, GetActorLocation());
+		}
+		else
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, whiningSound2, GetActorLocation());
+		}
+	}
 }
 
 void ADogBart::DamageCollisionActive()
@@ -186,15 +205,18 @@ void ADogBart::DamageCollisionDeactive()
 
 void ADogBart::OnBeginOverlapDamageCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->GetName().Contains("Player"))
+	if (OtherActor->GetName().Contains("Player")&&!reDamage)
 	{
 
 		Player = Cast<APlayerOrganism>(OtherActor);
 		if (Player)
 		{
 				Player->GetHit(SweepResult.ImpactPoint, true);
+				UGameplayStatics::PlaySoundAtLocation(this, biteSound, GetActorLocation());
 		}
 		ApplyDamageToTarget(OtherActor, 5);
+		reDamage = true;
+		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeReDamage, this, &ADogBart::Redamage, 0.8f, false);
 	}
 }
 
@@ -221,6 +243,30 @@ void ADogBart::ServerRPC_JumpAttack_Implementation()
 void ADogBart::MulticastRPC_JumpAttack_Implementation()
 {
 	PlayAnimMontage(jumpAttack);
+
+	int32 value = FMath::RandRange(1, 5);
+	{
+		if (value == 1)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, barkSound1, GetActorLocation());
+		}
+		else if(value == 2)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, barkSound2, GetActorLocation());
+		}
+		else if (value == 3)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, barkSound3, GetActorLocation());
+		}
+		else if (value == 4)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, barkSound4, GetActorLocation());
+		}
+		else
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, barkSound5, GetActorLocation());
+		}
+	}
 }
 
 void ADogBart::ServerRPC_MeleeAttack_Implementation()
@@ -243,6 +289,30 @@ void ADogBart::MulticastRPC_MeleeAttack_Implementation()
 			PlayAnimMontage(meleeAttack2);
 		}
 	}
+
+	int32 valueBark = FMath::RandRange(1, 5);
+	{
+		if (valueBark == 1)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, barkSound1, GetActorLocation());
+		}
+		else if (valueBark == 2)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, barkSound2, GetActorLocation());
+		}
+		else if (valueBark == 3)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, barkSound3, GetActorLocation());
+		}
+		else if (valueBark == 4)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, barkSound4, GetActorLocation());
+		}
+		else
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, barkSound5, GetActorLocation());
+		}
+	}
 	
 }
 
@@ -254,4 +324,47 @@ void ADogBart::ServerRPC_Die_Implementation()
 void ADogBart::MulticastRPC_Die_Implementation()
 {
 	PlayAnimMontage(die);
+}
+
+void ADogBart::ServerRPC_GrowlSound_Implementation()
+{
+	if (!growlSoundPlayOnce)
+	{
+		MulticastRPC_GrowlSound();
+		growlSoundPlayOnce = true;
+		GetWorldTimerManager().SetTimer(timerhandle_RestoreGrowlSound, this, &ADogBart::ReSoundPlayGrowlSound, 3.0f, false);
+	}
+	
+}
+
+void ADogBart::MulticastRPC_GrowlSound_Implementation()
+{
+	int32 value = FMath::RandRange(1, 5);
+	{
+		if (value == 1)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, dogGrowl1, GetActorLocation());
+		}
+		else if (value == 2)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, dogGrowl2, GetActorLocation());
+		}
+		else if (value == 3)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, dogGrowl3, GetActorLocation());
+		}
+		else if (value == 4)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, dogGrowl4, GetActorLocation());
+		}
+		else
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, dogGrowl5, GetActorLocation());
+		}
+	}
+}
+
+void ADogBart::ReSoundPlayGrowlSound()
+{
+	growlSoundPlayOnce = false;
 }

@@ -99,6 +99,27 @@ void ADemonSword::Tick(float DeltaTime)
 
 		// 새로운 위치로 이동합니다.
 		SetActorLocation(upNewLocation2);
+
+		if (!onceSound)
+		{
+			onceSound = true;
+			int32 value = FMath::RandRange(1, 3);
+			{
+				if (value == 1)
+				{
+					UGameplayStatics::PlaySoundAtLocation(this, UpSwordSound1, GetActorLocation());
+				}
+				else if (value == 2)
+				{
+					UGameplayStatics::PlaySoundAtLocation(this, UpSwordSound2, GetActorLocation());
+				}
+				else
+				{
+					UGameplayStatics::PlaySoundAtLocation(this, UpSwordSound3, GetActorLocation());
+				}
+			}
+		}
+		
 		
 	
 	}
@@ -148,11 +169,19 @@ void ADemonSword::Tick(float DeltaTime)
 
 		// 새 위치로 이동
 		SetActorLocation(stingLoc);
+
+		
+
+
+
 	}
 
 	if (swordCurrentHP <= 0)
 	{
 		Destroy();
+		onceSound = false;
+		onceSound2 = false;
+
 	}
 	
 }
@@ -166,7 +195,7 @@ void ADemonSword::SwordTakeDamage(float Damage)
 	{
 		if (swordComp)
 		{
-			int32 MaterialIndex = 0; // 적절한 슬롯 인덱스 지정
+			int32 MaterialIndex = 0; 
 			swordComp->SetMaterial(MaterialIndex, damageMaterial);
 
 			GetWorldTimerManager().SetTimer(timerhandle_SetOriginMatetrial, this, &ADemonSword::SetOriginMaterial, 0.28f, false);
@@ -180,14 +209,26 @@ void ADemonSword::SetOriginMaterial()
 	{
 		if (swordComp)
 		{
-			int32 MaterialIndex = 0; // 적절한 슬롯 인덱스 지정
+			int32 MaterialIndex = 0; 
 			swordComp->SetMaterial(MaterialIndex, originalMaterial);
 		}
 	}
 }
 
+void ADemonSword::ApplyDamageToTarget(AActor* OtherActor, float DamageAmount)
+{
+	if (IsValid(OtherActor))
+	{
+		Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		UGameplayStatics::ApplyDamage(OtherActor, DamageAmount, Pc, player, UDamageType::StaticClass());
+
+
+	}
+}
+
 void ADemonSword::OnBeginOverlapSwordFloor(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+
 	if (currentTime > 15.0f)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!2"));
@@ -197,6 +238,8 @@ void ADemonSword::OnBeginOverlapSwordFloor(UPrimitiveComponent* OverlappedCompon
 		if (currentTime > 16.0f)
 		{
 			Destroy();
+			onceSound = false;
+			ApplyDamageToTarget(OtherActor, 7);
 			UE_LOG(LogTemp, Warning, TEXT("OVerlap Floor"));
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), grounSwordImpact2, GetActorLocation(), GetActorRotation(), FVector(1.0f));
 			//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), groundSwordImpact, GetActorLocation(), GetActorRotation(), FVector(3.0f));
@@ -215,6 +258,26 @@ void ADemonSword::OnBeginOverlapSwordFloor(UPrimitiveComponent* OverlappedCompon
 						pc->ClientStartCameraShake(cameraShakeOBJ);
 
 
+					}
+				}
+			}
+
+			if (!onceSound2)
+			{
+				onceSound2 = true;
+				int32 value2 = FMath::RandRange(1, 3);
+				{
+					if (value2 == 1)
+					{
+						UGameplayStatics::PlaySoundAtLocation(this, swingSwordSound1, GetActorLocation());
+					}
+					else if (value2 == 2)
+					{
+						UGameplayStatics::PlaySoundAtLocation(this, swingSwordSound2, GetActorLocation());
+					}
+					else
+					{
+						UGameplayStatics::PlaySoundAtLocation(this, swingSwordSound3, GetActorLocation());
 					}
 				}
 			}

@@ -36,6 +36,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySetting")
 	class UBehaviorTree* tree;
 
+	bool bossDied = false;
+
 	UBehaviorTree* GetBehaviorTree() const;
 
 	class UAIPerceptionStimuliSourceComponent* StimulusSource;
@@ -62,13 +64,19 @@ public:
 	UFUNCTION()
 	void SwordCollisionDeactive();
 
+	bool destroyOnce = false;
+
+	FTimerHandle timerhandle_Destroy;
+
+	void DestroySelf();
+
 	//UPROPERTY(EditAnywhere, Category = "MySettings")
 	//class ABossSword* sword;
 
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	TSubclassOf<class ABossSword> bossSwordclass;
 
-	float bossMaxHP = 500.0f;
+	float bossMaxHP = 600.0f;
 
 	float bossCurrentHP;
 
@@ -83,8 +91,10 @@ public:
 
 	bool bStiffness = false;
 
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector counterHitKey;
 
-
+	bool TaskCheckCounterHit = false;
 	
 
 	//////Boss Damage System
@@ -664,6 +674,17 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_CounterPrecursorSpawnParticle();
 
-	//Boss TakeDamage
+	//Boss Die
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* bossDie;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_BossDie();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_BossDie();
+
+	bool bossOnceDie = false;
+
 
 };

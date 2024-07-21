@@ -57,14 +57,14 @@ void ABossFloor::Tick(float DeltaTime)
     UE_LOG(LogTemp, Warning, TEXT("BossFloorTick"));
     currentTime += DeltaTime;
 
-    if (currentTime >= 15.0 && !bOnceActive)
+    if (currentTime >= 30.0 && !bOnceActive)
     {
         SpawnSword();
         currentTime = 0.0f;
         bOnceActive = true;
         
     }
-    if (currentTime >= 15.0 && bOnceActive)
+    if (currentTime >= 30.0 && bOnceActive)
     {
         bOnceActive = false;
     }
@@ -78,7 +78,7 @@ void ABossFloor::SpawnSword()
     {
         
         FVector origin = GetActorLocation();  
-        float radius = 4000.0f;  
+        float radius = 3000.0f;  
         FVector ranLoc = origin + FVector(FMath::RandRange(-radius, radius), FMath::RandRange(-radius, radius), 0.0f);
 
      

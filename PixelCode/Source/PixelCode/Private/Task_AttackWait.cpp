@@ -42,11 +42,13 @@ EBTNodeResult::Type UTask_AttackWait::ExecuteTask(UBehaviorTreeComponent& OwnerC
             if (bossPawn)
             {
                 // boss의 이동 속도 설정
-                ABossApernia* bossCharacter = Cast<ABossApernia>(bossPawn);
+                bossCharacter = Cast<ABossApernia>(bossPawn);
                 if (bossCharacter)
                 {
-                    bossCharacter->bossSwordComp->SetRelativeLocation(FVector(17.137708f, 57.508425f, 23.246429f));
-                    bossCharacter->bossSwordComp->SetRelativeRotation(FRotator(28.852794f, 169.726741f, 183.362852f));
+                    
+                    
+                    bossCharacter->bossSwordComp->SetRelativeLocation(FVector(29.122834f, 84.073564f, 4.113887f));
+                    bossCharacter->bossSwordComp->SetRelativeRotation(FRotator(4.826905f, 5.306981f, 8.324931f));
                  
                     UCharacterMovementComponent* movementComponent = bossCharacter->GetCharacterMovement();
                     if (movementComponent)
@@ -86,6 +88,11 @@ EBTNodeResult::Type UTask_AttackWait::ExecuteTask(UBehaviorTreeComponent& OwnerC
 void UTask_AttackWait::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
     currentTime += DeltaSeconds;
+    if (bossCharacter->bossDied == true)
+    {
+        FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+    }
+
 
     // 4초 동안 플레이어를 보며 대기
     if (currentTime < 3.0f)
@@ -113,7 +120,7 @@ void UTask_AttackWait::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
             if (bossPawn)
             {
                 // boss의 이동 속도 설정
-                ACharacter* bossCharacter = Cast<ACharacter>(bossPawn);
+                bossCharacter = Cast<ABossApernia>(bossPawn);
                 if (bossCharacter)
                 {
                     UCharacterMovementComponent* movementComponent = bossCharacter->GetCharacterMovement();

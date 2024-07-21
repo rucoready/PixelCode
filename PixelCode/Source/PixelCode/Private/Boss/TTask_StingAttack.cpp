@@ -38,6 +38,9 @@ EBTNodeResult::Type UTTask_StingAttack::ExecuteTask(UBehaviorTreeComponent& Owne
     {
         // BossAIController에 StopMovement() 호출하여 움직임 멈춤
         BossAIController->StopMovement();
+
+        
+            
     }
 
     TArray<AActor*> foundCharacters;
@@ -47,6 +50,8 @@ EBTNodeResult::Type UTTask_StingAttack::ExecuteTask(UBehaviorTreeComponent& Owne
     player = Cast<APixelCodeCharacter>(foundCharacters[randomIndex]);
 
     return EBTNodeResult::InProgress;
+
+    
 }
 
 void UTTask_StingAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -92,7 +97,7 @@ void UTTask_StingAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
                         boss->ServerRPC_StingAttack();
                         animOnce = true;
 
-                        boss->MulticastRPC_StingAttackSwordPositionSet();
+                        boss->ServerRPC_StingAttackSwordPositionReSet();
 
                         
                     }

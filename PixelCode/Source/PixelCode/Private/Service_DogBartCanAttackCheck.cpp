@@ -52,6 +52,11 @@ void UService_DogBartCanAttackCheck::TickNode(UBehaviorTreeComponent& OwnerComp,
         BlackboardComp->SetValueAsBool(meleeAttackOn.SelectedKeyName, meleeAttack);
         BlackboardComp->SetValueAsBool(moveOn.SelectedKeyName, moveNow);
         dogBart->GetCharacterMovement()->MaxWalkSpeed = 800.0f;
+
+        
+
+
+
         
     }
     else if(distance > 321 && distance < 500)
@@ -73,7 +78,14 @@ void UService_DogBartCanAttackCheck::TickNode(UBehaviorTreeComponent& OwnerComp,
         BlackboardComp->SetValueAsBool(meleeAttackOn.SelectedKeyName, meleeAttack);
         BlackboardComp->SetValueAsBool(moveOn.SelectedKeyName, moveNow);
         dogBart->GetCharacterMovement()->MaxWalkSpeed = 800.0f;
-    }
+        
+        dogBart->ServerRPC_GrowlSound();
+           
 
+            
+        
+        
+    }
+    
     
 }

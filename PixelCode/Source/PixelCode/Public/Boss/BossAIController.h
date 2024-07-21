@@ -23,10 +23,8 @@ public:
 	UPROPERTY(EditAnywhere, Category="MySettings")
 	class UAISenseConfig_Sight* sightConfig;
 
-	//void SetupPerceptionSystem();
+	void UnPocessTree();
 
-
-	//#include "Perception/AIPerceptionTypes.h"�� �߰��� �ؾ���
-	//UFUNCTION()
-	//void OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus);
+	class UBehaviorTreeComponent* BehaviorTreeComponent;
+	class UBlackboardComponent* Blackboard;
 };

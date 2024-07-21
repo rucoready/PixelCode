@@ -46,4 +46,6 @@ public:
     FVector dogBartLoc;
 
     float distance;
+
+    
 };

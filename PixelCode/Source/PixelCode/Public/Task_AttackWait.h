@@ -22,6 +22,8 @@ public:
 
 	FVector playerLocation;
 
+	class ABossApernia* bossCharacter;
+
 	float currentTime;
 
 	bool taskOnceMove = false;

@@ -31,26 +31,7 @@ EBTNodeResult::Type UTask_SpecialAttack01::ExecuteTask(UBehaviorTreeComponent& O
     int32 randomIndex = FMath::RandRange(0, foundCharacters.Num() - 1);
     player = Cast<APixelCodeCharacter>(foundCharacters[randomIndex]);
 
-    if (player)
-    {
-        //플레이어의 위치를 얻어낸다
-        playerLocation = player->GetActorLocation();
-        //보스컨트롤러를 캐스팅
-        ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
-        if (bossController)
-        {
-            APawn* bossPawn = bossController->GetPawn();
-            if (bossPawn)
-            {
-
-                // 방향 설정
-                FVector direction = playerLocation - bossPawn->GetActorLocation();
-                direction.Z = 0; // 보스가 수평으로만 회전하도록 Z축 회전 제거
-                FRotator newRotation = direction.Rotation();
-                bossPawn->SetActorRotation(newRotation);
-            }
-        }
-    }
+    
 
     return EBTNodeResult::InProgress;
 }
@@ -61,6 +42,26 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
     if (currentTime == 0.0f)
     {
         animOnce = false;
+        if (player)
+        {
+            //플레이어의 위치를 얻어낸다
+            playerLocation = player->GetActorLocation();
+            //보스컨트롤러를 캐스팅
+            ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner());
+            if (bossController)
+            {
+                APawn* bossPawn = bossController->GetPawn();
+                if (bossPawn)
+                {
+                    bossController->StopMovement();
+                    // 방향 설정
+                    FVector direction = playerLocation - bossPawn->GetActorLocation();
+                    direction.Z = 0; // 보스가 수평으로만 회전하도록 Z축 회전 제거
+                    FRotator newRotation = direction.Rotation();
+                    bossPawn->SetActorRotation(newRotation);
+                }
+            }
+        }
     }
     currentTime += DeltaSeconds;
     // 애니메이션 실행

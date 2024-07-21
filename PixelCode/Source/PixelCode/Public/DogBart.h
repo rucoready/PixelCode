@@ -43,6 +43,14 @@ public:
 
 	FTimerHandle timerhandle_Destroy;
 
+	FTimerHandle timerhandle_RestoreGrowlSound;
+
+	FTimerHandle timerhandle_CoolTimeReDamage;
+
+	void Redamage();
+
+	bool reDamage = false;
+
 	bool dogBartDie = false;
 
 	float currentHp;
@@ -95,6 +103,12 @@ public:
 
 	bool onceDie;
 
+	bool growlSoundPlayOnce = false;
+
+	void ReSoundPlayGrowlSound();
+
+	
+
 	UFUNCTION(Server, Reliable)
  	void ServerRPC_MeleeAttack();
  
@@ -118,4 +132,54 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_Die();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_GrowlSound();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_GrowlSound();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* dogGrowl1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* dogGrowl2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* dogGrowl3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* dogGrowl4;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* dogGrowl5;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* barkSound1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* barkSound2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* barkSound3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* barkSound4;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* barkSound5;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* biteSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* whiningSound1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* whiningSound2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* dieSound;
+
+
 };

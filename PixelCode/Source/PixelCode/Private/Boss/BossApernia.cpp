@@ -20,6 +20,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "GameFramework/Character.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Player/PlayerOrganism.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "BehaviorTree/BehaviorTree.h"
@@ -377,7 +378,35 @@ void ABossApernia::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    UE_LOG(LogTemp, Warning, TEXT("Boss Current HP : %f"), bossCurrentHP);
+    
+
+    if (bossCurrentHP <= 0.0f&&!bossOnceDie)
+    {
+        bossOnceDie = true;
+        ServerRPC_BossDie();
+        if (ABossAIController* bossController = Cast<ABossAIController>(GetController()))
+        {
+            if (UBehaviorTreeComponent* BTComponent = bossController->FindComponentByClass<UBehaviorTreeComponent>())
+            {
+                savedBTComponent = BTComponent;
+                savedLocation = GetActorLocation();
+                
+                bossDied = true;
+                
+                bossController->ClearFocus(EAIFocusPriority::Default);
+                
+                BTComponent->DestroyComponent();
+                bossController->StopMovement();
+                FRotator currentRotation = GetActorRotation();
+                SetActorRotation(currentRotation);
+                //BTComponent->StopTree(EBTStopMode::Safe);
+                GetWorldTimerManager().SetTimer(timerhandle_Destroy, this, &ABossApernia::DestroySelf, 4.2f, false);
+            }
+        }
+        
+    }
+    
+
 }
 
 // Called to bind functionality to input
@@ -428,6 +457,11 @@ void ABossApernia::SwordCollisionDeactive()
         
     }
 
+}
+
+void ABossApernia::DestroySelf()
+{
+    Destroy();
 }
 
 void ABossApernia::BossFallDownReset()
@@ -491,16 +525,7 @@ void ABossApernia::BossTakeDamage(float Damage)
     Player = Cast<APlayerOrganism>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
     
     bossMainWidget->UpdateHPBar(bossCurrentHP);
-    //if (Player->bBossGroggy == true)
-    //{
-    //    ServerRPC_BossFallDown(Damage);
-    //}
-    
-    //if (bossMainWidget != nullptr)
-    //{
-    //    bossMainWidget->UpdateHPBar(bossCurrentHP);
-    //}
-    
+
     // 애니메이션 인스턴스를 가져옵니다.
     UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
     if (animInstance)
@@ -516,9 +541,13 @@ void ABossApernia::BossTakeDamage(float Damage)
                 bossHitCounterAttack = true;
                 bossInstance->canCounterAttack = false;
                 PlayAnimMontage(counterGroggy);
-
+                TaskCheckCounterHit = true;
                 TArray<AActor*> foundCharacters;
                 UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+
+                
+
 
                 for (AActor* actor : foundCharacters)
                 {
@@ -1385,8 +1414,9 @@ void ABossApernia::ServerRPC_StingAttackSwordPositionReSet_Implementation()
 
 void ABossApernia::MulticastRPC_StingAttackSwordPositionReSet_Implementation()
 {
-    bossSwordComp->SetRelativeLocation(FVector(29.425722f, 55.060376f, 8.3646449f));
-    bossSwordComp->SetRelativeRotation(FRotator(4.826905f, 1.306981f, 8.324931f));
+    
+    bossSwordComp->SetRelativeLocation(FVector(-21.312938, 82.751212, 0.209361));
+    bossSwordComp->SetRelativeRotation(FRotator(2.126447, 153.892130, 190.052192));
 }
 
 void ABossApernia::ServerRPC_JumpAttack03SwordPositionSet_Implementation()
@@ -1509,4 +1539,14 @@ void ABossApernia::MulticastRPC_CounterPrecursorSpawnParticle_Implementation()
     UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), counterImpactParticle, GetActorLocation(), GetActorRotation(), FVector(2.0f));
     UGameplayStatics::PlaySoundAtLocation(GetWorld(), counterSound, GetActorLocation());
     //UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), counterHitNA2, GetActorLocation(), GetActorRotation(), FVector(1.0f));
+}
+
+void ABossApernia::ServerRPC_BossDie_Implementation()
+{
+    MulticastRPC_BossDie();
+}
+
+void ABossApernia::MulticastRPC_BossDie_Implementation()
+{
+    PlayAnimMontage(bossDie);
 }

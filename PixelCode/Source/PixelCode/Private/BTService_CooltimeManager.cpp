@@ -186,7 +186,32 @@ void UBTService_CooltimeManager::TickNode(UBehaviorTreeComponent& OwnerComp, uin
         }
 
     }
-    
-    
+
+    if (boss)
+    {
+        if (boss->bossHitCounterAttack == true)
+        {
+            BlackboardComp->SetValueAsBool(jumpAttack2CoolTime.SelectedKeyName, false);
+        }
+    }
+
+    if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetOwner()))
+    {
+
+        APawn* ControlledPawn = bossController->GetPawn();
+        if (ControlledPawn)
+        {
+            
+            boss = Cast<ABossApernia>(ControlledPawn);
+            if (boss->TaskCheckCounterHit == true)
+            {
+                coolTimeCounterHit = false;
+                UE_LOG(LogTemp, Warning, TEXT("III999"));
+                BlackboardComp->SetValueAsBool(jumpAttack2CoolTime.SelectedKeyName, coolTimeCounterHit);
+                BlackboardComp->SetValueAsBool(normalAttack02CoolTime.SelectedKeyName, coolTimeCounterHit);
+            }
+            
+        }
+    }
     
 }

@@ -34,7 +34,6 @@
 #include "GruxAnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "Boss/BossAnimInstance.h"
-#include "Player/pixelPlayerState.h"
 
 // Sets default values
 AGrux::AGrux()
@@ -151,7 +150,7 @@ void AGrux::Tick(float DeltaTime)
          //}
 
          
-         ServerRPC_GruxDie();
+         //ServerRPC_GruxDie();
          
 
          
@@ -319,17 +318,6 @@ void AGrux::MulticastRPC_GruxCameraShake_Implementation()
 void AGrux::ServerRPC_GruxDie_Implementation()
 {
     MulticastRPC_GruxDie();
-
-	/*Player = Cast<APixelCodeCharacter>(Player->GetOwner());
-	if (Player != nullptr)
-	{
-		PlayerState = Cast<ApixelPlayerState>(Player->GetPlayerState());
-		if (PlayerState != nullptr)
-		{
-			PlayerState->addUpEXP(30.0f);
-			UE_LOG(LogTemp, Warning, TEXT("GruxDie"));
-		}
-	}*/
 }
 
 void AGrux::MulticastRPC_GruxDie_Implementation()

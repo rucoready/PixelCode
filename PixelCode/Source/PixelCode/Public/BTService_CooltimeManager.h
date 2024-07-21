@@ -50,6 +50,9 @@ public:
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector dodgeRightCoolTime;
 
+    class ABossApernia* boss;
+
+    
     
     /// //////////////////////////////////////////////////////
     
@@ -74,6 +77,8 @@ public:
     bool doubleSwingAttack;
     bool dodgeLeft;
     bool dodgeRight;
+    
+    bool coolTimeCounterHit;
 
     bool firstSkillCoolTimeSetting = false;
         
