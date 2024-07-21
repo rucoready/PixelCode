@@ -10,7 +10,7 @@
 class UStateComponent;
 class AMyGameModeBase;
 class UDataTable;
-
+class UNormallyWidget;
 
 /**
  * 
@@ -35,15 +35,29 @@ class PIXELCODE_API ApixelPlayerState : public APlayerState
 
 public:
 	
+	ApixelPlayerState();
+
 	float totalEXP = 0;
 	float currentEXP = 0;
-	int32 Level = 1;
+
+	UPROPERTY(Transient) // 네트워크 통해 전송 x, 게임저장파일에 저장 x
+	int32 Level;
+
+
+	int32 GetCharacterLevel() const;
+
+	void InitPlayerData();
+
+	
 
 	void addUpEXP(float AcquireEXP);
 	void maxEXP();
 	void LevelUP();
 	
 	UStateComponent* stateComp;
+
+	UNormallyWidget* PlayerMainUI;
+
 	AMyGameModeBase* GM;
 	
 };

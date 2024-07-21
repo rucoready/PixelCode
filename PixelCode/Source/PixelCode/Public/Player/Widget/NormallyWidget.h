@@ -16,6 +16,7 @@ class UMaterialInstance;
 class UMaterialInstanceDynamic;
 class UCanvasPanel;
 class UButton;
+class AMyGameModeBase;
 /**
  * 
  */
@@ -44,8 +45,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Stat")
 	UStateComponent* statComp;
 
+	UPROPERTY(EditDefaultsOnly, Category = "GM")
+	AMyGameModeBase* GM;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Exp")
-	ApixelPlayerState* playerState;
+	ApixelPlayerState* PlayerState;
+
+	TWeakObjectPtr<class ApixelPlayerState> CurrentPlayerState;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Player")
 	APixelCodeCharacter* Player;

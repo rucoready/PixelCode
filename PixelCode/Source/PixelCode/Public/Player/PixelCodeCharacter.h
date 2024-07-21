@@ -32,7 +32,8 @@ struct FRecipe;
 class ASpawnSwordQSkill;
 class ASpawnSwordRSkill;
 class UPCodeGameInstance;
-
+class ApixelPlayerState;
+class AMyGameModeBase;
 
 UENUM()
 enum class MyEnum : int8
@@ -541,6 +542,10 @@ public:
 
 	FVector CameraLoc;
 
+	AMyGameModeBase* GM;
+
+	ApixelPlayerState* PlayerState;
+
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_ToggleCombat();
 
@@ -548,7 +553,7 @@ public:
 	void NetMulticastRPC_ToggleCombat();
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
-
+    
 	void InitMainUI();
 
 	UFUNCTION(Server, Reliable)

@@ -14,6 +14,7 @@
 #include "PCodeGameInstance.h"
 #include "Components/CanvasPanel.h"
 #include "Components/Button.h"
+#include "MyGameModeBase.h"
 
 
 
@@ -24,6 +25,7 @@ void UNormallyWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	PlayerController = nullptr;
+	PlayerState = nullptr;
 
 	// GetOwningPlayer() 함수를 사용하여 Widget이 속한 Player를 가져옵니다.
 	auto* OwningPlayer = GetOwningPlayer();
@@ -31,6 +33,10 @@ void UNormallyWidget::NativeConstruct()
 	{
 		// OwningPlayer에서 MyCharacter로 다운캐스팅합니다.
 		Player = Cast<APixelCodeCharacter>(OwningPlayer->GetPawn());
+		if (Player!=nullptr)
+		{
+			PlayerState = Cast<ApixelPlayerState>(Player->GetPlayerState());
+		}
 	}
 
 	BaseMaterial = LoadObject<UMaterial>(nullptr, TEXT("/Script/Engine.Material'/Game/Player/PlayerWidget/M_RoundProgressbar.M_RoundProgressbar'_C"));
@@ -60,6 +66,8 @@ void UNormallyWidget::NativeConstruct()
 	
 	firstUpdate();
 
+	currentExpUpdate();
+
 }
 
 void UNormallyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -74,14 +82,13 @@ void UNormallyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 }
 
 
-
 void UNormallyWidget::firstUpdate()
 {
 	
 	PB_HP->SetPercent(Player->stateComp->MaxHP);
 	PB_MP->SetPercent(Player->stateComp->MaxMP);
 	UE_LOG(LogTemp, Warning, TEXT("PlayerStateNonull"));
-	//PB_Exp->SetPercent(playerState->totalEXP);
+	PB_Exp->SetPercent(PlayerState->currentEXP);
 	
 	/*if (Player->stateComp == nullptr)
 	{
@@ -99,7 +106,7 @@ void UNormallyWidget::currentStatUpdate()
 
 void UNormallyWidget::currentExpUpdate()
 {
-	PB_Exp->SetPercent(playerState->currentEXP/ playerState->totalEXP);
+	PB_Exp->SetPercent(PlayerState->currentEXP/ PlayerState->totalEXP);
 }
 
 void UNormallyWidget::QSetPercent()

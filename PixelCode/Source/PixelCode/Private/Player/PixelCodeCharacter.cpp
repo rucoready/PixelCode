@@ -48,6 +48,8 @@
 #include "Player/SpawnSkillActor/SpawnSwordRSkill.h"
 #include "PCodeGameInstance.h"
 #include "PCodePlayerController.h"
+#include "Player/pixelPlayerState.h"
+#include "MyGameModeBase.h"
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -124,9 +126,12 @@ void APixelCodeCharacter::BeginPlay()
 	CameraBoom->bEnableCameraLag = true;
 	CameraBoom->CameraLagSpeed = 10.0f;
 
+	PlayerState = Cast<ApixelPlayerState>(GetPlayerState());
+
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
+		//PlayerState = Cast<ApixelPlayerState>(PlayerController->PlayerState);
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
@@ -1020,6 +1025,7 @@ float APixelCodeCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 
 	return 0.0f;
 }
+
 
 void APixelCodeCharacter::InitMainUI()
 {

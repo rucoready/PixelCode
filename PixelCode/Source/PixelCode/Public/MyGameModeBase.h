@@ -17,7 +17,7 @@ class PIXELCODE_API AMyGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 public:
-
+	AMyGameModeBase();
 
 	ApixelPlayerState* PlayerState;
 
@@ -26,6 +26,7 @@ public:
 
 	void EXPmanagement(float EXP);
 	
+	virtual void PostLogin(APlayerController* NewPlayer) override;
 
 
 };

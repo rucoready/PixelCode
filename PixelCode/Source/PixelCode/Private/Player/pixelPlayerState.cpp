@@ -6,6 +6,12 @@
 #include "MyGameModeBase.h"
 
 
+ApixelPlayerState::ApixelPlayerState()
+{
+	Level = 1;
+
+}
+
 void ApixelPlayerState::addUpEXP(float AcquireEXP)
 {
 	currentEXP += AcquireEXP;
@@ -43,5 +49,20 @@ void ApixelPlayerState::LevelUP()
 	Level += 1;
 	
 }
+
+void ApixelPlayerState::InitPlayerData()
+{
+	//SetPlayerName(TEXT("Destiny")); 이름설정
+	Level = 5; // 나중레벨저장
+
+}
+
+int32 ApixelPlayerState::GetCharacterLevel() const
+{
+	
+	return Level;
+}
+
+
 
 
