@@ -517,6 +517,19 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_DestroyBuildingInstance(const FHitResult& HitResult);
 
+	
+	/// //////////////////
+	
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DestroyBuildingInstanceV2(const FHitResult& HitResult);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_DestroyBuildingInstanceV2(const FHitResult& HitResult);
+
+
+
+	////////
+
 	UFUNCTION(Client, Reliable)
 	void ClientRPC_DestroyBuildingInstance(const FHitResult& HitResult);
 	//------------------------------------------------------------------------------------------
@@ -526,13 +539,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category = KSH) 
 	void RemoveFoliage(const FHitResult& HitResult);
 
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_RemoveFoliage();  
+	UFUNCTION(Server, Reliable) 
+	void SeverRPC_RemoveFoliage(const FHitResult& HitResult);
 
-	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticastRPC_RemoveFoliage(const FHitResult& HitResult);
+	UFUNCTION(NetMulticast, Reliable) 
+	void MultiRPC_RemoveFoliage(const FHitResult& HitResult);
 
-	UPROPERTY(EditAnywhere, Category=KSH)
+
+
+
+// 	UFUNCTION(Server, Reliable)
+// 	void ServerRPC_RemoveFoliage();  
+// 
+// 	UFUNCTION(NetMulticast, Reliable)
+// 	void NetMulticastRPC_RemoveFoliage(const FHitResult& HitResult);
+// 
+// 	UPROPERTY(EditAnywhere, Category=KSH)
 	TSubclassOf<class APickup> pickupItem;
 
 

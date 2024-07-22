@@ -51,6 +51,7 @@
 #include "Player/pixelPlayerState.h"
 #include "MyGameModeBase.h"
 #include "GameFramework/PlayerState.h"
+#include <../../../../../../../Source/Runtime/Engine/Public/EngineUtils.h>
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -168,22 +169,34 @@ void APixelCodeCharacter::BeginPlay()
 	//PlayerInventory->HandleAddItem();
 
 
-	
+
 	// 서휘-----------------------------------------------------------------------------------------------------
-	if (!Builder)
+
+	for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
 	{
-		if (BuildingClass)
-		{
-			//Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass);
-		}
+		Builder = *var;
 	}
-	if (!Buildings)
+
+	for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
 	{
-		if (BuildingC)
-		{
-			//Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC);
-		}
+		Buildings = *vars;
 	}
+
+
+// 	if (!Builder)
+// 	{
+// 		if (BuildingClass)
+// 		{
+// 			Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass);
+// 		}
+// 	}
+// 	if (!Buildings)
+// 	{
+// 		if (BuildingC)
+// 		{
+// 			Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC);
+// 		}
+// 	}
 
 	FString sBuilder = Builder ? TEXT("Builder True") : TEXT("Builder False");
 	FString sBuildings = Buildings ? TEXT("Buildings True") : TEXT("Buildings False");
@@ -876,19 +889,27 @@ void APixelCodeCharacter::OnDestroyBuildingPressed()
 // 		ServerRPC_DestroyBuildingInstance(PerformLineTrace());
 // 		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy : @client"));
 // 	}
-	if (HasAuthority())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy @@ server"));
 
-		DestroyBuildingInstance(PerformLineTrace());
-		//NetMulticastRPC_DestroyBuildingInstance(PerformLineTrace());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy @@ client"));
 
-		ServerRPC_DestroyBuildingInstance(PerformLineTrace());
-	}
+
+
+// 	if (HasAuthority())
+// 	{
+// 		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy @@ server"));
+// 
+// 		DestroyBuildingInstance(PerformLineTrace());
+// 		//NetMulticastRPC_DestroyBuildingInstance(PerformLineTrace());
+// 	}
+// 	else
+// 	{
+// 		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy @@ client"));
+// 
+// 		ServerRPC_DestroyBuildingInstance(PerformLineTrace());
+// 	}
+
+	ServerRPC_DestroyBuildingInstanceV2(PerformLineTrace());
+	//ServerRPC_DestroyBuildingInstance(PerformLineTrace());
+
 }
 
 void APixelCodeCharacter::DestroyBuildingInstance(const FHitResult& HitResult)
@@ -899,26 +920,52 @@ void APixelCodeCharacter::DestroyBuildingInstance(const FHitResult& HitResult)
 
 		if (Instance)
 		{
-			Instance->RemoveInstance(HitResult.bBlockingHit);
+			//UE_LOG(LogTemp,  Warning, TEXT("000999"));
+			//Instance->RemoveInstance(HitResult.bBlockingHit);
+		}
+	}
+
+}
+
+void APixelCodeCharacter::ServerRPC_DestroyBuildingInstanceV2_Implementation(const FHitResult& HitResult)
+{
+		MulticastRPC_DestroyBuildingInstanceV2(HitResult);
+
+}
+
+void APixelCodeCharacter::MulticastRPC_DestroyBuildingInstanceV2_Implementation(const FHitResult& HitResult)
+{
+	if (HitResult.bBlockingHit)
+	{
+		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
+
+		if (Instance)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("------------------Destroy MultiRPC"));
+
+			Instance->RemoveInstance(HitResult.Item);
+			//Instance->DestroyComponent();
 		}
 	}
 }
 
 void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation(const FHitResult& HitResult)
 {
-	if (HitResult.bBlockingHit)
-	{
-		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
-		if (Instance)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("------------------Destroy ServerRPC"));
-			
-			Instance->RemoveInstance(HitResult.Item);
-			UE_LOG(LogTemp, Warning, TEXT("------------------Destroy MultiRPC @@ not ROLE_Authority"));
+	NetMulticastRPC_DestroyBuildingInstance(HitResult);
 
-			ClientRPC_DestroyBuildingInstance(PerformLineTrace());
-		}
-	}
+// 	if (HitResult.bBlockingHit)
+// 	{
+// 		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
+// 		if (Instance)
+// 		{
+// 			UE_LOG(LogTemp, Warning, TEXT("------------------Destroy ServerRPC"));
+// 			
+// 			Instance->RemoveInstance(HitResult.Item);
+// 			UE_LOG(LogTemp, Warning, TEXT("------------------Destroy MultiRPC @@ not ROLE_Authority"));
+// 
+// 			ClientRPC_DestroyBuildingInstance(PerformLineTrace());
+// 		}
+// 	}
 }
 
  void APixelCodeCharacter::NetMulticastRPC_DestroyBuildingInstance_Implementation(const FHitResult& HitResult)
@@ -955,7 +1002,9 @@ void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation(const
 
 void APixelCodeCharacter::OnRemoveFoliagePressed()
 {
-	ServerRPC_RemoveFoliage();
+	//ServerRPC_RemoveFoliage();
+
+	SeverRPC_RemoveFoliage(PerformLineTrace());
 }
 
 void APixelCodeCharacter::RemoveFoliage(const FHitResult& HitResult)
@@ -969,16 +1018,17 @@ void APixelCodeCharacter::RemoveFoliage(const FHitResult& HitResult)
 			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
-	NetMulticastRPC_RemoveFoliage(HitResult);
+	//NetMulticastRPC_RemoveFoliage(HitResult);
 }
 
-void APixelCodeCharacter::ServerRPC_RemoveFoliage_Implementation()
+void APixelCodeCharacter::SeverRPC_RemoveFoliage_Implementation(const FHitResult& HitResult)
 {
-	RemoveFoliage(PerformLineTrace());
+	MultiRPC_RemoveFoliage(HitResult);
 }
 
-void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHitResult& HitResult)
+void APixelCodeCharacter::MultiRPC_RemoveFoliage_Implementation(const FHitResult& HitResult)
 {
+
 	if (HitResult.bBlockingHit)
 	{
 		UFoliageInstancedStaticMeshComponent* FoliageInstance = Cast< UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
@@ -989,6 +1039,24 @@ void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHi
 		}
 	}
 }
+
+// void APixelCodeCharacter::ServerRPC_RemoveFoliage_Implementation()
+// {
+// 	RemoveFoliage(PerformLineTrace());
+// }
+// 
+// void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHitResult& HitResult)
+// {
+// 	if (HitResult.bBlockingHit)
+// 	{
+// 		UFoliageInstancedStaticMeshComponent* FoliageInstance = Cast< UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
+// 		if (FoliageInstance)
+// 		{
+// 			FoliageInstance->RemoveInstance(HitResult.Item);
+// 			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
+// 		}
+// 	}
+// }
 
 							
 
