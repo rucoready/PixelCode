@@ -176,14 +176,14 @@ void APixelCodeCharacter::BeginPlay()
 	{
 		if (BuildingClass)
 		{
-			Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass);
+			//Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass);
 		}
 	}
 	if (!Buildings)
 	{
 		if (BuildingC)
 		{
-			Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC);
+			//Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC);
 		}
 	}
 

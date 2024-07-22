@@ -19,7 +19,7 @@ enum class ECharacterTypes : uint8	// 아이템 종류, 갑옷, 무기 , 퀘스트아이템 등
 
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct  FItemTextDatas // 텍스쳐 데이터
 {
 	GENERATED_USTRUCT_BODY()
@@ -38,15 +38,15 @@ struct  FItemTextDatas // 텍스쳐 데이터
 
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FItemAssetDatas // 에셋 데이터, 물건을 집었을때 사운드같은거 넣기도 좋음
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* Icon;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USkeletalMesh* SkeletalMesh;
 
 };
@@ -56,18 +56,18 @@ struct  FCharacters : public FTableRowBase // 행 베이스 상속
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere, Category = "Item Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	FName ID;
 
-	UPROPERTY(EditAnywhere, Category = "Item Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,  Category = "Item Data")
 	ECharacterTypes CharacterTypes;
 
 
-	UPROPERTY(EditAnywhere, Category = "Item Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	FItemTextDatas TextData;
 
 
-	UPROPERTY(EditAnywhere, Category = "Item Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	FItemAssetDatas AssetData;
 
 };
