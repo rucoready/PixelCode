@@ -76,7 +76,7 @@ void UTask_DogBartCheckBehind::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
 
                 bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, dogLoc, traceEnd, ECC_Visibility, queryParams);
 
-                DrawDebugLine(GetWorld(), dogLoc, traceEnd, FColor::Blue, false, 0.1f, 0, 1.0f);
+                //DrawDebugLine(GetWorld(), dogLoc, traceEnd, FColor::Blue, false, 0.1f, 0, 1.0f);
 
                 if (bHit && hitResult.GetActor())
                 {

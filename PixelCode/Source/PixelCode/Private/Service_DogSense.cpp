@@ -69,7 +69,7 @@ void UService_DogSense::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 
                 bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, traceStart, traceEnd, ECC_Visibility, queryParams);
 
-                DrawDebugLine(GetWorld(), traceStart, traceEnd, FColor::Red, false, 0.1f, 0, 1.0f);
+                //DrawDebugLine(GetWorld(), traceStart, traceEnd, FColor::Red, false, 0.1f, 0, 1.0f);
 
                 if (bHit && hitResult.GetActor())
                 {

@@ -12,6 +12,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
 #include "DemonSword.h"
 #include "Grux.h"
+#include "DogBart.h"
 #include "Player/PlayerOrganism.h"
 
 ABaseWeapon::ABaseWeapon()
@@ -163,6 +164,7 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 	ABossApernia* boss = Cast<ABossApernia>(hitActor);
 	ADemonSword* demonSword = Cast<ADemonSword>(hitActor);
 	AGrux* grux = Cast<AGrux>(hitActor);
+	ADogBart* dogBart = Cast<ADogBart>(hitActor);
 	if (boss && !bHit)
 	{		
 		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.5, false);
@@ -188,6 +190,16 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 		grux->GruxTakeDamage(10.0f);
 
 		grux->ServerRPC_TakeDamage();
+		bHit = true;
+
+	}
+	if (dogBart && !bHit && dogBart->dogBartDie == false)
+	{
+		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.3, false);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), swordHitNA, GetActorLocation(), GetActorRotation(), FVector(10.0f));
+		dogBart->DogBartTakeDamage(10.0f);
+
+		dogBart->ServerRPC_TakeDamage();
 		bHit = true;
 
 	}

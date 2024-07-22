@@ -86,7 +86,7 @@ void AGrux::BeginPlay()
     maxLocation = originLocation + FVector(radius2D, 0.0f, 0.0f); // X축 방향으로 반지름만큼 떨어진 위치로 설정
     
 
-    DrawDebugSphere(GetWorld(), originLocation, radius2D, 24, FColor::Green, true, -1, 0, 15.0f);
+    //DrawDebugSphere(GetWorld(), originLocation, radius2D, 24, FColor::Green, true, -1, 0, 15.0f);
 
     maxLocationSize = maxLocation.Size2D();
 
@@ -236,6 +236,12 @@ void AGrux::OnBeginOverlapSwordCollision(UPrimitiveComponent* OverlappedComponen
         ApplyDamageToTarget(OtherActor, 7);
         cooltimeReset = true;
         GetWorldTimerManager().SetTimer(timerhandle_CoolTimeOverlap, this, &AGrux::ResetOverlapCoolTime, 0.5f, false);
+        players = Cast<APlayerOrganism>(OtherActor);
+		if (players)
+		{
+			players->GetHit(SweepResult.ImpactPoint, true);
+		}
+        
     }
 }
 

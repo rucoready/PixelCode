@@ -217,6 +217,11 @@ void ADogBart::OnBeginOverlapDamageCollision(UPrimitiveComponent* OverlappedComp
 		ApplyDamageToTarget(OtherActor, 5);
 		reDamage = true;
 		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeReDamage, this, &ADogBart::Redamage, 0.8f, false);
+		Player = Cast<APlayerOrganism>(OtherActor);
+		if (Player)
+		{
+			Player->GetHit(SweepResult.ImpactPoint, true);
+		}
 	}
 }
 

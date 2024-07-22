@@ -80,6 +80,9 @@ public:
 
 	void RepocessBehaviorTreeRe();
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class APlayerOrganism* players;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* gruxTakeDamage;
 
