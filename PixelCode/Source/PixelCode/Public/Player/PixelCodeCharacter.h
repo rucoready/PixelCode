@@ -158,8 +158,18 @@ class APixelCodeCharacter : public APlayerOrganism
 
 public:
 	APixelCodeCharacter();
+	bool bIsStatVisible = true;
+
 	// 진원 S
 	FORCEINLINE bool IsInteracting() const {return GetWorld()->GetTimerManager().IsTimerActive(TimerHandle_Interaction); }; // 현재 상호작용중인지 아닌지
+
+	bool bStatExp = false;
+
+	void PlayerStartWidget();
+
+	void FullExp();
+
+	void PlayerLevelUp();
 
 	void UpdateInteractionWidget() const;
 
@@ -176,14 +186,14 @@ public:
 	UPROPERTY()
 	UPlayerStatWidget* statWidget;
 	
-	/*UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<UPlayerStatWidget> StatWidgetClass;*/
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UPlayerStatWidget> StatWidgetClass;
 
 	UPROPERTY()
 	UNormallyWidget* NormallyWidget;
 	
-	//UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	//TSubclassOf<UNormallyWidget> NormallyWidgetClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UNormallyWidget> NormallyWidgetClass;
 
 	bool bWidget = false;
 

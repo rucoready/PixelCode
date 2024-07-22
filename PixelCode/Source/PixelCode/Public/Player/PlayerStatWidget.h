@@ -91,6 +91,6 @@ public:
 
 	void UpdateStat(UStateComponent* PlayerStateComp);
 
-	void UpdateLevel(int32 Level);
+	void UpdateLevel();
 
 };

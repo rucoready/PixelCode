@@ -34,36 +34,31 @@ public:
 	UPROPERTY()
 	AMyGameModeBase* GM;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	UPlayerStatWidget* statWidget;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<UPlayerStatWidget> StatWidgetClass;
+	
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	UNormallyWidget* NormallyWidget;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<UNormallyWidget> NormallyWidgetClass;
+	
 
 	ApixelPlayerState* PlayerState;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	// UI
-	void StartUI();
+	
 
-	void LevelUpUpdate();
+	//UFUNCTION(Server, Reliable)
+	//void ServerRPC_StartUI();
 
-	/*UFUNCTION(Server, Reliable)
-	void ServerRPC_StartUI()*/;
-
-	UFUNCTION(Client, Reliable)
-	void ClientRPC_StartUI();
+	//UFUNCTION(Client, Reliable)
+	//void ClientRPC_StartUI();
 
 	bool bIsStatVisible = true;
 
-	void StatMenu();
-
-	void ExpUpUI();
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_RespawnPlayer();

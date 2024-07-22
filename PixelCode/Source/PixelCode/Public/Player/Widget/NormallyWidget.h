@@ -100,12 +100,13 @@ public:
 	UMaterialInstanceDynamic* ZDynamicMaterial;
 
 	void firstUpdate(UStateComponent* PlayerStateComp);
+	void firstStatedate();
 	
-	TWeakObjectPtr<class ApixelPlayerState> PlayerState;
+	ApixelPlayerState* PlayerState;
 
 	void currentStatUpdate(UStateComponent* PlayerStateComp);
 	void currentExpUpdate(float currentEXP, float totalEXP);
-	void currentLevelUpdate(int32 Level);
+	void currentLevelUpdate();
 	
 	void QSetPercent();
 	void ESetPercent();

@@ -59,7 +59,7 @@ void ABossSword::Tick(float DeltaTime)
 
 	FString CollisionString = UKismetStringLibrary::Conv_IntToString(damageSphereComp->GetCollisionEnabled());
 
-	GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Emerald, CollisionString);
+	//GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Emerald, CollisionString);
 
 }
 
@@ -92,7 +92,7 @@ void ABossSword::OnBeginOverlapSwordCollision(UPrimitiveComponent* OverlappedCom
 		Player = Cast<APlayerOrganism>(OtherActor);
 		if (Player)
 		{
-			Player->GetHit(SweepResult.ImpactPoint,true);
+			Player->GetHit(SweepResult.ImpactPoint,false);
 		}
 		ApplyDamageToTarget(OtherActor, 20);
 	}

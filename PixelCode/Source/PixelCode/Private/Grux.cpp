@@ -34,6 +34,7 @@
 #include "GruxAnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "Boss/BossAnimInstance.h"
+#include "Player/pixelPlayerState.h"
 
 // Sets default values
 AGrux::AGrux()

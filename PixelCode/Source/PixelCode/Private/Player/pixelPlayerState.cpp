@@ -8,6 +8,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
 #include "Player/PlayerStatWidget.h"
 #include "PCodePlayerController.h"
+#include "Player/PixelCodeCharacter.h"
 
 
 
@@ -30,8 +31,6 @@ void ApixelPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 void ApixelPlayerState::SetaddUpEXP(float AcquireEXP)
 {
-   
-    
     // 현재 경험치 추가
 	currentEXP += AcquireEXP;
     auto* GM = Cast<AMyGameModeBase>(GetWorld()->GetAuthGameMode());
@@ -51,11 +50,18 @@ void ApixelPlayerState::LevelUP()
 {
     Level += 1;
     maxEXP(); // 레벨 업 시 최대 경험치 업데이트
-    auto* Pc = Cast<APCodePlayerController>(GetPawn()->GetController());
-    if (Pc != nullptr)
-    {
-        Pc->LevelUpUpdate();
-    }
+    //auto* Pc = Cast<APCodePlayerController>(GetPawn()->GetController());
+    //if (Pc != nullptr)
+    //{
+       // Pc->LevelUpUpdate();
+   // }
+
+   auto* LevelUpdatePlayer = Cast<APixelCodeCharacter>(GetPawn());
+   if (LevelUpdatePlayer != nullptr)
+   {
+       LevelUpdatePlayer->FullExp();
+   }
+
 }
 
 void ApixelPlayerState::InitPlayerData()
@@ -208,7 +214,7 @@ void ApixelPlayerState::OnRep_currentEXP(float OldEXP)
 //	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 //
 //	// PlayerName 변수를 Replication 리스트에 추가
-//	DOREPLIFETIME_CONDITION(ApixelPlayerState, totalEXP, COND_OwnerOnly);
+//    DOREPLIFETIME_CONDITION(ApixelPlayerState, totalEXP, COND_OwnerOnly);
 //	DOREPLIFETIME_CONDITION(ApixelPlayerState, currentEXP, COND_OwnerOnly);
 //	DOREPLIFETIME_CONDITION(ApixelPlayerState, Level, COND_None);
 //

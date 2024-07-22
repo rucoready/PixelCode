@@ -50,7 +50,7 @@
 #include "PCodePlayerController.h"
 #include "Player/pixelPlayerState.h"
 #include "MyGameModeBase.h"
-
+#include "GameFramework/PlayerState.h"
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -127,8 +127,12 @@ void APixelCodeCharacter::BeginPlay()
 	CameraBoom->bEnableCameraLag = true;
 	CameraBoom->CameraLagSpeed = 10.0f;
 
+	statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
 
-	
+	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+
+	APlayerController* UPc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	Pc = Cast<APCodePlayerController>(UPc);
 
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -138,12 +142,6 @@ void APixelCodeCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
-	
-
-	
-	
-
 	
 	FActorSpawnParameters spawnParam;
 	spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -196,15 +194,8 @@ void APixelCodeCharacter::BeginPlay()
 	//{
 	//	InitMainUI();
 	//}
-
+	PlayerStartWidget();
 	
-	Pc = Cast<APCodePlayerController>(Controller);
-
-	if (Pc != nullptr)
-	{ 
-		Pc->StartUI();
-		//Pc->ServerRPC_StartUI();
-	}	
 	
 
 	// 요한----------------------------------------------------------------------
@@ -1141,6 +1132,80 @@ void APixelCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(APixelCodeCharacter, Iteminfos);
 }
 
+void APixelCodeCharacter::PlayerStartWidget()
+{
+	
+	
+
+	if (IsLocallyControlled())
+	{
+		//pc->NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+		//pc->NormallyWidget->AddToViewport();
+
+		// 시작
+		if (StatWidgetClass)
+		{
+			statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
+			//statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
+			//statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
+			statWidget = statWidget;
+			if (statWidget != nullptr)
+			{
+				statWidget->AddToViewport(1);
+				statWidget->SetVisibility(ESlateVisibility::Collapsed);
+				UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
+
+				statWidget->UpdateStat(this->stateComp);
+				//if (PlayerState != nullptr)
+				//{
+				//	//Pc->statWidget->UpdateLevel(PlayerState->Level);
+				//}
+			}
+
+		}
+	
+		if (NormallyWidgetClass)
+		{
+			NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+				//NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+			Pc->NormallyWidget = NormallyWidget;
+				//NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+				if (Pc->NormallyWidget != nullptr)
+				{
+					Pc->NormallyWidget->AddToViewport(-1);
+					Pc->NormallyWidget->SetVisibility(ESlateVisibility::Visible);
+					UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
+
+					Pc->NormallyWidget->firstUpdate(this->stateComp);
+					Pc->NormallyWidget->currentStatUpdate(this->stateComp);	
+				}
+		}
+		
+	}
+		//NormallyWidget = pc->NormallyWidget;
+}
+
+void APixelCodeCharacter::FullExp()
+{
+	NormallyWidget->firstStatedate();
+
+}
+
+
+void APixelCodeCharacter::PlayerLevelUp()
+{
+
+	APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
+	PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
+	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
+	
+
+	bStatExp = true;
+
+	PlayerState->SetaddUpEXP(30.0f);
+
+}
+
 void APixelCodeCharacter::UpdateInteractionWidget() const
 {
 	if (IsValid(TargetInteractable.GetObject()))
@@ -1196,8 +1261,19 @@ void APixelCodeCharacter::ToggleMenu()
 
 void APixelCodeCharacter::StatMenu()
 {
-	Pc->StatMenu();
-	UE_LOG(LogTemp, Warning, TEXT("K"));
+	if (bIsStatVisible)
+	{
+		statWidget->DisplayStat();
+		bIsStatVisible = false;
+		UE_LOG(LogTemp, Warning, TEXT("StatOn"));
+	}
+
+	else
+	{
+		statWidget->HideStat();
+		bIsStatVisible = true;
+		UE_LOG(LogTemp, Warning, TEXT("StatOff"));
+	}
 }
 
 void APixelCodeCharacter::DropItem()
@@ -1671,11 +1747,7 @@ void APixelCodeCharacter::PlayerRunEnd(const FInputActionValue& Value)
 
 void APixelCodeCharacter::PlayerExpUp(const FInputActionValue& Value)
 {
-	if (Pc != nullptr)
-	{
-		Pc->ExpUpUI();
-	}
-
+	PlayerLevelUp();
 }
 
 void APixelCodeCharacter::Tick(float DeltaTime)
@@ -1728,6 +1800,14 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		GetWorld()->SpawnActor<ASpawnSwordRSkill>(RSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
 
 		bSkillNSR = false;
+	}
+	if (NormallyWidget != nullptr)
+	{
+		NormallyWidget->currentStatUpdate(this->stateComp);
+	}
+	if (NormallyWidget != nullptr && bStatExp)
+	{ 
+		NormallyWidget->currentExpUpdate(PlayerState->currentEXP, PlayerState->totalEXP);
 	}
 	// 지논------------------------------------------------------------------------------------------------------
 

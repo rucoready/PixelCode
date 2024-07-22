@@ -9,6 +9,7 @@
 #include "Player/Widget/NormallyWidget.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
 #include "Player/PixelCodeCharacter.h"
+#include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
 
 void APCodePlayerController::BeginPlay()
 {
@@ -27,13 +28,7 @@ void APCodePlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (NormallyWidget != nullptr)
-	{ 
-		if (PlayerState != nullptr)
-		{ 
-			NormallyWidget->currentExpUpdate(PlayerState->currentEXP,PlayerState->totalEXP);
-		}
-	}
+	
 }
 
 void APCodePlayerController::OpenUI(bool bOpen)
@@ -51,76 +46,33 @@ void APCodePlayerController::OpenUI(bool bOpen)
 }
 
 
-void APCodePlayerController::StartUI()
+void APCodePlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	auto* CharacterPlayer = Cast<APixelCodeCharacter>(GetPawn());
-	PlayerState = Cast<ApixelPlayerState>(CharacterPlayer->GetPlayerState());
-
-
-	if (StatWidgetClass)
-	{
-		statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-		if (statWidget != nullptr)
-		{ 
-			statWidget->AddToViewport(1);
-			statWidget->SetVisibility(ESlateVisibility::Collapsed);
-			UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
-		
-			statWidget = statWidget;
-
-			statWidget->UpdateStat(CharacterPlayer->stateComp);
-			if (PlayerState != nullptr)
-			{
-				statWidget->UpdateLevel(PlayerState->Level);
-			}
-		}
-
-	}
-
-	if (NormallyWidgetClass)
-	{
-		NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-		if (NormallyWidget != nullptr)
-		{ 
-			NormallyWidget->AddToViewport(-1);
-			NormallyWidget->SetVisibility(ESlateVisibility::Visible);
-			UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
-
-			NormallyWidget->firstUpdate(CharacterPlayer->stateComp);
-			NormallyWidget->currentStatUpdate(CharacterPlayer->stateComp);
-			if (PlayerState != nullptr)
-			{
-				NormallyWidget->currentLevelUpdate(PlayerState->Level);
-			}
-		}
-	}
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
+	// PlayerName 변수를 Replication 리스트에 추가
+	DOREPLIFETIME(APCodePlayerController, statWidget);
+	DOREPLIFETIME(APCodePlayerController, NormallyWidget);
+		
+
 }
 
-void APCodePlayerController::LevelUpUpdate()
-{
-	if (PlayerState != nullptr && NormallyWidget != nullptr)
-	{
-		NormallyWidget->currentLevelUpdate(PlayerState->Level);
-	}
-	if (PlayerState != nullptr && statWidget != nullptr)
-	{
-		statWidget->UpdateLevel(PlayerState->Level);
-	}
-}
+
 
 //void APCodePlayerController::ServerRPC_StartUI_Implementation()
 //{
-//	statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-//	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-//	PlayerState = Cast<ApixelPlayerState>(GetPlayerState<ApixelPlayerState>());
-//
-//	if (HasAuthority())
-//	{ 
-//		statWidget->UpdateLevel(PlayerState->Level);
-//		ClientRPC_StartUI();
-//	}
-//	
+//	StartUI();
+//	ClientRPC_StartUI();
+////	/*statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
+////	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+////	PlayerState = Cast<ApixelPlayerState>(GetPlayerState<ApixelPlayerState>());*/
+////	
+////	/*if (HasAuthority())
+////	{
+////	statWidget->UpdateLevel(PlayerState->Level);
+////		ClientRPC_StartUI();*/
+////	
+////	
 //}
 
 
@@ -137,47 +89,17 @@ void APCodePlayerController::LevelUpUpdate()
 	statWidget->SetVisibility(ESlateVisibility::Collapsed);
 	UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));*/
 
-
-void APCodePlayerController::ClientRPC_StartUI_Implementation()
-{
-	statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-	PlayerState = Cast<ApixelPlayerState>(GetPlayerState<ApixelPlayerState>());
-
-
-	//statWidget->UpdateLevel(PlayerState->Level);
-	NormallyWidget->currentExpUpdate(PlayerState->currentEXP, PlayerState->totalEXP);
-}
-
-void APCodePlayerController::StatMenu()
-{
-	if (bIsStatVisible)
-	{
-		statWidget->DisplayStat();
-		bIsStatVisible = false;
-		UE_LOG(LogTemp, Warning, TEXT("StatOn"));
-	}
-
-	else
-	{
-		statWidget->HideStat();
-		bIsStatVisible = true;
-		UE_LOG(LogTemp, Warning, TEXT("StatOff"));
-	}
-}
-
-void APCodePlayerController::ExpUpUI()
-{
-	if (PlayerState)
-	{
-		PlayerState->SetaddUpEXP(30);
-
-		float CurrentExp = PlayerState->GetCurrentExp();
-
-	}
+//
+//void APCodePlayerController::ClientRPC_StartUI_Implementation()
+//{
+//	StartUI();
+//
+//
+//
+//	//NormallyWidget->currentExpUpdate(PlayerState->currentEXP, PlayerState->totalEXP);
+//}
 
 
-}
 
 
 

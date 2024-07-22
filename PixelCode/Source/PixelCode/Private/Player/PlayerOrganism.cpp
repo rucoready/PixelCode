@@ -161,7 +161,6 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 	{
 		
 	}
-
 	// 디버그
 	if (0)
 	{
@@ -184,7 +183,7 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 
 void APlayerOrganism::GetHit(const FVector& ImpactPoint, bool bFallDown)
 {
-	DrawDebugSphere(GetWorld(), GetActorLocation(), 8.f, 24, FColor::Orange, false, 5.f);
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), 8.f, 24, FColor::Orange, false, 5.f);
 
 	const FVector Forward = GetActorForwardVector();
 
@@ -210,11 +209,11 @@ void APlayerOrganism::GetHit(const FVector& ImpactPoint, bool bFallDown)
 	if (CrossProduct.Z < 0)
 	{
 		Theta *= -1.f;
-		UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
+		//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
 	}
 		if (hitPaticle != nullptr)
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitPaticle, GetActorLocation() + CrossProduct * 100.f);
+			//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitPaticle, GetActorLocation() + CrossProduct * 100.f);
 		}
 
 		if (bFallDown)
@@ -244,7 +243,7 @@ void APlayerOrganism::GetHit(const FVector& ImpactPoint, bool bFallDown)
 				if (GEngine)
 				{
 					// 화면 디버그 기능
-					GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta));
+					//GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta));
 				}
 				
 				AnimInsatnce->Montage_Play(hitFalldownReaction);
@@ -281,10 +280,10 @@ void APlayerOrganism::GetHit(const FVector& ImpactPoint, bool bFallDown)
 	if (GEngine)
 	{
 		// 화면 디버그 기능
-		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta));
+		//GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta));
 	}
-	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.0f, 5.f, FColor::Red, 5.f);
-	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
+	//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.0f, 5.f, FColor::Red, 5.f);
+	//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
 
 }
 

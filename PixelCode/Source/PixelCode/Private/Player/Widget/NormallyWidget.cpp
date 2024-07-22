@@ -17,6 +17,8 @@
 #include "Components/Button.h"
 #include "MyGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerState.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 
 
 
@@ -26,9 +28,6 @@ void UNormallyWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	
-
-	
 	BaseMaterial = LoadObject<UMaterial>(nullptr, TEXT("/Script/Engine.Material'/Game/Player/PlayerWidget/M_RoundProgressbar.M_RoundProgressbar'_C"));
 
 	
@@ -54,14 +53,26 @@ void UNormallyWidget::NativeConstruct()
 	BTN_Respawn->OnClicked.AddDynamic(this, &UNormallyWidget::OnMyButtonRespawn);
 	BTN_Quit->OnClicked.AddDynamic(this, &UNormallyWidget::OnMyButtonQuit);
 	
-	//firstUpdate();
+	
+	APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
+	PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
+	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
+	if (PlayerState == nullptr)
+	{
+		return;
+	}
 
+	
+	currentLevelUpdate();
+	//firstUpdate();
+	firstStatedate();
 }
 
 void UNormallyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry,InDeltaTime);
 
+	//currentExpUpdate(PlayerState->currentEXP, PlayerState->totalEXP);
 
 	QSetPercent();
 	ESetPercent();
@@ -75,11 +86,21 @@ void UNormallyWidget::firstUpdate(UStateComponent* PlayerStateComp)
 	
 	PB_HP->SetPercent(PlayerStateComp->MaxHP);
 	PB_MP->SetPercent(PlayerStateComp->MaxMP);
-	UE_LOG(LogTemp, Warning, TEXT("PlayerStateNonull"));
-	//PB_Exp->SetPercent(PlayerState->currentEXP);
-	
-	//LEVEL = FString::FromInt(PlayerState->Level);  // float을 FString으로 변환
-	//TB_LEVEL->SetText(FText::FromString(LEVEL));  // FString을 FText로 변환하여 UTextBlock에 설정
+	//UE_LOG(LogTemp, Warning, TEXT("PlayerStateNonull"));
+}
+void UNormallyWidget::firstStatedate()
+{
+	APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
+	PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
+	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
+	if (PlayerState == nullptr)
+	{
+		return;
+	}
+	PB_Exp->SetPercent(PlayerState->currentEXP);
+
+	LEVEL = FString::FromInt(PlayerState->Level);  // float을 FString으로 변환
+	TB_LEVEL->SetText(FText::FromString(LEVEL));  // FString을 FText로 변환하여 UTextBlock에 설정
 }
 
 
@@ -95,9 +116,16 @@ void UNormallyWidget::currentExpUpdate(float currentEXP,float totalEXP)
 	//UE_LOG(LogTemp, Warning, TEXT("UPdateEXP"));
 }
 
-void UNormallyWidget::currentLevelUpdate(int32 Level)
+void UNormallyWidget::currentLevelUpdate()
 {
-	LEVEL = FString::FromInt(Level); 
+	APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
+	PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
+	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
+	if (PlayerState == nullptr)
+	{
+		return;
+	}
+	LEVEL = FString::FromInt(PlayerState->Level); 
 	TB_LEVEL->SetText(FText::FromString(LEVEL));  
 }
 

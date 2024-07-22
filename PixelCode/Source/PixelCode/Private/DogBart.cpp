@@ -124,8 +124,6 @@ void ADogBart::Tick(float DeltaTime)
 		UGameplayStatics::PlaySoundAtLocation(this, dieSound, GetActorLocation());
 		
 
-		
-
 
 		GetWorldTimerManager().SetTimer(timerhandle_Destroy, this, &ADogBart::DestroySelf, 3.0f, false);
 		
@@ -208,20 +206,15 @@ void ADogBart::OnBeginOverlapDamageCollision(UPrimitiveComponent* OverlappedComp
 	if (OtherActor->GetName().Contains("Player")&&!reDamage)
 	{
 
-		Player = Cast<APlayerOrganism>(OtherActor);
+		Player = Cast<APixelCodeCharacter>(OtherActor);
 		if (Player)
 		{
-				Player->GetHit(SweepResult.ImpactPoint, true);
+				Player->GetHit(SweepResult.ImpactPoint, false);
 				UGameplayStatics::PlaySoundAtLocation(this, biteSound, GetActorLocation());
 		}
 		ApplyDamageToTarget(OtherActor, 5);
 		reDamage = true;
 		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeReDamage, this, &ADogBart::Redamage, 0.8f, false);
-		Player = Cast<APlayerOrganism>(OtherActor);
-		if (Player)
-		{
-			Player->GetHit(SweepResult.ImpactPoint, true);
-		}
 	}
 }
 

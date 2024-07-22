@@ -8,6 +8,8 @@
 #include "PCodePlayerController.h"
 #include "Player/pixelPlayerState.h"
 #include "MyGameModeBase.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerState.h>
 
 
 
@@ -30,10 +32,11 @@ void UPlayerStatWidget::NativeConstruct()
 
 
 
-	
+
 	
 
-	//UpdateStat();
+	UpdateLevel();
+
 }
 
 void UPlayerStatWidget::UpdateStat(UStateComponent* PlayerStateComp)
@@ -69,9 +72,17 @@ void UPlayerStatWidget::UpdateStat(UStateComponent* PlayerStateComp)
 	TB_CON->SetText(FText::FromString(CON));  
 }
 
-void UPlayerStatWidget::UpdateLevel(int32 Level)
+void UPlayerStatWidget::UpdateLevel()
 {
-	LEVEL = FString::FromInt(Level);  // float을 FString으로 변환
+	APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
+	PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
+	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
+	if (PlayerState == nullptr)
+	{
+		return;
+	}
+
+	LEVEL = FString::FromInt(PlayerState->Level);  // float을 FString으로 변환
 	TB_LEVEL->SetText(FText::FromString(LEVEL));  // FString을 FText로 변환하여 UTextBlock에 설정	
 	UE_LOG(LogTemp, Warning, TEXT("UPdateLEvel"));
 }
