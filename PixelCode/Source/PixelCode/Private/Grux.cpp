@@ -240,7 +240,7 @@ void AGrux::OnBeginOverlapSwordCollision(UPrimitiveComponent* OverlappedComponen
         players = Cast<APlayerOrganism>(OtherActor);
 		if (players)
 		{
-			players->GetHit(SweepResult.ImpactPoint, true);
+			players->GetHit(SweepResult.ImpactPoint, false);
 		}
         
     }
