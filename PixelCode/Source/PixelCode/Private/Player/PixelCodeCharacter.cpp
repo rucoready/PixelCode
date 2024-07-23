@@ -1175,6 +1175,7 @@ void APixelCodeCharacter::RemoveFoliage(const FHitResult& HitResult)
 		{
 			FoliageInstance->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
+			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
 	//NetMulticastRPC_RemoveFoliage(HitResult);

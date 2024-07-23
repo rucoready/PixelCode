@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include <Engine/DataTable.h>
 #include "CreateItemData.h"
+#include "DataTypes.h"
 #include "ParentItem.generated.h"
 
 class UDataTable;
@@ -144,6 +145,10 @@ struct  FItemData : public FTableRowBase // 행 베이스 상속
 
 	UPROPERTY(EditAnywhere, Category = "Item Data")
 	EItemName ItemName;
+
+	UPROPERTY(EditAnywhere, Category = "Item Data")
+	EBuildType Buildtypes;
+
 };
 // HJW
 

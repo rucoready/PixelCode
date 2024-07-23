@@ -49,6 +49,9 @@ class PIXELCODE_API UItemBase : public UObject // object·Î C++¸¸µë
 	EItemName ItemName;
 
 	UPROPERTY(VisibleAnywhere, Category = "Item")
+	EBuildType Buildtypes;
+
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	FItemStatistics ItemStatistics;
 
 	UPROPERTY(VisibleAnywhere, Category = "Item")

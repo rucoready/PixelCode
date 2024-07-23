@@ -49,7 +49,7 @@ UItemBase* UItemBase::CreateItemCopy() const
 	ItemCopy->AssetData = this->AssetData;
 	ItemCopy->bIsCopy = true;
 	ItemCopy->ItemName = this->ItemName;
-
+	ItemCopy->Buildtypes = this->Buildtypes;
 
 	return ItemCopy;
 }

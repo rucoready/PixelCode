@@ -553,8 +553,8 @@ public:
 // 
 // 	UFUNCTION(NetMulticast, Reliable)
 // 	void NetMulticastRPC_RemoveFoliage(const FHitResult& HitResult);
-// 
-// 	UPROPERTY(EditAnywhere, Category=KSH)
+//
+	UPROPERTY(EditAnywhere, Category=KSH)
 	TSubclassOf<class APickup> pickupItem;
 
 
