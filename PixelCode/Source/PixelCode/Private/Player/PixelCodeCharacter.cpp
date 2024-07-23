@@ -471,7 +471,6 @@ void APixelCodeCharacter::Interact()
 }
 
 
-// 요한 ------------------------------------------------------------------------------------------
 
 // 요한 ------------------------------------------------------------------------------------------
 
@@ -582,6 +581,98 @@ uint32 APixelCodeCharacter::GetSpecificItemAmount(EItemName ItemName)
 
 }
 
+void APixelCodeCharacter::AGetSpecificBuildingAmount()
+{
+	FCraftItem Info = (FCraftItem)Crafts;
+	//FCraftItem Info = Crafts;
+	FBuildingVisualType BuildDatas = (FBuildingVisualType)Builditems;
+	TArray<UItemBase*> InventoryContentSArray = PlayerInventory->GetInventoryContents();
+	uint8 Creatamount = Info.CraftedItemAmount;
+	uint8 Index = 0;
+	TArray<uint8> CreatedIndex;
+
+
+	for (UItemBase* Item : InventoryContentSArray)
+	{
+		if (Item && Item->ItemName == Info.CraftedItem)
+		{
+			if (Item && Item->Buildtypes == BuildDatas.BuildType)
+			{
+				if (Item->Quantity - Info.CraftedItemAmount < 0)
+				{
+					Creatamount -= Item->Quantity;
+					CreatedIndex.Add(Index);
+				}
+				else
+				{
+					Item->Quantity -= Creatamount;
+					Creatamount -= Creatamount;
+					if (Item->Quantity == 0)
+					{
+						InventoryContentSArray.RemoveAt(Index);
+						PlayerInventory->RemoveAmountOfItem(Item, 1);
+						PlayerInventory->RemoveSingleInstanceOfItem(Item);
+						//PickupItems->UpdateInteractableData();
+					}
+					break;
+				}
+			}
+		}
+		Index++;
+
+	}
+	for (int8 i = CreatedIndex.Num() - 1; i > -1; i--)
+	{
+		//재고가 삭제된 인벤토리
+		InventoryContentSArray.RemoveAt(CreatedIndex[i]);
+
+	}
+}
+
+
+void APixelCodeCharacter::BuildItem()
+{
+
+	AGetSpecificBuildingAmount();
+	//FCraftItem& Item
+	FCraftItem Info = (FCraftItem)Crafts;
+	//FBuildingVisualType BuildDatas = (FBuildingVisualType)Builditem;
+
+	TSubclassOf<AActor> Template = ItemStorage->GetTemplateOfItem(Info.CraftedItem);
+	if (Template)
+	{
+
+		//UInventoryComponent* OwningInventory; // 인벤토리
+		FActorSpawnParameters Params;
+		Params.Owner = this;
+		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		//FVector SpawnLoc = FVector(440.f, 0.f, 0.f);
+
+		FVector SpawnLoc = FVector(6797.037641f, -38828.846065f, 3000.503557f);
+		APickup* CraftedItem = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
+		if (CraftedItem)
+		{
+			UItemBase* ItemQuantity = CraftedItem->GetItemData();
+			Iteminfos = CraftedItem->GetItemData();
+
+			//CraftedItem->InitializeDrop(Iteminfos, );
+			//DropedItem(Iteminfos);
+
+			// 수량제거
+			const int32 RemoveQuantity = PlayerInventory->RemoveAmountOfItem(Iteminfos, 1);
+
+			//APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
+
+			CraftedItem->InitializeDrop(Iteminfos, RemoveQuantity);
+
+			UE_LOG(LogTemp, Warning, TEXT("Success Destroy"));
+			CraftedItem->Destroy();
+		}
+	}
+
+}
+
 void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes)
 {
 	for (const FRecipe& Recipe : Recipes)
@@ -616,16 +707,16 @@ void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recip
 				}
 			}
 			Index++;
-			
+
 		}
 		for (int8 i = RemoveedIndex.Num() - 1; i > -1; i--)
 		{
 			//재고가 삭제된 인벤토리
 			InventoryContentSArray.RemoveAt(RemoveedIndex[i]);
-			
+
 		}
 	}
-	
+
 }
 
 void APixelCodeCharacter::AddCraftArea(ECraftArea Area)
@@ -649,12 +740,14 @@ bool APixelCodeCharacter::IsPlayerInCraftArea(ECraftArea Area)
 
 void APixelCodeCharacter::UpdateGameInstanceInventory()
 {
-	if(!GameInst)
+	if (!GameInst)
 	{
 		return;
 	}
 	GameInst->UpdateInventory(OwningInventoryntory);
 }
+
+
 
 //================================요 한 끝 ===================================================
 

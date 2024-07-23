@@ -468,6 +468,25 @@ public:
 
 	 void UpdateGameInstanceInventory();
 
+
+	 // ==== 크래프팅 + 빌드 + 인벤토리 함수 Test ======
+	 void AGetSpecificBuildingAmount(); //const TArray<FBuildingVisualType>& builditem
+
+	 UFUNCTION()
+	 void BuildItem();
+
+	 UPROPERTY(VisibleAnywhere, Category = "CRAFT")
+	 uint8 BuildingIndex;
+
+
+	 UPROPERTY(EditAnywhere, Category = "CRAFT")
+	 FBuildingVisualType Builditems;
+
+	 UPROPERTY(EditAnywhere, Category = "CRAFT")
+	 FCraftItem Crafts;
+
+
+
 	// 서휘-----------------------------------------------------------------------------------------------------
 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	ABuilding* Buildings;
