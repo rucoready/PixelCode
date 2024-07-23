@@ -10,6 +10,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
 #include "Player/PixelCodeCharacter.h"
 #include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 
 void APCodePlayerController::BeginPlay()
 {
@@ -20,8 +21,56 @@ void APCodePlayerController::BeginPlay()
 		GM = Cast<AMyGameModeBase>(GetWorld()->GetAuthGameMode());
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("PC ON"));
+	
 
+	//UE_LOG(LogTemp, Warning, TEXT("PC ON"));
+
+	APlayerController* Pc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	
+	if (Pc != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PC On"));
+		PlayerState = Cast<ApixelPlayerState>(Pc->PlayerState);
+		ServerSendPlayerStateToClient(Pc, PlayerState);
+		if (PlayerState != nullptr)
+		{
+			PlayerState = PlayerState->GetPlayerStateOfOtherPlayer(this);
+			UE_LOG(LogTemp, Warning, TEXT("PC State ON"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PC State OFF"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PC Off"));
+	}
+}
+
+// State 를 전달하기 위한 서버랑 클라이언트
+void APCodePlayerController::ServerSendPlayerStateToClient_Implementation(APlayerController* TargetPlayerController, ApixelPlayerState* PlayerStateData)
+{
+	// 클라이언트에게 PlayerState 데이터 전달
+	NetMulticastReceivePlayerStateFromServer(TargetPlayerController,PlayerStateData);
+}
+
+void APCodePlayerController::NetMulticastReceivePlayerStateFromServer_Implementation(APlayerController* TargetPlayerController, ApixelPlayerState* PlayerStateData)
+{
+	// 클라이언트에서 PlayerState 데이터 처리
+	if (PlayerStateData != nullptr)
+	{
+		// PlayerStateData를 PlayerState에 설정
+		this->PlayerState = PlayerStateData;
+
+		// 예시: 로그에 PlayerState 정보 출력
+		UE_LOG(LogTemp, Warning, TEXT("Client received PlayerState: %s"), *PlayerState->GetPlayerName());
+
+		// 클라이언트에서 PlayerState를 사용하는 다른 함수 호출 예시
+		
+		//MainPlayer = Cast<APixelCodeCharacter>(TargetPlayerController->GetOwner());
+		//MainPlayer->PlayerState = PlayerStateData;
+	}
 }
 
 void APCodePlayerController::Tick(float DeltaSeconds)
@@ -29,6 +78,7 @@ void APCodePlayerController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	
+
 }
 
 void APCodePlayerController::OpenUI(bool bOpen)
@@ -56,6 +106,11 @@ void APCodePlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 		
 
 }
+
+
+
+
+
 
 
 

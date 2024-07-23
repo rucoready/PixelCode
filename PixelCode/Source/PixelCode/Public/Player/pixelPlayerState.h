@@ -75,6 +75,10 @@ public:
 
 
 
+	UFUNCTION(BlueprintCallable, Category = "PlayerState")
+    ApixelPlayerState* GetPlayerStateOfOtherPlayer(APCodePlayerController* OtherPlayerController);
+	
+	
 
 
 

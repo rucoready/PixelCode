@@ -9,6 +9,7 @@
 #include "Player/PlayerStatWidget.h"
 #include "PCodePlayerController.h"
 #include "Player/PixelCodeCharacter.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 
 
 
@@ -16,6 +17,18 @@
 ApixelPlayerState::ApixelPlayerState()
 {
     bReplicates = true;
+}
+
+
+ApixelPlayerState* ApixelPlayerState::GetPlayerStateOfOtherPlayer(APCodePlayerController* OtherPlayerController)
+{
+    if (OtherPlayerController)
+    {
+        return Cast<ApixelPlayerState>(OtherPlayerController->PlayerState);
+        //PlayerState = UGameplayStatics::GetPlayerState(GetWorld(),);
+    }
+
+    return nullptr;
 }
 
 void ApixelPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -61,7 +74,6 @@ void ApixelPlayerState::LevelUP()
    {
        LevelUpdatePlayer->FullExp();
    }
-
 }
 
 void ApixelPlayerState::InitPlayerData()
@@ -117,6 +129,8 @@ void ApixelPlayerState::OnRep_currentEXP(float OldEXP)
     // currentEXP가 변경될 때 실행할 로직 작성
 	UE_LOG(LogTemp, Warning, TEXT("Current EXP changed from %f to %f"), OldEXP, currentEXP);
 }
+
+
 
 
 // 잠시 주석

@@ -196,6 +196,24 @@ void APixelCodeCharacter::BeginPlay()
 // 			Buildings = *vars;
 // 		}
 // 	}
+	
+	//GetAllChildActors()
+
+	APlayerState* CustomPlayerState = Cast<APlayerState>(this->GetPlayerState());
+	PlayerState = Cast<ApixelPlayerState>(Pc->PlayerState);
+	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
+	
+
+	if (PlayerState)
+	{
+		int32 StateIndex = PlayerState->PlayerId;
+		FString Message = FString::Printf(TEXT("현재 플레이어 상태의 인덱스는 %d 입니다."), StateIndex);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
+	}
 
 
  	if (!Builder)
@@ -263,13 +281,13 @@ void APixelCodeCharacter::ServerRPC_ToggleCombat_Implementation()
 {
 	motionState = ECharacterMotionState::ToggleCombat;
 
-	combatComponent->bCombatEnable = !combatComponent->bCombatEnable;
-
 	NetMulticastRPC_ToggleCombat();
 }
 
 void APixelCodeCharacter::NetMulticastRPC_ToggleCombat_Implementation()
 {
+	combatComponent->bCombatEnable = !combatComponent->bCombatEnable;
+
 	auto mainWeaponPtr = combatComponent->GetMainWeapon();
 
 	float animPlayTime = 0.0f;
@@ -1175,7 +1193,6 @@ void APixelCodeCharacter::RemoveFoliage(const FHitResult& HitResult)
 		{
 			FoliageInstance->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
-			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
 	//NetMulticastRPC_RemoveFoliage(HitResult);
@@ -1195,6 +1212,7 @@ void APixelCodeCharacter::MultiRPC_RemoveFoliage_Implementation(const FHitResult
 		if (FoliageInstance)
 		{
 			FoliageInstance->RemoveInstance(HitResult.Item);
+			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
 			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
@@ -1396,16 +1414,16 @@ void APixelCodeCharacter::PlayerStartWidget()
 		{
 			NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
 				//NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-			Pc->NormallyWidget = NormallyWidget;
+			NormallyWidget = NormallyWidget;
 				//NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-				if (Pc->NormallyWidget != nullptr)
+				if (NormallyWidget != nullptr)
 				{
-					Pc->NormallyWidget->AddToViewport(-1);
-					Pc->NormallyWidget->SetVisibility(ESlateVisibility::Visible);
+					NormallyWidget->AddToViewport(-1);
+					NormallyWidget->SetVisibility(ESlateVisibility::Visible);
 					UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
 
-					Pc->NormallyWidget->firstUpdate(this->stateComp);
-					Pc->NormallyWidget->currentStatUpdate(this->stateComp);	
+					NormallyWidget->firstUpdate(this->stateComp);
+					NormallyWidget->currentStatUpdate(this->stateComp);	
 				}
 		}
 		
@@ -1422,15 +1440,27 @@ void APixelCodeCharacter::FullExp()
 
 void APixelCodeCharacter::PlayerLevelUp()
 {
-
-	APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
-	PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
+	APlayerState* CustomPlayerState = Cast<APlayerState>(this->GetPlayerState());
+	PlayerState = Cast<ApixelPlayerState>(Pc->PlayerState);
 	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
 	
 
 	bStatExp = true;
 
 	PlayerState->SetaddUpEXP(30.0f);
+
+	if (PlayerState)
+	{
+		//int32 StateIndex = PlayerState->PlayerId;
+		//FString Message = FString::Printf(TEXT("현재 플레이어 상태의 인덱스는 %d 입니다."), StateIndex);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
+	}
+	
+
 
 }
 
@@ -1591,10 +1621,17 @@ void APixelCodeCharacter::CharacterJump(const FInputActionValue& Value)
 
 void APixelCodeCharacter::SkillQ()
 {
+	
+
 	if (!bQskillCoolTime)
 	{ 
 		Mousehit();
-	
+		
+		if (equipment->eWeaponType != EWeaponType::LightSword)
+		{
+			return;
+		}
+
 		if (false == combatComponent->bCombatEnable)
 		{
 			return;
@@ -1636,9 +1673,15 @@ void APixelCodeCharacter::QskillTime()
 
 void APixelCodeCharacter::SkillE()
 {
+	
 	if (!bEskillCoolTime)
 	{
 		Mousehit();
+
+		if (equipment->eWeaponType != EWeaponType::LightSword)
+		{
+			return;
+		}
 
 		if (false == combatComponent->bCombatEnable)
 		{
@@ -1685,6 +1728,12 @@ void APixelCodeCharacter::SkillR()
 	{ 
 		Mousehit();
 
+
+		if (equipment->eWeaponType != EWeaponType::LightSword)
+		{
+			return;
+		}
+
 		if (false == combatComponent->bCombatEnable)
 		{
 			return;
@@ -1729,6 +1778,12 @@ void APixelCodeCharacter::SkillZ()
 	if (!bZskillCoolTime)
 	{
 		Mousehit();
+
+		if (equipment->eWeaponType != EWeaponType::LightSword)
+		{
+			return;
+		}
+
 		if (false == combatComponent->bCombatEnable)
 		{
 			return;
@@ -1776,6 +1831,11 @@ void APixelCodeCharacter::SkillRightMouse()
 		return;
 	}
 
+	if (equipment->eWeaponType != EWeaponType::LightSword)
+	{
+		return;
+	}
+
 	if (combatComponent->bAttacking)
 	{
 		combatComponent->bAttackSaved = true;
@@ -1792,6 +1852,28 @@ void APixelCodeCharacter::SkillRightMouse()
 
 
 
+
+void APixelCodeCharacter::SeverRPC_QSkillSpawn_Implementation()
+{
+	//MultiRPC_QSkillSpawn();
+}
+
+void APixelCodeCharacter::MultiRPC_QSkillSpawn_Implementation()
+{
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<ASpawnSwordQSkill>(QSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+}
+
+void APixelCodeCharacter::SeverRPC_RSkillSpawn_Implementation()
+{
+	//MultiRPC_RSkillSpawn();
+}
+
+void APixelCodeCharacter::MultiRPC_RSkillSpawn_Implementation()
+{
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<ASpawnSwordRSkill>(RSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+}
 
 void APixelCodeCharacter::Mousehit()
 {
@@ -1813,10 +1895,6 @@ void APixelCodeCharacter::switchWeapon()
 	spawnParam.Owner = this;
 	spawnParam.Instigator = this;
 	
-	if (equipment)
-	{
-		equipment->Destroy();
-	}
 	
 	if (axe != nullptr)
 	{ 
@@ -1828,15 +1906,20 @@ void APixelCodeCharacter::switchWeapon()
 		equipment->OnEquipped();
 	}
 	
+	combatComponent->bCombatEnable = true;
+
 }
 
 void APixelCodeCharacter::switchWeapon2()
 {
+	combatComponent->bCombatEnable = false;
+
 	FActorSpawnParameters spawnParam;
 	spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
 	spawnParam.Owner = this;
 	spawnParam.Instigator = this;
+
 
 	if (defaultWeapon != nullptr)
 	{
@@ -1846,6 +1929,7 @@ void APixelCodeCharacter::switchWeapon2()
 	{
 		equipment->OnEquipped();
 	}
+
 }
 
 void APixelCodeCharacter::Move(const FInputActionValue& Value)
@@ -1899,10 +1983,18 @@ void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 	}
 	else
 	{
-		if (bUseSkill)
+		if (axe != nullptr)
 		{
 			AttackEvent();
 		}
+		else if (bUseSkill)
+		{
+			AttackEvent();
+		}
+		/*if (axe != nullptr)
+		{
+			AttackEvent();
+		}*/
 	}
 	
 }
@@ -1964,12 +2056,35 @@ void APixelCodeCharacter::NetMulticastRPC_PlayerRoll_Implementation()
 
 void APixelCodeCharacter::PlayerRun(const FInputActionValue& Value)
 {	
+	ServerRPC_PlayerRun();
+
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerRun_Implementation()
+{
+	FTimerHandle handle;
+
+	NetMulticastRPC_PlayerRun();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerRun_Implementation()
+{
 	GetCharacterMovement()->MaxWalkSpeed = 1000.f;
-	UE_LOG(LogTemp,Warning,TEXT("trigreed"));
+	//UE_LOG(LogTemp, Warning, TEXT("trigreed"));
 }
 
 void APixelCodeCharacter::PlayerRunEnd(const FInputActionValue& Value)
 {	
+	ServerRPC_PlayerRunEnd();
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerRunEnd_Implementation()
+{
+	NetMulticastRPC_PlayerRunEnd();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerRunEnd_Implementation()
+{
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 }
 
@@ -2024,11 +2139,14 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 
 	if (bSkillNSR)
 	{
+		//SeverRPC_RSkillSpawn();
+		
 		FActorSpawnParameters SpawnParams;
 		GetWorld()->SpawnActor<ASpawnSwordRSkill>(RSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
 
 		bSkillNSR = false;
 	}
+
 	if (NormallyWidget != nullptr)
 	{
 		NormallyWidget->currentStatUpdate(this->stateComp);

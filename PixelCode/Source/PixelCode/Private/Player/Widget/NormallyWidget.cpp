@@ -19,6 +19,7 @@
 #include "Kismet/GameplayStatics.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerState.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
 
 
 
@@ -53,14 +54,48 @@ void UNormallyWidget::NativeConstruct()
 	BTN_Respawn->OnClicked.AddDynamic(this, &UNormallyWidget::OnMyButtonRespawn);
 	BTN_Quit->OnClicked.AddDynamic(this, &UNormallyWidget::OnMyButtonQuit);
 	
+
 	
-	APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
-	PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
-	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
-	if (PlayerState == nullptr)
+	Pc = GetOwningPlayer();
+	
+	PlayerController = Cast<APCodePlayerController>(Pc);
+
+	if (PlayerController)
 	{
-		return;
+		PlayerState = PlayerState->GetPlayerStateOfOtherPlayer(PlayerController);
+		if (PlayerState != nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("NormallyOnPlayerState"));
+
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("NormallyNotPlayerState"));
+		
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Pc"));
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NotPc"));
+	}
+
+	
+	Player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
+
+	if (Player != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Player Null!"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player Null!"));
+	}
+	
+	//PlayerState = Cast<ApixelPlayerState>(Player->GetPlayerState());
+
+	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
+	
 
 	
 	currentLevelUpdate();
@@ -151,14 +186,13 @@ void UNormallyWidget::ESetPercent()
 		if (Player != nullptr && Player->CurrentESkillCoolTime != 0)
 		{
 			// 스칼라 파라미터 설정
-			EDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), 1.0f - Player->CurrentESkillCoolTime / Player->ESkillCoolTime);
+			float PercentValue = 1.0f - Player->CurrentESkillCoolTime / Player->ESkillCoolTime;
+			EDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), 1.0f - Player->CurrentESkillCoolTime /Player->ESkillCoolTime);
+			UE_LOG(LogTemp, Log, TEXT("Percent set to: %f"), PercentValue);
 		}
 
 		BP_ESkillbar->SetBrushFromMaterial(EDynamicMaterial);
 	}
-	
-	
-	
 }
 
 void UNormallyWidget::RSetPercent()

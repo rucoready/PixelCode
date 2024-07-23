@@ -257,6 +257,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	TSubclassOf<ASpawnSwordRSkill> RSkillSpawn;
 
+	UFUNCTION(Server, Reliable) 
+	void SeverRPC_QSkillSpawn();
+
+	UFUNCTION(NetMulticast, Reliable) 
+	void MultiRPC_QSkillSpawn();
+
+	UFUNCTION(Server, Reliable) 
+	void SeverRPC_RSkillSpawn();
+
+	UFUNCTION(NetMulticast, Reliable) 
+	void MultiRPC_RSkillSpawn();
+
 
 	FVector CachedDestination;
 
@@ -297,7 +309,19 @@ protected:
 
 	void PlayerRun(const FInputActionValue& Value);
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerRun();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerRun();
+
 	void PlayerRunEnd(const FInputActionValue& Value);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerRunEnd();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerRunEnd();
 
 	void PlayerExpUp(const FInputActionValue& Value);
 
@@ -545,7 +569,7 @@ public:
 	UFUNCTION(NetMulticast, Reliable) 
 	void MultiRPC_RemoveFoliage(const FHitResult& HitResult);
 
-
+	
 
 
 // 	UFUNCTION(Server, Reliable)

@@ -30,7 +30,20 @@ void UPlayerStatWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-
+	APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
+	PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
+	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
+	if (PlayerState != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("StatOnPlayerState"));
+		
+		
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("StatNotPlayerState"));
+		return;
+	}
 
 
 	
@@ -74,13 +87,7 @@ void UPlayerStatWidget::UpdateStat(UStateComponent* PlayerStateComp)
 
 void UPlayerStatWidget::UpdateLevel()
 {
-	APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
-	PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
-	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
-	if (PlayerState == nullptr)
-	{
-		return;
-	}
+	
 
 	LEVEL = FString::FromInt(PlayerState->Level);  // float을 FString으로 변환
 	TB_LEVEL->SetText(FText::FromString(LEVEL));  // FString을 FText로 변환하여 UTextBlock에 설정	

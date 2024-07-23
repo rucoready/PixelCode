@@ -11,6 +11,7 @@ class AMyGameModeBase;
 class UNormallyWidget;
 class UPlayerStatWidget;
 class ApixelPlayerState;
+class APixelCodeCharacter;
 /**
  * 
  */
@@ -42,10 +43,9 @@ public:
 	UPROPERTY(Replicated)
 	UNormallyWidget* NormallyWidget;
 	
-	
-
 	ApixelPlayerState* PlayerState;
 
+	APixelCodeCharacter* MainPlayer;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	// UI
@@ -64,6 +64,16 @@ public:
 	void ServerRPC_RespawnPlayer();
 
 	
+	UFUNCTION(Server, Reliable)
+	void ServerSendPlayerStateToClient(APlayerController* TargetPlayerController, ApixelPlayerState* PlayerStateData);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastReceivePlayerStateFromServer(APlayerController* TargetPlayerController, ApixelPlayerState* PlayerStateData);
+
+protected:
+
+
+
 
 	//UFUNCTION(Server, Reliable)
 	//void ServerRPC_ChangeSpectator();

@@ -18,6 +18,7 @@ class UCanvasPanel;
 class UButton;
 class AMyGameModeBase;
 class UTextBlock;
+class APlayerController;
 /**
  * 
  */
@@ -59,6 +60,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Player")
 	APCodePlayerController* PlayerController;
+
+	APlayerController* Pc;
 
 	UPROPERTY(EditDefaultsOnly, Category = "SKillCollTime", meta = (BindWidget))
 	UImage* BP_QSkillbar;
