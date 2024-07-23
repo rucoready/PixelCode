@@ -31,7 +31,7 @@ void APCodePlayerController::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("PC On"));
 		PlayerState = Cast<ApixelPlayerState>(Pc->PlayerState);
-		ServerSendPlayerStateToClient(Pc, PlayerState);
+		//ServerSendPlayerStateToClient(Pc, PlayerState);
 		if (PlayerState != nullptr)
 		{
 			PlayerState = PlayerState->GetPlayerStateOfOtherPlayer(this);

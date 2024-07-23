@@ -195,6 +195,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UNormallyWidget> NormallyWidgetClass;
 
+	void characterPlayerState();
+
+	UFUNCTION(Server, Reliable)
+ 	void ServerRPC_PlayerState();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerState();
+
 	bool bWidget = false;
 
 	class APCodePlayerController* Pc;
