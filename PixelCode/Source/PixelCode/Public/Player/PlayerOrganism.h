@@ -128,6 +128,9 @@ public:
 	UFUNCTION()
 	virtual void DieFunction();
 
+	bool bFarmFoliage = false;
+
+
 	bool SkillZ = false;
 
 	// 캐릭터가 현재 이동 중인지 여부

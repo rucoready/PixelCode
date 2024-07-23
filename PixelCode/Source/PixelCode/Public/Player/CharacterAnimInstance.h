@@ -71,6 +71,9 @@ public:
 	UFUNCTION()
 	void AnimNotify_PlayerZSkillDash();
 
+	UFUNCTION()
+	void AnimNotify_FarmFoliage();
+
 };
 
 

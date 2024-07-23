@@ -116,5 +116,13 @@ void UCharacterAnimInstance::AnimNotify_PlayerZSkillDash()
 
 }
 
+void UCharacterAnimInstance::AnimNotify_FarmFoliage()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bFarmFoliage = true;
+		/*myCharacter->CharcurrentLoc();*/
+	}
+}
 
 
