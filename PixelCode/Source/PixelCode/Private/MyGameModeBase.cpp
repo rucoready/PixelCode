@@ -3,8 +3,15 @@
 
 #include "MyGameModeBase.h"
 #include "Player/pixelPlayerState.h"
-#include "Player/PixelCodeCharacter.h" // æ¯æÓµµ µ ?
-#include "PCodePlayerController.h" // æ¯æÓµµ µ ?
+#include "Player/PixelCodeCharacter.h" 
+#include "PortalRobbyWidget.h"
+#include "PCodePlayerController.h" 
+#include "Blueprint/UserWidget.h"
+#include "Engine/World.h"
+#include "PortalCollision.h"
+#include "PCodePlayerController.h"
+#include "EngineUtils.h" 
+#include "Kismet/GameplayStatics.h"
 
 AMyGameModeBase::AMyGameModeBase()
 {
@@ -12,6 +19,30 @@ AMyGameModeBase::AMyGameModeBase()
 	PlayerControllerClass = APCodePlayerController::StaticClass();
 	PlayerStateClass = ApixelPlayerState::StaticClass();
 
+	PrimaryActorTick.bCanEverTick = true;
+
+}
+
+void AMyGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	portalWidget = CreateWidget<UPortalRobbyWidget>(GetWorld(), UPortalRobbyWidget::StaticClass());
+	if (portalWidget)
+	{
+		portalWidget;
+	}
+	for (TActorIterator<APortalCollision> It(GetWorld()); It; ++It)
+	{
+		portalCollision = *It;
+		if (portalCollision)
+		{
+			portalCollision->ServerRPC_ShowRobbyWidget();
+			
+			//break; // Ïó¨Îü¨ Í∞úÏùò Ïï°ÌÑ∞Í∞Ä ÏûàÏùÑ Í≤ΩÏö∞, Ï≤´ Î≤àÏß∏ Ïï°ÌÑ∞Îßå Ï≤òÎ¶¨ÌïòÎ†§Î©¥ break
+		}
+	}
+		
 }
 
 void AMyGameModeBase::EXPmanagement(float EXP, ApixelPlayerState* PlayerState)
@@ -26,12 +57,24 @@ void AMyGameModeBase::EXPmanagement(float EXP, ApixelPlayerState* PlayerState)
 
 }
 
+void AMyGameModeBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
+ 	if (bIsReadyToReady)
+ 	{
+		UE_LOG(LogTemp, Warning, TEXT("TICKCHANGEREADY!"));
+ 	}
+
+	
+}
+
 void AMyGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 
 	auto NewPlayerState = Cast<ApixelPlayerState>(NewPlayer->PlayerState);
-	// «√∑π¿ÃæÓ µ•¿Ã≈Õ πﬁ±‚
+	
 	if (NewPlayerState != nullptr)
 	{
 		NewPlayerState->InitPlayerData();

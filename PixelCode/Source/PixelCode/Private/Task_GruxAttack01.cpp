@@ -44,55 +44,50 @@ EBTNodeResult::Type UTask_GruxAttack01::ExecuteTask(UBehaviorTreeComponent& Owne
 void UTask_GruxAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 
-	currentTime += DeltaSeconds;
-    TArray<AActor*> foundCharacters;
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+    // currentTime 업데이트
+    currentTime += DeltaSeconds;
 
-    int32 randomIndex = FMath::RandRange(0, foundCharacters.Num() - 1);
-    player = Cast<APixelCodeCharacter>(foundCharacters[randomIndex]);
-    if (currentTime > 0.0f && currentTime < 0.8f)
+    // Blackboard 컴포넌트 참조를 얻기
+    UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
+
+    // Blackboard에서 가장 가까운 플레이어 위치를 가져옵니다.
+    FVector nearestPlayerLocation = BlackboardComp->GetValueAsVector(TEXT("NearPlayerLoc"));
+
+    // 보스 컨트롤러를 캐스팅
+    AGruxAIController* gruxController = Cast<AGruxAIController>(OwnerComp.GetAIOwner());
+    if (gruxController)
     {
-        if (player)
+        APawn* gruxPawn = gruxController->GetPawn();
+        if (gruxPawn)
         {
-            playerLocation = player->GetActorLocation();
-            //보스컨트롤러를 캐스팅
-            AGruxAIController* gruxController = Cast<AGruxAIController>(OwnerComp.GetAIOwner());
-            if (gruxController)
+            // 시간이 0.0초에서 0.2초 사이인 경우
+            if (currentTime <= 0.2f && !animOnce)
             {
-                APawn* gruxPawn = gruxController->GetPawn();
-                if (gruxPawn)
+                // 애니메이션을 처리하고 서버 RPC 호출
+                grux = Cast<AGrux>(gruxPawn);
+                if (grux && grux->GetMesh() && grux->GetMesh()->GetAnimInstance())
                 {
-
-                    // 방향 설정
-                    FVector direction = playerLocation - gruxPawn->GetActorLocation();
-                    direction.Z = 0; // 보스가 수평으로만 회전하도록 Z축 회전 제거
-                    FRotator newRotation = direction.Rotation();
-                    gruxPawn->SetActorRotation(newRotation);
-                }
-            }
-        }
-    }
-	if (currentTime > 0.0f && currentTime < 0.2f)
-	{
-        AGruxAIController* gruxController = Cast<AGruxAIController>(OwnerComp.GetOwner());
-        if (gruxController)
-        {
-            APawn* ControlledPawn = gruxController->GetPawn();
-            if (ControlledPawn)
-            {
-                grux = Cast<AGrux>(ControlledPawn);
-
-                if (grux->GetMesh() && grux->GetMesh()->GetAnimInstance() && !animOnce)
-                {
-                    UAnimInstance* AnimInstance = grux->GetMesh()->GetAnimInstance();
                     grux->ServerRPC_Attack01();
                     animOnce = true;
                 }
             }
+
+            // 시간이 0.0초에서 0.8초 사이인 경우
+            if (currentTime <= 0.8f)
+            {
+                // 방향 설정
+                FVector direction = nearestPlayerLocation - gruxPawn->GetActorLocation();
+                direction.Z = 0; // 보스가 수평으로만 회전하도록 Z축 회전 제거
+                FRotator newRotation = direction.Rotation();
+                gruxPawn->SetActorRotation(newRotation);
+            }
         }
-	}
-    if (currentTime >= 3.5f)
+    }
+
+    // 시간이 3.5초 이상인 경우
+    if (currentTime >= 5.5f)
     {
+        currentTime = 0.0f;
         animOnce = false;
         FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
     }

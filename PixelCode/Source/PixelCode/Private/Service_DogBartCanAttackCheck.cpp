@@ -53,7 +53,7 @@ void UService_DogBartCanAttackCheck::TickNode(UBehaviorTreeComponent& OwnerComp,
         BlackboardComp->SetValueAsBool(moveOn.SelectedKeyName, moveNow);
         dogBart->GetCharacterMovement()->MaxWalkSpeed = 800.0f;
 
-        
+
 
 
 

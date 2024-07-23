@@ -28,140 +28,155 @@ void UService_Grux_SensingCheck::TickNode(UBehaviorTreeComponent& OwnerComp, uin
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGrux::StaticClass(), foundGrux);
 
     grux = Cast<AGrux>(OwnerComp.GetAIOwner()->GetPawn());
+    if (!grux) return; // grux가 유효하지 않으면 함수 종료
 
-   
+    gruxLoc = grux->GetActorLocation();
+    FVector gruxForward = grux->GetActorForwardVector();
 
-        gruxLoc = grux->GetActorLocation();
-        FVector gruxForward = grux->GetActorForwardVector();
+    TArray<AActor*> foundCharacters;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+    UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 
-        TArray<AActor*> foundCharacters;
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
-        UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
+    const int32 numTraces = 40;
+    const float angleStep = 160.0f / numTraces;
+    const float halfFOV = 160.0f / 2.0f;
 
-        const int32 numTraces = 40;
-        const float angleStep = 160.0f / numTraces;
-        const float halfFOV = 160.0f / 2.0f;
+    bAnyPlayerDetected = false;
+    APixelCodeCharacter* closestPlayer = nullptr;
+    float closestDistance = FLT_MAX;
 
-        bAnyPlayerDetected = false;
+    for (AActor* actor : foundCharacters)
+    {
+        actorLoc = actor->GetActorLocation();
+        FVector toActor = (actorLoc - gruxLoc).GetSafeNormal2D(); // Z축을 무시한 평면 벡터
+        distance = FVector::Dist2D(gruxLoc, actorLoc); // Z축을 무시한 평면 거리
+        float dotProduct = FVector::DotProduct(gruxForward, toActor);
+        float angle = FMath::Acos(dotProduct) * (180.0f / PI);
 
-        for (AActor* actor : foundCharacters)
+        if (angle <= 80.0f)
         {
-            actorLoc = actor->GetActorLocation();
-            FVector toActor = (actorLoc - gruxLoc).GetSafeNormal();
-            distance = FVector::Dist(gruxLoc, actorLoc);
-            float dotProduct = FVector::DotProduct(gruxForward, toActor);
-            float angle = FMath::Acos(dotProduct) * (180.0f / PI);
-
-            if (angle <= 80.0f)
+            for (int32 i = 0; i <= numTraces; ++i)
             {
-                for (int32 i = 0; i <= numTraces; ++i)
+                float currentAngle = -halfFOV + i * angleStep;
+                FRotator rotation = FRotator(0.0f, currentAngle, 0.0f);
+                FVector direction = rotation.RotateVector(gruxForward);
+
+                FVector traceEnd = gruxLoc + direction * 1500.0f;
+                FHitResult hitResult;
+                FCollisionQueryParams queryParams;
+                queryParams.AddIgnoredActor(grux);
+
+                bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, gruxLoc, traceEnd, ECC_Visibility, queryParams);
+
+                // DrawDebugLine(GetWorld(), gruxLoc, traceEnd, FColor::Red, false, 0.1f, 0, 10.0f);
+
+                if (bHit && hitResult.GetActor())
                 {
-                    float currentAngle = -halfFOV + i * angleStep;
-                    FRotator rotation = FRotator(0.0f, currentAngle, 0.0f);
-                    FVector direction = rotation.RotateVector(gruxForward);
-
-                    FVector traceEnd = gruxLoc + direction * 1500.0f;
-                    FHitResult hitResult;
-                    FCollisionQueryParams queryParams;
-                    queryParams.AddIgnoredActor(grux);
-
-                    bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, gruxLoc, traceEnd, ECC_Visibility, queryParams);
-
-                    //DrawDebugLine(GetWorld(), gruxLoc, traceEnd, FColor::Red, false, 0.1f, 0, 10.0f);
-
-                    if (bHit && hitResult.GetActor())
+                    FString actorName = hitResult.GetActor()->GetName();
+                    if (actorName.Contains("Player"))
                     {
-                        FString actorName = hitResult.GetActor()->GetName();
-                        if (actorName.Contains("Player"))
+                        APixelCodeCharacter* detectedPlayer = Cast<APixelCodeCharacter>(hitResult.GetActor());
+                        FVector detectedPlayerLoc = detectedPlayer->GetActorLocation();
+                        distance = FVector::Dist2D(gruxLoc, detectedPlayerLoc); // Z축 무시
+
+                        if (distance < closestDistance)
                         {
-                            player = Cast<APixelCodeCharacter>(hitResult.GetActor());
-                            
+                            closestPlayer = detectedPlayer;
+                            closestDistance = distance;
                             bAnyPlayerDetected = true;
-
-
-                        }
-
-                    }
-                }
-
-                if (bAnyPlayerDetected)
-                {
-                    break;
-                }
-            }
-        }
-
-        if (!bAnyPlayerDetected)
-        {
-            UE_LOG(LogTemp, Warning, TEXT("NoDetected"));
-        }
-
-        bPlayerInSight = bAnyPlayerDetected;
-        OwnerComp.GetBlackboardComponent()->SetValueAsBool(GetSelectedBlackboardKey(), bPlayerInSight);
-
-        if (bPlayerInSight)
-        {
-            for (AActor* actor : foundCharacters)
-            {
-                actorLoc = actor->GetActorLocation();
-                distance = FVector::Dist(gruxLoc, actorLoc);
-
-                if (UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld()))
-                {
-                    AGruxAIController* gruxController = Cast<AGruxAIController>(OwnerComp.GetAIOwner());
-                    if (gruxController)
-                    {
-                        if (distance < 300)
-                        {
-                            gruxController->StopMovement();
-                            bGuxCanAttack = true;
-
-                            if (!bOnceTimer)
-                            {
-                                attackWaitTime = currentTime;
-                                bOnceTimer = true;
-                            }
-
-                            BlackboardComp->SetValueAsBool(canAttackKey.SelectedKeyName, bGuxCanAttack);
-                        }
-                        else
-                        {
-                            gruxController->MoveToLocation(actorLoc);
-                            bGuxCanAttack = false;
-                            BlackboardComp->SetValueAsBool(canAttackKey.SelectedKeyName, bGuxCanAttack);
-                            bOnceTimer = false;
+                            // 디버그 로그
+                            UE_LOG(LogTemp, Warning, TEXT("Detected Player: %s, Distance: %f"), *actorName, distance);
                         }
                     }
                 }
             }
         }
+    }
 
-        if (bGuxCanAttack)
+    if (closestPlayer)
+    {
+        bPlayerInSight = true;
+        FVector playerLoc = closestPlayer->GetActorLocation();
+        FVector directionToPlayer = (playerLoc - gruxLoc).GetSafeNormal2D();
+        FRotator targetRotation = directionToPlayer.Rotation();
+
+        if (AGruxAIController* gruxController = Cast<AGruxAIController>(OwnerComp.GetAIOwner()))
         {
-            if (currentTime - attackWaitTime > 2.0f)
+            // 부드러운 회전 적용
+            FRotator currentRotation = grux->GetActorRotation();
+            FRotator newRotation = FMath::RInterpTo(currentRotation, targetRotation, DeltaSeconds, 5.0f); // 속도 조절
+
+            grux->SetActorRotation(newRotation);
+            BlackboardComp->SetValueAsVector(nearlestPlayerLocation.SelectedKeyName, playerLoc);
+            UE_LOG(LogTemp, Warning, TEXT("Setting Blackboard Key to: %s"), *playerLoc.ToString());
+
+            // 거리 기반의 행동 결정
+            if (closestDistance < 250.0f)
             {
-                UE_LOG(LogTemp, Warning, TEXT("BBBBBBBBBBBBBBBBBBBBBB"));
-                if (!bCheckingBehind) // CheckBehind 상태가 아니면
+                // 플레이어와의 거리가 250 이하일 때
+                gruxController->StopMovement();
+                bGuxCanAttack = true;
+
+                // 일정 시간 동안 이 거리 내에 있을 때만 공격 허용
+                if (!bOnceTimer)
                 {
-                    checkBehindStartTime = currentTime; // CheckBehind 시작 시간 설정
-                    bCheckingBehind = true;
+                    attackWaitTime = currentTime;
+                    bOnceTimer = true;
                 }
+                BlackboardComp->SetValueAsBool(canAttackKey.SelectedKeyName, bGuxCanAttack);
             }
-        }
-
-        if (bCheckingBehind)
-        {
-            if (currentTime - checkBehindStartTime < 2.0f) // 2초 동안 CheckBehind 유지
+            else if (closestDistance < 300.0f)
             {
-                CheckBehindAfterAttack(OwnerComp.GetBlackboardComponent());
+                // 거리 250과 300 사이에서는 느리게 이동
+                if (currentTime - attackWaitTime > 1.0f) // 일정 시간 이상 거리가 유지되면 이동 시작
+                {
+                    gruxController->MoveToLocation(playerLoc);
+                    bGuxCanAttack = false;
+                    BlackboardComp->SetValueAsBool(canAttackKey.SelectedKeyName, bGuxCanAttack);
+                    bOnceTimer = false;
+                }
             }
             else
             {
-                bCheckingBehind = false; // 2초가 지나면 CheckBehind 상태 종료
+                // 거리가 300 이상일 때는 계속 이동
+                gruxController->MoveToLocation(playerLoc);
+                bGuxCanAttack = false;
+                BlackboardComp->SetValueAsBool(canAttackKey.SelectedKeyName, bGuxCanAttack);
+                bOnceTimer = false;
             }
         }
-    
-    
+    }
+    else
+    {
+        bPlayerInSight = false;
+        UE_LOG(LogTemp, Warning, TEXT("No Detected"));
+    }
+
+    OwnerComp.GetBlackboardComponent()->SetValueAsBool(GetSelectedBlackboardKey(), bPlayerInSight);
+
+    if (bGuxCanAttack)
+    {
+        if (currentTime - attackWaitTime > 2.0f)
+        {
+            if (!bCheckingBehind)
+            {
+                checkBehindStartTime = currentTime;
+                bCheckingBehind = true;
+            }
+        }
+    }
+
+    if (bCheckingBehind)
+    {
+        if (currentTime - checkBehindStartTime < 2.0f)
+        {
+            CheckBehindAfterAttack(OwnerComp.GetBlackboardComponent());
+        }
+        else
+        {
+            bCheckingBehind = false;
+        }
+    }
 }
 
 void UService_Grux_SensingCheck::CheckBehindAfterAttack(UBlackboardComponent* BlackboardComp)
@@ -178,7 +193,7 @@ void UService_Grux_SensingCheck::CheckBehindAfterAttack(UBlackboardComponent* Bl
 
         bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, gruxLoc, traceEnd, ECC_Visibility, queryParams);
 
-        //DrawDebugLine(GetWorld(), gruxLoc, traceEnd, FColor::Blue, false, 0.1f, 0, 2.0f);
+        // DrawDebugLine(GetWorld(), gruxLoc, traceEnd, FColor::Blue, false, 0.1f, 0, 2.0f);
 
         if (bHit && hitResult.GetActor())
         {

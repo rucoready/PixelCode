@@ -35,6 +35,10 @@ public:
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector canAttackKey;
 
+    
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector nearlestPlayerLocation;
+
     bool bGuxCanAttack = false;
 
     float betweenSize;
