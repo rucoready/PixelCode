@@ -133,8 +133,13 @@ void APixelCodeCharacter::BeginPlay()
 
 	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
 
-	APlayerController* UPc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	Pc = Cast<APCodePlayerController>(UPc);
+	/*APlayerController* UPc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	Pc = Cast<APCodePlayerController>(UPc);*/
+
+	/*APlayerController* UPc = Cast<APlayerController>(GetController());
+	Pc = Cast<APCodePlayerController>(UPc);*/
+
+
 
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -179,20 +184,179 @@ void APixelCodeCharacter::BeginPlay()
 	{
 		UE_LOG(LogTemp,Warning,TEXT("notPsArray"));
 	}*/
+
+
+	Pc = Cast<APCodePlayerController>(GetWorld()->GetFirstPlayerController());
 	
-	if (Pc != nullptr && Pc->IsLocalPlayerController())
+	characterPlayerState();
+
+	
+
+	//if (HasAuthority())
+	//{
+	//	// 현재 플레이어의 PlayerState를 얻기
+	//	auto temp = Pc->GetPlayerState<ApixelPlayerState>();
+
+	//	if (temp == nullptr)
+	//	{
+	//		int iTemp = 0;
+	//		iTemp = 1;
+	//		iTemp = 2;
+	//		iTemp = 3;
+	//		iTemp = 4;
+	//		iTemp = 5;
+	//		iTemp = 6;
+
+	//		if (pixelPlayerState == nullptr)
+	//		{
+	//			pixelPlayerState = Cast<ApixelPlayerState>(temp);
+	//		}
+	//	}
+
+	//	ApixelPlayerState* CurrentPlayerState = Cast<ApixelPlayerState>(GetPlayerState());
+
+	//	if (CurrentPlayerState != nullptr && pixelPlayerState == nullptr)
+	//	{
+	//		pixelPlayerState = CurrentPlayerState;
+	//	}
+
+	//	if (CurrentPlayerState != nullptr)
+	//	{
+	//		TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
+
+	//		// psArray에서 CurrentPlayerState와 일치하는 PlayerState를 찾기
+	//		for (int i = 0; i < psArray.Num(); i++)
+	//		{
+	//			ApixelPlayerState* PlayerStateInArray = Cast<ApixelPlayerState>(psArray[i]);
+	//			if (PlayerStateInArray != nullptr && PlayerStateInArray == CurrentPlayerState)
+	//			{
+	//				pixelPlayerState = PlayerStateInArray;
+	//				NormallyWidget->currentExpUpdate(pixelPlayerState->currentEXP, pixelPlayerState->totalEXP);
+	//				//PlayerState->SetaddUpEXP(30.0f);
+	//				// 일치하는 PlayerState를 찾았을 때의 로직
+	//				// PlayerStateInArray를 이용해서 원하는 작업을 수행
+	//				// 예: PlayerStateInArray->SomeFunction();
+
+	//				PlayerStateInArray->PlayerId;
+	//				UE_LOG(LogTemp, Warning, TEXT("%d"), PlayerStateInArray);
+	//				FString Message = FString::Printf(TEXT("현재 플레이어 상태의 인덱스는 %d 입니다."), PlayerStateInArray);
+	//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
+
+
+	//				break; // 일치하는 것을 찾았으므로 루프 종료
+	//			}
+	//			else
+	//			{
+	//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
+	//				UE_LOG(LogTemp, Warning, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
+	//			}
+	//		}
+	//	}
+	//	else
+	//	{
+	//		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(CurrentPlayerState)를 찾을 수 없습니다."));
+	//		UE_LOG(LogTemp, Warning, TEXT("플레이어 상태(CurrentPlayerState)를 찾을 수 없습니다."));
+	//	}
+	//}
+
+	//if (Pc != nullptr && Pc->IsLocalPlayerController())
+	//{
+	//	// 현재 플레이어의 PlayerState를 얻기
+	//	auto temp = Pc->GetPlayerState<ApixelPlayerState>();
+
+	//	if (temp == nullptr)
+	//	{
+	//		int iTemp = 0;
+	//		iTemp = 1;
+	//		iTemp = 2;
+	//		iTemp = 3;
+	//		iTemp = 4;
+	//		iTemp = 5;
+	//		iTemp = 6;
+
+	//		if (pixelPlayerState == nullptr)
+	//		{
+	//			pixelPlayerState = Cast<ApixelPlayerState>(temp);
+	//		}
+	//	}
+
+	//	ApixelPlayerState* CurrentPlayerState = Cast<ApixelPlayerState>(GetPlayerState());
+
+	//	if (CurrentPlayerState != nullptr && pixelPlayerState == nullptr)
+	//	{
+	//		pixelPlayerState = CurrentPlayerState;
+	//	}
+
+	//	if (CurrentPlayerState != nullptr)
+	//	{
+	//		TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
+
+	//		// psArray에서 CurrentPlayerState와 일치하는 PlayerState를 찾기
+	//		for (int i = 0; i < psArray.Num(); i++)
+	//		{
+	//			ApixelPlayerState* PlayerStateInArray = Cast<ApixelPlayerState>(psArray[i]);
+	//			if (PlayerStateInArray != nullptr && PlayerStateInArray == CurrentPlayerState)
+	//			{
+	//				pixelPlayerState = PlayerStateInArray;
+	//				NormallyWidget->currentExpUpdate(pixelPlayerState->currentEXP, pixelPlayerState->totalEXP);
+	//				//PlayerState->SetaddUpEXP(30.0f);
+	//				// 일치하는 PlayerState를 찾았을 때의 로직
+	//				// PlayerStateInArray를 이용해서 원하는 작업을 수행
+	//				// 예: PlayerStateInArray->SomeFunction();
+
+	//				PlayerStateInArray->PlayerId;
+	//				UE_LOG(LogTemp,Warning,TEXT("%d"),PlayerStateInArray);
+	//				FString Message = FString::Printf(TEXT("현재 플레이어 상태의 인덱스는 %d 입니다."), PlayerStateInArray);
+	//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
+
+
+	//				break; // 일치하는 것을 찾았으므로 루프 종료
+	//			}
+	//			else
+	//			{
+	//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
+	//				UE_LOG(LogTemp, Warning, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
+	//			}
+	//		}
+	//	}
+	//	else
+	//	{
+	//		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(CurrentPlayerState)를 찾을 수 없습니다."));
+	//		UE_LOG(LogTemp, Warning, TEXT("플레이어 상태(CurrentPlayerState)를 찾을 수 없습니다."));
+	//	}
+	//}
+	//else
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(Pc)를 찾을 수 없습니다."));
+	//	UE_LOG(LogTemp, Warning, TEXT("플레이어 상태(Pc)를 찾을 수 없습니다."));
+	//}
+
+
+
+
+
+
+
+
+
+
+	/*if (Pc != nullptr && Pc->IsLocalPlayerController())
 	{
+		//PlayerState = Cast<ApixelPlayerState>(GetPlayerState());
 		TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
 		for (int i = 0; i < psArray.Num(); i++)
 		{
-			PlayerState = Cast<ApixelPlayerState>(GetPlayerState());
+
 			if (PlayerState == psArray[i])
 			{
 				APlayerState* ps = psArray[i];
 				PlayerState = Cast<ApixelPlayerState>(ps);
 			}
 		}
-	}
+	}*/
+
+	
+
 
 	/*if (PlayerArray != nullptr)
 	{
@@ -243,7 +407,7 @@ void APixelCodeCharacter::BeginPlay()
 	
 	//GetAllChildActors()
 
-	characterPlayerState();
+
 
 
  	if (!Builder)
@@ -308,30 +472,30 @@ void APixelCodeCharacter::characterPlayerState()
 
 }
 
-void APixelCodeCharacter::ServerRPC_PlayerState_Implementation()
-{
-	//PlayerState = Cast<ApixelPlayerState>(GetPlayerState());
-	//PlayerState = Cast<ApixelPlayerState>(Pc->PlayerState);
-	NetMulticastRPC_PlayerState();
-}
-
-void APixelCodeCharacter::NetMulticastRPC_PlayerState_Implementation()
-{
-	
-	//AGameStateBase
-	APlayerState* ps = GetPlayerState();
-	PlayerState = Cast<ApixelPlayerState>(ps);
-
-	if (ps != nullptr)
-	{
-		int32 StateIndex = PlayerState->PlayerId;
-		FString Message = FString::Printf(TEXT("현재 플레이어 상태의 인덱스는 %d 입니다."), StateIndex);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
-	}
+//void APixelCodeCharacter::ServerRPC_PlayerState_Implementation()
+//{
+//	//PlayerState = Cast<ApixelPlayerState>(GetPlayerState());
+//	//PlayerState = Cast<ApixelPlayerState>(Pc->PlayerState);
+//	NetMulticastRPC_PlayerState();
+//}
+//
+//void APixelCodeCharacter::NetMulticastRPC_PlayerState_Implementation()
+//{
+//	
+//	//AGameStateBase
+//	APlayerState* ps = GetPlayerState();
+//	PlayerState = Cast<ApixelPlayerState>(ps);
+//
+//	if (ps != nullptr)
+//	{
+//		int32 StateIndex = PlayerState->PlayerId;
+//		FString Message = FString::Printf(TEXT("현재 플레이어 상태의 인덱스는 %d 입니다."), StateIndex);
+//		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
+//	}
+//	else
+//	{
+//		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
+//	}
 
 	//characterPlayerState();
 
@@ -342,7 +506,7 @@ void APixelCodeCharacter::NetMulticastRPC_PlayerState_Implementation()
 	//PlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
 	
 
-	if (PlayerState != nullptr)
+	/*if (PlayerState != nullptr)
 	{
 		int32 StateIndex = PlayerState->PlayerId;
 		FString Message = FString::Printf(TEXT("현재 플레이어 상태의 인덱스는 %d 입니다."), StateIndex);
@@ -351,8 +515,8 @@ void APixelCodeCharacter::NetMulticastRPC_PlayerState_Implementation()
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
-	}
-}	
+	}*/
+	
 
 
 // 서휘-----------------------------------------------------------------------------------------------------
@@ -1625,7 +1789,7 @@ void APixelCodeCharacter::PlayerStartWidget()
 
 void APixelCodeCharacter::FullExp()
 {
-	NormallyWidget->firstStatedate();
+	//NormallyWidget->firstStatedate();
 
 }
 
@@ -1635,9 +1799,9 @@ void APixelCodeCharacter::PlayerLevelUp()
 	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
 	
 
-	bStatExp = true;
+	//bStatExp = true;
 
-	PlayerState->SetaddUpEXP(30.0f);
+	//PlayerState->SetaddUpEXP(30.0f);
 	//if (Pc != nullptr && Pc->IsLocalPlayerController())
 	//{
 	//	TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
@@ -1764,13 +1928,13 @@ void APixelCodeCharacter::DropItem()
 
 void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-
+	
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{	
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &APixelCodeCharacter::CharacterJump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
+		
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APixelCodeCharacter::Move);
 
@@ -1819,7 +1983,7 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(IA_Weapon, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon);
 		EnhancedInputComponent->BindAction(IA_Weapon2, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon2);
 		EnhancedInputComponent->BindAction(IA_ExpUp, ETriggerEvent::Started, this, &APixelCodeCharacter::PlayerExpUp);
-
+		
 
 	}
 	else
@@ -2076,7 +2240,7 @@ void APixelCodeCharacter::SkillRightMouse()
 
 void APixelCodeCharacter::SeverRPC_QSkillSpawn_Implementation()
 {
-	//MultiRPC_QSkillSpawn();
+	MultiRPC_QSkillSpawn();
 }
 
 void APixelCodeCharacter::MultiRPC_QSkillSpawn_Implementation()
@@ -2087,7 +2251,7 @@ void APixelCodeCharacter::MultiRPC_QSkillSpawn_Implementation()
 
 void APixelCodeCharacter::SeverRPC_RSkillSpawn_Implementation()
 {
-	//MultiRPC_RSkillSpawn();
+	MultiRPC_RSkillSpawn();
 }
 
 void APixelCodeCharacter::MultiRPC_RSkillSpawn_Implementation()
@@ -2191,6 +2355,7 @@ void APixelCodeCharacter::Look(const FInputActionValue& Value)
 
 void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 {
+
 	Mousehit();
 	
 	if (false == combatComponent->bCombatEnable)
@@ -2352,18 +2517,17 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 
 	if (bSkillNSQ)
 	{ 
-		FActorSpawnParameters SpawnParams;
-		GetWorld()->SpawnActor<ASpawnSwordQSkill>(QSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+		SeverRPC_QSkillSpawn();
 
 		bSkillNSQ = false;
 	}
 
 	if (bSkillNSR)
 	{
-		//SeverRPC_RSkillSpawn();
+		SeverRPC_RSkillSpawn();
 		
-		FActorSpawnParameters SpawnParams;
-		GetWorld()->SpawnActor<ASpawnSwordRSkill>(RSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+		/*FActorSpawnParameters SpawnParams;
+		GetWorld()->SpawnActor<ASpawnSwordRSkill>(RSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);*/
 
 		bSkillNSR = false;
 	}
@@ -2374,7 +2538,7 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	}
 	if (NormallyWidget != nullptr && bStatExp)
 	{
-		NormallyWidget->currentExpUpdate(PlayerState->currentEXP, PlayerState->totalEXP);
+		NormallyWidget->currentExpUpdate(pixelPlayerState->currentEXP, pixelPlayerState->totalEXP);
 	}
 	// 지논------------------------------------------------------------------------------------------------------
 

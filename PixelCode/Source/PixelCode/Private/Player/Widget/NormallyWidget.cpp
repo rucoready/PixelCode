@@ -20,6 +20,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerState.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/Controller.h>
 
 
 
@@ -56,31 +57,31 @@ void UNormallyWidget::NativeConstruct()
 	
 
 	
-	Pc = GetOwningPlayer();
-	
-	PlayerController = Cast<APCodePlayerController>(Pc);
+	//
+	//AController* Pc = GetOwningPlayerPawn()->GetController();
+	//PlayerController = Cast<APCodePlayerController>(Pc);
 
-	if (PlayerController)
-	{
-		PlayerState = PlayerState->GetPlayerStateOfOtherPlayer(PlayerController);
-		if (PlayerState != nullptr)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("NormallyOnPlayerState"));
+	//if (PlayerController)
+	//{
+	//	PlayerState = PlayerController->GetPlayerStateOfOtherPlayer();
+	//	if (PlayerState != nullptr)
+	//	{
+	//		UE_LOG(LogTemp, Warning, TEXT("NormallyOnPlayerState"));
 
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("NormallyNotPlayerState"));
-		
-		}
-		UE_LOG(LogTemp, Warning, TEXT("Pc"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("NotPc"));
-	}
+	//	}
+	//	else
+	//	{
+	//		UE_LOG(LogTemp, Warning, TEXT("NormallyNotPlayerState"));
+	//	
+	//	}
+	//	UE_LOG(LogTemp, Warning, TEXT("Pc"));
+	//}
+	//else
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("NotPc"));
+	//}
 
-	
+
 	Player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
 
 	if (Player != nullptr)
@@ -91,16 +92,20 @@ void UNormallyWidget::NativeConstruct()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Player Null!"));
 	}
-	
+	//PlayerController = Cast<APCodePlayerController>(Player->GetController());
+	//PlayerState = Cast<ApixelPlayerState>(PlayerController->pixelPlayerState);
+
+
 	//PlayerState = Cast<ApixelPlayerState>(Player->GetPlayerState());
 
 	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
 	
 
 	
-	currentLevelUpdate();
+	//currentLevelUpdate();
 	//firstUpdate();
-	firstStatedate();
+	//currentExpUpdate(PlayerState->currentEXP, PlayerState->totalEXP);
+	//firstStatedate();
 }
 
 void UNormallyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -118,20 +123,12 @@ void UNormallyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void UNormallyWidget::firstUpdate(UStateComponent* PlayerStateComp)
 {
-	
 	PB_HP->SetPercent(PlayerStateComp->MaxHP);
 	PB_MP->SetPercent(PlayerStateComp->MaxMP);
 	//UE_LOG(LogTemp, Warning, TEXT("PlayerStateNonull"));
 }
-void UNormallyWidget::firstStatedate()
+void UNormallyWidget::firstStatedate(ApixelPlayerState* Ps)
 {
-	APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
-	PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
-	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
-	if (PlayerState == nullptr)
-	{
-		return;
-	}
 	PB_Exp->SetPercent(PlayerState->currentEXP);
 
 	LEVEL = FString::FromInt(PlayerState->Level);  // float을 FString으로 변환
@@ -151,16 +148,9 @@ void UNormallyWidget::currentExpUpdate(float currentEXP,float totalEXP)
 	//UE_LOG(LogTemp, Warning, TEXT("UPdateEXP"));
 }
 
-void UNormallyWidget::currentLevelUpdate()
+void UNormallyWidget::currentLevelUpdate(ApixelPlayerState* Ps)
 {
-	APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
-	PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
-	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
-	if (PlayerState == nullptr)
-	{
-		return;
-	}
-	LEVEL = FString::FromInt(PlayerState->Level); 
+	LEVEL = FString::FromInt(PlayerState->Level);
 	TB_LEVEL->SetText(FText::FromString(LEVEL));  
 }
 

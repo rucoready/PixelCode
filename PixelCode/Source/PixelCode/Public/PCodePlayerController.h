@@ -37,19 +37,29 @@ public:
 
 	UPROPERTY(Replicated)
 	UPlayerStatWidget* statWidget;
-	
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UPlayerStatWidget> StatWidgetClass;
 
 	UPROPERTY(Replicated)
 	UNormallyWidget* NormallyWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UNormallyWidget> NormallyWidgetClass;
 	
-	ApixelPlayerState* PlayerState;
+
+
+	ApixelPlayerState* pixelPlayerState;
+
+
 
 	APixelCodeCharacter* MainPlayer;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	// UI
 	
+	
+	ApixelPlayerState* GetPlayerStateOfOtherPlayer();
 
 	//UFUNCTION(Server, Reliable)
 	//void ServerRPC_StartUI();

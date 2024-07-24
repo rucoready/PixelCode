@@ -61,7 +61,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Player")
 	APCodePlayerController* PlayerController;
 
-	APlayerController* Pc;
+	//APlayerController* Pc;
 
 	UPROPERTY(EditDefaultsOnly, Category = "SKillCollTime", meta = (BindWidget))
 	UImage* BP_QSkillbar;
@@ -103,13 +103,13 @@ public:
 	UMaterialInstanceDynamic* ZDynamicMaterial;
 
 	void firstUpdate(UStateComponent* PlayerStateComp);
-	void firstStatedate();
+	void firstStatedate(ApixelPlayerState* Ps);
 	
 	ApixelPlayerState* PlayerState;
 
 	void currentStatUpdate(UStateComponent* PlayerStateComp);
 	void currentExpUpdate(float currentEXP, float totalEXP);
-	void currentLevelUpdate();
+	void currentLevelUpdate(ApixelPlayerState* Ps);
 	
 	void QSetPercent();
 	void ESetPercent();

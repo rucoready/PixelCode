@@ -37,7 +37,7 @@ public:
 	
 	ApixelPlayerState();
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	//virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 
     void SetaddUpEXP(float AcquireEXP); // float 타입으로 변경
@@ -48,13 +48,13 @@ public:
 
     int32 GetCharacterLevel() const;
 
-    UPROPERTY(ReplicatedUsing = OnRep_totalEXP)
+    UPROPERTY()
     int32 totalEXP;
 
-    UPROPERTY(ReplicatedUsing = OnRep_currentEXP)
+    UPROPERTY()
     float currentEXP;
 
-    UPROPERTY(Replicated)
+    UPROPERTY()
     int32 Level;
 
     void maxEXP();
@@ -67,16 +67,12 @@ public:
 
 
 
-	UNormallyWidget* PlayerMainUI;
-
-	UPlayerStatWidget* PlayerStatUI;
-
-	UStateComponent* stateComp;
+	
 
 
 
-	UFUNCTION(BlueprintCallable, Category = "PlayerState")
-    ApixelPlayerState* GetPlayerStateOfOtherPlayer(APCodePlayerController* OtherPlayerController);
+	//UFUNCTION(BlueprintCallable, Category = "PlayerState")
+ //   ApixelPlayerState* GetPlayerStateOfOtherPlayer(APCodePlayerController* OtherPlayerController);
 	
 	
 

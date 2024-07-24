@@ -20,30 +20,32 @@ ApixelPlayerState::ApixelPlayerState()
 }
 
 
-ApixelPlayerState* ApixelPlayerState::GetPlayerStateOfOtherPlayer(APCodePlayerController* OtherPlayerController)
-{
-    if (OtherPlayerController)
-    {
-        return Cast<ApixelPlayerState>(OtherPlayerController->PlayerState);
-        //PlayerState = UGameplayStatics::GetPlayerState(GetWorld(),);
-    }
+//ApixelPlayerState* ApixelPlayerState::GetPlayerStateOfOtherPlayer(APCodePlayerController* OtherPlayerController)
+//{
+//    if (OtherPlayerController)
+//    {
+//        return Cast<ApixelPlayerState>(OtherPlayerController->PlayerState);
+//        PlayerState = UGameplayStatics::GetPlayerState(GetWorld(),);
+//    }
+//
+//    return nullptr;
+//}
 
-    return nullptr;
-}
-
-void ApixelPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-    // totalEXP, currentEXP는 COND_OwnerOnly로 설정
-    DOREPLIFETIME_CONDITION(ApixelPlayerState, totalEXP, COND_OwnerOnly);
-    DOREPLIFETIME_CONDITION(ApixelPlayerState, currentEXP, COND_OwnerOnly);
-    // Level은 COND_None으로 설정 (기본값)
-    DOREPLIFETIME(ApixelPlayerState, Level);
-}
+//void ApixelPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+//{
+//    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+//
+//    // totalEXP, currentEXP는 COND_OwnerOnly로 설정
+//    DOREPLIFETIME_CONDITION(ApixelPlayerState, totalEXP, COND_OwnerOnly);
+//    DOREPLIFETIME_CONDITION(ApixelPlayerState, currentEXP, COND_OwnerOnly);
+//    // Level은 COND_None으로 설정 (기본값)
+//    DOREPLIFETIME(ApixelPlayerState, Level);
+//}
 
 void ApixelPlayerState::SetaddUpEXP(float AcquireEXP)
 {
+    maxEXP();
+
     // 현재 경험치 추가
 	currentEXP += AcquireEXP;
     auto* GM = Cast<AMyGameModeBase>(GetWorld()->GetAuthGameMode());
@@ -53,8 +55,7 @@ void ApixelPlayerState::SetaddUpEXP(float AcquireEXP)
     	GM->EXPmanagement(AcquireEXP, this);
     }
     // 경험치 업데이트 후 최대 경험치 체크
-    maxEXP();
-
+    
     // OnRep 함수 호출
     OnRep_currentEXP(currentEXP);
 }
@@ -63,11 +64,6 @@ void ApixelPlayerState::LevelUP()
 {
     Level += 1;
     maxEXP(); // 레벨 업 시 최대 경험치 업데이트
-    //auto* Pc = Cast<APCodePlayerController>(GetPawn()->GetController());
-    //if (Pc != nullptr)
-    //{
-       // Pc->LevelUpUpdate();
-   // }
 
    auto* LevelUpdatePlayer = Cast<APixelCodeCharacter>(GetPawn());
    if (LevelUpdatePlayer != nullptr)
@@ -80,6 +76,7 @@ void ApixelPlayerState::InitPlayerData()
 {
     Level = 1;
     maxEXP(); // 초기화 시 최대 경험치 설정
+    currentEXP = 0.0f;
 }
 
 float ApixelPlayerState::GetCurrentExp() const

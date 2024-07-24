@@ -197,11 +197,11 @@ public:
 
 	void characterPlayerState();
 
-	UFUNCTION(Server, Reliable)
- 	void ServerRPC_PlayerState();
+	/*UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerState();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticastRPC_PlayerState();
+	void NetMulticastRPC_PlayerState();*/
 
 	bool bWidget = false;
 
@@ -634,7 +634,8 @@ public:
 
 	AMyGameModeBase* GM;
 
-	ApixelPlayerState* PlayerState;
+	UPROPERTY()
+	ApixelPlayerState* pixelPlayerState;
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_ToggleCombat();
