@@ -79,6 +79,9 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_IsJump();
+
+	void AnimNotify_AttackBlock();
+
 };
 
 

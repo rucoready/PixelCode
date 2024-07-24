@@ -79,6 +79,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "MySettings")
 	UAnimMontage* hitFalldownReaction;
 
+	UPROPERTY(EditDefaultsOnly, Category = "MySettings")
+	UAnimMontage* AttackCountor;
+
 	class UAnimInstance* AnimInsatnce;
 
 	void GetHit(const FVector& ImpactPoint, bool bFallDown);
@@ -151,6 +154,8 @@ public:
 	bool bSkillNSR = false;
 
 	bool bBossGroggy = false;
+
+	bool bAttackBlock = false;
 
 	bool bIsJump = false;
 

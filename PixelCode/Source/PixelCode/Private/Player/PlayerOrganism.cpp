@@ -150,7 +150,15 @@ void APlayerOrganism::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	if (bAttackBlock)
+	{
+		
+		return;
+	}
+
 	float temp = stateComp->AddStatePoint(HP, -DamageAmount);
+
+	
 
 	if (HitSound)
 	{

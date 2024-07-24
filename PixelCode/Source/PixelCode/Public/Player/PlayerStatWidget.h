@@ -13,6 +13,7 @@ class APCodePlayerController;
 class APixelCodeCharacter;
 class ApixelPlayerState;
 class AMyGameModeBase;
+//class APlayerState;
 /**
  *
  */
@@ -79,10 +80,12 @@ public:
 
 	APixelCodeCharacter* Player;
 
-	TWeakObjectPtr<class ApixelPlayerState> PlayerState;
+	ApixelPlayerState* PlayerState;
 
 
 	AMyGameModeBase* GM;
+
+	
 
 	void DisplayStat();
 	void HideStat();

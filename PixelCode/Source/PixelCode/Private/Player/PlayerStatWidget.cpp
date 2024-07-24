@@ -10,6 +10,8 @@
 #include "MyGameModeBase.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerState.h>
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/GameState.h"
 
 
 
@@ -30,25 +32,35 @@ void UPlayerStatWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
-	PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
-	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
-	if (PlayerState != nullptr)
+	//APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
+	//PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
+	////ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
+	//if (PlayerState != nullptr)
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("StatOnPlayerState"));
+	//	
+	//	
+	//}
+	//else
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("StatNotPlayerState"));
+	//	return;
+	//}
+
+	/*AGameState* GS_Lobby = Cast<AGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	if (APlayerController* OwningPlayer = this->GetOwningPlayer())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("StatOnPlayerState"));
-		
-		
+		PlayerState = Cast<ApixelPlayerState>(OwningPlayer->PlayerState);
+		UpdateLevel();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("StatNotPlayerState"));
-		return;
-	}
-
-
+		UE_LOG(LogTemp,Error,TEXT("OwningPlayer is null"));
+	}*/
+	//PC_Lobby = Cast<APC_Lobby>(UGameplayStatics::Getplayer)
 	
 
-	UpdateLevel();
+	//UpdateLevel();
 
 }
 
