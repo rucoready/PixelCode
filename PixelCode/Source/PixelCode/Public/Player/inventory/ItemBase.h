@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Player/ParentItem.h" // 구조체 만든 헤더로 변경
 #include "CreateItemData.h"
+#include "DataTypes.h"
 #include "ItemBase.generated.h"
 
 

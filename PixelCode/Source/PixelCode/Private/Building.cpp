@@ -267,6 +267,8 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
  		//UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
  		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
   		pc->NetMulticastRPC_SpawnBuilding(BuildType, transform);
+  		pc->AGetSpecificBuildingAmount(BuildType);
+		UE_LOG(LogTemp, Warning, TEXT("55555555555555555555565656565656"));
 //  		pc->ClientRPC_SpawnBuilding(BuildType, transform);
  	}	
 }

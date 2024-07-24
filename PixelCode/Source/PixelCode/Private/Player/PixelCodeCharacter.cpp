@@ -852,59 +852,13 @@ uint32 APixelCodeCharacter::GetSpecificItemAmount(EItemName ItemName)
 
 }
 
-void APixelCodeCharacter::AGetSpecificBuildingAmount()
-{
-	FCraftItem Info = (FCraftItem)Crafts;
-	//FCraftItem Info = Crafts;
-	FBuildingVisualType BuildDatas = (FBuildingVisualType)Builditems;
-	TArray<UItemBase*> InventoryContentSArray = PlayerInventory->GetInventoryContents();
-	uint8 Creatamount = Info.CraftedItemAmount;
-	uint8 Index = 0;
-	TArray<uint8> CreatedIndex;
 
-
-	for (UItemBase* Item : InventoryContentSArray)
-	{
-		if (Item && Item->ItemName == Info.CraftedItem)
-		{
-			if (Item && Item->Buildtypes == BuildDatas.BuildType)
-			{
-				if (Item->Quantity - Info.CraftedItemAmount < 0)
-				{
-					Creatamount -= Item->Quantity;
-					CreatedIndex.Add(Index);
-				}
-				else
-				{
-					Item->Quantity -= Creatamount;
-					Creatamount -= Creatamount;
-					if (Item->Quantity == 0)
-					{
-						InventoryContentSArray.RemoveAt(Index);
-						PlayerInventory->RemoveAmountOfItem(Item, 1);
-						PlayerInventory->RemoveSingleInstanceOfItem(Item);
-						//PickupItems->UpdateInteractableData();
-					}
-					break;
-				}
-			}
-		}
-		Index++;
-
-	}
-	for (int8 i = CreatedIndex.Num() - 1; i > -1; i--)
-	{
-		//재고가 삭제된 인벤토리
-		InventoryContentSArray.RemoveAt(CreatedIndex[i]);
-
-	}
-}
 
 
 void APixelCodeCharacter::BuildItem()
 {
 
-	AGetSpecificBuildingAmount();
+	//AGetSpecificBuildingAmount();
 	//FCraftItem& Item
 	FCraftItem Info = (FCraftItem)Crafts;
 	//FBuildingVisualType BuildDatas = (FBuildingVisualType)Builditem;
@@ -943,6 +897,48 @@ void APixelCodeCharacter::BuildItem()
 	}
 
 }
+
+void APixelCodeCharacter::AGetSpecificBuildingAmount(EBuildType builds)
+{
+	//for (const FRecipe& Recipe : Recipes)
+	{
+		TArray<UItemBase*> InventoryContentSArray = PlayerInventory->GetInventoryContents();
+		//uint8 BulidAmount = Recipe.Amount;
+		uint8 Index = 0;
+		TArray<uint8> RemoveedIndex;
+
+
+		for (UItemBase* Item : InventoryContentSArray)
+		{
+			if (Item && Item->Buildtypes == builds)
+			{
+				if (Item->Quantity -= 1)
+				{
+					RemoveedIndex.Add(Index);
+				}
+				if (Item->Quantity == 0)
+				{
+
+					//InventoryContentSArray.RemoveAt(Index);
+					//PlayerInventory->RemoveAmountOfItem(Item, 1);
+					PlayerInventory->RemoveSingleInstanceOfItem(Item);
+					//PickupItems->UpdateInteractableData();
+				}
+			}
+
+			Index++;
+
+		}
+		for (int8 i = RemoveedIndex.Num() - 1; i > -1; i--)
+		{
+			//재고가 삭제된 인벤토리
+			InventoryContentSArray.RemoveAt(RemoveedIndex[i]);
+
+		}
+	}
+}
+
+
 
 void APixelCodeCharacter::ReduceRecipeFromInventory(const TArray<FRecipe>& Recipes)
 {

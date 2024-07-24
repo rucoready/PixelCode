@@ -414,6 +414,9 @@ public:
 	// 요한
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "camera", meta )
 
+	// 요한
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "camera", meta )
+
 	UFUNCTION()
 	void OnCraftingPressed();
 
@@ -483,7 +486,7 @@ public:
 
 
 	 // ==== 크래프팅 + 빌드 + 인벤토리 함수 Test ======
-	 void AGetSpecificBuildingAmount(); //const TArray<FBuildingVisualType>& builditem
+	 void AGetSpecificBuildingAmount(EBuildType builds); //const TArray<FBuildingVisualType>& builditem
 
 	 UFUNCTION()
 	 void BuildItem();
@@ -497,6 +500,7 @@ public:
 
 	 UPROPERTY(EditAnywhere, Category = "CRAFT")
 	 FCraftItem Crafts;
+
 
 
 

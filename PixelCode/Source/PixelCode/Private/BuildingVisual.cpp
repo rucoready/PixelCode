@@ -139,6 +139,7 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
  				if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
  				{
  					BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
+ 					//BuildMesh->SetStaticMesh(ItemReference->Buildtypes[BuildingTypeIndex].BuildingMesh);
  				}
  			}
  			SetActorLocation(HitResult.ImpactPoint);

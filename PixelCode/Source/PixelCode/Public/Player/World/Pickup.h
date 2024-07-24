@@ -76,6 +76,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = KSH)
 	TSubclassOf<ABuilding> BuildingClass;
 
+	
 	UPROPERTY(EditDefaultsOnly, Category = KSH)
 	UMaterialInstance* MaterialFalse;
 

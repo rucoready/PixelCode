@@ -7,6 +7,10 @@
 
 class ABuilding;
 class UMaterialInstance;
+class UItemBase;
+class APickup;
+class UInventoryComponent;
+
 
 
 UCLASS()
@@ -14,6 +18,8 @@ class PIXELCODE_API ABuildingVisual : public AActor
 {
 	GENERATED_BODY()
 	
+	FORCEINLINE UItemBase* GetItemData() { return ItemReference; };
+
 public:	
 	ABuildingVisual();
 
@@ -45,6 +51,9 @@ public:
 
 	UPROPERTY(Replicated)
 	ABuilding* InteractingBuilding;
+
+	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
+	UItemBase* ItemReference;
 
 	UPROPERTY(Replicated)
 	FBuildingSocketData SocketData;
