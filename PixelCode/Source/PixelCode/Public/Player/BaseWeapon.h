@@ -21,6 +21,7 @@ enum class EWeaponType : uint8
 	LightSword				UMETA(DisplayName = "LightSword"),
 	GreatSword				UMETA(DisplayName = "GreatSword"),
 	MagicStaff              UMETA(DisplayName = "MagicStaff"),
+	Pick					UMETA(DisplayName = "Pick"),
 	E_WeaponTypeMax
 };
 

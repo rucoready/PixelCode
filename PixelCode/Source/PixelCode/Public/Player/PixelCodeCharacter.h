@@ -154,6 +154,9 @@ class APixelCodeCharacter : public APlayerOrganism
 	UInputAction* IA_Weapon2; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
+	UInputAction* IA_Weapon3; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
 	UInputAction* IA_ExpUp; 
 
 public:
@@ -285,6 +288,8 @@ public:
 	void switchWeapon();
 
 	void switchWeapon2();
+
+	void switchWeapon3();
 
 	//void RollCharacterForward(APixelCodeCharacter* PixelCodeCharacter, float RollDistance);
 
@@ -618,6 +623,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "weapon")
 	TSubclassOf<class ABaseWeapon> axe;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "weapon")
+	TSubclassOf<class ABaseWeapon> Pick;
 
 	ABaseWeapon* equipment;
 

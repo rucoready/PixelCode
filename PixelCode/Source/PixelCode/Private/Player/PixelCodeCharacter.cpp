@@ -1537,7 +1537,7 @@ void APixelCodeCharacter::OnRemoveFoliagePressed()
 {
 	//ServerRPC_RemoveFoliage();
 
-	SeverRPC_RemoveFoliage(PerformLineTrace());
+	//SeverRPC_RemoveFoliage(PerformLineTrace());
 }
 
 void APixelCodeCharacter::RemoveFoliage(const FHitResult& HitResult)
@@ -1982,6 +1982,7 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 		EnhancedInputComponent->BindAction(IA_Weapon, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon);
 		EnhancedInputComponent->BindAction(IA_Weapon2, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon2);
+		EnhancedInputComponent->BindAction(IA_Weapon3, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon3);
 		EnhancedInputComponent->BindAction(IA_ExpUp, ETriggerEvent::Started, this, &APixelCodeCharacter::PlayerExpUp);
 		
 
@@ -2317,6 +2318,29 @@ void APixelCodeCharacter::switchWeapon2()
 
 }
 
+void APixelCodeCharacter::switchWeapon3()
+{
+	FActorSpawnParameters spawnParam;
+	spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+	spawnParam.Owner = this;
+	spawnParam.Instigator = this;
+
+
+	if (Pick != nullptr)
+	{
+		equipment = GetWorld()->SpawnActor<ABaseWeapon>(Pick, GetActorTransform(), spawnParam);
+	}
+
+	if (equipment)
+	{
+		equipment->OnEquipped();
+	}
+
+	combatComponent->bCombatEnable = true;
+
+}
+
 void APixelCodeCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
@@ -2362,14 +2386,21 @@ void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 	{
 		return;
 	}
-
+	if (equipment->eWeaponType != EWeaponType::GreatSword)
+	{
+		SeverRPC_RemoveFoliage(PerformLineTrace());
+	}
 	if (combatComponent->bAttacking)
 	{
 		combatComponent->bAttackSaved = true;
 	}
 	else
 	{
-		if (axe != nullptr)
+		if (equipment->eWeaponType != EWeaponType::GreatSword)
+		{
+			AttackEvent();
+		}
+		else if (equipment->eWeaponType != EWeaponType::Pick)
 		{
 			AttackEvent();
 		}
