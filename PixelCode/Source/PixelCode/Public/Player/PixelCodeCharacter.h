@@ -561,21 +561,21 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_SpawnBuilding(EBuildType BuildType, FTransform transf);
 
-	UFUNCTION(Client, Reliable)
-	void ClientRPC_SpawnBuilding(EBuildType BuildType, FTransform transf);
+// 	UFUNCTION(Client, Reliable)
+// 	void ClientRPC_SpawnBuilding(EBuildType BuildType, FTransform transf);
 
 	//------------------------------------------------------------------------------------------
 	UFUNCTION()
 	void OnDestroyBuildingPressed();
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
-	void DestroyBuildingInstance(const FHitResult& HitResult);
+	void DestroyBuildingInstance();
 
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_DestroyBuildingInstance(const FHitResult& HitResult);
+	void ServerRPC_DestroyBuildingInstance();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticastRPC_DestroyBuildingInstance(const FHitResult& HitResult);
+	void NetMulticastRPC_DestroyBuildingInstance(UInstancedStaticMeshComponent* instComp, int32 instIndex);
 
 	
 	/// //////////////////
@@ -586,12 +586,8 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_DestroyBuildingInstanceV2(const FHitResult& HitResult);
 
-
-
 	////////
 
-	UFUNCTION(Client, Reliable)
-	void ClientRPC_DestroyBuildingInstance(const FHitResult& HitResult);
 	//------------------------------------------------------------------------------------------
 	UFUNCTION()
 	void OnRemoveFoliagePressed();  

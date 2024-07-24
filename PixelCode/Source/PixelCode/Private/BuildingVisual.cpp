@@ -142,7 +142,12 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
  					//BuildMesh->SetStaticMesh(ItemReference->Buildtypes[BuildingTypeIndex].BuildingMesh);
  				}
  			}
- 			SetActorLocation(HitResult.ImpactPoint);
+
+			FVector Loc = HitResult.ImpactPoint;
+			FVector NewLoc = Loc;
+			NewLoc.Z =Loc.Z + 40.f;
+//  			SetActorLocation(HitResult.ImpactPoint);
+			SetActorLocation(NewLoc);
  		}
 	}
 	else
@@ -220,7 +225,6 @@ void ABuildingVisual::CycleMesh()
 		if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
 		{
 			BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
-			UE_LOG(LogTemp, Warning, TEXT("%d"), BuildingTypeIndex);
 		}
 // 	}
 }

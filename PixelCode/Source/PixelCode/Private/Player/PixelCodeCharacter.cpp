@@ -533,7 +533,7 @@ FHitResult APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug
 
 	if (DrawDebug)
 	{
-		DrawDebugLine(GetWorld(), Start, End, FColor::Red, true, 0, 0U, 3.f);
+		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1, 0U, 3.f);
 	}
 	//BuildLoc = HitResult.ImpactPoint;
 	return HitResult;
@@ -1261,6 +1261,23 @@ void APixelCodeCharacter::ClientRPC_CycleBuildingMesh_Implementation()
 
 void APixelCodeCharacter::OnSpawnBuildingPressed()
 {
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	if (!Builder)
+	{
+		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
+		{
+			Builder = *var;
+		}
+	}
+	if (!Buildings)
+	{
+		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
+		{
+			Buildings = *vars;
+		}
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if (HasAuthority())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding : authority"));
@@ -1341,52 +1358,24 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 			Buildings->CeilingInstancedMesh->AddInstance(transf, true);
 			break;
 
-		case EBuildType::WoodenPilar:
-			Buildings->WoodenPilarInstancedMesh->AddInstance(transf, true);
+		case EBuildType::Roof:
+			Buildings->RoofInstancedMesh->AddInstance(transf, true);
 			break;
 
-		default:
-			break;
-		}
-	}
-}
-
-void APixelCodeCharacter::ClientRPC_SpawnBuilding_Implementation(EBuildType BuildType, FTransform transf)
-{
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (!Builder)
-	{
-		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
-		{
-			Builder = *var;
-		}
-	}
-	if (!Buildings)
-	{
-		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
-		{
-			Buildings = *vars;
-		}
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (Buildings)
-	{
-		switch (BuildType)
-		{
-		case EBuildType::Foundation:
-			Buildings->FoundationInstancedMesh->AddInstance(transf, true);
+		case EBuildType::Gable:
+			Buildings->GableInstancedMesh->AddInstance(transf, true);
 			break;
 
-		case EBuildType::Wall:
-			Buildings->WallInstancedMesh->AddInstance(transf, true);
+		case EBuildType::Stairs:
+			Buildings->StairsInstancedMesh->AddInstance(transf, true);
 			break;
 
-		case EBuildType::Ceiling:
-			Buildings->CeilingInstancedMesh->AddInstance(transf, true);
+		case EBuildType::Window:
+			Buildings->WindowInstancedMesh->AddInstance(transf, true);
 			break;
 
-		case EBuildType::WoodenPilar:
-			Buildings->WoodenPilarInstancedMesh->AddInstance(transf, true);
+		case EBuildType::Arch:
+			Buildings->ArchInstancedMesh->AddInstance(transf, true);
 			break;
 
 		default:
@@ -1401,70 +1390,19 @@ void APixelCodeCharacter::OnDestroyBuildingPressed()
 {
 	UE_LOG(LogTemp, Warning, TEXT("------------------Destroy Pressed"));
 
-// 	if (HasAuthority())
-// 	{
-// 		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy : @server"));
-// 
-// 		FHitResult HitResult = PerformLineTrace();
-// 		FVector HitPoint = HitResult.ImpactPoint;
-// 
-// 		if (HitResult.bBlockingHit)
-// 		{
-// 			UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
-// 
-// 			if (Instance)
-// 			{
-// 				Instance->RemoveInstance(HitResult.Item);
-// 			}
-// 		}
-// 
-// 		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetFirstBlockingHit());
-// 
-// 		NetMulticastRPC_DestroyBuildingInstance(PerformLineTrace());
-// 	}
-// 	else
-// 	{
-// 		ServerRPC_DestroyBuildingInstance(PerformLineTrace());
-// 		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy : @client"));
-// 	}
-
-
-
-
-// 	if (HasAuthority())
-// 	{
-// 		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy @@ server"));
-// 
-// 		DestroyBuildingInstance(PerformLineTrace());
-// 		//NetMulticastRPC_DestroyBuildingInstance(PerformLineTrace());
-// 	}
-// 	else
-// 	{
-// 		UE_LOG(LogTemp, Warning, TEXT("------------------Destroy @@ client"));
-// 
-// 		ServerRPC_DestroyBuildingInstance(PerformLineTrace());
-// 	}
-
 	ServerRPC_DestroyBuildingInstanceV2(PerformLineTrace());
-	//ServerRPC_DestroyBuildingInstance(PerformLineTrace());
 
+	//DestroyBuildingInstance();
 }
 
-void APixelCodeCharacter::DestroyBuildingInstance(const FHitResult& HitResult)
+void APixelCodeCharacter::DestroyBuildingInstance()
 {
-	if (HitResult.bBlockingHit)
+	if (bInBuildMode && Builder)
 	{
-		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
-
-		if (Instance)
-		{
-			//UE_LOG(LogTemp,  Warning, TEXT("000999"));
-			//Instance->RemoveInstance(HitResult.bBlockingHit);
-		}
+		Builder->DestroyInstance(PerformLineTrace());
 	}
-
 }
-
+/////////////////////////////////////////////////
 void APixelCodeCharacter::ServerRPC_DestroyBuildingInstanceV2_Implementation(const FHitResult& HitResult)
 {
 		MulticastRPC_DestroyBuildingInstanceV2(HitResult);
@@ -1485,54 +1423,15 @@ void APixelCodeCharacter::MulticastRPC_DestroyBuildingInstanceV2_Implementation(
 		}
 	}
 }
-
-void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation(const FHitResult& HitResult)
+/////////////////////////////////////////////////
+void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation()
 {
-	NetMulticastRPC_DestroyBuildingInstance(HitResult);
-
-// 	if (HitResult.bBlockingHit)
-// 	{
-// 		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
-// 		if (Instance)
-// 		{
-// 			UE_LOG(LogTemp, Warning, TEXT("------------------Destroy ServerRPC"));
-// 			
-// 			Instance->RemoveInstance(HitResult.Item);
-// 			UE_LOG(LogTemp, Warning, TEXT("------------------Destroy MultiRPC @@ not ROLE_Authority"));
-// 
-// 			ClientRPC_DestroyBuildingInstance(PerformLineTrace());
-// 		}
-// 	}
+	DestroyBuildingInstance();
 }
 
- void APixelCodeCharacter::NetMulticastRPC_DestroyBuildingInstance_Implementation(const FHitResult& HitResult)
+ void APixelCodeCharacter::NetMulticastRPC_DestroyBuildingInstance_Implementation(UInstancedStaticMeshComponent* instComp, int32 instIndex)
  {
-	 if (HitResult.bBlockingHit)
-	 {
-		 UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
-
-		 if (Instance)
-		 {
-			 UE_LOG(LogTemp, Warning, TEXT("------------------Destroy MultiRPC"));
-
-			 Instance->RemoveInstance(HitResult.Item);
-		 }
-	 }
- }
-
- void APixelCodeCharacter::ClientRPC_DestroyBuildingInstance_Implementation(const FHitResult& HitResult)
- {
-	 if (HitResult.bBlockingHit)
-	 {
-		 UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
-
-		 if (Instance)
-		 {
-			 UE_LOG(LogTemp, Warning, TEXT("------------------Destroy ClientRPC"));
-
-			 Instance->RemoveInstance(HitResult.Item);
-		 }
-	 }
+	 instComp->RemoveInstance(instIndex);
  }
 
  //------------------------------------Remove Foliage Network

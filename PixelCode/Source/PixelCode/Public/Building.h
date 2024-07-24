@@ -39,7 +39,19 @@ public:
 	class UInstancedStaticMeshComponent* CeilingInstancedMesh;
 
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
-	class UInstancedStaticMeshComponent* WoodenPilarInstancedMesh;
+	class UInstancedStaticMeshComponent* RoofInstancedMesh;
+
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
+	class UInstancedStaticMeshComponent* GableInstancedMesh;
+
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
+	class UInstancedStaticMeshComponent* StairsInstancedMesh;
+
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
+	class UInstancedStaticMeshComponent* WindowInstancedMesh;
+
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
+	class UInstancedStaticMeshComponent* ArchInstancedMesh;
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void DestroyInstance(const FBuildingSocketData& BuildingSocketData, const FHitResult& HitResult);

@@ -21,8 +21,20 @@ ABuilding::ABuilding()
 	CeilingInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("CeilingInstancedStaticMeshComponent"));
 	CeilingInstancedMesh->SetIsReplicated(true);
 
-	WoodenPilarInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WoodenPilarInstancedStaticMeshComponent"));
-	WoodenPilarInstancedMesh->SetIsReplicated(true);
+	RoofInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("RoofInstancedStaticMeshComponent"));
+	RoofInstancedMesh->SetIsReplicated(true);
+
+	GableInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("GableInstancedStaticMeshComponent"));
+	GableInstancedMesh->SetIsReplicated(true);
+
+	StairsInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("StairsInstancedStaticMeshComponent"));
+	StairsInstancedMesh->SetIsReplicated(true);
+
+	WindowInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WindowInstancedStaticMeshComponent"));
+	WindowInstancedMesh->SetIsReplicated(true);
+
+	ArchInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("ArchInstancedStaticMeshComponent"));
+	ArchInstancedMesh->SetIsReplicated(true);
 
 	bReplicates = true;
 	bAlwaysRelevant = true;
@@ -43,7 +55,19 @@ void ABuilding::BeginPlay()
 	InstanceSocket.InstancedComponent = CeilingInstancedMesh;
 	InstanceSocketsCheck.Add(InstanceSocket);
 
-	InstanceSocket.InstancedComponent = WoodenPilarInstancedMesh;
+	InstanceSocket.InstancedComponent = RoofInstancedMesh;
+	InstanceSocketsCheck.Add(InstanceSocket);
+
+	InstanceSocket.InstancedComponent = GableInstancedMesh;
+	InstanceSocketsCheck.Add(InstanceSocket);
+
+	InstanceSocket.InstancedComponent = StairsInstancedMesh;
+	InstanceSocketsCheck.Add(InstanceSocket);
+
+	InstanceSocket.InstancedComponent = WindowInstancedMesh;
+	InstanceSocketsCheck.Add(InstanceSocket);
+
+	InstanceSocket.InstancedComponent = ArchInstancedMesh;
 	InstanceSocketsCheck.Add(InstanceSocket);
 
 	FBuildingSocketData BuildingSocketData;
@@ -56,7 +80,11 @@ void ABuilding::BeginPlay()
 	MeshInstancedSockets = FoundationInstancedMesh->GetAllSocketNames();
 	MeshInstancedSockets.Append(WallInstancedMesh->GetAllSocketNames());
 	MeshInstancedSockets.Append(CeilingInstancedMesh->GetAllSocketNames());	
-	MeshInstancedSockets.Append(WoodenPilarInstancedMesh->GetAllSocketNames());	
+	MeshInstancedSockets.Append(RoofInstancedMesh->GetAllSocketNames());
+	MeshInstancedSockets.Append(GableInstancedMesh->GetAllSocketNames());
+	MeshInstancedSockets.Append(StairsInstancedMesh->GetAllSocketNames());
+	MeshInstancedSockets.Append(WindowInstancedMesh->GetAllSocketNames());
+	MeshInstancedSockets.Append(ArchInstancedMesh->GetAllSocketNames());
 }
 
 void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData, const FHitResult& HitResult)
@@ -65,8 +93,22 @@ void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData, c
 
 	if (BuildingSocketData.InstancedComponent)
 	{
-		BuildingSocketData.InstancedComponent->RemoveInstance(BuildingSocketData.Index);
+		UInstancedStaticMeshComponent* Instance = BuildingSocketData.InstancedComponent;
+		int32 num = BuildingSocketData.Index;
+
+		//BuildingSocketData.InstancedComponent->RemoveInstance(BuildingSocketData.Index);
 		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDING RemoveInstance"));
+
+		//if (!HasAuthority())
+		{
+			auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+			//Pc->IsLocalController() = ROLE_AutonomousProxy
+			if (Pc /*&& ROLE_AutonomousProxy*/)
+			{
+				pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
+				pc->NetMulticastRPC_DestroyBuildingInstance(Instance, num);
+			}
+		}
 	}
 }
 
@@ -244,21 +286,45 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 // 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Ceiling BuildType"));
 		break;
 
-		case EBuildType::WoodenPilar:
-		WoodenPilarInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-		StrBuildType = TEXT("WoodenPilarInstancedMesh");
+		case EBuildType::Roof:
+		RoofInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+		StrBuildType = TEXT("RoofInstancedMesh");
 // 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
 		break;
+
+		case EBuildType::Gable:
+		GableInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+		StrBuildType = TEXT("GableInstancedMesh");
+		// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
+		break;
+
+		case EBuildType::Stairs:
+		StairsInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+		StrBuildType = TEXT("StairsInstancedMesh");
+		// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
+		break;
+
+		case EBuildType::Window:
+			WindowInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+			StrBuildType = TEXT("WindowInstancedMesh");
+			// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
+			break;
+
+		case EBuildType::Arch:
+			ArchInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+			StrBuildType = TEXT("ArchInstancedMesh");
+			// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
+			break;
 
 		default:
 // 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Unknown BuildType"));
 		break;
 	}
-
 	UE_LOG(LogTemp, Warning, TEXT("------------------BuildType %s"), *StrBuildType);
 
  	auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
  
+<<<<<<< Updated upstream
  	FString StrPc = Pc ? TEXT("OOOOO") : TEXT("XXXXX");
  	//UE_LOG(LogTemp, Warning, TEXT("Pc? : %s"), *StrPc);
  
@@ -282,4 +348,9 @@ void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 	DOREPLIFETIME(ABuilding, FoundationInstancedMesh);
 	DOREPLIFETIME(ABuilding, WallInstancedMesh);
 	DOREPLIFETIME(ABuilding, CeilingInstancedMesh);
+	DOREPLIFETIME(ABuilding, RoofInstancedMesh);
+	DOREPLIFETIME(ABuilding, GableInstancedMesh);
+	DOREPLIFETIME(ABuilding, StairsInstancedMesh);
+	DOREPLIFETIME(ABuilding, WindowInstancedMesh);
+	DOREPLIFETIME(ABuilding, ArchInstancedMesh);
 }
