@@ -152,6 +152,8 @@ public:
 
 	bool bBossGroggy = false;
 
+	bool bIsJump = false;
+
 	float InterpSpeed = 10.0f;
 
 	 // 목표 위치 변수

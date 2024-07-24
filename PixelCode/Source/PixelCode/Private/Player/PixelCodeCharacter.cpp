@@ -692,33 +692,38 @@ void APixelCodeCharacter::NoInteractableFound()
 
 void APixelCodeCharacter::BeginInteract()
 {
-	// 작용 가능한 상태에 아무것도 변경안되었는지 확인
-	PerformInteractionCheck();
+	if (!bIsJump)
+	{
+		// 작용 가능한 상태에 아무것도 변경안되었는지 확인
+		PerformInteractionCheck();
 
-	if (focusedChar != nullptr)
-	{
-		auto contents = focusedChar->PlayerInventory->GetInventoryContents();
-		focusedChar->LootByOthers(this);
-	}
-	else
-	{
-		ServerRPC_Interact();
+		if (focusedChar != nullptr)
+		{
+			auto contents = focusedChar->PlayerInventory->GetInventoryContents();
+			focusedChar->LootByOthers(this);
+		}
+		else
+		{
+			ServerRPC_Interact();
+		}
 	}
 }
 
 // 우리가 상호작용 하고있는지 확인필요 x
 void APixelCodeCharacter::EndInteract()
 {
-
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Interaction); // 타이머 초기화.
-
-	if (IsValid(TargetInteractable.GetObject())) // 여전히 유효한경우
+	if (!bIsJump)
 	{
-		TargetInteractable->EndInteract();// 이제 대상 상호작용 가능, 대상 상호작용 종료
-	}
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle_Interaction); // 타이머 초기화.
 
-	//lootPanelWidget->SetVisibility(ESlateVisibility::Collapsed);
-	/*lootPanelWidget->RemoveFromParent();*/
+		if (IsValid(TargetInteractable.GetObject())) // 여전히 유효한경우
+		{
+			TargetInteractable->EndInteract();// 이제 대상 상호작용 가능, 대상 상호작용 종료
+		}
+
+		//lootPanelWidget->SetVisibility(ESlateVisibility::Collapsed);
+		/*lootPanelWidget->RemoveFromParent();*/
+	}
 }
 
 
@@ -739,10 +744,13 @@ void APixelCodeCharacter::Interact()
 
 void APixelCodeCharacter::OnCraftingPressed()
 {
-	if (HUD)
+	if (!bIsJump)
 	{
-		//HUD->ShowOrHideCrafting();
-		HUD->ToggleCreate();
+		if (HUD)
+		{
+			//HUD->ShowOrHideCrafting();
+			HUD->ToggleCreate();
+		}
 	}
 }
 
@@ -1569,7 +1577,7 @@ void APixelCodeCharacter::MultiRPC_RemoveFoliage_Implementation(const FHitResult
 		{
 			FoliageInstance->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
-			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
+			//GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
 }
@@ -1858,15 +1866,71 @@ void APixelCodeCharacter::UpdateInteractionWidget() const
 
 void APixelCodeCharacter::ServerRPC_DropItem_Implementation()
 {
-	auto iteminfo = Iteminfos;
-	auto QuantityToDrop =Iteminfos->Quantity;
-	if(iteminfo , QuantityToDrop)
-	{ 
-	NetMulticastRPC_DropItem(iteminfo, QuantityToDrop);
-	}
+	//auto iteminfo = Iteminfos;
+	//auto QuantityToDrop =Iteminfos->Quantity;
+	//if(iteminfo , QuantityToDrop)
+	//{ 
+	//NetMulticastRPC_DropItem(iteminfo, QuantityToDrop);
+	//}
 }
 
 void APixelCodeCharacter::NetMulticastRPC_DropItem_Implementation(UItemBase* ItemToDrop, const int32 QuantityToDrop)
+{
+	//// 인벤토리 null이 아니라면
+	//if (PlayerInventory->FindMatchingItem(ItemToDrop))
+	//{
+	//	FActorSpawnParameters SpawnParams;
+	//	SpawnParams.Owner = this;
+	//	SpawnParams.bNoFail = true;
+	//	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	//	// 캐릭터 50앞방향에서 생성됨
+	//	const FVector SpawnLocation{ GetActorLocation() + (GetActorForwardVector() * 50.0f) };
+
+	//	const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
+
+	//	// 수량제거
+	//	const int32 RemoveQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
+
+	//	APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
+
+	//	Pickup->InitializeDrop(ItemToDrop, RemoveQuantity);
+	//}
+	//else
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("Item to drop was Some how null"));
+	//}
+}
+
+void APixelCodeCharacter::ToggleMenu()
+{
+	if (!bIsJump)
+	{
+		HUD->ToggleMenu();
+	}
+}
+
+void APixelCodeCharacter::StatMenu()
+{
+	if (!bIsJump)
+	{
+		if (bIsStatVisible)
+		{
+			statWidget->DisplayStat();
+			bIsStatVisible = false;
+			UE_LOG(LogTemp, Warning, TEXT("StatOn"));
+		}
+
+		else
+		{
+			statWidget->HideStat();
+			bIsStatVisible = true;
+			UE_LOG(LogTemp, Warning, TEXT("StatOff"));
+		}
+	}
+}
+
+void APixelCodeCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
 	// 인벤토리 null이 아니라면
 	if (PlayerInventory->FindMatchingItem(ItemToDrop))
@@ -1892,33 +1956,8 @@ void APixelCodeCharacter::NetMulticastRPC_DropItem_Implementation(UItemBase* Ite
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Item to drop was Some how null"));
 	}
-}
 
-void APixelCodeCharacter::ToggleMenu()
-{
-	HUD->ToggleMenu();
-}
-
-void APixelCodeCharacter::StatMenu()
-{
-	if (bIsStatVisible)
-	{
-		statWidget->DisplayStat();
-		bIsStatVisible = false;
-		UE_LOG(LogTemp, Warning, TEXT("StatOn"));
-	}
-
-	else
-	{
-		statWidget->HideStat();
-		bIsStatVisible = true;
-		UE_LOG(LogTemp, Warning, TEXT("StatOff"));
-	}
-}
-
-void APixelCodeCharacter::DropItem()
-{
-	ServerRPC_DropItem();
+	//ServerRPC_DropItem();
 }
 
 
@@ -1934,57 +1973,59 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &APixelCodeCharacter::CharacterJump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-		
-		// Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APixelCodeCharacter::Move);
+		if (!bIsJump)
+		{ 
 
-		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APixelCodeCharacter::Look);
+			// Moving
+			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APixelCodeCharacter::Move);
 
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &APixelCodeCharacter::LightAttackFunction);// 기본공격
+			// Looking
+			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APixelCodeCharacter::Look);
 
-		EnhancedInputComponent->BindAction(ToggleCombatAction, ETriggerEvent::Started, this, &APixelCodeCharacter::ToggleCombatFunction);// 무기 빼서장착
+			EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &APixelCodeCharacter::LightAttackFunction);// 기본공격
 
-		// 인벤토리 열고닫기
-		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &APixelCodeCharacter::ToggleMenu);
+			EnhancedInputComponent->BindAction(ToggleCombatAction, ETriggerEvent::Started, this, &APixelCodeCharacter::ToggleCombatFunction);// 무기 빼서장착
 
-
-		// 물체 상호작용
-		EnhancedInputComponent->BindAction(IA_Pressed, ETriggerEvent::Started, this, &APixelCodeCharacter::BeginInteract);
+			// 인벤토리 열고닫기
+			EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &APixelCodeCharacter::ToggleMenu);
 
 
-		EnhancedInputComponent->BindAction(IA_Pressed, ETriggerEvent::Completed, this, &APixelCodeCharacter::EndInteract);
+			// 물체 상호작용
+			EnhancedInputComponent->BindAction(IA_Pressed, ETriggerEvent::Started, this, &APixelCodeCharacter::BeginInteract);
 
-		EnhancedInputComponent->BindAction(IA_Stat, ETriggerEvent::Started, this, &APixelCodeCharacter::StatMenu);
 
-		// 플레이어 구르기
-		EnhancedInputComponent->BindAction(IA_RollandRun, ETriggerEvent::Canceled, this, &APixelCodeCharacter::PlayerRoll);
+			EnhancedInputComponent->BindAction(IA_Pressed, ETriggerEvent::Completed, this, &APixelCodeCharacter::EndInteract);
 
-		// 플레이어 뛰기
-		EnhancedInputComponent->BindAction(IA_RollandRun, ETriggerEvent::Ongoing, this, &APixelCodeCharacter::PlayerRun);
-		EnhancedInputComponent->BindAction(IA_RollandRun, ETriggerEvent::Completed, this, &APixelCodeCharacter::PlayerRunEnd);
+			EnhancedInputComponent->BindAction(IA_Stat, ETriggerEvent::Started, this, &APixelCodeCharacter::StatMenu);
 
-		// 요한 ==================
-		EnhancedInputComponent->BindAction(IA_Crafting, ETriggerEvent::Started, this, &APixelCodeCharacter::OnCraftingPressed);
+			// 플레이어 구르기
+			EnhancedInputComponent->BindAction(IA_RollandRun, ETriggerEvent::Canceled, this, &APixelCodeCharacter::PlayerRoll);
 
-		// 플레이어 스킬
-		EnhancedInputComponent->BindAction(IA_SkillQ, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillQ);
-		EnhancedInputComponent->BindAction(IA_SkillE, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillE);
-		EnhancedInputComponent->BindAction(IA_SkillR, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillR);
-		EnhancedInputComponent->BindAction(IA_SkillZ, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillZ);
-		EnhancedInputComponent->BindAction(IA_Skill_RightMouse, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillRightMouse);
+			// 플레이어 뛰기
+			EnhancedInputComponent->BindAction(IA_RollandRun, ETriggerEvent::Ongoing, this, &APixelCodeCharacter::PlayerRun);
+			EnhancedInputComponent->BindAction(IA_RollandRun, ETriggerEvent::Completed, this, &APixelCodeCharacter::PlayerRunEnd);
 
-		EnhancedInputComponent->BindAction(IA_SetBuildMode, ETriggerEvent::Started, this, &APixelCodeCharacter::OnSetBuildModePressed);
-		EnhancedInputComponent->BindAction(IA_RemoveFoliage, ETriggerEvent::Started, this, &APixelCodeCharacter::OnRemoveFoliagePressed);
-		EnhancedInputComponent->BindAction(IA_SpawnBuilding, ETriggerEvent::Started, this, &APixelCodeCharacter::OnSpawnBuildingPressed);
-		EnhancedInputComponent->BindAction(IA_CycleMesh, ETriggerEvent::Started, this, &APixelCodeCharacter::OnCycleMeshPressed);
-		EnhancedInputComponent->BindAction(IA_DestroyBuilding, ETriggerEvent::Started, this, &APixelCodeCharacter::OnDestroyBuildingPressed);
+			// 요한 ==================
+			EnhancedInputComponent->BindAction(IA_Crafting, ETriggerEvent::Started, this, &APixelCodeCharacter::OnCraftingPressed);
 
-		EnhancedInputComponent->BindAction(IA_Weapon, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon);
-		EnhancedInputComponent->BindAction(IA_Weapon2, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon2);
-		EnhancedInputComponent->BindAction(IA_Weapon3, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon3);
-		EnhancedInputComponent->BindAction(IA_ExpUp, ETriggerEvent::Started, this, &APixelCodeCharacter::PlayerExpUp);
-		
+			// 플레이어 스킬
+			EnhancedInputComponent->BindAction(IA_SkillQ, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillQ);
+			EnhancedInputComponent->BindAction(IA_SkillE, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillE);
+			EnhancedInputComponent->BindAction(IA_SkillR, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillR);
+			EnhancedInputComponent->BindAction(IA_SkillZ, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillZ);
+			EnhancedInputComponent->BindAction(IA_Skill_RightMouse, ETriggerEvent::Started, this, &APixelCodeCharacter::SkillRightMouse);
+
+			EnhancedInputComponent->BindAction(IA_SetBuildMode, ETriggerEvent::Started, this, &APixelCodeCharacter::OnSetBuildModePressed);
+			EnhancedInputComponent->BindAction(IA_RemoveFoliage, ETriggerEvent::Started, this, &APixelCodeCharacter::OnRemoveFoliagePressed);
+			EnhancedInputComponent->BindAction(IA_SpawnBuilding, ETriggerEvent::Started, this, &APixelCodeCharacter::OnSpawnBuildingPressed);
+			EnhancedInputComponent->BindAction(IA_CycleMesh, ETriggerEvent::Started, this, &APixelCodeCharacter::OnCycleMeshPressed);
+			//EnhancedInputComponent->BindAction(IA_DestroyBuilding, ETriggerEvent::Started, this, &APixelCodeCharacter::OnDestroyBuildingPressed);
+
+			EnhancedInputComponent->BindAction(IA_Weapon, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon);
+			EnhancedInputComponent->BindAction(IA_Weapon2, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon2);
+			EnhancedInputComponent->BindAction(IA_Weapon3, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon3);
+			EnhancedInputComponent->BindAction(IA_ExpUp, ETriggerEvent::Started, this, &APixelCodeCharacter::PlayerExpUp);
+		}
 
 	}
 	else
@@ -2007,37 +2048,38 @@ void APixelCodeCharacter::CharacterJump(const FInputActionValue& Value)
 
 void APixelCodeCharacter::SkillQ()
 {
-	
-
-	if (!bQskillCoolTime)
-	{ 
-		Mousehit();
+	if (!bIsJump)
+	{
+		if (!bQskillCoolTime)
+		{ 
+			Mousehit();
 		
-		if (equipment->eWeaponType != EWeaponType::LightSword)
-		{
-			return;
-		}
-
-		if (false == combatComponent->bCombatEnable)
-		{
-			return;
-		}
-		if (combatComponent->bAttacking)
-		{
-			combatComponent->bAttackSaved = true;
-		}
-		else
-		{
-			if (bUseSkill)
-			{ 
-				PerformAttack(5, false);
-				combatComponent->attackCount = 0;
+			if (equipment->eWeaponType != EWeaponType::LightSword)
+			{
+				return;
 			}
+
+			if (false == combatComponent->bCombatEnable)
+			{
+				return;
+			}
+			if (combatComponent->bAttacking)
+			{
+				combatComponent->bAttackSaved = true;
+			}
+			else
+			{
+				if (bUseSkill)
+				{ 
+					PerformAttack(5, false);
+					combatComponent->attackCount = 0;
+				}
+			}
+
+			bQskillCoolTime = true;
+
+			GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
 		}
-
-		bQskillCoolTime = true;
-
-		GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
 	}
 }
 
@@ -2059,37 +2101,39 @@ void APixelCodeCharacter::QskillTime()
 
 void APixelCodeCharacter::SkillE()
 {
-	
-	if (!bEskillCoolTime)
+	if (!bIsJump)
 	{
-		Mousehit();
+		if (!bEskillCoolTime)
+		{
+			Mousehit();
 
-		if (equipment->eWeaponType != EWeaponType::LightSword)
-		{
-			return;
-		}
-
-		if (false == combatComponent->bCombatEnable)
-		{
-			return;
-		}
-
-		if (combatComponent->bAttacking)
-		{
-			combatComponent->bAttackSaved = true;
-		}
-		else
-		{
-			if (bUseSkill)
+			if (equipment->eWeaponType != EWeaponType::LightSword)
 			{
-				PerformAttack(6, false);
-				combatComponent->attackCount = 0;
+				return;
 			}
+
+			if (false == combatComponent->bCombatEnable)
+			{
+				return;
+			}
+
+			if (combatComponent->bAttacking)
+			{
+				combatComponent->bAttackSaved = true;
+			}
+			else
+			{
+				if (bUseSkill)
+				{
+					PerformAttack(6, false);
+					combatComponent->attackCount = 0;
+				}
+			}
+
+			bEskillCoolTime = true;
+
+			GetWorldTimerManager().SetTimer(ESkillTimer, this, &APixelCodeCharacter::EskillTime, 1.0f, true);
 		}
-
-		bEskillCoolTime = true;
-
-		GetWorldTimerManager().SetTimer(ESkillTimer, this, &APixelCodeCharacter::EskillTime, 1.0f, true);
 	}
 }
 
@@ -2110,37 +2154,40 @@ void APixelCodeCharacter::EskillTime()
 
 void APixelCodeCharacter::SkillR()
 {
-	if (!bRskillCoolTime)
-	{ 
-		Mousehit();
+	if (!bIsJump)
+	{
+		if (!bRskillCoolTime)
+		{
+			Mousehit();
 
 
-		if (equipment->eWeaponType != EWeaponType::LightSword)
-		{
-			return;
-		}
-
-		if (false == combatComponent->bCombatEnable)
-		{
-			return;
-		}
-
-		if (combatComponent->bAttacking)
-		{
-			combatComponent->bAttackSaved = true;
-		}
-		else
-		{
-			if (bUseSkill)
+			if (equipment->eWeaponType != EWeaponType::LightSword)
 			{
-				PerformAttack(7, false);
-				combatComponent->attackCount = 0;
+				return;
 			}
+
+			if (false == combatComponent->bCombatEnable)
+			{
+				return;
+			}
+
+			if (combatComponent->bAttacking)
+			{
+				combatComponent->bAttackSaved = true;
+			}
+			else
+			{
+				if (bUseSkill)
+				{
+					PerformAttack(7, false);
+					combatComponent->attackCount = 0;
+				}
+			}
+
+			bRskillCoolTime = true;
+
+			GetWorldTimerManager().SetTimer(RSkillTimer, this, &APixelCodeCharacter::RskillTime, 1.0f, true);
 		}
-
-		bRskillCoolTime = true;
-
-		GetWorldTimerManager().SetTimer(RSkillTimer, this, &APixelCodeCharacter::RskillTime, 1.0f, true);
 	}
 }
 
@@ -2161,35 +2208,38 @@ void APixelCodeCharacter::RskillTime()
 
 void APixelCodeCharacter::SkillZ()
 {
-	if (!bZskillCoolTime)
+	if (!bIsJump)
 	{
-		Mousehit();
+		if (!bZskillCoolTime)
+		{
+			Mousehit();
 
-		if (equipment->eWeaponType != EWeaponType::LightSword)
-		{
-			return;
-		}
-
-		if (false == combatComponent->bCombatEnable)
-		{
-			return;
-		}
-
-		if (combatComponent->bAttacking)
-		{
-			combatComponent->bAttackSaved = true;
-		}
-		else
-		{
-			if (bUseSkill)
+			if (equipment->eWeaponType != EWeaponType::LightSword)
 			{
-				PerformAttack(8, false);
-				combatComponent->attackCount = 0;
+				return;
 			}
-		}
-		bZskillCoolTime = true;
 
-		GetWorldTimerManager().SetTimer(ZSkillTimer, this, &APixelCodeCharacter::ZskillTime, 1.0f, true);
+			if (false == combatComponent->bCombatEnable)
+			{
+				return;
+			}
+
+			if (combatComponent->bAttacking)
+			{
+				combatComponent->bAttackSaved = true;
+			}
+			else
+			{
+				if (bUseSkill)
+				{
+					PerformAttack(8, false);
+					combatComponent->attackCount = 0;
+				}
+			}
+			bZskillCoolTime = true;
+
+			GetWorldTimerManager().SetTimer(ZSkillTimer, this, &APixelCodeCharacter::ZskillTime, 1.0f, true);
+		}
 	}
 }
 
@@ -2211,27 +2261,30 @@ void APixelCodeCharacter::ZskillTime()
 
 void APixelCodeCharacter::SkillRightMouse()
 {
-	Mousehit();
-	if (false == combatComponent->bCombatEnable)
+	if (!bIsJump)
 	{
-		return;
-	}
-
-	if (equipment->eWeaponType != EWeaponType::LightSword)
-	{
-		return;
-	}
-
-	if (combatComponent->bAttacking)
-	{
-		combatComponent->bAttackSaved = true;
-	}
-	else
-	{
-		if (bUseSkill)
+		Mousehit();
+		if (false == combatComponent->bCombatEnable)
 		{
-			PerformAttack(9, false);
-			combatComponent->attackCount = 0;
+			return;
+		}
+
+		if (equipment->eWeaponType != EWeaponType::LightSword)
+		{
+			return;
+		}
+
+		if (combatComponent->bAttacking)
+		{
+			combatComponent->bAttackSaved = true;
+		}
+		else
+		{
+			if (bUseSkill)
+			{
+				PerformAttack(9, false);
+				combatComponent->attackCount = 0;
+			}
 		}
 	}
 }
@@ -2275,74 +2328,81 @@ void APixelCodeCharacter::Mousehit()
 
 void APixelCodeCharacter::switchWeapon()
 {
-	FActorSpawnParameters spawnParam;
-	spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-	spawnParam.Owner = this;
-	spawnParam.Instigator = this;
-	
-	
-	if (axe != nullptr)
-	{ 
-		equipment = GetWorld()->SpawnActor<ABaseWeapon>(axe, GetActorTransform(), spawnParam);
-	}
-
-	if (equipment)
+	if (!bIsJump)
 	{
-		equipment->OnEquipped();
-	}
-	
-	combatComponent->bCombatEnable = true;
+		FActorSpawnParameters spawnParam;
+		spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		spawnParam.Owner = this;
+		spawnParam.Instigator = this;
 
+
+		if (axe != nullptr)
+		{
+			equipment = GetWorld()->SpawnActor<ABaseWeapon>(axe, GetActorTransform(), spawnParam);
+		}
+
+		if (equipment)
+		{
+			equipment->OnEquipped();
+		}
+
+		combatComponent->bCombatEnable = true;
+	}
 }
 
 void APixelCodeCharacter::switchWeapon2()
 {
-	combatComponent->bCombatEnable = false;
-
-	FActorSpawnParameters spawnParam;
-	spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-	spawnParam.Owner = this;
-	spawnParam.Instigator = this;
-
-
-	if (defaultWeapon != nullptr)
+	if (!bIsJump)
 	{
-		equipment = GetWorld()->SpawnActor<ABaseWeapon>(defaultWeapon, GetActorTransform(), spawnParam);
-	}
-	if (equipment)
-	{
-		equipment->OnEquipped();
-	}
+		combatComponent->bCombatEnable = false;
 
+		FActorSpawnParameters spawnParam;
+		spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		spawnParam.Owner = this;
+		spawnParam.Instigator = this;
+
+
+		if (defaultWeapon != nullptr)
+		{
+			equipment = GetWorld()->SpawnActor<ABaseWeapon>(defaultWeapon, GetActorTransform(), spawnParam);
+		}
+		if (equipment)
+		{
+			equipment->OnEquipped();
+		}
+	}
 }
 
 void APixelCodeCharacter::switchWeapon3()
 {
-	FActorSpawnParameters spawnParam;
-	spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-	spawnParam.Owner = this;
-	spawnParam.Instigator = this;
-
-
-	if (Pick != nullptr)
+	if (!bIsJump)
 	{
-		equipment = GetWorld()->SpawnActor<ABaseWeapon>(Pick, GetActorTransform(), spawnParam);
+		FActorSpawnParameters spawnParam;
+		spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		spawnParam.Owner = this;
+		spawnParam.Instigator = this;
+
+
+		if (Pick != nullptr)
+		{
+			equipment = GetWorld()->SpawnActor<ABaseWeapon>(Pick, GetActorTransform(), spawnParam);
+		}
+
+		if (equipment)
+		{
+			equipment->OnEquipped();
+		}
+
+		combatComponent->bCombatEnable = true;
 	}
-
-	if (equipment)
-	{
-		equipment->OnEquipped();
-	}
-
-	combatComponent->bCombatEnable = true;
-
 }
 
 void APixelCodeCharacter::Move(const FInputActionValue& Value)
 {
+
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -2362,6 +2422,7 @@ void APixelCodeCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
 	}
+	
 }
 
 void APixelCodeCharacter::Look(const FInputActionValue& Value)
@@ -2379,72 +2440,75 @@ void APixelCodeCharacter::Look(const FInputActionValue& Value)
 
 void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 {
-
-	Mousehit();
+	if (!bIsJump)
+	{
+		Mousehit();
 	
-	if (false == combatComponent->bCombatEnable)
-	{
-		return;
-	}
-	if (equipment->eWeaponType != EWeaponType::GreatSword)
-	{
-		SeverRPC_RemoveFoliage(PerformLineTrace());
-	}
-	if (combatComponent->bAttacking)
-	{
-		combatComponent->bAttackSaved = true;
-	}
-	else
-	{
-		if (equipment->eWeaponType != EWeaponType::GreatSword)
+		if (false == combatComponent->bCombatEnable)
 		{
-			AttackEvent();
+			return;
 		}
-		else if (equipment->eWeaponType != EWeaponType::Pick)
+		if (combatComponent->bAttacking)
 		{
-			AttackEvent();
+			combatComponent->bAttackSaved = true;
 		}
-		else if (bUseSkill)
+		else
 		{
-			AttackEvent();
+			if (equipment->eWeaponType != EWeaponType::GreatSword)
+			{
+				AttackEvent();
+			}
+			else if (equipment->eWeaponType != EWeaponType::Pick)
+			{
+				AttackEvent();
+			}
+			else if (bUseSkill)
+			{
+				AttackEvent();
+			}
+			/*if (axe != nullptr)
+			{
+				AttackEvent();
+			}*/
 		}
-		/*if (axe != nullptr)
-		{
-			AttackEvent();
-		}*/
 	}
-	
 }
 
 
 
 void APixelCodeCharacter::ToggleCombatFunction(const FInputActionValue& Value)
 {
-	auto mainWeaponPtr = combatComponent->GetMainWeapon();
-	if (IsValid(mainWeaponPtr))
+	if (!bIsJump)
 	{
-		if (motionState == ECharacterMotionState::Idle)
+		auto mainWeaponPtr = combatComponent->GetMainWeapon();
+		if (IsValid(mainWeaponPtr))
 		{
-			UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("combatComponent->bCombatEnable : %s"), combatComponent->bCombatEnable ? TEXT("TRUE") : TEXT("FALSE")));
+			if (motionState == ECharacterMotionState::Idle)
+			{
+				UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("combatComponent->bCombatEnable : %s"), combatComponent->bCombatEnable ? TEXT("TRUE") : TEXT("FALSE")));
 
-			ServerRPC_ToggleCombat();
+				ServerRPC_ToggleCombat();
+			}
 		}
 	}
 }
 
 void APixelCodeCharacter::PlayerRoll(const FInputActionValue& Value)
 {	
-	if (!bRoll)
-	{ 
-		FVector2D LookAxisVector = Value.Get<FVector2D>();
+	if (!bIsJump)
+	{
+		if (!bRoll)
+		{ 
+			FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-		if (Controller != nullptr)
-		{
-			// add yaw and pitch input to controller
-			AddControllerYawInput(LookAxisVector.X);
-			AddControllerPitchInput(LookAxisVector.Y);
+			if (Controller != nullptr)
+			{
+				// add yaw and pitch input to controller
+				AddControllerYawInput(LookAxisVector.X);
+				AddControllerPitchInput(LookAxisVector.Y);
+			}
+			ServerRPC_PlayerRoll();
 		}
-		ServerRPC_PlayerRoll();
 	}
 }
 
@@ -2473,8 +2537,10 @@ void APixelCodeCharacter::NetMulticastRPC_PlayerRoll_Implementation()
 
 void APixelCodeCharacter::PlayerRun(const FInputActionValue& Value)
 {	
-	ServerRPC_PlayerRun();
-
+	if (!bIsJump)
+	{
+		ServerRPC_PlayerRun();
+	}
 }
 
 void APixelCodeCharacter::ServerRPC_PlayerRun_Implementation()
@@ -2492,7 +2558,10 @@ void APixelCodeCharacter::NetMulticastRPC_PlayerRun_Implementation()
 
 void APixelCodeCharacter::PlayerRunEnd(const FInputActionValue& Value)
 {	
-	ServerRPC_PlayerRunEnd();
+	if (!bIsJump)
+	{
+		ServerRPC_PlayerRunEnd();
+	}
 }
 
 void APixelCodeCharacter::ServerRPC_PlayerRunEnd_Implementation()
@@ -2533,6 +2602,13 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		Builder->SetBuildPosition(PerformLineTrace(2000.0f, true));
 	}
 	// 서휘-----------------------------------------------------------------------------------------------------끝
+
+	if (bFarmFoliage)
+	{
+		SeverRPC_RemoveFoliage(PerformLineTrace());
+		bFarmFoliage = false;
+	}
+
 
 	// 지논------------------------------------------------------------------------------------------------------
 	if (bRoll)

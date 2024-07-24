@@ -76,6 +76,9 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_Mine();
+
+	UFUNCTION()
+	void AnimNotify_IsJump();
 };
 
 

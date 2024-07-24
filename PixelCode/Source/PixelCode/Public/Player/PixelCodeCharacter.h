@@ -176,7 +176,7 @@ public:
 
 	void UpdateInteractionWidget() const;
 
-	void DropItem();
+	void DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
 
 	UFUNCTION(Server, Reliable)
  	void ServerRPC_DropItem();
