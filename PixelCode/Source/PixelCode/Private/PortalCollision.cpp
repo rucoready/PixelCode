@@ -35,12 +35,12 @@ void APortalCollision::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     //if(WidgetInstance)
-    if (WidgetInstance->ChangeReady1Test == true)
-    {
-        
-        MyGameMode->bIsReadyToReady=true;
-
-    }
+//     if (WidgetInstance->ChangeReady1Test == true)
+//     {
+//         
+//         MyGameMode->bIsReadyToReady=true;
+// 
+//     }
     
 }
 

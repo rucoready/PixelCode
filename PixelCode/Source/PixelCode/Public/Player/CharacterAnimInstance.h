@@ -74,6 +74,8 @@ public:
 	UFUNCTION()
 	void AnimNotify_FarmFoliage();
 
+	UFUNCTION()
+	void AnimNotify_Mine();
 };
 
 

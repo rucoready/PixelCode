@@ -129,6 +129,7 @@ public:
 	virtual void DieFunction();
 
 	bool bFarmFoliage = false;
+	bool bMine = false;
 
 
 	bool SkillZ = false;

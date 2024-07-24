@@ -27,22 +27,22 @@ void AMyGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	portalWidget = CreateWidget<UPortalRobbyWidget>(GetWorld(), UPortalRobbyWidget::StaticClass());
-	if (portalWidget)
-	{
-		portalWidget;
-	}
-	for (TActorIterator<APortalCollision> It(GetWorld()); It; ++It)
-	{
-		portalCollision = *It;
-		if (portalCollision)
-		{
-			portalCollision->ServerRPC_ShowRobbyWidget();
-			
-			//break; // 여러 개의 액터가 있을 경우, 첫 번째 액터만 처리하려면 break
-		}
-	}
-		
+// 	portalWidget = CreateWidget<UPortalRobbyWidget>(GetWorld(), UPortalRobbyWidget::StaticClass());
+// 	if (portalWidget)
+// 	{
+// 		portalWidget;
+// 	}
+// 	for (TActorIterator<APortalCollision> It(GetWorld()); It; ++It)
+// 	{
+// 		portalCollision = *It;
+// 		if (portalCollision)
+// 		{
+// 			portalCollision->ServerRPC_ShowRobbyWidget();
+// 			
+// 			//break; // 여러 개의 액터가 있을 경우, 첫 번째 액터만 처리하려면 break
+// 		}
+// 	}
+// 		
 }
 
 void AMyGameModeBase::EXPmanagement(float EXP, ApixelPlayerState* PlayerState)

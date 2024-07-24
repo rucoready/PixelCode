@@ -125,4 +125,11 @@ void UCharacterAnimInstance::AnimNotify_FarmFoliage()
 	}
 }
 
-
+void UCharacterAnimInstance::AnimNotify_Mine()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bFarmFoliage = true;
+		/*myCharacter->CharcurrentLoc();*/
+	}
+}

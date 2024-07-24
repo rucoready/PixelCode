@@ -358,7 +358,7 @@ void APixelCodeCharacter::NetMulticastRPC_PlayerState_Implementation()
 // 서휘-----------------------------------------------------------------------------------------------------
 FHitResult APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug)
 {
-	FVector Start = GetFollowCamera()->GetComponentLocation();
+	FVector Start = GetPawnViewLocation();
 	FVector End = Start + GetFollowCamera()->GetForwardVector() * Distance;
 
 	FHitResult HitResult;
@@ -369,7 +369,7 @@ FHitResult APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug
 
 	if (DrawDebug)
 	{
-		DrawDebugLine(GetWorld(), Start, End, FColor::Red);
+		DrawDebugLine(GetWorld(), Start, End, FColor::Red, true, 0, 0U, 3.f);
 	}
 	//BuildLoc = HitResult.ImpactPoint;
 	return HitResult;
@@ -2334,7 +2334,7 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	// 서휘-----------------------------------------------------------------------------------------------------
 	if (bInBuildMode && Builder)
 	{
-		Builder->SetBuildPosition(PerformLineTrace(650.0f, false));
+		Builder->SetBuildPosition(PerformLineTrace(2000.0f, true));
 	}
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
