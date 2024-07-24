@@ -324,18 +324,16 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 
  	auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
  
-<<<<<<< Updated upstream
- 	FString StrPc = Pc ? TEXT("OOOOO") : TEXT("XXXXX");
- 	//UE_LOG(LogTemp, Warning, TEXT("Pc? : %s"), *StrPc);
- 
  	if (Pc && ROLE_AutonomousProxy)
  	{
- 		//UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
  		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
-  		pc->NetMulticastRPC_SpawnBuilding(BuildType, transform);
+		if (transform.IsValid())
+		{
+			pc->NetMulticastRPC_SpawnBuilding(BuildType, transform);
+
+		}
   		pc->AGetSpecificBuildingAmount(BuildType);
 		UE_LOG(LogTemp, Warning, TEXT("55555555555555555555565656565656"));
-//  		pc->ClientRPC_SpawnBuilding(BuildType, transform);
  	}	
 }
 
