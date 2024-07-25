@@ -178,7 +178,7 @@ void UNormallyWidget::ESetPercent()
 			// 스칼라 파라미터 설정
 			float PercentValue = 1.0f - Player->CurrentESkillCoolTime / Player->ESkillCoolTime;
 			EDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), 1.0f - Player->CurrentESkillCoolTime /Player->ESkillCoolTime);
-			UE_LOG(LogTemp, Log, TEXT("Percent set to: %f"), PercentValue);
+			//UE_LOG(LogTemp, Log, TEXT("Percent set to: %f"), PercentValue);
 		}
 
 		BP_ESkillbar->SetBrushFromMaterial(EDynamicMaterial);

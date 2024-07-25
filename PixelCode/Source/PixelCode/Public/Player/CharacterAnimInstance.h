@@ -80,7 +80,11 @@ public:
 	UFUNCTION()
 	void AnimNotify_IsJump();
 
+	UFUNCTION()
 	void AnimNotify_AttackBlock();
+
+	UFUNCTION()
+	void AnimNotify_CounterCameraShake();
 
 };
 

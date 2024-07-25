@@ -151,3 +151,31 @@ void UCharacterAnimInstance::AnimNotify_IsJump()
 		//UE_LOG(LogTemp, Log, TEXT("bValue is: %s"), myCharacter->bIsJump ? TEXT("true") : TEXT("false"));
 	}
 }
+
+void UCharacterAnimInstance::AnimNotify_AttackBlock()
+{
+	if (myCharacter != nullptr)
+	{ 
+		if (myCharacter->bAttackBlock == false)
+		{
+			myCharacter->bAttackBlock = true;
+			UE_LOG(LogTemp, Log, TEXT("bValue is: %s"), myCharacter->bAttackBlock ? TEXT("true") : TEXT("false"));
+		}
+		else
+		{
+			myCharacter->bAttackBlock = false;
+			UE_LOG(LogTemp, Log, TEXT("bValue is: %s"), myCharacter->bAttackBlock ? TEXT("true") : TEXT("false"));
+		}
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_CounterCameraShake()
+{
+	if (myCharacter != nullptr)
+	{
+		if (myCharacter->bCounterCameraShake == false)
+		{
+			myCharacter->bAttackBlock = true;
+		}
+	}
+}

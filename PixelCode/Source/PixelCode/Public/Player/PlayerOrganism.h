@@ -80,7 +80,7 @@ public:
 	UAnimMontage* hitFalldownReaction;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MySettings")
-	UAnimMontage* AttackCountor;
+	UAnimMontage* AttackCounter;
 
 	class UAnimInstance* AnimInsatnce;
 
@@ -155,11 +155,25 @@ public:
 
 	bool bBossGroggy = false;
 
+	// 카운터 관련
 	bool bAttackBlock = false;
+
+	void SlowDownTime(float DilationAmount, float Duration, APlayerController* PlayerController);
+
+	UPROPERTY(EditAnywhere,Category = "MySettings|Varibles")
+	TSubclassOf<class UCameraShakeBase> PlayerHitShake_bp;
+
+	bool bCounterCameraShake = false;
+
+
+	FTimerHandle timerhandle_CounterShakeTimer;
+
+	void CounterCameraShake();
 
 	bool bIsJump = false;
 
-	float InterpSpeed = 10.0f;
+	UPROPERTY(EditAnywhere)
+	float InterpSpeed = 0.5f;
 
 	 // 목표 위치 변수
     UPROPERTY(EditAnywhere, Category = "Movement")

@@ -79,17 +79,17 @@ void APlayerOrganism::Tick(float DeltaTime)
 			if (bfirstDash)
 			{
 				//firstDashLoc = GetActorLocation() + ((GetActorForwardVector() + GetActorRightVector() * 0.5f) * 500);
-				NewLocation = FMath::Lerp(VS, firstDashLoc, FMath::Clamp(InterpSpeed * dashSkillTime, 0.0f, 1.0f));
+				NewLocation = FMath::Lerp(VS, firstDashLoc, FMath::Clamp(dashSkillTime*InterpSpeed, 0.0f, 1.0f));
 				SetActorLocation(NewLocation);
 			}
 			else if (bsecendDash)
 			{
 				//secendDashLoc = GetActorLocation() + (GetActorForwardVector() * 500);
-				NewLocation = FMath::Lerp(firstDashLoc, secendDashLoc, FMath::Clamp(InterpSpeed * dashSkillTime, 0.0f, 1.0f));
+				NewLocation = FMath::Lerp(firstDashLoc, secendDashLoc, FMath::Clamp(dashSkillTime*InterpSpeed, 0.0f, 1.0f));
 				SetActorLocation(NewLocation);
 			}
 
-			if (dashSkillTime >= 1.0f)
+			if (dashSkillTime >= 0.6f)
 			{
 				bDash = false;
 				bfirstDash = false;
@@ -120,6 +120,16 @@ void APlayerOrganism::Tick(float DeltaTime)
 			dashSkillTime = 0.0f;
 			SkillE = false;
 		}
+	}
+
+	if (bCounterCameraShake)
+	{
+		APlayerController* APc = Cast<APlayerController>(this->GetController());
+		if (APc != nullptr)
+		{
+			APc->ClientStartCameraShake(PlayerHitShake_bp);
+		}
+		bCounterCameraShake = false;
 	}
 }
 
@@ -152,7 +162,21 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 {
 	if (bAttackBlock)
 	{
-		
+ 		APlayerController* APc = Cast<APlayerController>(this->GetController());
+ 		if (APc != nullptr)
+ 		{
+// 			APc->ClientStartCameraShake(PlayerHitShake_bp);
+ 			SlowDownTime(0.1f, 0.05f, APc);
+ 		}
+		GetWorldTimerManager().SetTimer(timerhandle_CounterShakeTimer, this, &APlayerOrganism::CounterCameraShake, 0.9, false);
+		AnimInsatnce = GetMesh()->GetAnimInstance();
+		if (AnimInsatnce && AttackCounter != nullptr)
+		{ 
+			AnimInsatnce->Montage_Play(AttackCounter);
+
+		}
+	UE_LOG(LogTemp,Warning,TEXT("PlayerCounter"));
+	bAttackBlock = false;
 		return 0.0f;
 	}
 
@@ -496,6 +520,29 @@ void APlayerOrganism::DieFunction()
 
 	bDead = true;
 
+}
+
+void APlayerOrganism::SlowDownTime(float DilationAmount, float Duration, APlayerController* PlayerController)
+{
+
+	UGameplayStatics::SetGlobalTimeDilation(PlayerController, DilationAmount);
+
+	// 지정된 시간 후 시간 감소 해제
+	FTimerHandle Handle;
+	PlayerController->GetWorldTimerManager().SetTimer(Handle, [PlayerController]() {
+		UGameplayStatics::SetGlobalTimeDilation(PlayerController, 1.0f); // 시간 감소 해제
+		}, Duration, false);
+	
+}
+
+void APlayerOrganism::CounterCameraShake()
+{
+	APlayerController* APc = Cast<APlayerController>(this->GetController());
+	if (APc != nullptr)
+	{
+		APc->ClientStartCameraShake(PlayerHitShake_bp);
+		//SlowDownTime(0.1f, 0.05f, APc);
+	}
 }
 
 
