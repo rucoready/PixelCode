@@ -17,7 +17,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include <../../../../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputComponent.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
-#include <../../../../../../../Source/Runtime/Engine/Classes/Animation/AnimInstance.h>
+#include <Animation/AnimInstance.h>
 #include <../../../../../../../Source/Runtime/Core/Public/UObject/NameTypes.h>
 
 
@@ -153,7 +153,7 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 	if (bAttackBlock)
 	{
 		
-		return;
+		return 0.0f;
 	}
 
 	float temp = stateComp->AddStatePoint(HP, -DamageAmount);
