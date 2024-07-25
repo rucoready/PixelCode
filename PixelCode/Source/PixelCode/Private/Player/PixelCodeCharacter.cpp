@@ -412,7 +412,7 @@ void APixelCodeCharacter::BeginPlay()
 
 
 
-<<<<<<< Updated upstream
+
  	if (!Builder)
  	{
  		if (BuildingClass)
@@ -431,7 +431,7 @@ void APixelCodeCharacter::BeginPlay()
 	FString sBuilder = Builder ? TEXT("Builder True") : TEXT("Builder False");
 	FString sBuildings = Buildings ? TEXT("Buildings True") : TEXT("Buildings False");
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay : %s : %s"), *sBuilder, *sBuildings);
-=======
+
 //   	if (!Builder)
 //   	{
 //   		if (BuildingClass)
@@ -450,7 +450,6 @@ void APixelCodeCharacter::BeginPlay()
 // 	FString sBuilder = Builder ? TEXT("Builder True") : TEXT("Builder False");
 // 	FString sBuildings = Buildings ? TEXT("Buildings True") : TEXT("Buildings False");
 // 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay : %s : %s"), *sBuilder, *sBuildings);
->>>>>>> Stashed changes
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
 	//if (false == HasAuthority())
