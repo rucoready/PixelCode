@@ -109,7 +109,7 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
  				ReturnMeshToSelected(); // 여기서 bReturnMesh = true
  			}
  			
- 			SocketData = InteractingBuilding->GetHitSocketTransform(HitResult, BuildingTypes[BuildingTypeIndex].FilterCharacter, 60.0f); // 소켓 감지 범위
+ 			SocketData = InteractingBuilding->GetHitSocketTransform(HitResult, BuildingTypes[BuildingTypeIndex].FilterCharacter, 70.0f); // 소켓 감지 범위
  
  			if (!SocketData.SocketTransform.Equals(FTransform()))
  			{
@@ -143,8 +143,8 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
  				}
  			}
 
-			FVector Loc = HitResult.ImpactPoint;
-			FVector NewLoc = Loc;
+			Loc = HitResult.ImpactPoint;
+			NewLoc = Loc;
 			NewLoc.Z =Loc.Z + 40.f;
 //  			SetActorLocation(HitResult.ImpactPoint);
 			SetActorLocation(NewLoc);
@@ -176,7 +176,7 @@ void ABuildingVisual::SpawnBuilding()
 		}
 		else
 		{
-			GetWorld()->SpawnActor<ABuilding>(BuildingClass, GetActorTransform());
+			GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
 			UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Spawn Actor"));
 		}
 	}

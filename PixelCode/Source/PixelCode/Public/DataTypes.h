@@ -10,14 +10,15 @@
 UENUM(BlueprintType)
 enum class EBuildType : uint8
 {
-	Foundation UMETA(DisplayName = "Foundation"),
+	Base UMETA(DisplayName = "Base"),
 	Wall UMETA(DisplayName = "Wall"),
 	Ceiling UMETA(DisplayName = "Ceiling"),
 	Roof UMETA(DisplayName = "Roof"),
 	Gable UMETA(DisplayName = "Gable"),
 	Stairs UMETA(DisplayName = "Stairs"),
 	Window UMETA(DisplayName = "Window"),
-	Arch UMETA(DisplayName = "Arch")
+	Arch UMETA(DisplayName = "Arch"),
+	Floor UMETA(DisplayName = "Floor")
 };
 
 USTRUCT(BlueprintType)

@@ -46,6 +46,9 @@ public:
 	UPROPERTY(Replicated)
 	bool bMaterialIsTrue;
 
+	FVector Loc;
+	FVector NewLoc;
+
 
 	ABuilding* GetHitBuildingActor(const FHitResult& HitResult);
 
@@ -63,20 +66,11 @@ public:
 	//-------------------------------------------------------------------------------
 	void  SetMeshTo(EBuildType BuildType);
 
-// 	UFUNCTION(Server, Reliable)
-// 	void ServerRPC_SetMeshTo(EBuildType BuildType);
-// 
-// 	UFUNCTION(NetMulticast, Reliable)
-// 	void NetMultiRPC_SetMeshTo(EBuildType BuildType);
+
 	//-------------------------------------------------------------------------------
 
 	void ReturnMeshToSelected();
 
-// 	UFUNCTION(Server, Reliable)
-// 	void ServerRPC_ReturnMeshToSelected();
-// 
-// 	UFUNCTION(NetMulticast, Reliable)
-// 	void NetMultiRPC_ReturnMeshToSelected();
 	//-------------------------------------------------------------------------------
 
 	UPROPERTY(Replicated)

@@ -30,7 +30,7 @@ public:
 	TArray<FInstanceSocketCheck> InstanceSocketsCheck;
 
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
-	class UInstancedStaticMeshComponent* FoundationInstancedMesh;
+	class UInstancedStaticMeshComponent* BaseInstancedMesh;
 
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
 	class UInstancedStaticMeshComponent* WallInstancedMesh;
@@ -52,6 +52,9 @@ public:
 
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
 	class UInstancedStaticMeshComponent* ArchInstancedMesh;
+
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = KSH)
+	class UInstancedStaticMeshComponent* FloorInstancedMesh;
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void DestroyInstance(const FBuildingSocketData& BuildingSocketData, const FHitResult& HitResult);

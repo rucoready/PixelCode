@@ -10,9 +10,9 @@ ABuilding::ABuilding()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	FoundationInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("FoundationInstancedStaticMeshComponent"));
-	RootComponent = FoundationInstancedMesh;
-	FoundationInstancedMesh->SetIsReplicated(true);
+	BaseInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("FoundationInstancedStaticMeshComponent"));
+	RootComponent = BaseInstancedMesh;
+	BaseInstancedMesh->SetIsReplicated(true);
 
 	WallInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WallInstancedStaticMeshComponent"));
 	WallInstancedMesh->SetIsReplicated(true);
@@ -36,6 +36,9 @@ ABuilding::ABuilding()
 	ArchInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("ArchInstancedStaticMeshComponent"));
 	ArchInstancedMesh->SetIsReplicated(true);
 
+	FloorInstancedMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("FloorInstancedStaticMeshComponent"));
+	FloorInstancedMesh->SetIsReplicated(true);
+
 	bReplicates = true;
 	bAlwaysRelevant = true;
 }
@@ -46,7 +49,7 @@ void ABuilding::BeginPlay()
 
 	FInstanceSocketCheck InstanceSocket;
 
-	InstanceSocket.InstancedComponent = FoundationInstancedMesh;
+	InstanceSocket.InstancedComponent = BaseInstancedMesh;
 	InstanceSocketsCheck.Add(InstanceSocket);
 
 	InstanceSocket.InstancedComponent = WallInstancedMesh;
@@ -70,14 +73,17 @@ void ABuilding::BeginPlay()
 	InstanceSocket.InstancedComponent = ArchInstancedMesh;
 	InstanceSocketsCheck.Add(InstanceSocket);
 
+	InstanceSocket.InstancedComponent = FloorInstancedMesh;
+	InstanceSocketsCheck.Add(InstanceSocket);
+
 	FBuildingSocketData BuildingSocketData;
 	BuildingSocketData.Index = 0;
-	BuildingSocketData.InstancedComponent = FoundationInstancedMesh;
+	BuildingSocketData.InstancedComponent = BaseInstancedMesh;
 	BuildingSocketData.SocketName = NAME_None;
 	BuildingSocketData.SocketTransform = GetActorTransform();
-	AddInstance(BuildingSocketData, EBuildType::Foundation);
+	AddInstance(BuildingSocketData, EBuildType::Base);
 
-	MeshInstancedSockets = FoundationInstancedMesh->GetAllSocketNames();
+	MeshInstancedSockets = BaseInstancedMesh->GetAllSocketNames();
 	MeshInstancedSockets.Append(WallInstancedMesh->GetAllSocketNames());
 	MeshInstancedSockets.Append(CeilingInstancedMesh->GetAllSocketNames());	
 	MeshInstancedSockets.Append(RoofInstancedMesh->GetAllSocketNames());
@@ -85,6 +91,7 @@ void ABuilding::BeginPlay()
 	MeshInstancedSockets.Append(StairsInstancedMesh->GetAllSocketNames());
 	MeshInstancedSockets.Append(WindowInstancedMesh->GetAllSocketNames());
 	MeshInstancedSockets.Append(ArchInstancedMesh->GetAllSocketNames());
+	MeshInstancedSockets.Append(FloorInstancedMesh->GetAllSocketNames());
 }
 
 void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData, const FHitResult& HitResult)
@@ -124,11 +131,11 @@ FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent*
 		FTransform SocketTransform = InstancedComponent->GetSocketTransform(SocketName, RTS_Component);
 		InstanceTransform = SocketTransform * InstanceTransform;
 
- 		DrawDebugString(GetWorld(), InstanceTransform.GetLocation(), SocketName.ToString(), nullptr, FColor::White, 0.01f);
- 		DrawDebugSphere(GetWorld(), InstanceTransform.GetLocation(), 5.0f, 10, FColor::Red);
+ 		//DrawDebugString(GetWorld(), InstanceTransform.GetLocation(), SocketName.ToString(), nullptr, FColor::White, 0.01f);
+ 		DrawDebugSphere(GetWorld(), InstanceTransform.GetLocation(), 8.0f, 10, FColor::Red);
  		FTransform Temp;
  		InstancedComponent->GetInstanceTransform(InstanceIndex, Temp, true);
- 		DrawDebugSphere(GetWorld(), Temp.GetLocation(), 5.0f, 15, FColor::Blue);
+ 		DrawDebugSphere(GetWorld(), Temp.GetLocation(), 8.0f, 15, FColor::Blue);
 		
 		return InstanceTransform;
 	}	
@@ -268,8 +275,8 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 
 	switch (BuildType)
 	{		
-		case EBuildType::Foundation:
-		FoundationInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+		case EBuildType::Base:
+		BaseInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType=TEXT("FoundationInstancedMesh");
 // 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Foundation BuildType"));
 		break;
@@ -314,6 +321,12 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 			ArchInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 			StrBuildType = TEXT("ArchInstancedMesh");
 			// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
+			break;	
+			
+		case EBuildType::Floor:
+			FloorInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+			StrBuildType = TEXT("FloorInstancedMesh");
+			// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
 			break;
 
 		default:
@@ -343,7 +356,7 @@ void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 
 	DOREPLIFETIME(ABuilding, MeshInstancedSockets);
 	DOREPLIFETIME(ABuilding, InstanceSocketsCheck);
-	DOREPLIFETIME(ABuilding, FoundationInstancedMesh);
+	DOREPLIFETIME(ABuilding, BaseInstancedMesh);
 	DOREPLIFETIME(ABuilding, WallInstancedMesh);
 	DOREPLIFETIME(ABuilding, CeilingInstancedMesh);
 	DOREPLIFETIME(ABuilding, RoofInstancedMesh);
@@ -351,4 +364,5 @@ void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 	DOREPLIFETIME(ABuilding, StairsInstancedMesh);
 	DOREPLIFETIME(ABuilding, WindowInstancedMesh);
 	DOREPLIFETIME(ABuilding, ArchInstancedMesh);
+	DOREPLIFETIME(ABuilding, FloorInstancedMesh);
 }

@@ -158,8 +158,17 @@ class APixelCodeCharacter : public APlayerOrganism
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
 	UInputAction* IA_ExpUp; 
+	
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
+	UInputAction* IA_RemoveRock; 
+
+	
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
+	class AActor* Rock;
+
 	APixelCodeCharacter();
 	bool bIsStatVisible = true;
 
@@ -612,6 +621,19 @@ public:
 //
 	UPROPERTY(EditAnywhere, Category=KSH)
 	TSubclassOf<class APickup> pickupItem;
+	//-----------------------------------------------------------------------------------
+
+	UFUNCTION()
+	void OnRemoveRockPressed();  
+
+	UFUNCTION(BlueprintCallable, Category = KSH) 
+	void RemoveRock(const FHitResult& HitResult);
+
+	UFUNCTION(Server, Reliable) 
+	void SeverRPC_RemoveRock(const FHitResult& HitResult);
+
+	UFUNCTION(NetMulticast, Reliable) 
+	void MultiRPC_RemoveRock(const FHitResult& HitResult);
 
 
 	// 서휘-----------------------------------------------------------------------------------------------------끝

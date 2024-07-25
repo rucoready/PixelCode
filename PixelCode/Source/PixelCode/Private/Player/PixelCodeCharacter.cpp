@@ -53,6 +53,8 @@
 #include "GameFramework/PlayerState.h"
 #include <../../../../../../../Source/Runtime/Engine/Public/EngineUtils.h>
 #include "GameFramework/GameStateBase.h"
+#include "FoliageISMComponent.h"
+
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -410,6 +412,7 @@ void APixelCodeCharacter::BeginPlay()
 
 
 
+<<<<<<< Updated upstream
  	if (!Builder)
  	{
  		if (BuildingClass)
@@ -428,6 +431,26 @@ void APixelCodeCharacter::BeginPlay()
 	FString sBuilder = Builder ? TEXT("Builder True") : TEXT("Builder False");
 	FString sBuildings = Buildings ? TEXT("Buildings True") : TEXT("Buildings False");
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay : %s : %s"), *sBuilder, *sBuildings);
+=======
+//   	if (!Builder)
+//   	{
+//   		if (BuildingClass)
+//   		{
+//   			Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass, FVector::ZeroVector, FRotator::ZeroRotator);
+//   		}
+//   	}
+//   	if (!Buildings)
+//   	{
+//   		if (BuildingC)
+//   		{
+//   			Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC, FVector::ZeroVector, FRotator::ZeroRotator);
+//   		}
+//   	}
+// 
+// 	FString sBuilder = Builder ? TEXT("Builder True") : TEXT("Builder False");
+// 	FString sBuildings = Buildings ? TEXT("Buildings True") : TEXT("Buildings False");
+// 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay : %s : %s"), *sBuilder, *sBuildings);
+>>>>>>> Stashed changes
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
 	//if (false == HasAuthority())
@@ -1027,17 +1050,21 @@ void APixelCodeCharacter::OnSetBuildModePressed()
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	if (!Builder)
 	{
-		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
-		{
-			Builder = *var;
-		}
+		Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass, FVector::ZeroVector, FRotator::ZeroRotator);
+
+//  		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
+//  		{
+//  			Builder = *var;
+//  		}
 	}
 	if (!Buildings)
 	{
-		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
-		{
-			Buildings = *vars;
-		}
+		Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC, FVector::ZeroVector, FRotator::ZeroRotator);
+
+//  		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
+//  		{
+//  			Buildings = *vars;
+//  		}
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1346,8 +1373,8 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 	{
 		switch (BuildType)
 		{
-		case EBuildType::Foundation:
-			Buildings->FoundationInstancedMesh->AddInstance(transf, true);
+		case EBuildType::Base:
+			Buildings->BaseInstancedMesh->AddInstance(transf, true);
 			break;
 
 		case EBuildType::Wall:
@@ -1376,6 +1403,10 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 
 		case EBuildType::Arch:
 			Buildings->ArchInstancedMesh->AddInstance(transf, true);
+			break;
+
+		case EBuildType::Floor:
+			Buildings->FloorInstancedMesh->AddInstance(transf, true);
 			break;
 
 		default:
@@ -1477,25 +1508,69 @@ void APixelCodeCharacter::MultiRPC_RemoveFoliage_Implementation(const FHitResult
 	}
 }
 
-// void APixelCodeCharacter::ServerRPC_RemoveFoliage_Implementation()
-// {
-// 	RemoveFoliage(PerformLineTrace());
-// }
-// 
-// void APixelCodeCharacter::NetMulticastRPC_RemoveFoliage_Implementation(const FHitResult& HitResult)
+void APixelCodeCharacter::OnRemoveRockPressed()
+{
+	SeverRPC_RemoveRock(PerformLineTrace(1000, true));
+}
+
+void APixelCodeCharacter::RemoveRock(const FHitResult& HitResult)
+{
+	
+}
+
+void APixelCodeCharacter::SeverRPC_RemoveRock_Implementation(const FHitResult& HitResult)
+{
+	MultiRPC_RemoveRock(HitResult);
+}
+
+void APixelCodeCharacter::MultiRPC_RemoveRock_Implementation(const FHitResult& HitResult)
+{
+	if (HitResult.bBlockingHit)
+	{
+		
+		UFoliageISMComponent* UComp = Cast<UFoliageISMComponent>(HitResult.GetComponent());
+		
+		if (UComp && UComp->ComponentTags.Contains(TEXT("Rock")))
+		{
+			UComp->RemoveInstance(HitResult.Item);
+
+// 			if (UComp->ComponentTags.Contains(TEXT("Rock")))
+// 			{
+// 				UComp->RemoveInstance(HitResult.Item);
+// 			}
+		}
+	}
+}
+	
+
+// void APixelCodeCharacter::RemoveRock(const FHitResult& HitResult)
 // {
 // 	if (HitResult.bBlockingHit)
 // 	{
-// 		UFoliageInstancedStaticMeshComponent* FoliageInstance = Cast< UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
-// 		if (FoliageInstance)
+// 		UFoliageInstancedStaticMeshComponent* RockInstance = Cast<UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
+// 		if (RockInstance)
 // 		{
-// 			FoliageInstance->RemoveInstance(HitResult.Item);
-// 			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
+// 			RockInstance->RemoveInstance(HitResult.Item);
 // 		}
 // 	}
 // }
-
-							
+// 
+// void APixelCodeCharacter::SeverRPC_RemoveRock_Implementation(const FHitResult& HitResult)
+// {
+// 	MultiRPC_RemoveRock(HitResult);
+// }
+// 
+// void APixelCodeCharacter::MultiRPC_RemoveRock_Implementation(const FHitResult& HitResult)
+// {
+// 	if (HitResult.bBlockingHit)                                       
+// 	{
+// 		UFoliageInstancedStaticMeshComponent* RockInstance = Cast<UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
+// 		if (RockInstance)
+// 		{
+// 			RockInstance->RemoveInstance(HitResult.Item);
+// 		}
+// 	}
+// }
 
 // 서휘-----------------------------------------------------------------------------------------------------끝
 
@@ -1920,6 +1995,11 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 			EnhancedInputComponent->BindAction(IA_Weapon2, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon2);
 			EnhancedInputComponent->BindAction(IA_Weapon3, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon3);
 			EnhancedInputComponent->BindAction(IA_ExpUp, ETriggerEvent::Started, this, &APixelCodeCharacter::PlayerExpUp);
+			
+			
+			
+			
+			EnhancedInputComponent->BindAction(IA_RemoveRock, ETriggerEvent::Started, this, &APixelCodeCharacter::OnRemoveRockPressed);
 		}
 
 	}
