@@ -414,14 +414,14 @@ void APixelCodeCharacter::BeginPlay()
  	{
  		if (BuildingClass)
  		{
- 			Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass, FVector::ZeroVector, FRotator::ZeroRotator);
+ 			//Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass, FVector::ZeroVector, FRotator::ZeroRotator);
  		}
  	}
  	if (!Buildings)
  	{
  		if (BuildingC)
  		{
- 			Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC, FVector::ZeroVector, FRotator::ZeroRotator);
+ 			//Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC, FVector::ZeroVector, FRotator::ZeroRotator);
  		}
  	}
 

@@ -115,6 +115,10 @@ class PIXELCODE_API UPCodeGameInstance : public UGameInstance
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
 	UDataTable* dt_parentItemDataTable;
 
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
+	UDataTable* dt_CharacterskinDatatable;
+
 	void ExitRoom();
 
 	bool IsInRoom();
