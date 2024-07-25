@@ -173,7 +173,7 @@ public:
 	bool bIsJump = false;
 
 	UPROPERTY(EditAnywhere)
-	float InterpSpeed = 0.5f;
+	float InterpSpeed = 10.0f;
 
 	 // 목표 위치 변수
     UPROPERTY(EditAnywhere, Category = "Movement")
