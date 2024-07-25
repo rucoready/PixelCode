@@ -32,6 +32,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UPortalRobbyWidget> portalRobbyWidget;
 
+	
+
 	bool makeOnceUI = false;
 
 	bool bReady = false;

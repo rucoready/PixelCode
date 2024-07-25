@@ -29,6 +29,9 @@
 #include "BossMaInUI.h"
 #include "Blueprint/UserWidget.h"
 #include "Boss/BossAnimInstance.h"
+#include "DamageWidget.h"
+#include "DamageWidgetComponent.h"
+#include "Components/WidgetComponent.h"
 
 
 // Sets default values
@@ -87,6 +90,18 @@ ABossApernia::ABossApernia()
     bossBackSwordComp->SetRelativeRotation(FRotator(-0.016692f, 0.044553f, 20.539312f));
     bossBackSwordComp->SetWorldScale3D(FVector(0.7f, 0.5f, 1.0f));
     //bossBackSwordComp->SetVisibility(false);
+
+    damageWidgetComponentl = CreateDefaultSubobject<UWidgetComponent>(TEXT("DamageWidgetComponent"));
+    damageWidgetComponentl->SetupAttachment(GetMesh());  // Attach to the owner's root component
+    damageWidgetComponentl->SetRelativeLocation(FVector(0, 0, 188));
+    damageWidgetComponentl->SetRelativeRotation(FRotator(0, -99, 0));
+
+    // Optionally, you can set a widget class to the DamageWidgetComponent
+    static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/Engine.Blueprint'/Game/KMS_AI/Damage/BP_DamageWidgetComponent.BP_DamageWidgetComponent'"));
+    if (WidgetClass.Succeeded())
+    {
+        damageWidgetComponentl->SetWidgetClass(WidgetClass.Class);
+    }
 
     //////////////////////////////////////////////////////////////////////////Boss Animation forward slash
     static ConstructorHelpers::FObjectFinder<UAnimMontage> MontageObj(TEXT("/Script/Engine.AnimMontage'/Game/KMS_AI/Boss_Alpernia/Animations/AnimationFinish/AM_BossComboAttack01.AM_BossComboAttack01'"));
@@ -525,6 +540,8 @@ void ABossApernia::BossTakeDamage(float Damage)
     Player = Cast<APlayerOrganism>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
     
     bossMainWidget->UpdateHPBar(bossCurrentHP);
+
+    ServerRPC_BossTakeDamageWidgetSet();
 
     // 애니메이션 인스턴스를 가져옵니다.
     UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
@@ -1549,4 +1566,92 @@ void ABossApernia::ServerRPC_BossDie_Implementation()
 void ABossApernia::MulticastRPC_BossDie_Implementation()
 {
     PlayAnimMontage(bossDie);
+}
+
+void ABossApernia::ServerRPC_BossTakeDamageWidgetSet_Implementation()
+{
+    widgetRandomValue = FMath::RandRange(1, 5);
+
+    UUserWidget* UserWidget = damageWidgetComponentl->GetUserWidgetObject();
+    if (UserWidget)
+    {
+        damageWidgetInstance = Cast<UDamageWidget>(UserWidget);
+        // damageWidgetInstance->SetDamage();
+        if (widgetRandomValue == 1)
+        {
+            damageAmount = FMath::RandRange(800, 900);
+            //damageWidgetInstance->PlayDamageAnimation01();
+
+        }
+        else if (widgetRandomValue == 2)
+        {
+            damageAmount = FMath::RandRange(2100, 2200);
+            //damageWidgetInstance->PlayDamageAnimation02();
+        }
+        else if (widgetRandomValue == 3)
+        {
+            damageAmount = FMath::RandRange(700, 800);
+            // damageWidgetInstance->PlayDamageAnimation03();
+        }
+        else if (widgetRandomValue == 4)
+        {
+            damageAmount = FMath::RandRange(500, 1000);
+            // damageWidgetInstance->PlayDamageAnimation04();
+        }
+        else
+        {
+            damageAmount = FMath::RandRange(1000, 1200);
+            // damageWidgetInstance->PlayDamageAnimation05();
+        }
+
+        UE_LOG(LogTemp, Warning, TEXT("damageAmount : %d"), damageAmount);
+    }
+
+
+
+    MulticastRPC_BossTakeDamageWidgetSet(damageAmount);
+}
+
+void ABossApernia::MulticastRPC_BossTakeDamageWidgetSet_Implementation(int32 value2)
+{
+    UUserWidget* UserWidget = damageWidgetComponentl->GetUserWidgetObject();
+    if (UserWidget)
+    {
+        damageWidgetInstance = Cast<UDamageWidget>(UserWidget);
+        damageWidgetInstance->SetDamage();
+        if (value2 >= 800 && value2 <= 900)
+        {
+
+            damageWidgetInstance->PlayDamageAnimation01(value2);
+            bossCurrentHP = bossCurrentHP - value2;
+
+        }
+        else if (value2 >= 2100 && value2 <= 2200)
+        {
+
+            damageWidgetInstance->PlayDamageAnimation02(value2);
+            bossCurrentHP = bossCurrentHP - value2;
+        }
+        else if (value2 >= 700 && value2 <= 800)
+        {
+
+            damageWidgetInstance->PlayDamageAnimation03(value2);
+            bossCurrentHP = bossCurrentHP - value2;
+        }
+        else if (value2 >= 500 && value2 <= 1000)
+        {
+
+            damageWidgetInstance->PlayDamageAnimation04(value2);
+            bossCurrentHP = bossCurrentHP - value2;
+        }
+        else
+        {
+
+            damageWidgetInstance->PlayDamageAnimation05(value2);
+            bossCurrentHP = bossCurrentHP - value2;
+        }
+
+    }
+
+   
 }

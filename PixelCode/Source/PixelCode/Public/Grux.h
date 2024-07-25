@@ -31,6 +31,11 @@ public:
 
 	UBehaviorTree* GetBehaviorTree() const;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UWidgetComponent* damageWidgetComponentl;
+
+	class UDamageWidget* damageWidgetInstance;
+
 	//Network
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
@@ -56,7 +61,7 @@ public:
 
 	void CoolTimeSetting();
 
-	float maxHp = 50.0f;
+	float maxHp = 5000.0f;
 
 	float currentHp;
 
@@ -120,7 +125,15 @@ public:
 
 	bool cooltimeReset;
 
+	int32 widgetRandomValue;
+
 	FTimerHandle timerhandle_CoolTimeOverlap;
+
+	int32 damageAmount;
+
+	
+
+	int32 gruxNewTakeDamage;
 
 	void ResetOverlapCoolTime();
 
@@ -155,5 +168,11 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_GruxCameraShake();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_GruxTakeDamageWidgetSet();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_GruxTakeDamageWidgetSet(int32 value2);
 
 };

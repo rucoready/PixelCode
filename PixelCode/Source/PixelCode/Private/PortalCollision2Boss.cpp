@@ -2,6 +2,8 @@
 
 
 #include "PortalCollision2Boss.h"
+#include "PCodePlayerController.h"
+#include "Net/UnrealNetwork.h"
 #include "Components/BoxComponent.h"
 
 // Sets default values
@@ -33,13 +35,48 @@ void APortalCollision2Boss::OnBeginOverlapPortal(UPrimitiveComponent* Overlapped
 {
 	if (OtherActor->GetName().Contains("Player"))
 	{
-
-		if (HasAuthority())
-		{
-			GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/BossMap2?Listen"));
+		ServerRPC_LevelMoveBoss();
+		//if (HasAuthority())
+		//{
+			//GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/BossMap2?Listen"));
 			
-		}
+		//}
 
+	}
+}
+
+void APortalCollision2Boss::RemoveBossLoadingUI()
+{
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		// PCodePlayerController 타입으로 캐스팅
+		APCodePlayerController* PCodePlayerController = Cast<APCodePlayerController>(It->Get());
+		if (PCodePlayerController)
+		{
+			PCodePlayerController->ServerRPC_HideWidgetBossLoading();
+
+
+		}
+	}
+}
+
+void APortalCollision2Boss::ServerRPC_LevelMoveBoss_Implementation()
+{
+	MulticastRPC_LevelMoveBoss();
+}
+
+void APortalCollision2Boss::MulticastRPC_LevelMoveBoss_Implementation()
+{
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		// PCodePlayerController 타입으로 캐스팅
+		APCodePlayerController* PCodePlayerController = Cast<APCodePlayerController>(It->Get());
+		if (PCodePlayerController)
+		{
+			PCodePlayerController->ServerRPC_CreateWidgetBossLoading();
+			GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/BossMap2?Listen"));
+			//tWorld()->GetTimerManager().SetTimer(handle, this, &APCodePlayerController::ServerRPC_RespawnPlayer_Implementation, 5, false);
+		}
 	}
 }
 

@@ -27,22 +27,31 @@ void AMyGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-// 	portalWidget = CreateWidget<UPortalRobbyWidget>(GetWorld(), UPortalRobbyWidget::StaticClass());
-// 	if (portalWidget)
-// 	{
-// 		portalWidget;
-// 	}
-// 	for (TActorIterator<APortalCollision> It(GetWorld()); It; ++It)
-// 	{
-// 		portalCollision = *It;
-// 		if (portalCollision)
-// 		{
-// 			portalCollision->ServerRPC_ShowRobbyWidget();
-// 			
-// 			//break; // 여러 개의 액터가 있을 경우, 첫 번째 액터만 처리하려면 break
-// 		}
-// 	}
-// 		
+	portalWidget = CreateWidget<UPortalRobbyWidget>(GetWorld(), UPortalRobbyWidget::StaticClass());
+	if (portalWidget)
+	{
+		portalWidget;
+	}
+	for (TActorIterator<APortalCollision> It(GetWorld()); It; ++It)
+	{
+		portalCollision = *It;
+		if (portalCollision)
+		{
+			//portalCollision->ServerRPC_ShowRobbyWidget();
+			
+			//break; // 여러 개의 액터가 있을 경우, 첫 번째 액터만 처리하려면 break
+		}
+	}
+
+	
+	// PlayerController가 null이 아닌지 확인
+	pc = Cast<APCodePlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	{
+
+	}
+		
+	
+		
 }
 
 void AMyGameModeBase::EXPmanagement(float EXP, ApixelPlayerState* PlayerState)
@@ -61,12 +70,13 @@ void AMyGameModeBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
- 	if (bIsReadyToReady)
- 	{
-		UE_LOG(LogTemp, Warning, TEXT("TICKCHANGEREADY!"));
- 	}
+  	if (bIsReadyToReady&&!onceDo)
+  	{
+		onceDo = true;
+		ServerRPC_ChangeeReadyButtonUI();
+		
 
-	
+  	}
 }
 
 void AMyGameModeBase::PostLogin(APlayerController* NewPlayer)
@@ -80,4 +90,9 @@ void AMyGameModeBase::PostLogin(APlayerController* NewPlayer)
 		NewPlayerState->InitPlayerData();
 	}
 
+}
+
+void AMyGameModeBase::ServerRPC_ChangeeReadyButtonUI_Implementation()
+{
+	pc->ChangeRobbyWidgetButtonReady();
 }

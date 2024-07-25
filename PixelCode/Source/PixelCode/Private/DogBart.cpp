@@ -40,7 +40,10 @@
 #include "DogBartAIController.h"
 #include "Player/pixelPlayerState.h"
 #include "GameFramework/GameStateBase.h"
+#include "DamageWidget.h"
+#include "DamageWidgetComponent.h"
 #include "Boss/BossAnimInstance.h"
+#include "Components/WidgetComponent.h"
 
 
 
@@ -90,7 +93,17 @@ ADogBart::ADogBart()
 	damageBox->SetRelativeLocation(FVector(50, -20, 0));
 	damageBox->SetWorldScale3D(FVector(1.25,1.0,1.25));
 	
+	damageWidgetComponentl = CreateDefaultSubobject<UWidgetComponent>(TEXT("DamageWidgetComponent"));
+	damageWidgetComponentl->SetupAttachment(GetMesh());  // Attach to the owner's root component
+	damageWidgetComponentl->SetRelativeLocation(FVector(0, 0, 188));
+	damageWidgetComponentl->SetRelativeRotation(FRotator(0, -99, 0));
 
+	// Optionally, you can set a widget class to the DamageWidgetComponent
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/Engine.Blueprint'/Game/KMS_AI/Damage/BP_DamageWidgetComponent.BP_DamageWidgetComponent'"));
+	if (WidgetClass.Succeeded())
+	{
+		damageWidgetComponentl->SetWidgetClass(WidgetClass.Class);
+	}
 
 	//static ConstructorHelpers::FObjectFinder<USkeletalMesh>dogMane(TEXT("/Script/Engine.SkeletalMesh'/Game/QuadrapedCreatures/Barghest/Meshes/SK_BARGHEST_MANE.SK_BARGHEST_MANE'"));
 	//if (dogMane.Succeeded())
@@ -175,7 +188,7 @@ void ADogBart::DestroySelf()
 
 void ADogBart::DogBartTakeDamage(float Damage)
 {
-	currentHp = currentHp - Damage;
+	//currentHp = currentHp - Damage;
 
 	int32 valueWhining = FMath::RandRange(1, 2);
 	{
@@ -188,6 +201,7 @@ void ADogBart::DogBartTakeDamage(float Damage)
 			UGameplayStatics::PlaySoundAtLocation(this, whiningSound2, GetActorLocation());
 		}
 	}
+	ServerRPC_DogBartTakeDamageWidgetSet();
 }
 
 void ADogBart::DamageCollisionActive()
@@ -365,4 +379,101 @@ void ADogBart::MulticastRPC_GrowlSound_Implementation()
 void ADogBart::ReSoundPlayGrowlSound()
 {
 	growlSoundPlayOnce = false;
+}
+
+void ADogBart::ServerRPC_DogBartTakeDamageWidgetSet_Implementation()
+{
+	widgetRandomValue = FMath::RandRange(1, 5);
+
+	UUserWidget* UserWidget = damageWidgetComponentl->GetUserWidgetObject();
+	if (UserWidget)
+	{
+		damageWidgetInstance = Cast<UDamageWidget>(UserWidget);
+		// damageWidgetInstance->SetDamage();
+		if (widgetRandomValue == 1)
+		{
+			damageAmount = FMath::RandRange(800, 900);
+			//damageWidgetInstance->PlayDamageAnimation01();
+
+		}
+		else if (widgetRandomValue == 2)
+		{
+			damageAmount = FMath::RandRange(2100, 2200);
+			//damageWidgetInstance->PlayDamageAnimation02();
+		}
+		else if (widgetRandomValue == 3)
+		{
+			damageAmount = FMath::RandRange(700, 800);
+			// damageWidgetInstance->PlayDamageAnimation03();
+		}
+		else if (widgetRandomValue == 4)
+		{
+			damageAmount = FMath::RandRange(500, 1000);
+			// damageWidgetInstance->PlayDamageAnimation04();
+		}
+		else
+		{
+			damageAmount = FMath::RandRange(1000, 1200);
+			// damageWidgetInstance->PlayDamageAnimation05();
+		}
+
+		
+	}
+
+
+
+	MulticastRPC_DogBartTakeDamageWidgetSet(damageAmount);
+}
+
+void ADogBart::MulticastRPC_DogBartTakeDamageWidgetSet_Implementation(int32 value2)
+{
+	UUserWidget* UserWidget = damageWidgetComponentl->GetUserWidgetObject();
+	if (UserWidget)
+	{
+		damageWidgetInstance = Cast<UDamageWidget>(UserWidget);
+		if (damageWidgetInstance != nullptr)
+		{
+			
+		}
+		damageWidgetInstance->SetDamage();
+		if (value2 >= 800 && value2 <= 900)
+		{
+
+			damageWidgetInstance->PlayDamageAnimation01(value2);
+			currentHp = currentHp - value2;
+			
+			
+		}
+		else if (value2 >= 2100 && value2 <= 2200)
+		{
+
+			damageWidgetInstance->PlayDamageAnimation02(value2);
+			currentHp = currentHp - value2;
+			
+		}
+		else if (value2 >= 700 && value2 <= 800)
+		{
+
+			damageWidgetInstance->PlayDamageAnimation03(value2);
+			currentHp = currentHp - value2;
+			
+		}
+		else if (value2 >= 500 && value2 <= 1000)
+		{
+
+			damageWidgetInstance->PlayDamageAnimation04(value2);
+			currentHp = currentHp - value2;
+			
+		}
+		else
+		{
+
+			damageWidgetInstance->PlayDamageAnimation05(value2);
+			currentHp = currentHp - value2;
+			
+		}
+		UE_LOG(LogTemp, Warning, TEXT("currentHP3 : %d"), value2);
+	}
+	
+	
 }

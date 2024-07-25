@@ -28,4 +28,14 @@ public:
 
 	UFUNCTION()
 	void OnBeginOverlapPortal(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_LevelMoveBoss();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_LevelMoveBoss();
+
+	void RemoveBossLoadingUI();
+
+	FTimerHandle timehandle_RemoveBossLoadingUI;
 };

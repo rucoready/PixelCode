@@ -34,6 +34,9 @@
 #include "GruxAnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "Boss/BossAnimInstance.h"
+#include "DamageWidget.h"
+#include "PCodePlayerController.h"
+#include "Components/WidgetComponent.h"
 #include "Player/pixelPlayerState.h"
 
 // Sets default values
@@ -71,6 +74,21 @@ AGrux::AGrux()
 
     boxCollisionR->SetRelativeLocation(FVector(0, -94.0, 0));
     boxCollisionR->SetWorldScale3D(FVector(1.0, 2.5, 1.0));
+
+    boxCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    boxCollisionR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    damageWidgetComponentl = CreateDefaultSubobject<UWidgetComponent>(TEXT("DamageWidgetComponent"));
+    damageWidgetComponentl->SetupAttachment(GetMesh());  // Attach to the owner's root component
+    damageWidgetComponentl->SetRelativeLocation(FVector(0,0,188));
+    damageWidgetComponentl->SetRelativeRotation(FRotator(0, -99, 0));
+
+    // Optionally, you can set a widget class to the DamageWidgetComponent
+    static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/Engine.Blueprint'/Game/KMS_AI/Damage/BP_DamageWidgetComponent.BP_DamageWidgetComponent'"));
+    if (WidgetClass.Succeeded())
+    {
+        damageWidgetComponentl->SetWidgetClass(WidgetClass.Class);
+    }
 }
 
 // Called when the game starts or when spawned
@@ -80,7 +98,7 @@ void AGrux::BeginPlay()
     gruxDie = false;
     currentHp = maxHp;
     originLocation = GetActorLocation();
-    float radius2D = 3000.0f;
+    float radius2D = 10000.0f;
 
     FVector direction2D = FVector(1.0f, 0.0f, 0.0f);
 
@@ -182,16 +200,35 @@ void AGrux::CoolTimeSetting()
 
 void AGrux::GruxTakeDamage(float Damage)
 {
-    currentHp = currentHp - Damage;
+    //currentHp = currentHp - Damage;
 
+    gruxNewTakeDamage = Damage;
     
-    float PulseStrength = 3000.0f;  // 펄스의 세기 
+    ServerRPC_GruxTakeDamageWidgetSet();
+
+    float PulseStrength = 1000.0f;  // 펄스의 세기 
     FVector LaunchDirection = -GetActorForwardVector(); // 뒷 방향으로 설정
     LaunchCharacter(LaunchDirection * PulseStrength, true, true);
 
+    for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+    {
+        // PCodePlayerController 타입으로 캐스팅
+        APCodePlayerController* PCodePlayerController = Cast<APCodePlayerController>(It->Get());
+        if (PCodePlayerController)
+        {
+            //PCodePlayerController->ServerRPC_CreateDamageWidget();
+
+
+        }
+    }
+
     
 
+
+
     ServerRPC_GruxCameraShake();
+
+
 
 }
 
@@ -236,7 +273,7 @@ void AGrux::OnBeginOverlapSwordCollision(UPrimitiveComponent* OverlappedComponen
     {
         ApplyDamageToTarget(OtherActor, 7);
         cooltimeReset = true;
-        GetWorldTimerManager().SetTimer(timerhandle_CoolTimeOverlap, this, &AGrux::ResetOverlapCoolTime, 0.5f, false);
+        GetWorldTimerManager().SetTimer(timerhandle_CoolTimeOverlap, this, &AGrux::ResetOverlapCoolTime, 1.0f, false);
         players = Cast<APlayerOrganism>(OtherActor);
 		if (players)
 		{
@@ -396,5 +433,94 @@ void AGrux::MulticastRPC_Attack01_Implementation()
         
 }
 
+void AGrux::ServerRPC_GruxTakeDamageWidgetSet_Implementation()
+{
+    
+
+    widgetRandomValue = FMath::RandRange(1, 5);
+
+    UUserWidget* UserWidget = damageWidgetComponentl->GetUserWidgetObject();
+    if (UserWidget)
+    {
+        damageWidgetInstance = Cast<UDamageWidget>(UserWidget);
+       // damageWidgetInstance->SetDamage();
+        if (widgetRandomValue == 1)
+        {
+            damageAmount = FMath::RandRange(800, 900);
+            //damageWidgetInstance->PlayDamageAnimation01();
+
+        }
+        else if (widgetRandomValue == 2)
+        {
+            damageAmount = FMath::RandRange(2100, 2200);
+            //damageWidgetInstance->PlayDamageAnimation02();
+        }
+        else if (widgetRandomValue == 3)
+        {
+            damageAmount = FMath::RandRange(700, 800);
+           // damageWidgetInstance->PlayDamageAnimation03();
+        }
+        else if (widgetRandomValue == 4)
+        {
+            damageAmount = FMath::RandRange(500, 1000);
+           // damageWidgetInstance->PlayDamageAnimation04();
+        }
+        else
+        {
+            damageAmount = FMath::RandRange(1000, 1200);
+           // damageWidgetInstance->PlayDamageAnimation05();
+        }
+
+        UE_LOG(LogTemp, Warning, TEXT("damageAmount : %d"), damageAmount);
+    }
 
 
+
+    MulticastRPC_GruxTakeDamageWidgetSet(damageAmount);
+}
+
+void AGrux::MulticastRPC_GruxTakeDamageWidgetSet_Implementation(int32 vaule2)
+{
+	
+    UUserWidget* UserWidget = damageWidgetComponentl->GetUserWidgetObject();
+    if (UserWidget)
+    {
+        damageWidgetInstance = Cast<UDamageWidget>(UserWidget);
+        damageWidgetInstance->SetDamage();
+        if (vaule2 >= 800 && vaule2 <=900)
+        {
+           
+            damageWidgetInstance->PlayDamageAnimation01(vaule2);
+            currentHp = currentHp - vaule2;
+
+        }
+        else if (vaule2 >= 2100 && vaule2 <= 2200)
+        {
+           
+            damageWidgetInstance->PlayDamageAnimation02(vaule2);
+            currentHp = currentHp - vaule2;
+        }
+        else if (vaule2 >= 700 && vaule2 <= 800)
+        {
+          
+            damageWidgetInstance->PlayDamageAnimation03(vaule2);
+            currentHp = currentHp - vaule2;
+        }
+        else if (vaule2 >= 500 && vaule2 <= 1000)
+        {
+            
+            damageWidgetInstance->PlayDamageAnimation04(vaule2);
+            currentHp = currentHp - vaule2;
+        }
+        else
+        {
+            
+            damageWidgetInstance->PlayDamageAnimation05(vaule2);
+            currentHp = currentHp - vaule2;
+        }
+
+    }
+
+    UE_LOG(LogTemp,Warning, TEXT("CURRENTT : %f"),currentHp);
+	
+}

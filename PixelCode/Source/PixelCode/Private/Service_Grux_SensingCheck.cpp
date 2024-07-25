@@ -10,7 +10,9 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "NavigationSystem.h"
 #include "Grux.h"
-#include "GruxAIController.h"
+#include "DrawDebugHelpers.h"
+#include "Math/RotationMatrix.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "GruxAIController.h"
 
 UService_Grux_SensingCheck::UService_Grux_SensingCheck()
@@ -45,37 +47,35 @@ void UService_Grux_SensingCheck::TickNode(UBehaviorTreeComponent& OwnerComp, uin
     APixelCodeCharacter* closestPlayer = nullptr;
     float closestDistance = FLT_MAX;
 
-    for (AActor* actor : foundCharacters)
+    for (int32 i = 0; i <= numTraces; ++i)
     {
-        actorLoc = actor->GetActorLocation();
-        FVector toActor = (actorLoc - gruxLoc).GetSafeNormal2D(); // Z축을 무시한 평면 벡터
-        distance = FVector::Dist2D(gruxLoc, actorLoc); // Z축을 무시한 평면 거리
-        float dotProduct = FVector::DotProduct(gruxForward, toActor);
-        float angle = FMath::Acos(dotProduct) * (180.0f / PI);
+        float currentAngle = -halfFOV + i * angleStep;
+        FRotator rotation = FRotator(0.0f, currentAngle, 0.0f);
+        FVector direction = rotation.RotateVector(gruxForward);
 
-        if (angle <= 80.0f)
+        FVector traceEnd = gruxLoc + direction * 1500.0f;
+        TArray<FHitResult> hitResults; // FHitResult 배열
+        FCollisionQueryParams queryParams;
+        queryParams.AddIgnoredActor(grux);
+
+        float attackRadius = 700.0f;
+        bool bHit = GetWorld()->SweepMultiByChannel(hitResults, gruxLoc, traceEnd, FQuat::Identity,
+            ECollisionChannel::ECC_GameTraceChannel2, FCollisionShape::MakeSphere(attackRadius), queryParams);
+
+        // DrawDebugSphere로 디버그 시각화
+        //DrawDebugSphere(GetWorld(), traceEnd, attackRadius, 12, FColor::Red, false, 0.1f, 0, 10.0f);
+
+        for (const FHitResult& hitResult : hitResults)
         {
-            for (int32 i = 0; i <= numTraces; ++i)
+            AActor* hitActor = hitResult.GetActor();
+            if (hitActor)
             {
-                float currentAngle = -halfFOV + i * angleStep;
-                FRotator rotation = FRotator(0.0f, currentAngle, 0.0f);
-                FVector direction = rotation.RotateVector(gruxForward);
-
-                FVector traceEnd = gruxLoc + direction * 1500.0f;
-                FHitResult hitResult;
-                FCollisionQueryParams queryParams;
-                queryParams.AddIgnoredActor(grux);
-
-                bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, gruxLoc, traceEnd, ECC_Visibility, queryParams);
-
-                // DrawDebugLine(GetWorld(), gruxLoc, traceEnd, FColor::Red, false, 0.1f, 0, 10.0f);
-
-                if (bHit && hitResult.GetActor())
+                FString actorName = hitActor->GetName();
+                if (actorName.Contains("Player"))
                 {
-                    FString actorName = hitResult.GetActor()->GetName();
-                    if (actorName.Contains("Player"))
+                    APixelCodeCharacter* detectedPlayer = Cast<APixelCodeCharacter>(hitActor);
+                    if (detectedPlayer)
                     {
-                        APixelCodeCharacter* detectedPlayer = Cast<APixelCodeCharacter>(hitResult.GetActor());
                         FVector detectedPlayerLoc = detectedPlayer->GetActorLocation();
                         distance = FVector::Dist2D(gruxLoc, detectedPlayerLoc); // Z축 무시
 

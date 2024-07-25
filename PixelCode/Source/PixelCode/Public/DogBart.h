@@ -55,7 +55,7 @@ public:
 
 	float currentHp;
 
-	float maxHp = 30.0f;
+	float maxHp = 4000.0f;
 
 	void DestroySelf();
 
@@ -180,6 +180,24 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sound")
 	class USoundBase* dieSound;
+
+	int32 widgetRandomValue;
+
+	int32 damageAmount;
+
+/*	int32 vaule2;*/
+
+	class UDamageWidget* damageWidgetInstance;
+
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DogBartTakeDamageWidgetSet();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_DogBartTakeDamageWidgetSet(int32 value2);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UWidgetComponent* damageWidgetComponentl;
 
 
 };

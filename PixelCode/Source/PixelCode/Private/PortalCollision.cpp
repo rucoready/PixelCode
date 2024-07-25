@@ -6,6 +6,7 @@
 #include "PortalRobbyWidget.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/Character.h"
+#include "PCodePlayerController.h"
 #include "MyGameModeBase.h"
 
 // Sets default values
@@ -26,21 +27,25 @@ void APortalCollision::BeginPlay()
 
     bReady = false;
     MyGameMode = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(this));
-    //ServerRPC_ShowRobbyWidget();
+   
 }
 
 // Called every frame
 void APortalCollision::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
-    //if(WidgetInstance)
-//     if (WidgetInstance->ChangeReady1Test == true)
-//     {
-//         
-//         MyGameMode->bIsReadyToReady=true;
+    
+// 	if (WidgetInstance)
+// 	{
+//         UE_LOG(LogTemp, Warning, TEXT("9988"));
+//         if (WidgetInstance->ChangeReady1Test == true)
+//         {
 // 
+//             MyGameMode->bIsReadyToReady = true;
+//             
+//         }
 //     }
+    
     
 }
 
@@ -53,8 +58,8 @@ void APortalCollision::OnBeginOverlapPortal(UPrimitiveComponent* OverlappedCompo
 {
     if (OtherActor && OtherActor->GetName().Contains("Player"))
     {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Overlap Check"));
         ServerRPC_ShowRobbyWidget();
-        
     }
 }
 
@@ -62,29 +67,20 @@ void APortalCollision::OneEndOverlapPortal(UPrimitiveComponent* OverlappedCompon
 {
     if (OtherActor && OtherActor->GetName().Contains("Player"))
     {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Overlap Disable"));
         ServerRPC_HideRobbyWidget();
     }
 }
 
 void APortalCollision::ServerTravel()
 {
-    if (IsServer())
-    {
-        // 모든 플레이어의 위치를 저장
-        for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-        {
-            APlayerController* PlayerController = It->Get();
-            if (PlayerController && PlayerController->GetCharacter())
-            {
-                FVector PlayerLocation = PlayerController->GetCharacter()->GetActorLocation();
-                PlayerStartLocations.Add(PlayerController, PlayerLocation);
-            }
-        }
+    
+        
 
         // 서버 트래블 호출
-        FString MapName = TEXT("/Game/KMS_AI/BossMap/Dungeon2?listen");
-        GetWorld()->ServerTravel(MapName, true);
-    }
+       
+        //GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/Dungeon2?listen"));
+    
 }
 
 void APortalCollision::OnRep_Ready()
@@ -117,19 +113,34 @@ void APortalCollision::ServerRPC_HideRobbyWidget_Implementation()
 
 void APortalCollision::MulticastRPC_HideRobbyWidget_Implementation()
 {
-    // 모든 플레이어에 대해 위젯 제거
-    for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+    if (portalRobbyWidget)
     {
-        APlayerController* PlayerController = It->Get();
-        if (PlayerController && WidgetInstance)
+        for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
         {
-            WidgetInstance->RemoveFromParent();
-            PlayerController->bShowMouseCursor = false;
-            PlayerController->bEnableClickEvents = false;
-            PlayerController->bEnableTouchEvents = false;
+            // PCodePlayerController 타입으로 캐스팅
+            APCodePlayerController* PCodePlayerController = Cast<APCodePlayerController>(It->Get());
+            if (PCodePlayerController)
+            {
+                PCodePlayerController->ServerRPC_HideWidgetRobbyWidget();
+ 
+
+            }
         }
     }
     
+
+//     for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+//     {
+//         APlayerController* BaseController = It->Get();
+//         APCodePlayerController* PlayerController = Cast<APCodePlayerController>(BaseController);
+//         if (PlayerController && WidgetInstance)
+//         {
+//             WidgetInstance->RemoveFromParent();
+//             PlayerController->bShowMouseCursor = false;
+//             PlayerController->bEnableClickEvents = false;
+//             PlayerController->bEnableTouchEvents = false;
+//         }
+//     }
 }
 
 void APortalCollision::ServerRPC_ShowRobbyWidget_Implementation()
@@ -139,26 +150,17 @@ void APortalCollision::ServerRPC_ShowRobbyWidget_Implementation()
 
 void APortalCollision::MulticastRPC_ShowRobbyWidget_Implementation()
 {
-    
     if (portalRobbyWidget)
     {
-        
         for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
         {
-            APlayerController* PlayerController = It->Get();
-            if (PlayerController)
+            // PCodePlayerController 타입으로 캐스팅
+            APCodePlayerController* PCodePlayerController = Cast<APCodePlayerController>(It->Get());
+            if (PCodePlayerController)
             {
-                // 위젯 인스턴스 생성
-                WidgetInstance = CreateWidget<UPortalRobbyWidget>(PlayerController, portalRobbyWidget);
-                if (WidgetInstance)
-                {
-                    // 위젯을 화면에 추가
-                    WidgetInstance->AddToViewport();
-
-                    PlayerController->bShowMouseCursor = true;
-                    PlayerController->bEnableClickEvents = true;
-                    PlayerController->bEnableTouchEvents = true;
-                }
+                PCodePlayerController->ServerRPC_CreateWidgetRobbyWidget();
+ 
+                 
             }
         }
     }

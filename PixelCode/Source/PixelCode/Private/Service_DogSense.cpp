@@ -61,40 +61,47 @@ void UService_DogSense::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
                 FRotator rotation = FRotator(0.0f, currentAngle, 0.0f);
                 FVector direction = rotation.RotateVector(gruxForward);
 
-                FVector traceStart = dogLoc + FVector(0.0f, 0.0f, 0.0f);
+                FVector traceStart = dogLoc;
                 FVector traceEnd = traceStart + direction * 1700.0f;
-                FHitResult hitResult;
+
+                TArray<FHitResult> hitResults; // FHitResult 배열
                 FCollisionQueryParams queryParams;
                 queryParams.AddIgnoredActor(dogBart);
 
-                bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, traceStart, traceEnd, ECC_Visibility, queryParams);
+                float attackRadius = 700.0f;
+                bool bHit = GetWorld()->SweepMultiByChannel(hitResults, traceStart, traceEnd, FQuat::Identity,
+                    ECollisionChannel::ECC_GameTraceChannel2, FCollisionShape::MakeSphere(attackRadius), queryParams);
 
-                //DrawDebugLine(GetWorld(), traceStart, traceEnd, FColor::Red, false, 0.1f, 0, 1.0f);
+                // DrawDebugSphere(GetWorld(), traceEnd, attackRadius, 12, FColor::Red, false, 0.1f, 0, 10.0f);
 
-                if (bHit && hitResult.GetActor())
+                // hitResult는 hitResults 배열 안의 결과들을 반복하면서 접근
+                for (const FHitResult& hitResult : hitResults)
                 {
-                    FString actorName = hitResult.GetActor()->GetName();
-                    if (actorName.Contains("Player"))
+                    AActor* hitActor = hitResult.GetActor();
+                    if (hitActor)
                     {
-                        AActor* hitActor = hitResult.GetActor();
-                        float hitDistance = FVector::Dist(dogLoc, hitActor->GetActorLocation());
-
-                        if (hitDistance < closestDistance)
+                        FString actorName = hitActor->GetName();
+                        if (actorName.Contains("Player"))
                         {
-                            closestDistance = hitDistance;
-                            closestPlayerName = actorName;
-                            closestPlayerLoc = hitActor->GetActorLocation(); // 가장 가까운 플레이어의 위치 저장
-                        }
+                            float hitDistance = FVector::Dist(dogLoc, hitActor->GetActorLocation());
 
-                        bPlayerDetected = true;
+                            if (hitDistance < closestDistance)
+                            {
+                                closestDistance = hitDistance;
+                                closestPlayerName = actorName;
+                                closestPlayerLoc = hitActor->GetActorLocation(); // 가장 가까운 플레이어의 위치 저장
+                            }
+
+                            bPlayerDetected = true;
+                        }
                     }
                 }
-            }
 
-            if (bPlayerDetected)
-            {
-                bAnyPlayerDetected = true;
-                break; // 더 이상 검사할 필요 없음
+                if (bPlayerDetected)
+                {
+                    bAnyPlayerDetected = true;
+                    break; // 더 이상 검사할 필요 없음
+                }
             }
         }
     }

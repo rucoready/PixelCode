@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "PortalRobbyWidget.h"
+#include "PCodePlayerController.h"
 #include "MyGameModeBase.generated.h"
 
 
@@ -50,4 +51,13 @@ public:
 	bool UICheckReady1 = false;
 
 	bool bIsReadyToReady = false;
+
+	class APCodePlayerController* pc;
+
+	bool onceDo = false;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_ChangeeReadyButtonUI();
+
+	
 };

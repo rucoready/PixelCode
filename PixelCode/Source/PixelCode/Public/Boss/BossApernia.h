@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySetting")
 	class UBehaviorTree* tree;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UWidgetComponent* damageWidgetComponentl;
+
 	bool bossDied = false;
 
 	UBehaviorTree* GetBehaviorTree() const;
@@ -76,7 +79,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	TSubclassOf<class ABossSword> bossSwordclass;
 
-	float bossMaxHP = 600.0f;
+	float bossMaxHP = 60000.0f;
 
 	float bossCurrentHP;
 
@@ -685,6 +688,19 @@ public:
 	void MulticastRPC_BossDie();
 
 	bool bossOnceDie = false;
+
+	//damageWidget
+	int32 widgetRandomValue;
+
+	class UDamageWidget* damageWidgetInstance;
+
+	int32 damageAmount;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_BossTakeDamageWidgetSet();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_BossTakeDamageWidgetSet(int32 value2);
 
 
 };

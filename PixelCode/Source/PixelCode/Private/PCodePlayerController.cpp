@@ -12,6 +12,10 @@
 #include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/GameStateBase.h>
+#include "BossLoadingWidget.h"
+#include "DamageWidget.h"
+#include "LoadingWidget1.h"
+#include "Kismet/GameplayStatics.h"
 
 
 void APCodePlayerController::BeginPlay()
@@ -31,7 +35,7 @@ void APCodePlayerController::BeginPlay()
 
 	if (HasAuthority())
 	{
-		// ÇöÀç ÇÃ·¹ÀÌ¾îÀÇ PlayerState¸¦ ¾ò±â
+		// PlayerState
 		auto temp = GetPlayerState<ApixelPlayerState>();
 
 		if (temp == nullptr)
@@ -61,7 +65,7 @@ void APCodePlayerController::BeginPlay()
 		{
 			TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
 
-			// psArray¿¡¼­ CurrentPlayerState¿Í ÀÏÄ¡ÇÏ´Â PlayerState¸¦ Ã£±â
+			// psArrayCurrentPlayerStatePlayerState
 			for (int i = 0; i < psArray.Num(); i++)
 			{
 				ApixelPlayerState* PlayerStateInArray = Cast<ApixelPlayerState>(psArray[i]);
@@ -77,9 +81,9 @@ void APCodePlayerController::BeginPlay()
 						//pixelPlayerState->SetaddUpEXP(30.0f);
 					}
 					
-					// ÀÏÄ¡ÇÏ´Â PlayerState¸¦ Ã£¾ÒÀ» ¶§ÀÇ ·ÎÁ÷
-					// PlayerStateInArray¸¦ ÀÌ¿ëÇØ¼­ ¿øÇÏ´Â ÀÛ¾÷À» ¼öÇà
-					// ¿¹: PlayerStateInArray->SomeFunction();
+					// ï¿½ï¿½Ä¡ï¿½Ï´ï¿½ PlayerState
+					// PlayerStateInArray
+					// ï¿½ï¿½: PlayerStateInArray->SomeFunction();
 
 					PlayerStateInArray->PlayerId;
 					UE_LOG(LogTemp, Warning, TEXT("%d"), PlayerStateInArray);
@@ -87,20 +91,20 @@ void APCodePlayerController::BeginPlay()
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
 
 
-					break; // ÀÏÄ¡ÇÏ´Â °ÍÀ» Ã£¾ÒÀ¸¹Ç·Î ·çÇÁ Á¾·á
+					break; // 
 				}
 				else
 				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("ÇÃ·¹ÀÌ¾î »óÅÂ(PlayerState)¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù."));
-					UE_LOG(LogTemp, Warning, TEXT("ÇÃ·¹ÀÌ¾î »óÅÂ(PlayerState)¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù."));
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½(PlayerState)ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
+					UE_LOG(LogTemp, Warning, TEXT("ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½(PlayerState)ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 				}
 			}
 		}
 		else
 		{
 			pixelPlayerState = CurrentPlayerState;
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("ÇÃ·¹ÀÌ¾î »óÅÂ(CurrentPlayerState)¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù."));
-			UE_LOG(LogTemp, Warning, TEXT("ÇÃ·¹ÀÌ¾î »óÅÂ(CurrentPlayerState)¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù."));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½(CurrentPlayerState)ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
+			UE_LOG(LogTemp, Warning, TEXT("ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½(CurrentPlayerState)ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 		}
 	}
 
@@ -108,25 +112,25 @@ void APCodePlayerController::BeginPlay()
 
 }
 
-// State ¸¦ Àü´ÞÇÏ±â À§ÇÑ ¼­¹ö¶û Å¬¶óÀÌ¾ðÆ®
+// State
 void APCodePlayerController::ServerSendPlayerStateToClient_Implementation(APlayerController* TargetPlayerController, ApixelPlayerState* PlayerStateData)
 {
-	// Å¬¶óÀÌ¾ðÆ®¿¡°Ô PlayerState µ¥ÀÌÅÍ Àü´Þ
+	// PlayerState 
 	NetMulticastReceivePlayerStateFromServer(TargetPlayerController, PlayerStateData);
 }
 
 void APCodePlayerController::NetMulticastReceivePlayerStateFromServer_Implementation(APlayerController* TargetPlayerController, ApixelPlayerState* PlayerStateData)
 {
-	// Å¬¶óÀÌ¾ðÆ®¿¡¼­ PlayerState µ¥ÀÌÅÍ Ã³¸®
+	// PlayerState 
 	if (PlayerStateData != nullptr)
 	{
-		// PlayerStateData¸¦ PlayerState¿¡ ¼³Á¤
+		// PlayerStateDataï¿½ï¿½ PlayerStateï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		this->PlayerState = PlayerStateData;
 
-		// ¿¹½Ã: ·Î±×¿¡ PlayerState Á¤º¸ Ãâ·Â
+		//  PlayerState
 		UE_LOG(LogTemp, Warning, TEXT("Client received PlayerState: %s"), *PlayerState->GetPlayerName());
 
-		// Å¬¶óÀÌ¾ðÆ®¿¡¼­ PlayerState¸¦ »ç¿ëÇÏ´Â ´Ù¸¥ ÇÔ¼ö È£Ãâ ¿¹½Ã
+		// PlayerState
 
 		//MainPlayer = Cast<APixelCodeCharacter>(TargetPlayerController->GetOwner());
 		//MainPlayer->PlayerState = PlayerStateData;
@@ -172,7 +176,7 @@ void APCodePlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	// PlayerName º¯¼ö¸¦ Replication ¸®½ºÆ®¿¡ Ãß°¡
+	// PlayerName  Replication 
 	DOREPLIFETIME(APCodePlayerController, statWidget);
 	DOREPLIFETIME(APCodePlayerController, NormallyWidget);
 
@@ -185,7 +189,7 @@ ApixelPlayerState* APCodePlayerController::GetPlayerStateOfOtherPlayer()
 
 	//if (HasAuthority())
 	//{
-	//	// ÇöÀç ÇÃ·¹ÀÌ¾îÀÇ PlayerState¸¦ ¾ò±â
+	//	PlayerState
 	//	auto temp = GetPlayerState<ApixelPlayerState>();
 
 	//	if (temp == nullptr)
@@ -215,7 +219,7 @@ ApixelPlayerState* APCodePlayerController::GetPlayerStateOfOtherPlayer()
 	//	{
 	//		TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
 
-	//		// psArray¿¡¼­ CurrentPlayerState¿Í ÀÏÄ¡ÇÏ´Â PlayerState¸¦ Ã£±â
+	//		// psArrayï¿½ï¿½ï¿½ï¿½ CurrentPlayerStateï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ï´ï¿½ PlayerStateï¿½ï¿½ Ã£ï¿½ï¿½
 	//		for (int i = 0; i < psArray.Num(); i++)
 	//		{
 	//			ApixelPlayerState* PlayerStateInArray = Cast<ApixelPlayerState>(psArray[i]);
@@ -224,29 +228,29 @@ ApixelPlayerState* APCodePlayerController::GetPlayerStateOfOtherPlayer()
 	//				pixelPlayerState = PlayerStateInArray;
 
 	//				return pixelPlayerState;
-	//				// ÀÏÄ¡ÇÏ´Â PlayerState¸¦ Ã£¾ÒÀ» ¶§ÀÇ ·ÎÁ÷
-	//				// PlayerStateInArray¸¦ ÀÌ¿ëÇØ¼­ ¿øÇÏ´Â ÀÛ¾÷À» ¼öÇà
-	//				// ¿¹: PlayerStateInArray->SomeFunction();
+	//				// ï¿½ï¿½Ä¡ï¿½Ï´ï¿½ PlayerStateï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	//				// PlayerStateInArrayï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	//				// ï¿½ï¿½: PlayerStateInArray->SomeFunction();
 
 	//			/*	PlayerStateInArray->PlayerId;
 	//				UE_LOG(LogTemp, Warning, TEXT("%d"), PlayerStateInArray);
-	//				FString Message = FString::Printf(TEXT("ÇöÀç ÇÃ·¹ÀÌ¾î »óÅÂÀÇ ÀÎµ¦½º´Â %d ÀÔ´Ï´Ù."), PlayerStateInArray);
+	//				FString Message = FString::Printf(TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ %d ï¿½Ô´Ï´ï¿½."), PlayerStateInArray);
 	//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);*/
 
 
-	//				break; // ÀÏÄ¡ÇÏ´Â °ÍÀ» Ã£¾ÒÀ¸¹Ç·Î ·çÇÁ Á¾·á
+	//				break; // ï¿½ï¿½Ä¡ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//			}
 	//			else
 	//			{
-	//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("ÇÃ·¹ÀÌ¾î »óÅÂ(PlayerState)¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù."));
-	//				UE_LOG(LogTemp, Warning, TEXT("ÇÃ·¹ÀÌ¾î »óÅÂ(PlayerState)¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù."));
+	//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½(PlayerState)ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
+	//				UE_LOG(LogTemp, Warning, TEXT("ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½(PlayerState)ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 	//			}
 	//		}
 	//	}
 	//	else
 	//	{
-	//		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("ÇÃ·¹ÀÌ¾î »óÅÂ(CurrentPlayerState)¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù."));
-	//		UE_LOG(LogTemp, Warning, TEXT("ÇÃ·¹ÀÌ¾î »óÅÂ(CurrentPlayerState)¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù."));
+	//		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½(CurrentPlayerState)ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
+	//		UE_LOG(LogTemp, Warning, TEXT("ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½(CurrentPlayerState)ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 	//	}
 	//}
 
@@ -314,23 +318,23 @@ ApixelPlayerState* APCodePlayerController::GetPlayerStateOfOtherPlayer()
 
 	//void APCodePlayerController::ServerRPC_ChangeSpectator_Implementation()
 	//{
-	//	// ÇöÀç ÁÖÀÎ°øÀ» ±â¾ïÇÏ°í½Í´Ù.
+	//	// 
 	//	auto* oldPawn = GetPawn();
-	//	// ¸¸¾à oldPawnÀÌ ÀÖ´Ù¸é
+
 	//	if (oldPawn)
 	//	{
-	//		// °üÀüÀÚ¸¦ ¸¸µé¾î¼­ 
+	
 	//		FTransform t = oldPawn->GetActorTransform();
 	//		FActorSpawnParameters params;
 	//		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	//
 	//		auto* newPawn = GetWorld()->SpawnActor<ASpectatorPawn>(GM->SpectatorClass, t, params);
 	//
-	//		// ºùÀÇ ÇÏ°í½Í´Ù.
+	//		
 	//		Possess(newPawn);
-	//		// oldPawnÀº ÆÄ±«ÇÏ°í½Í´Ù.
+	//		// oldPawnï¿½ï¿½ ï¿½Ä±ï¿½ï¿½Ï°ï¿½Í´ï¿½.
 	//		oldPawn->Destroy();
-	//		// 5ÃÊÈÄ¿¡ ServerRPC_RespawnPlayer_Implementation¸¦ È£ÃâÇÏ°í½Í´Ù.
+	//		// 5ï¿½ï¿½ï¿½Ä¿ï¿½ ServerRPC_RespawnPlayer_Implementation
 	//		FTimerHandle handle;
 	//		GetWorld()->GetTimerManager().SetTimer(handle, this, &APCodePlayerController::ServerRPC_RespawnPlayer_Implementation, 5, false);
 	//	}
@@ -338,21 +342,285 @@ ApixelPlayerState* APCodePlayerController::GetPlayerStateOfOtherPlayer()
 
 void APCodePlayerController::ServerRPC_RespawnPlayer_Implementation()
 {
-	// ÇöÀç ÁÖÀÎ°øÀ» ±â¾ïÇÏ°í½Í´Ù.
+	
 	auto* oldPawn = GetPawn();
 
-	// ºùÀÇ¸¦ ÇØÁ¦ ÇÏ°í½Í´Ù.
+	
 	UnPossess();
 
-	// ±â¾ïÇß´ø ÁÖÀÎ°øÀ» ÆÄ±« ÇÏ°í½Í´Ù.
+	
 	if (oldPawn)
 	{
 		oldPawn->Destroy();
 	}
 
-	// GameModeÀÇ Àç½ÃÀÛ ÇÔ¼ö¸¦ È£ÃâÇÏ°í½Í´Ù.
+	
 	GM->RestartPlayer(this);
 }
 
+void APCodePlayerController::ServerRPC_CreateWidgetRobbyWidget_Implementation()
+{
+	MulticastRPC_CreateWidgetRobbyWidget();
+}
+
+void APCodePlayerController::MulticastRPC_CreateWidgetRobbyWidget_Implementation()
+{
+	if (portalRobbyWidget)
+	{
+		WidgetInstance = CreateWidget<UPortalRobbyWidget>(this, portalRobbyWidget);
+		if (WidgetInstance)
+		{
+			// ìœ„ì ¯ì„ í™”ë©´ì— ì¶”ê°€
+			WidgetInstance->AddToViewport();
+
+			bShowMouseCursor = true;
+			bEnableClickEvents = true;
+			bEnableMouseOverEvents = true;
+
+			//MyGameMode->bIsReadyToReady=true;
+		}
+	}
+}
+
+void APCodePlayerController::ServerRPC_HideWidgetRobbyWidget_Implementation()
+{
+	MulticastRPC_HideWidgetRobbyWidget();
+}
+
+void APCodePlayerController::MulticastRPC_HideWidgetRobbyWidget_Implementation()
+{
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		APlayerController* BaseController = It->Get();
+		APCodePlayerController* PlayerController = Cast<APCodePlayerController>(BaseController);
+		if (PlayerController && WidgetInstance)
+		{
+			WidgetInstance->RemoveFromParent();
+			PlayerController->bShowMouseCursor = false;
+			PlayerController->bEnableClickEvents = false;
+			PlayerController->bEnableTouchEvents = false;
+		}
+
+	}
+}
+
+
+
+//void APCodePlayerController::ServerRPC_StartUI_Implementation()
+//{
+//	StartUI();
+//	ClientRPC_StartUI();
+////	/*statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
+////	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+////	PlayerState = Cast<ApixelPlayerState>(GetPlayerState<ApixelPlayerState>());*/
+////	
+////	/*if (HasAuthority())
+////	{
+////	statWidget->UpdateLevel(PlayerState->Level);
+////		ClientRPC_StartUI();*/
+////	
+////	
+//}
+
+
+
+
+	/*
+	NormallyWidget = CreateWidget<UNormallyWidget>(GetWorld(), NormallyWidgetClass);
+	NormallyWidget->AddToViewport(2);
+	NormallyWidget->SetVisibility(ESlateVisibility::Visible);
+	UE_LOG(LogTemp, Warning, TEXT("NormalAuth2")); */
+
+	/*statWidget = CreateWidget<UPlayerStatWidget>(GetWorld(), StatWidgetClass);
+	statWidget->AddToViewport(1);
+	statWidget->SetVisibility(ESlateVisibility::Collapsed);
+	UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));*/
+
+	//
+	//void APCodePlayerController::ClientRPC_StartUI_Implementation()
+	//{
+	//	StartUI();
+	//
+	//
+	//
+	//	//NormallyWidget->currentExpUpdate(PlayerState->currentEXP, PlayerState->totalEXP);
+	//}
+
+
+
+
+
+
+
+
+
+
+
+
+	//void APCodePlayerController::ServerRPC_ChangeSpectator_Implementation()
+	//{
+	//	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½Í´ï¿½.
+	//	auto* oldPawn = GetPawn();
+	//	// ï¿½ï¿½ï¿½ï¿½ oldPawnï¿½ï¿½ ï¿½Ö´Ù¸ï¿½
+	//	if (oldPawn)
+	//	{
+	//		// ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½î¼­ 
+	//		FTransform t = oldPawn->GetActorTransform();
+	//		FActorSpawnParameters params;
+	//		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	//
+	//		auto* newPawn = GetWorld()->SpawnActor<ASpectatorPawn>(GM->SpectatorClass, t, params);
+	//
+	//		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½Í´ï¿½.
+	//		Possess(newPawn);
+	//		// oldPawnï¿½ï¿½ ï¿½Ä±ï¿½ï¿½Ï°ï¿½Í´ï¿½.
+	//		oldPawn->Destroy();
+	//		// 5ï¿½ï¿½ï¿½Ä¿ï¿½ ServerRPC_RespawnPlayer_Implementationï¿½ï¿½ È£ï¿½ï¿½ï¿½Ï°ï¿½Í´ï¿½.
+	//		FTimerHandle handle;
+	//		GetWorld()->GetTimerManager().SetTimer(handle, this, &APCodePlayerController::ServerRPC_RespawnPlayer_Implementation, 5, false);
+	//	}
+	//}
+
+void APCodePlayerController::ServerRPC_RespawnPlayer_Implementation()
+{
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½Í´ï¿½.
+	auto* oldPawn = GetPawn();
+
+	// ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½Í´ï¿½.
+	UnPossess();
+
+	// ï¿½ï¿½ï¿½ï¿½ß´ï¿½ ï¿½ï¿½ï¿½Î°ï¿½ï¿½ï¿½ ï¿½Ä±ï¿½ ï¿½Ï°ï¿½Í´ï¿½.
+	if (oldPawn)
+	{
+		oldPawn->Destroy();
+	}
+
+	// GameModeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½Ï°ï¿½Í´ï¿½.
+	GM->RestartPlayer(this);
+}
+
+void APCodePlayerController::ServerRPC_CreateWidgetLoading1_Implementation()
+{
+	MulticastRPC_CreateWidgetLoading1();
+}
+
+void APCodePlayerController::MulticastRPC_CreateWidgetLoading1_Implementation()
+{
+	if (loadingWidget1)
+	{
+		loadingWidget01 = CreateWidget<ULoadingWidget1>(this, loadingWidget1);
+		if (loadingWidget01)
+		{
+			// ìœ„ì ¯ì„ í™”ë©´ì— ì¶”ê°€
+			loadingWidget01->AddToViewport();
+
+			bShowMouseCursor = true;
+			bEnableClickEvents = true;
+			bEnableMouseOverEvents = true;
+
+			//MyGameMode->bIsReadyToReady=true;
+		}
+	}
+}
+
+void APCodePlayerController::ServerRPC_HideWidgetLoading1_Implementation()
+{
+	MulticastRPC_HideWidgetLoading1();
+}
+
+void APCodePlayerController::MulticastRPC_HideWidgetLoading1_Implementation()
+{
+	if (loadingWidget1)
+	{
+		loadingWidget01 = CreateWidget<ULoadingWidget1>(this, loadingWidget1);
+		if (loadingWidget01)
+		{
+			// ìœ„ì ¯ì„ í™”ë©´ì— ì¶”ê°€
+			loadingWidget01->RemoveFromParent();
+
+			bShowMouseCursor = true;
+			bEnableClickEvents = true;
+			bEnableMouseOverEvents = true;
+
+			//MyGameMode->bIsReadyToReady=true;
+		}
+	}
+}
+
+void APCodePlayerController::ServerRPC_CreateWidgetBossLoading_Implementation()
+{
+	MulticastRPC_CreateWidgetBossLoading();
+}
+
+void APCodePlayerController::MulticastRPC_CreateWidgetBossLoading_Implementation()
+{
+	if (loadingWidgetBoss)
+	{
+		bossLoadingWidget = CreateWidget<UBossLoadingWidget>(this, loadingWidgetBoss);
+		if (bossLoadingWidget)
+		{
+			// ìœ„ì ¯ì„ í™”ë©´ì— ì¶”ê°€
+			bossLoadingWidget->AddToViewport();
+
+			bShowMouseCursor = true;
+			bEnableClickEvents = true;
+			bEnableMouseOverEvents = true;
+
+			//MyGameMode->bIsReadyToReady=true;
+		}
+	}
+}
+
+void APCodePlayerController::ServerRPC_HideWidgetBossLoading_Implementation()
+{
+	MulticastRPC_HideWidgetBossLoading();
+}
+
+void APCodePlayerController::MulticastRPC_HideWidgetBossLoading_Implementation()
+{
+	if (loadingWidgetBoss)
+	{
+		bossLoadingWidget = CreateWidget<UBossLoadingWidget>(this, loadingWidgetBoss);
+		if (bossLoadingWidget)
+		{
+			// ìœ„ì ¯ì„ í™”ë©´ì— ì¶”ê°€
+			bossLoadingWidget->RemoveFromParent();
+
+			bShowMouseCursor = true;
+			bEnableClickEvents = true;
+			bEnableMouseOverEvents = true;
+
+			//MyGameMode->bIsReadyToReady=true;
+		}
+	}
+}
+
+void APCodePlayerController::ServerRPC_CreateDamageWidget_Implementation()
+{
+	MulticastRPC_CreateDamageWidget();
+}
+
+void APCodePlayerController::MulticastRPC_CreateDamageWidget_Implementation()
+{
+	if (damageWidget)
+	{
+		damageWidgets = CreateWidget<UDamageWidget>(this, damageWidget);
+		if (damageWidgets)
+		{
+			// ìœ„ì ¯ì„ í™”ë©´ì— ì¶”ê°€
+			damageWidgets->AddToViewport();
+
+
+
+			//MyGameMode->bIsReadyToReady=true;
+		}
+	}
+}
+
+void APCodePlayerController::ChangeRobbyWidgetButtonReady()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TA66"));
+	WidgetInstance->NormalChangeButton1();
+}
 
 

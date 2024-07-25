@@ -24,12 +24,12 @@ public:
 	
 	
 
-// ¸®½ºÆù ---------------------------------------------------------------------
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ---------------------------------------------------------------------
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
-	// ÀÔ·Â ¸ðµå ¼³Á¤, ¸Å°³º¯¼ö ±âÁ¡À¸·Î Ä¿¼­ Ç¥Çö
+	// ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½Å°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½ Ç¥ï¿½ï¿½
 	void OpenUI(bool bOpen); 
 
 	UPROPERTY()
@@ -87,7 +87,71 @@ protected:
 
 	//UFUNCTION(Server, Reliable)
 	//void ServerRPC_ChangeSpectator();
-// ¸®½ºÆù ³¡ ---------------------------------------------------------------------
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ---------------------------------------------------------------------
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UPortalRobbyWidget> portalRobbyWidget;
 
+	class UPortalRobbyWidget* WidgetInstance;
+
+	class AMyGameModeBase* MyGameMode;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class ULoadingWidget1> loadingWidget1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UBossLoadingWidget> loadingWidgetBoss;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UDamageWidget> damageWidget;
+
+	class ULoadingWidget1* loadingWidget01;
+
+	class UBossLoadingWidget* bossLoadingWidget;
+
+	class UDamageWidget* damageWidgets;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_CreateWidgetRobbyWidget();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_CreateWidgetRobbyWidget();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_HideWidgetRobbyWidget();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_HideWidgetRobbyWidget();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_CreateWidgetLoading1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_CreateWidgetLoading1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_HideWidgetLoading1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_HideWidgetLoading1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_CreateWidgetBossLoading();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_CreateWidgetBossLoading();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_HideWidgetBossLoading();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_HideWidgetBossLoading();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_CreateDamageWidget();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_CreateDamageWidget();
+
+	void ChangeRobbyWidgetButtonReady();
 
 };

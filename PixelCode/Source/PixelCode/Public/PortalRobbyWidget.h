@@ -29,6 +29,33 @@ public:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UTextBlock* readyButtonText2;
 
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	class UTextBlock* startCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class ULoadingWidget1> loadingWidget1;
+
+	class ULoadingWidget1* loadingWidget01;
+
+	void ServerTravel();
+
+	class APCodePlayerController* PCodePlayerController;
+
+	FTimerHandle timerhandle_ServerTravel;
+
+	FTimerHandle countdownTimerHandle;
+
+	int32 countdownTime;
+
+	void StartCountdown();
+
+	void UpdateCountdown();
+
+	void PlayCountdownAnimation();
+
+	UPROPERTY(Editanywhere, Category="MySettings", meta=(BindWidgetAnim),Transient)
+	class UWidgetAnimation* CountAnimations;
+
 	// Server-side state
 	UPROPERTY(ReplicatedUsing = OnRep_ReadyTextPlayer1)
 	bool bIsReadyTextPlayer1 = false;
@@ -75,4 +102,8 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	bool ChangeReady1Test = false;
+
+	class APortalCollision* PortalActor;
+
+	void NormalChangeButton1();
 };

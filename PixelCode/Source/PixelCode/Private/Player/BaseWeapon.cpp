@@ -167,7 +167,7 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 	ADogBart* dogBart = Cast<ADogBart>(hitActor);
 	if (boss && !bHit)
 	{		
-		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.5, false);
+		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.01, false);
 
 		boss->BossTakeDamage(10.0f);
 		bHit = true;
@@ -177,7 +177,7 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 	}
 	if (demonSword && !bHit)
 	{
-		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.3, false);
+		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.1, false);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), swordHitNA, GetActorLocation(), GetActorRotation(), FVector(10.0f));
 		demonSword->SwordTakeDamage(10.0f);
 		bHit = true;
@@ -185,7 +185,7 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 	}
 	if (grux && !bHit&&grux->gruxDie == false)
 	{
-		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.3, false);
+		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.1, false);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), swordHitNA, GetActorLocation(), GetActorRotation(), FVector(10.0f));
 		grux->GruxTakeDamage(10.0f);
 
@@ -195,7 +195,7 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 	}
 	if (dogBart && !bHit && dogBart->dogBartDie == false)
 	{
-		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.3, false);
+		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.1, false);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), swordHitNA, GetActorLocation(), GetActorRotation(), FVector(10.0f));
 		dogBart->DogBartTakeDamage(10.0f);
 
