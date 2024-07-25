@@ -943,6 +943,7 @@ void APixelCodeCharacter::AGetSpecificBuildingAmount(EBuildType builds)
 
 					//InventoryContentSArray.RemoveAt(Index);
 					//PlayerInventory->RemoveAmountOfItem(Item, 1);
+					PlayerInventory->FindMatchingItem(Item);
 					PlayerInventory->RemoveSingleInstanceOfItem(Item);
 					//PickupItems->UpdateInteractableData();
 				}
