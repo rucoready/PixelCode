@@ -1899,6 +1899,7 @@ void APixelCodeCharacter::StatMenu()
 	}
 }
 
+
 void APixelCodeCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
 	// 인벤토리 null이 아니라면
