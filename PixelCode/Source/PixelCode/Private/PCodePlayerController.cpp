@@ -481,23 +481,7 @@ void APCodePlayerController::MulticastRPC_HideWidgetRobbyWidget_Implementation()
 	//	}
 	//}
 
-void APCodePlayerController::ServerRPC_RespawnPlayer_Implementation()
-{
-	// ���� ���ΰ��� ����ϰ�ʹ�.
-	auto* oldPawn = GetPawn();
 
-	// ���Ǹ� ���� �ϰ�ʹ�.
-	UnPossess();
-
-	// ����ߴ� ���ΰ��� �ı� �ϰ�ʹ�.
-	if (oldPawn)
-	{
-		oldPawn->Destroy();
-	}
-
-	// GameMode�� ����� �Լ��� ȣ���ϰ�ʹ�.
-	GM->RestartPlayer(this);
-}
 
 void APCodePlayerController::ServerRPC_CreateWidgetLoading1_Implementation()
 {

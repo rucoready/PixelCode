@@ -1512,10 +1512,7 @@ void APixelCodeCharacter::OnRemoveRockPressed()
 	SeverRPC_RemoveRock(PerformLineTrace(1000, true));
 }
 
-void APixelCodeCharacter::RemoveRock(const FHitResult& HitResult)
-{
-	
-}
+
 
 void APixelCodeCharacter::SeverRPC_RemoveRock_Implementation(const FHitResult& HitResult)
 {

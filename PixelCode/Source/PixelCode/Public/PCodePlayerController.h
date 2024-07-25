@@ -80,7 +80,7 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastReceivePlayerStateFromServer(APlayerController* TargetPlayerController, ApixelPlayerState* PlayerStateData);
 
-protected:
+
 
 
 
