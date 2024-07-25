@@ -39,10 +39,16 @@
 	ETN_Bone = 10			UMETA(DisplayName = "Bone"),
 	ETN_SoulStone = 11		UMETA(DisplayName = "SoulStone"),
 	ETN_SoulFragment = 12	UMETA(DisplayName = "SoulFragment"),
+
 	ETN_WoodFoundation = 40 UMETA(DisplayName = "WoodFoundation"), // 나무 의자 같은거
 	ETN_WoodWall = 41		UMETA(DisplayName = "WoodWall"),
-	ETN_WoodenRoof = 42		UMETA(DisplayName = "WoodenRoof"),
-	ETN_Woodfloor = 43		UMETA(DisplayName = "Woodfloor"),
+	ETN_WoodCeiling = 42		UMETA(DisplayName = "WoodCeiling"),
+	ETN_WoodFloor = 43		UMETA(DisplayName = "WoodFloor"),
+	ETN_WoodWindow = 44		UMETA(DisplayName = "WoodWindow"),
+	ETN_WoodArch = 45		UMETA(DisplayName = "WoodArch"),
+	ETN_WoodStairs = 46		UMETA(DisplayName = "WoodStairs"),
+	ETN_WoodRoof = 47		UMETA(DisplayName = "WoodRoof"),
+	ETN_WoodGable = 48 	UMETA(DisplayName = "WoodGable"),
 
 	ETN_MAX					UMETA(DisplayName = "MAX")
 

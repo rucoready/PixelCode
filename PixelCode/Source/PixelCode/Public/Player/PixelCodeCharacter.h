@@ -616,7 +616,7 @@ public:
 // 	UFUNCTION(Server, Reliable)
 // 	void ServerRPC_RemoveFoliage();  
 // 
-// 	UFUNCTION(NetMulticast, Reliable)
+// 	UFUNCTION(NetMulticast, Reliable)ee
 // 	void NetMulticastRPC_RemoveFoliage(const FHitResult& HitResult);
 //
 	UPROPERTY(EditAnywhere, Category=KSH)
@@ -625,9 +625,6 @@ public:
 
 	UFUNCTION()
 	void OnRemoveRockPressed();  
-
-	UFUNCTION(BlueprintCallable, Category = KSH) 
-	void RemoveRock(const FHitResult& HitResult);
 
 	UFUNCTION(Server, Reliable) 
 	void SeverRPC_RemoveRock(const FHitResult& HitResult);

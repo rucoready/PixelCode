@@ -343,9 +343,9 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 		if (transform.IsValid())
 		{
 			pc->NetMulticastRPC_SpawnBuilding(BuildType, transform);
-
 		}
-  		pc->AGetSpecificBuildingAmount(BuildType);
+		pc->AGetSpecificBuildingAmount(BuildType);
+
 		UE_LOG(LogTemp, Warning, TEXT("55555555555555555555565656565656"));
  	}	
 }

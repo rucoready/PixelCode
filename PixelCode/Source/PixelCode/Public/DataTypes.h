@@ -13,12 +13,12 @@ enum class EBuildType : uint8
 	Base UMETA(DisplayName = "Base"),
 	Wall UMETA(DisplayName = "Wall"),
 	Ceiling UMETA(DisplayName = "Ceiling"),
-	Roof UMETA(DisplayName = "Roof"),
-	Gable UMETA(DisplayName = "Gable"),
-	Stairs UMETA(DisplayName = "Stairs"),
+	Floor UMETA(DisplayName = "Floor"),
 	Window UMETA(DisplayName = "Window"),
 	Arch UMETA(DisplayName = "Arch"),
-	Floor UMETA(DisplayName = "Floor")
+	Stairs UMETA(DisplayName = "Stairs"),
+	Roof UMETA(DisplayName = "Roof"),
+	Gable UMETA(DisplayName = "Gable")	
 };
 
 USTRUCT(BlueprintType)
