@@ -843,6 +843,8 @@ void APixelCodeCharacter::DropedItem(const UItemBase* Iteminfo)
 	//		}
 	//	}
 	//}
+		}
+	}
 }
 
 

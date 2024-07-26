@@ -165,7 +165,7 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
  		APlayerController* APc = Cast<APlayerController>(this->GetController());
  		if (APc != nullptr)
  		{
-// 			APc->ClientStartCameraShake(PlayerHitShake_bp);
+ 			//APc->ClientStartCameraShake(PlayerHitShake_bp);
  			SlowDownTime(0.1f, 0.05f, APc);
  		}
 		GetWorldTimerManager().SetTimer(timerhandle_CounterShakeTimer, this, &APlayerOrganism::CounterCameraShake, 0.9, false);
