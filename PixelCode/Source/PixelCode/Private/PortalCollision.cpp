@@ -56,10 +56,24 @@ bool APortalCollision::IsServer() const
 
 void APortalCollision::OnBeginOverlapPortal(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+    
     if (OtherActor && OtherActor->GetName().Contains("Player"))
     {
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Overlap Check"));
-        ServerRPC_ShowRobbyWidget();
+        if (portalRobbyWidget)
+        {
+            APawn* OverlappedPawn = Cast<APawn>(OtherActor);
+            if (OverlappedPawn)
+            {
+                // APCodePlayerController 타입으로 캐스팅
+                APCodePlayerController* OverlappedPlayerController = Cast<APCodePlayerController>(OverlappedPawn->GetController());
+                if (OverlappedPlayerController)
+                {
+                    OverlappedPlayerController->ServerRPC_CreateWidgetRobbyWidget();
+                }
+            }
+        }
+
     }
 }
 
@@ -145,25 +159,38 @@ void APortalCollision::MulticastRPC_HideRobbyWidget_Implementation()
 
 void APortalCollision::ServerRPC_ShowRobbyWidget_Implementation()
 {
-    MulticastRPC_ShowRobbyWidget();
+//     if (portalRobbyWidget)
+//     {
+//         for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+//         {
+//             // PCodePlayerController 타입으로 캐스팅
+//             APCodePlayerController* PCodePlayerController = Cast<APCodePlayerController>(It->Get());
+//             if (PCodePlayerController)
+//             {
+//                 PCodePlayerController->ServerRPC_CreateWidgetRobbyWidget();
+// 
+// 
+//             }
+//         }
+//     }
 }
 
 void APortalCollision::MulticastRPC_ShowRobbyWidget_Implementation()
 {
-    if (portalRobbyWidget)
-    {
-        for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-        {
-            // PCodePlayerController 타입으로 캐스팅
-            APCodePlayerController* PCodePlayerController = Cast<APCodePlayerController>(It->Get());
-            if (PCodePlayerController)
-            {
-                PCodePlayerController->ServerRPC_CreateWidgetRobbyWidget();
- 
-                 
-            }
-        }
-    }
+//     if (portalRobbyWidget)
+//     {
+//         for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+//         {
+//             // PCodePlayerController 타입으로 캐스팅
+//             APCodePlayerController* PCodePlayerController = Cast<APCodePlayerController>(It->Get());
+//             if (PCodePlayerController)
+//             {
+//                 PCodePlayerController->ServerRPC_CreateWidgetRobbyWidget();
+//  
+//                  
+//             }
+//         }
+//     }
 }
 
 void APortalCollision::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

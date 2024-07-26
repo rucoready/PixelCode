@@ -33,16 +33,22 @@ void APortalCollision2Boss::Tick(float DeltaTime)
 
 void APortalCollision2Boss::OnBeginOverlapPortal(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->GetName().Contains("Player"))
+	if (HasAuthority())
 	{
-		ServerRPC_LevelMoveBoss();
-		//if (HasAuthority())
-		//{
-			//GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/BossMap2?Listen"));
-			
-		//}
-
+		APawn* OverlappedPawn = Cast<APawn>(OtherActor);
+		if (OverlappedPawn)
+		{
+			// APCodePlayerController 타입으로 캐스팅
+			APCodePlayerController* OverlappedPlayerController = Cast<APCodePlayerController>(OverlappedPawn->GetController());
+			if (OverlappedPlayerController)
+			{
+				OverlappedPlayerController->CreateWidgetBossEnterWidget();
+			}
+		}
 	}
+	
+
+	
 }
 
 void APortalCollision2Boss::RemoveBossLoadingUI()
@@ -54,8 +60,6 @@ void APortalCollision2Boss::RemoveBossLoadingUI()
 		if (PCodePlayerController)
 		{
 			PCodePlayerController->ServerRPC_HideWidgetBossLoading();
-
-
 		}
 	}
 }
@@ -63,10 +67,14 @@ void APortalCollision2Boss::RemoveBossLoadingUI()
 void APortalCollision2Boss::ServerRPC_LevelMoveBoss_Implementation()
 {
 	MulticastRPC_LevelMoveBoss();
+	GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/BossMap2?Listen"));
+	
 }
 
 void APortalCollision2Boss::MulticastRPC_LevelMoveBoss_Implementation()
 {
+
+	
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
 		// PCodePlayerController 타입으로 캐스팅
@@ -74,7 +82,7 @@ void APortalCollision2Boss::MulticastRPC_LevelMoveBoss_Implementation()
 		if (PCodePlayerController)
 		{
 			PCodePlayerController->ServerRPC_CreateWidgetBossLoading();
-			GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/BossMap2?Listen"));
+			PCodePlayerController->ClientTravel("/Game/KMS_AI/BossMap/BossMap2?Listen", TRAVEL_Absolute);
 			//tWorld()->GetTimerManager().SetTimer(handle, this, &APCodePlayerController::ServerRPC_RespawnPlayer_Implementation, 5, false);
 		}
 	}

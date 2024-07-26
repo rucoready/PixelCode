@@ -20,14 +20,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UButton* button_Player1;
 
-	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
-	class UButton* button_Player2;
+// 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+// 	class UButton* button_Player2;
 
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UTextBlock* readyButtonText1;
 
-	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
-	class UTextBlock* readyButtonText2;
+// 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+// 	class UTextBlock* readyButtonText2;
 
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UTextBlock* startCount;

@@ -104,11 +104,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UDamageWidget> damageWidget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UBossEnterWidget> bossEnterWidget;
+
 	class ULoadingWidget1* loadingWidget01;
 
 	class UBossLoadingWidget* bossLoadingWidget;
 
 	class UDamageWidget* damageWidgets;
+
+	class UBossEnterWidget* bossEnterWidgets;
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_CreateWidgetRobbyWidget();
@@ -153,5 +158,7 @@ public:
 	void MulticastRPC_CreateDamageWidget();
 
 	void ChangeRobbyWidgetButtonReady();
+
+	void CreateWidgetBossEnterWidget();
 
 };

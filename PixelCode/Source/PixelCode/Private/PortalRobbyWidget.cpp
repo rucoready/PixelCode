@@ -19,10 +19,10 @@ void UPortalRobbyWidget::NativeConstruct()
 		button_Player1->OnClicked.AddDynamic(this, &UPortalRobbyWidget::OnMyclickButtonPlayer1);
 	}
 
-	if (button_Player2)
-	{
-		button_Player2->OnClicked.AddDynamic(this, &UPortalRobbyWidget::OnMyclickButtonPlayer2);
-	}
+// 	if (button_Player2)
+// 	{
+// 		button_Player2->OnClicked.AddDynamic(this, &UPortalRobbyWidget::OnMyclickButtonPlayer2);
+// 	}
 	MyGameMode = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(this));
 	PortalActor = Cast<APortalCollision>(UGameplayStatics::GetActorOfClass(this, APortalCollision::StaticClass()));
 	
@@ -31,7 +31,7 @@ void UPortalRobbyWidget::NativeConstruct()
 void UPortalRobbyWidget::ServerTravel()
 {
 	GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/Dungeon2?listen"));
-
+	//GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/BossMap2?Listen"));
 	if (PCodePlayerController)
 	{
 		PCodePlayerController->ServerRPC_HideWidgetLoading1();
@@ -202,18 +202,18 @@ void UPortalRobbyWidget::NoSetText()
 
 void UPortalRobbyWidget::OnRep_ReadyTextPlayer2()
 {
-	if (readyButtonText2)
-	{
-		if (bIsReadyTextPlayer2)
-		{
-			readyButtonText2->SetText(FText::FromString(TEXT("Ready!")));
-
-		}
-		else
-		{
-			readyButtonText2->SetText(FText::GetEmpty());
-		}
-	}
+// 	if (readyButtonText2)
+// 	{
+// 		if (bIsReadyTextPlayer2)
+// 		{
+// 			readyButtonText2->SetText(FText::FromString(TEXT("Ready!")));
+// 
+// 		}
+// 		else
+// 		{
+// 			readyButtonText2->SetText(FText::GetEmpty());
+// 		}
+// 	}
 
 
 }

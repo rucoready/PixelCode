@@ -15,6 +15,7 @@
 #include "BossLoadingWidget.h"
 #include "DamageWidget.h"
 #include "LoadingWidget1.h"
+#include "BossEnterWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -605,6 +606,25 @@ void APCodePlayerController::ChangeRobbyWidgetButtonReady()
 {
 	UE_LOG(LogTemp, Warning, TEXT("TA66"));
 	WidgetInstance->NormalChangeButton1();
+}
+
+void APCodePlayerController::CreateWidgetBossEnterWidget()
+{
+	
+	if (bossEnterWidget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("CALL4455"));
+		bossEnterWidgets = CreateWidget<UBossEnterWidget>(this, bossEnterWidget);
+		if (bossEnterWidgets)
+		{
+			// 위젯을 화면에 추가
+			bossEnterWidgets->AddToViewport();
+			
+			bShowMouseCursor = true;
+			bEnableClickEvents = true;
+			bEnableMouseOverEvents = true;
+		}
+	}
 }
 
 
