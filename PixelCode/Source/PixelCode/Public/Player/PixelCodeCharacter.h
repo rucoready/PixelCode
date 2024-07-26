@@ -166,6 +166,10 @@ class APixelCodeCharacter : public APlayerOrganism
 	
 
 public:
+
+	class APickup* Pickup;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
 	class AActor* Rock;
 
@@ -188,10 +192,10 @@ public:
 	void DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
 
 	UFUNCTION(Server, Reliable)
- 	void ServerRPC_DropItem();
+ 	void ServerRPC_DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticastRPC_DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
+	void NetMulticastRPC_DropItem(const FTransform ASpawnTransform);
 
 	class AInterfaceTestActor* InterfaceActor;
 

@@ -26,7 +26,8 @@ bool UMainMenuWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropE
 
 	if (PlayerCharacter && ItemDragDrop->SourceItem)
 	{
-		PlayerCharacter->NetMulticastRPC_DropItem(ItemDragDrop->SourceItem, ItemDragDrop->SourceItem->Quantity);
+		PlayerCharacter->PlayerInventory->FindMatchingItem(ItemDragDrop->SourceItem);
+		PlayerCharacter->ServerRPC_DropItem(ItemDragDrop->SourceItem, ItemDragDrop->SourceItem->Quantity);
 		return true;
 	}
 	return false;

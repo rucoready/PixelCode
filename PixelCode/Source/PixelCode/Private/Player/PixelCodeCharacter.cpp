@@ -828,21 +828,21 @@ void APixelCodeCharacter::DropedItem(const UItemBase* Iteminfo)
 		if (Template)
 		{
 
-			//UInventoryComponent* OwningInventory; // 인벤토리
-			FActorSpawnParameters Params;
-			Params.Owner = this;
-			Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	//		//UInventoryComponent* OwningInventory; // 인벤토리
+	//		FActorSpawnParameters Params;
+	//		Params.Owner = this;
+	//		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-			//FVector SpawnLoc = FVector(440.f, 0.f, 0.f);
+	//		//FVector SpawnLoc = FVector(440.f, 0.f, 0.f);
 
-			FVector SpawnLoc = FVector(6797.037641f, -38828.846065f, 3000.503557f);
-			APickup* DropItemes = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
-			if (DropItemes)
-			{
-				//DropItemes->SetItemAmount(Iteminfo->Quantity);
-			}
-		}
-	}
+	//		FVector SpawnLoc = FVector(6797.037641f, -38828.846065f, 3000.503557f);
+	//		APickup* DropItemes = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
+	//		if (DropItemes)
+	//		{
+	//			//DropItemes->SetItemAmount(Iteminfo->Quantity);
+	//		}
+	//	}
+	//}
 }
 
 
@@ -1831,42 +1831,48 @@ void APixelCodeCharacter::UpdateInteractionWidget() const
 
 
 
-void APixelCodeCharacter::ServerRPC_DropItem_Implementation()
+void APixelCodeCharacter::ServerRPC_DropItem_Implementation(UItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
-	//auto iteminfo = Iteminfos;
-	//auto QuantityToDrop =Iteminfos->Quantity;
-	//if(iteminfo , QuantityToDrop)
-	//{ 
-	//NetMulticastRPC_DropItem(iteminfo, QuantityToDrop);
-	//}
+	
+	// 인벤토리 null이 아니라면
+	if (PlayerInventory->FindMatchingItem(ItemToDrop))
+	{
+		// 캐릭터 50앞방향에서 생성됨
+		const FVector SpawnLocation{ GetActorLocation() + (GetActorForwardVector() * 50.0f) };
+
+		const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
+
+		// 수량제거
+		const int32 RemoveQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
+
+		NetMulticastRPC_DropItem(SpawnTransform);
+
+		Pickup->InitializeDrop(ItemToDrop, RemoveQuantity);
+	}
+	else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Item to drop was Some how null"));
+		}
 }
 
-void APixelCodeCharacter::NetMulticastRPC_DropItem_Implementation(UItemBase* ItemToDrop, const int32 QuantityToDrop)
+
+
+	
+
+	
+void APixelCodeCharacter::NetMulticastRPC_DropItem_Implementation(const FTransform ASpawnTransform)
 {
-	//// 인벤토리 null이 아니라면
-	//if (PlayerInventory->FindMatchingItem(ItemToDrop))
-	//{
-	//	FActorSpawnParameters SpawnParams;
-	//	SpawnParams.Owner = this;
-	//	SpawnParams.bNoFail = true;
-	//	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	// 인벤토리 null이 아니라면
+	
 
-	//	// 캐릭터 50앞방향에서 생성됨
-	//	const FVector SpawnLocation{ GetActorLocation() + (GetActorForwardVector() * 50.0f) };
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.bNoFail = true;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	//	const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
 
-	//	// 수량제거
-	//	const int32 RemoveQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
+	Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), ASpawnTransform, SpawnParams);
 
-	//	APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
-
-	//	Pickup->InitializeDrop(ItemToDrop, RemoveQuantity);
-	//}
-	//else
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("Item to drop was Some how null"));
-	//}
 }
 
 void APixelCodeCharacter::ToggleMenu()
@@ -1900,32 +1906,33 @@ void APixelCodeCharacter::StatMenu()
 
 void APixelCodeCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
-	// 인벤토리 null이 아니라면
-	if (PlayerInventory->FindMatchingItem(ItemToDrop))
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.bNoFail = true;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-		// 캐릭터 50앞방향에서 생성됨
-		const FVector SpawnLocation{ GetActorLocation() + (GetActorForwardVector() * 50.0f) };
-
-		const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
-
-		// 수량제거
-		const int32 RemoveQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
-
-		APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
-
-		Pickup->InitializeDrop(ItemToDrop, RemoveQuantity);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Item to drop was Some how null"));
-	}
-
-	//ServerRPC_DropItem();
+//{
+//	// 인벤토리 null이 아니라면
+//	if (PlayerInventory->FindMatchingItem(ItemToDrop))
+//	{
+//		FActorSpawnParameters SpawnParams;
+//		SpawnParams.Owner = this;
+//		SpawnParams.bNoFail = true;
+//		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+//
+//		// 캐릭터 50앞방향에서 생성됨
+//		const FVector SpawnLocation{ GetActorLocation() + (GetActorForwardVector() * 50.0f) };
+//
+//		const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
+//
+//		// 수량제거
+//		const int32 RemoveQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
+//
+//		APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
+//
+//		Pickup->InitializeDrop(ItemToDrop, RemoveQuantity);
+//	}
+//	else
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("Item to drop was Some how null"));
+//	}
+//
+//	//ServerRPC_DropItem();
 }
 
 
