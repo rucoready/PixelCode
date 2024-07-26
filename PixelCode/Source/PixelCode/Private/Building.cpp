@@ -102,8 +102,16 @@ void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData, c
 	{
 		UInstancedStaticMeshComponent* Instance = BuildingSocketData.InstancedComponent;
 		int32 num = BuildingSocketData.Index;
-
+		
 		BuildingSocketData.InstancedComponent->RemoveInstance(BuildingSocketData.Index);
+
+
+
+		UInstancedStaticMeshComponent* InstancedStaticMeshComponent = Cast<UInstancedStaticMeshComponent>(HitResult.GetComponent());
+		//HitResult.ElementIndex
+		//InstancedStaticMeshComponent->RemoveInstance(InstancedStaticMeshComponent->GetInstanceIndex());
+		//InstancedStaticMeshComponent->GetInstanceIndexForId()
+
 		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDING RemoveInstance"));
 
 		//if (!HasAuthority())

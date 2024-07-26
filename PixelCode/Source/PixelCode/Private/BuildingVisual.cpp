@@ -196,6 +196,7 @@ void ABuildingVisual::DestroyInstance(const FHitResult& HitResult)
 
 				InteractingBuilding->DestroyInstance(BuildingSocketData, HitResult);
 			}
+
 			if(UStaticMeshComponent* statickMesh = Cast<UStaticMeshComponent>(HitResult.GetActor()))
 			{
 				statickMesh->DestroyComponent();

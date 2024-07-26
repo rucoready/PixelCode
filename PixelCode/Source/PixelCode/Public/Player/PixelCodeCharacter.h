@@ -624,7 +624,10 @@ public:
 // 	void NetMulticastRPC_RemoveFoliage(const FHitResult& HitResult);
 //
 	UPROPERTY(EditAnywhere, Category=KSH)
-	TSubclassOf<class APickup> pickupItem;
+	TSubclassOf<class APickup> pickupWood;
+
+	UPROPERTY(EditAnywhere, Category=KSH)
+	TSubclassOf<class APickup> pickupRock;
 	//-----------------------------------------------------------------------------------
 
 	UFUNCTION()

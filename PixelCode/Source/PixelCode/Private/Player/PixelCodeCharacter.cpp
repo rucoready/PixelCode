@@ -1484,7 +1484,7 @@ void APixelCodeCharacter::RemoveFoliage(const FHitResult& HitResult)
 		if(FoliageInstance)
 		{
 			FoliageInstance->RemoveInstance(HitResult.Item);
-			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
+			GetWorld()->SpawnActor<APickup>(pickupWood, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
 	//NetMulticastRPC_RemoveFoliage(HitResult);
@@ -1504,7 +1504,7 @@ void APixelCodeCharacter::MultiRPC_RemoveFoliage_Implementation(const FHitResult
 		if (FoliageInstance)
 		{
 			FoliageInstance->RemoveInstance(HitResult.Item);
-			GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
+			GetWorld()->SpawnActor<APickup>(pickupWood, HitResult.ImpactPoint, GetActorRotation());
 			//GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
@@ -1532,11 +1532,10 @@ void APixelCodeCharacter::MultiRPC_RemoveRock_Implementation(const FHitResult& H
 		if (UComp && UComp->ComponentTags.Contains(TEXT("Rock")))
 		{
 			UComp->RemoveInstance(HitResult.Item);
+			GetWorld()->SpawnActor<APickup>(pickupWood, HitResult.ImpactPoint, GetActorRotation());
 
-// 			if (UComp->ComponentTags.Contains(TEXT("Rock")))
-// 			{
-// 				UComp->RemoveInstance(HitResult.Item);
-// 			}
+
+			//GetWorld()->SpawnActor<APickup>(pickupRock, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
 }
