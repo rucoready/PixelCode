@@ -928,6 +928,11 @@ void APixelCodeCharacter::AGetSpecificBuildingAmount(EBuildType builds)
 					PlayerInventory->RemoveSingleInstanceOfItem(Item);
 					//PickupItems->UpdateInteractableData();
 				}
+
+				// 인벤 아이템 수량 줄여주기
+				//int32 newQuant = Item->Quantity - 1;
+				//Item->SetQuantity(newQuant);
+
 			}
 
 			Index++;

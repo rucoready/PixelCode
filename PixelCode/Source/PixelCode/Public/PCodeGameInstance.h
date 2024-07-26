@@ -80,7 +80,8 @@ class PIXELCODE_API UPCodeGameInstance : public UGameInstance
 
 		void CreateMySession(FString roomName, int32 PlayerCount);
 
-		FString mySessionName = TEXT("YoHa");
+		//FString mySessionName = TEXT("YoHa");
+		FString mySessionName = TEXT("roomName");
 	
 
 	UFUNCTION()

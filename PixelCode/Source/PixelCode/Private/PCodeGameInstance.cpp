@@ -28,7 +28,7 @@ void UPCodeGameInstance::Init()
 	}
 }
 
-void UPCodeGameInstance::CreateMySession(FString roomName, int32 PlayerCount)
+void UPCodeGameInstance::CreateMySession(FString roomName,  int32 PlayerCount)
 {
 	FOnlineSessionSettings set;
 
@@ -63,8 +63,13 @@ void UPCodeGameInstance::CreateMySession(FString roomName, int32 PlayerCount)
 	UE_LOG(LogTemp, Warning, TEXT("set.NumPublicConnections: %d,"), set.NumPublicConnections);
 
 	// 커스텀 정보 : 방 이름 , 호스트 이름
-	set.Set(FName("ROOM_NAME"), roomName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-	set.Set(FName("HOST_NAME"), mySessionName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	//set.Set(FName("ROOM_NAME"), roomName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	//set.Set(FName("HOST_NAME"), mySessionName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+
+	
+
+	set.Set(FName("ROOM_NAME"), StringBase64Encode(roomName), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	set.Set(FName("HOST_NAME"), StringBase64Encode(mySessionName), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
 	// NET ID 가져오기
 	FUniqueNetIdPtr netID = GetWorld()->GetFirstLocalPlayerFromController()->GetUniqueNetIdForPlatformUser().GetUniqueNetId();

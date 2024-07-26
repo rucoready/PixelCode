@@ -159,25 +159,66 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 
 void ABuildingVisual::SpawnBuilding()
 {
+	
+	auto Pc = Cast<APlayerOrganism>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
+	
+	FString strpc1 = Pc ? TEXT("PC1 True") : TEXT("PC1 False");
+	UE_LOG(LogTemp, Warning, TEXT("++++++++++++++&&&&&&&&&&&&&&++++++++++++++ %s"), *strpc1);
 
-	// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
-	if (BuildingClass && !IsHidden())
+	if (Pc)
 	{
-		// ABuilding 인스턴스 = 건축자재가 있을 때
-		if (InteractingBuilding)
+		UE_LOG(LogTemp, Warning, TEXT("++++++++++++++&&&&&&&&&&&&&&++++++++++++++"));
+
+		TArray<UItemBase*> InventoryContentSArray = Pc->PlayerInventory->GetInventoryContents();
+		//uint8 BulidAmount = Recipe.Amount;
+		uint8 Index = 0;
+		TArray<uint8> RemoveedIndex;
+
+
+		FString strindex1 = InventoryContentSArray.IsValidIndex(Index) ? TEXT("Index True") : TEXT("Index False");
+		UE_LOG(LogTemp, Warning, TEXT("++++++++++++++&&&&&&&&&&&&&&++++++++++++++ %s"), *strindex1);
+
+		if (InventoryContentSArray.IsValidIndex(Index))
 		{
-			// preview가 초록일 때
-			if (bMaterialIsTrue)
+			for (UItemBase* Item : InventoryContentSArray)
 			{
-				// ABuilding 클래스의 AddInstance() 호출
- 				InteractingBuilding->AddInstance(SocketData, BuildingTypes[BuildingTypeIndex].BuildType);
-				UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Add Instance"));
+				UE_LOG(LogTemp, Warning, TEXT("++++++++++++++++++++++++++++%d"), Item->Quantity);
+
+
+
+				if (Item && Item->Buildtypes == BuildingTypes[BuildingTypeIndex].BuildType)
+				{
+						UE_LOG(LogTemp, Warning, TEXT("++++++++++++++++++++++++++++%d"), Item->Quantity);
+
+					if (Item->Quantity > 0)
+					{
+
+						UE_LOG(LogTemp, Warning, TEXT("++++++++++++++++++++++++++++%d"), Item->Quantity);
+
+
+						// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
+						if (BuildingClass && !IsHidden())
+						{
+							// ABuilding 인스턴스 = 건축자재가 있을 때
+							if (InteractingBuilding)
+							{
+								// preview가 초록일 때
+								if (bMaterialIsTrue)
+								{
+									// ABuilding 클래스의 AddInstance() 호출
+									InteractingBuilding->AddInstance(SocketData, BuildingTypes[BuildingTypeIndex].BuildType);
+									UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Add Instance"));
+								}
+							}
+							else
+							{
+								GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
+								UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Spawn Actor"));
+							}
+						}
+					}
+				}
 			}
-		}
-		else
-		{
-			GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
-			UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Spawn Actor"));
 		}
 	}
 }

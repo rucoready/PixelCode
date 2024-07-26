@@ -149,7 +149,7 @@ void UService_Grux_SensingCheck::TickNode(UBehaviorTreeComponent& OwnerComp, uin
     else
     {
         bPlayerInSight = false;
-        UE_LOG(LogTemp, Warning, TEXT("No Detected"));
+        //UE_LOG(LogTemp, Warning, TEXT("No Detected"));
     }
 
     OwnerComp.GetBlackboardComponent()->SetValueAsBool(GetSelectedBlackboardKey(), bPlayerInSight);
