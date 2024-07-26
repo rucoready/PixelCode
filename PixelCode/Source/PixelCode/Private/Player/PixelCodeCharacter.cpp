@@ -1423,9 +1423,9 @@ void APixelCodeCharacter::OnDestroyBuildingPressed()
 {
 	UE_LOG(LogTemp, Warning, TEXT("------------------Destroy Pressed"));
 
-	ServerRPC_DestroyBuildingInstanceV2(PerformLineTrace());
+	//ServerRPC_DestroyBuildingInstanceV2(PerformLineTrace());
 
-	//DestroyBuildingInstance();
+	ServerRPC_DestroyBuildingInstance();
 }
 
 void APixelCodeCharacter::DestroyBuildingInstance()
@@ -1464,7 +1464,7 @@ void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation()
 
  void APixelCodeCharacter::NetMulticastRPC_DestroyBuildingInstance_Implementation(UInstancedStaticMeshComponent* instComp, int32 instIndex)
  {
-	 instComp->RemoveInstance(instIndex);
+	 instComp->RemoveInstance(instIndex-1);
  }
 
  //------------------------------------Remove Foliage Network
@@ -1996,7 +1996,7 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 			EnhancedInputComponent->BindAction(IA_RemoveFoliage, ETriggerEvent::Started, this, &APixelCodeCharacter::OnRemoveFoliagePressed);
 			EnhancedInputComponent->BindAction(IA_SpawnBuilding, ETriggerEvent::Started, this, &APixelCodeCharacter::OnSpawnBuildingPressed);
 			EnhancedInputComponent->BindAction(IA_CycleMesh, ETriggerEvent::Started, this, &APixelCodeCharacter::OnCycleMeshPressed);
-			//EnhancedInputComponent->BindAction(IA_DestroyBuilding, ETriggerEvent::Started, this, &APixelCodeCharacter::OnDestroyBuildingPressed);
+			EnhancedInputComponent->BindAction(IA_DestroyBuilding, ETriggerEvent::Started, this, &APixelCodeCharacter::OnDestroyBuildingPressed);
 
 			EnhancedInputComponent->BindAction(IA_Weapon, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon);
 			EnhancedInputComponent->BindAction(IA_Weapon2, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon2);
