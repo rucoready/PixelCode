@@ -236,7 +236,7 @@ void UCraftingWidget::CreateCraftRecipeSlot(const FRecipe& Recipe)
 	if(CraftsSlot.IsValid())
 	{
 		CraftsSlot->SetData(FText::AsNumber(Recipe.Amount), GetItemIconFromType(Recipe.ItemType));
-		//CraftsSlot->SetPadding(FMargin(20.f, 0.f));
+		CraftsSlot->SetPadding(FMargin(150.f, 0.f, 100.f, 0.f));
 		item_Recipes->AddChild(CraftsSlot.Get());
 
 		if(CustomTooltipTemplate)
