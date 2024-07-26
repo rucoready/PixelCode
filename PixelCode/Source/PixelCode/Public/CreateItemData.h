@@ -42,13 +42,14 @@
 
 	ETN_WoodFoundation = 40 UMETA(DisplayName = "WoodFoundation"), // 나무 의자 같은거
 	ETN_WoodWall = 41		UMETA(DisplayName = "WoodWall"),
-	ETN_WoodCeiling = 42		UMETA(DisplayName = "WoodCeiling"),
+	ETN_WoodCeiling = 42	UMETA(DisplayName = "WoodCeiling"),
 	ETN_WoodFloor = 43		UMETA(DisplayName = "WoodFloor"),
 	ETN_WoodWindow = 44		UMETA(DisplayName = "WoodWindow"),
 	ETN_WoodArch = 45		UMETA(DisplayName = "WoodArch"),
 	ETN_WoodStairs = 46		UMETA(DisplayName = "WoodStairs"),
 	ETN_WoodRoof = 47		UMETA(DisplayName = "WoodRoof"),
-	ETN_WoodGable = 48 	UMETA(DisplayName = "WoodGable"),
+	ETN_WoodGable = 48 		UMETA(DisplayName = "WoodGable"),
+	ETN_CreateItem = 60		UMETA(DisplayName = "CreateItem"),
 
 	ETN_MAX					UMETA(DisplayName = "MAX")
 
