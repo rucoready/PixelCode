@@ -215,6 +215,10 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 
 void APlayerOrganism::GetHit(const FVector& ImpactPoint, bool bFallDown)
 {
+	if (!bUseSkill)
+	{ 
+		return;
+	}
 	//DrawDebugSphere(GetWorld(), GetActorLocation(), 8.f, 24, FColor::Orange, false, 5.f);
 
 	const FVector Forward = GetActorForwardVector();
@@ -375,11 +379,23 @@ void APlayerOrganism::PerformAttack(int32 attackIndex, bool bUseRandom) // ÀÌ°ÅÀ
 
 		if (mainWeapon != nullptr)
 		{
-			// ·£´ý ÀÎµ¦½º »ý¼º
-			int32 montagesSize = mainWeapon->attackMontages.Num();
-			int32 randIndex = FMath::RandRange(0, montagesSize - 1);
+			if (mainWeapon->eWeaponType == EWeaponType::GreatSword) // µµ³¢
+			{
+				useMontage = mainWeapon->attackMontages[0];
+			}
+			else if (mainWeapon->eWeaponType == EWeaponType::Pick) // °î±ªÀÌ
+			{
+				useMontage = mainWeapon->attackMontages[0];
+			}
+			else
+			{
+				// ·£´ý ÀÎµ¦½º »ý¼º
+				int32 montagesSize = mainWeapon->attackMontages.Num();
+				int32 randIndex = FMath::RandRange(0, montagesSize - 1);
 
-			useMontage = bUseRandom ? mainWeapon->attackMontages[randIndex] : mainWeapon->attackMontages[attackIndex];
+				useMontage = bUseRandom ? mainWeapon->attackMontages[randIndex] : mainWeapon->attackMontages[attackIndex];
+			}
+			
 
 			if (IsValid(useMontage))
 			{

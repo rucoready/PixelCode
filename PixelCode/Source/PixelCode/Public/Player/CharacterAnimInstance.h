@@ -81,6 +81,9 @@ public:
 	void AnimNotify_IsJump();
 
 	UFUNCTION()
+	void AnimNotify_EndJump();
+
+	UFUNCTION()
 	void AnimNotify_AttackBlock();
 
 	UFUNCTION()

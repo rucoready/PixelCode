@@ -138,18 +138,21 @@ void UCharacterAnimInstance::AnimNotify_IsJump()
 {
 	if (myCharacter != nullptr)
 	{
-		if (!myCharacter->bIsJump)
-		{
-			myCharacter->bIsJump = true;
-			UE_LOG(LogTemp, Log, TEXT("bValue is: %s"), myCharacter->bIsJump ? TEXT("true") : TEXT("false"));
-		}
-		else if (myCharacter->bIsJump)
-		{
-			myCharacter->bIsJump = false;
-			UE_LOG(LogTemp, Log, TEXT("bValue is: %s"), myCharacter->bIsJump ? TEXT("true") : TEXT("false"));
-		}
+		
+		myCharacter->bIsJump = true;
+	
+	
 		//UE_LOG(LogTemp, Log, TEXT("bValue is: %s"), myCharacter->bIsJump ? TEXT("true") : TEXT("false"));
 	}
+}
+
+void UCharacterAnimInstance::AnimNotify_EndJump()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bIsJump = false;
+	}
+
 }
 
 void UCharacterAnimInstance::AnimNotify_AttackBlock()

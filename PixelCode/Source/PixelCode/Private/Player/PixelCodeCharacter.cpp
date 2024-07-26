@@ -1532,7 +1532,7 @@ void APixelCodeCharacter::MultiRPC_RemoveRock_Implementation(const FHitResult& H
 		if (UComp && UComp->ComponentTags.Contains(TEXT("Rock")))
 		{
 			UComp->RemoveInstance(HitResult.Item);
-			GetWorld()->SpawnActor<APickup>(pickupWood, HitResult.ImpactPoint, GetActorRotation());
+			GetWorld()->SpawnActor<APickup>(pickupRock, HitResult.ImpactPoint, GetActorRotation());
 
 
 			//GetWorld()->SpawnActor<APickup>(pickupRock, HitResult.ImpactPoint, GetActorRotation());
@@ -2459,8 +2459,19 @@ void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 
 void APixelCodeCharacter::ToggleCombatFunction(const FInputActionValue& Value)
 {
+	if (equipment->eWeaponType == EWeaponType::GreatSword)
+	{
+		return;
+	}
+	else if (equipment->eWeaponType == EWeaponType::Pick)
+	{
+		return;
+	}
+
 	if (!bIsJump)
 	{
+	
+
 		auto mainWeaponPtr = combatComponent->GetMainWeapon();
 		if (IsValid(mainWeaponPtr))
 		{
@@ -2590,6 +2601,11 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		bFarmFoliage = false;
 	}
 
+	if (bMine)
+	{
+		SeverRPC_RemoveRock(PerformLineTrace(1000, true));
+		bMine = false;
+	}
 
 	// 지논------------------------------------------------------------------------------------------------------
 	if (bRoll)
