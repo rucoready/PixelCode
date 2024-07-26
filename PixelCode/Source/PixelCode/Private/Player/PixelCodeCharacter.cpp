@@ -138,9 +138,6 @@ void APixelCodeCharacter::BeginPlay()
 	/*APlayerController* UPc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	Pc = Cast<APCodePlayerController>(UPc);*/
 
-	/*APlayerController* UPc = Cast<APlayerController>(GetController());
-	Pc = Cast<APCodePlayerController>(UPc);*/
-
 
 
 	//Add Input Mapping Context
@@ -187,10 +184,12 @@ void APixelCodeCharacter::BeginPlay()
 		UE_LOG(LogTemp,Warning,TEXT("notPsArray"));
 	}*/
 
-
 	Pc = Cast<APCodePlayerController>(GetWorld()->GetFirstPlayerController());
+	Pc->ServerRPC_bPlayerState();
 	
-	characterPlayerState();
+	FString Message = FString::Printf(TEXT("현재 플레이어 상태의 인덱스는 %d 입니다."), pixelPlayerState);
+
+	//characterPlayerState();
 
 	
 
@@ -473,26 +472,6 @@ void APixelCodeCharacter::BeginPlay()
 }
 
 
-void APixelCodeCharacter::characterPlayerState()
-{
-	//APlayerState* CustomPlayerState = Cast<APlayerState>(this->GetPlayerState());
-	//PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
-
-	//APlayerController* UPc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	//Pc = Cast<APCodePlayerController>(UPc);
-
-	//FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
-	//FString hasController = Controller ? TEXT("HasCont") : TEXT("NoCont");
-
-	//UE_LOG(LogTemp, Warning, TEXT("[%s] %s - PlayerState"), *netMode, *hasController);
-
-	//PlayerState = Cast<ApixelPlayerState>(Pc->PlayerState);
-
-	
-
-	//ServerRPC_PlayerState();
-
-}
 
 //void APixelCodeCharacter::ServerRPC_PlayerState_Implementation()
 //{
@@ -1715,51 +1694,7 @@ void APixelCodeCharacter::PlayerStartWidget()
 	
 	
 
-	if (IsLocallyControlled())
-	{
-		//pc->NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-		//pc->NormallyWidget->AddToViewport();
 
-		// 시작
-		if (StatWidgetClass)
-		{
-			statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-			//statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-			//statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-			statWidget = statWidget;
-			if (statWidget != nullptr)
-			{
-				statWidget->AddToViewport(1);
-				statWidget->SetVisibility(ESlateVisibility::Collapsed);
-				UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
-
-				statWidget->UpdateStat(this->stateComp);
-				//if (PlayerState != nullptr)
-				//{
-				//	//Pc->statWidget->UpdateLevel(PlayerState->Level);
-				//}
-			}
-
-		}
-	
-		if (NormallyWidgetClass)
-		{
-			NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-				//NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-			NormallyWidget = NormallyWidget;
-				//NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-				if (NormallyWidget != nullptr)
-				{
-					NormallyWidget->AddToViewport(-1);
-					NormallyWidget->SetVisibility(ESlateVisibility::Visible);
-					UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
-
-					NormallyWidget->firstUpdate(this->stateComp);
-					NormallyWidget->currentStatUpdate(this->stateComp);	
-				}
-		}
-		
-	}
 		//NormallyWidget = pc->NormallyWidget;
 }
 

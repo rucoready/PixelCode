@@ -54,6 +54,7 @@ public:
 
 
 	APixelCodeCharacter* MainPlayer;
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	// UI
@@ -81,7 +82,11 @@ public:
 	void NetMulticastReceivePlayerStateFromServer(APlayerController* TargetPlayerController, ApixelPlayerState* PlayerStateData);
 
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_bPlayerState();
 
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_bPlayerState(ApixelPlayerState* serverPlayerState);
 
 
 

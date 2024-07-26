@@ -48,6 +48,12 @@ public:
 
     int32 GetCharacterLevel() const;
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_totalExp();
+
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_totalExp();
+
     UPROPERTY()
     int32 totalEXP;
 

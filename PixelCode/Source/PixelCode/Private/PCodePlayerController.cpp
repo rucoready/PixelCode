@@ -17,6 +17,7 @@
 #include "LoadingWidget1.h"
 #include "BossEnterWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
 
 
 void APCodePlayerController::BeginPlay()
@@ -32,84 +33,10 @@ void APCodePlayerController::BeginPlay()
 
 	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
 
-	pixelPlayerState = nullptr;
-
-	if (HasAuthority())
-	{
-		// PlayerState
-		auto temp = GetPlayerState<ApixelPlayerState>();
-
-		if (temp == nullptr)
-		{
-			int iTemp = 0;
-			iTemp = 1;
-			iTemp = 2;
-			iTemp = 3;
-			iTemp = 4;
-			iTemp = 5;
-			iTemp = 6;
-
-			if (pixelPlayerState == nullptr)
-			{
-				pixelPlayerState = Cast<ApixelPlayerState>(temp);
-			}
-		}
-
-		ApixelPlayerState* CurrentPlayerState = GetPlayerState<ApixelPlayerState>();
-
-		if (CurrentPlayerState != nullptr && pixelPlayerState == nullptr)
-		{
-			pixelPlayerState = CurrentPlayerState;
-		}
-
-		if (CurrentPlayerState != nullptr)
-		{
-			TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
-
-			// psArrayCurrentPlayerStatePlayerState
-			for (int i = 0; i < psArray.Num(); i++)
-			{
-				ApixelPlayerState* PlayerStateInArray = Cast<ApixelPlayerState>(psArray[i]);
-				if (PlayerStateInArray != nullptr && PlayerStateInArray == CurrentPlayerState)
-				{
-					pixelPlayerState = PlayerStateInArray;
-					pixelPlayerState->InitPlayerData();
-					if (NormallyWidget)
-					{
-						//NormallyWidget->firstStatedate(pixelPlayerState);
-						//NormallyWidget->currentLevelUpdate(pixelPlayerState);
-						//NormallyWidget->currentExpUpdate(pixelPlayerState->currentEXP, pixelPlayerState->totalEXP);
-						//pixelPlayerState->SetaddUpEXP(30.0f);
-					}
-					
-					// ��ġ�ϴ� PlayerState
-					// PlayerStateInArray
-					// ��: PlayerStateInArray->SomeFunction();
-
-					PlayerStateInArray->PlayerId;
-					UE_LOG(LogTemp, Warning, TEXT("%d"), PlayerStateInArray);
-					FString Message = FString::Printf(TEXT("Current On PlayerState Index: %d."), PlayerStateInArray);
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
-
-
-					break; // 
-				}
-				else
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("�÷��̾� ����(PlayerState)�� ã�� �� �����ϴ�."));
-					UE_LOG(LogTemp, Warning, TEXT("�÷��̾� ����(PlayerState)�� ã�� �� �����ϴ�."));
-				}
-			}
-		}
-		else
-		{
-			pixelPlayerState = CurrentPlayerState;
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("�÷��̾� ����(CurrentPlayerState)�� ã�� �� �����ϴ�."));
-			UE_LOG(LogTemp, Warning, TEXT("�÷��̾� ����(CurrentPlayerState)�� ã�� �� �����ϴ�."));
-		}
-	}
-
-
+	
+	MainPlayer = Cast<APixelCodeCharacter>(this->GetPawn());
+	
+	ServerRPC_bPlayerState();
 
 }
 
@@ -257,6 +184,134 @@ ApixelPlayerState* APCodePlayerController::GetPlayerStateOfOtherPlayer()
 
 
 	return pixelPlayerState;
+}
+
+void APCodePlayerController::ServerRPC_bPlayerState_Implementation()
+{
+	//ClientRPC_bPlayerState();
+
+	auto temp = GetPlayerState<ApixelPlayerState>();
+
+	ClientRPC_bPlayerState(temp);
+}
+
+
+
+
+void APCodePlayerController::ClientRPC_bPlayerState_Implementation(ApixelPlayerState* serverPlayerState)
+{
+	ApixelPlayerState* CurrentPlayerState = serverPlayerState;
+
+	if (IsLocalController())
+	{
+		//pc->NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+		//pc->NormallyWidget->AddToViewport();
+
+		// 시작
+		if (StatWidgetClass)
+		{
+			statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
+			//statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
+			//statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
+			statWidget = statWidget;
+			if (statWidget != nullptr)
+			{
+				statWidget->AddToViewport(1);
+				statWidget->SetVisibility(ESlateVisibility::Collapsed);
+				UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
+
+				//statWidget->UpdateStat(this->stateComp);
+				// 
+				//if (PlayerState != nullptr)
+				//{
+				//	//Pc->statWidget->UpdateLevel(PlayerState->Level);
+				//}
+			}
+
+		}
+
+		if (NormallyWidgetClass)
+		{
+			NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+			//NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+			NormallyWidget = NormallyWidget;
+			//NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+			if (NormallyWidget != nullptr)
+			{
+				NormallyWidget->AddToViewport(-1);
+				NormallyWidget->SetVisibility(ESlateVisibility::Visible);
+				UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
+
+				//NormallyWidget->firstUpdate(this->stateComp);
+				//NormallyWidget->currentStatUpdate(this->stateComp);
+
+				if (serverPlayerState)
+				{
+
+					NormallyWidget->currentExpUpdate(serverPlayerState->currentEXP, serverPlayerState->totalEXP);
+					serverPlayerState->SetaddUpEXP(30.0f);
+					UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("GetPawnName : %s"), *GetPawn()->GetActorNameOrLabel()));
+					UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("currentEXP : %d"), serverPlayerState->currentEXP));
+					UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("totalEXP: %d"), serverPlayerState->totalEXP));
+				}
+			}
+		}
+
+	}
+
+	//if (CurrentPlayerState != nullptr && pixelPlayerState == nullptr)
+	//{
+	//	pixelPlayerState = CurrentPlayerState;
+	//}
+
+	//if (CurrentPlayerState != nullptr)
+	//{
+	//	TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
+
+	//	// psArrayCurrentPlayerStatePlayerState
+	//	for (int i = 0; i < psArray.Num(); i++)
+	//	{
+	//		ApixelPlayerState* PlayerStateInArray = Cast<ApixelPlayerState>(psArray[i]);
+	//		if (PlayerStateInArray != nullptr && PlayerStateInArray == CurrentPlayerState)
+	//		{
+	//			pixelPlayerState = PlayerStateInArray;
+	//			
+
+	//			pixelPlayerState->InitPlayerData();
+	//			if (NormallyWidget)
+	//			{
+	//				//NormallyWidget->firstStatedate(pixelPlayerState);
+	//				//NormallyWidget->currentLevelUpdate(pixelPlayerState);
+	//				//NormallyWidget->currentExpUpdate(pixelPlayerState->currentEXP, pixelPlayerState->totalEXP);
+	//				//pixelPlayerState->SetaddUpEXP(30.0f);
+	//			}
+
+	//			// ��ġ�ϴ� PlayerState
+	//			// PlayerStateInArray
+	//			// ��: PlayerStateInArray->SomeFunction();
+
+	//			PlayerStateInArray->PlayerId;
+	//			UE_LOG(LogTemp, Warning, TEXT("%d"), PlayerStateInArray);
+	//			FString Message = FString::Printf(TEXT("Current On PlayerState Index: %d."), PlayerStateInArray);
+	//			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
+
+
+	//			break; // 
+	//		}
+	//		else
+	//		{
+	//			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("�÷��̾� ����(PlayerState)�� ã�� �� �����ϴ�."));
+	//			UE_LOG(LogTemp, Warning, TEXT("�÷��̾� ����(PlayerState)�� ã�� �� �����ϴ�."));
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	pixelPlayerState = CurrentPlayerState;
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("�÷��̾� ����(CurrentPlayerState)�� ã�� �� �����ϴ�."));
+	//	UE_LOG(LogTemp, Warning, TEXT("�÷��̾� ����(CurrentPlayerState)�� ã�� �� �����ϴ�."));
+	//}
+	
 }
 
 

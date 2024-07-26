@@ -44,7 +44,7 @@ ApixelPlayerState::ApixelPlayerState()
 
 void ApixelPlayerState::SetaddUpEXP(float AcquireEXP)
 {
-    maxEXP();
+    ServerRPC_totalExp();
 
     // 현재 경험치 추가
 	currentEXP += AcquireEXP;
@@ -58,6 +58,7 @@ void ApixelPlayerState::SetaddUpEXP(float AcquireEXP)
     
     // OnRep 함수 호출
     OnRep_currentEXP(currentEXP);
+    
 }
 
 void ApixelPlayerState::LevelUP()
@@ -89,6 +90,17 @@ float ApixelPlayerState::GetCurrentExp() const
 int32 ApixelPlayerState::GetCharacterLevel() const
 {
     return Level;
+}
+
+void ApixelPlayerState::ClientRPC_totalExp_Implementation()
+{
+    maxEXP();
+    ClientRPC_totalExp();
+}
+
+void ApixelPlayerState::ServerRPC_totalExp_Implementation()
+{
+    maxEXP();
 }
 
 void ApixelPlayerState::maxEXP()

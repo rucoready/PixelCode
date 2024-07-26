@@ -59,8 +59,11 @@ void UPlayerStatWidget::NativeConstruct()
 	}*/
 	//PC_Lobby = Cast<APC_Lobby>(UGameplayStatics::Getplayer)
 	
+	/*Player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
 
-	//UpdateLevel();
+	PlayerState = Cast<ApixelPlayerState>(Player->pixelPlayerState);
+
+	UpdateLevel();*/
 
 }
 

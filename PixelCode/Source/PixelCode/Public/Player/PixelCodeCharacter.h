@@ -211,7 +211,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UNormallyWidget> NormallyWidgetClass;
 
-	void characterPlayerState();
+	
 
 	/*UFUNCTION(Server, Reliable)
 	void ServerRPC_PlayerState();
