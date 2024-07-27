@@ -53,7 +53,7 @@
 #include "GameFramework/PlayerState.h"
 #include <../../../../../../../Source/Runtime/Engine/Public/EngineUtils.h>
 #include "GameFramework/GameStateBase.h"
-#include "FoliageISMComponent.h"
+#include "ISMRockFoliage.h"
 
 
 
@@ -1281,13 +1281,12 @@ void APixelCodeCharacter::MultiRPC_RemoveRock_Implementation(const FHitResult& H
 	if (HitResult.bBlockingHit)
 	{
 		
-		UFoliageISMComponent* UComp = Cast<UFoliageISMComponent>(HitResult.GetComponent());
+		UISMRockFoliage* UComp = Cast<UISMRockFoliage>(HitResult.GetComponent());
 		
 		if (UComp && UComp->ComponentTags.Contains(TEXT("Rock")))
 		{
 			UComp->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupRock, HitResult.ImpactPoint, GetActorRotation());
-
 
 			//GetWorld()->SpawnActor<APickup>(pickupRock, HitResult.ImpactPoint, GetActorRotation());
 		}
