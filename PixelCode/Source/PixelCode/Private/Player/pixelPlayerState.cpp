@@ -19,32 +19,9 @@ ApixelPlayerState::ApixelPlayerState()
     bReplicates = true;
 }
 
-
-//ApixelPlayerState* ApixelPlayerState::GetPlayerStateOfOtherPlayer(APCodePlayerController* OtherPlayerController)
-//{
-//    if (OtherPlayerController)
-//    {
-//        return Cast<ApixelPlayerState>(OtherPlayerController->PlayerState);
-//        PlayerState = UGameplayStatics::GetPlayerState(GetWorld(),);
-//    }
-//
-//    return nullptr;
-//}
-
-//void ApixelPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-//{
-//    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-//
-//    // totalEXP, currentEXP는 COND_OwnerOnly로 설정
-//    DOREPLIFETIME_CONDITION(ApixelPlayerState, totalEXP, COND_OwnerOnly);
-//    DOREPLIFETIME_CONDITION(ApixelPlayerState, currentEXP, COND_OwnerOnly);
-//    // Level은 COND_None으로 설정 (기본값)
-//    DOREPLIFETIME(ApixelPlayerState, Level);
-//}
-
 void ApixelPlayerState::SetaddUpEXP(float AcquireEXP)
 {
-    ServerRPC_totalExp();
+    maxEXP();
 
     // 현재 경험치 추가
 	currentEXP += AcquireEXP;
@@ -66,10 +43,10 @@ void ApixelPlayerState::LevelUP()
     Level += 1;
     maxEXP(); // 레벨 업 시 최대 경험치 업데이트
 
-   auto* LevelUpdatePlayer = Cast<APixelCodeCharacter>(GetPawn());
-   if (LevelUpdatePlayer != nullptr)
+   auto* APc = Cast<APCodePlayerController>(GetPawn()->GetController());
+   if (APc != nullptr)
    {
-       LevelUpdatePlayer->FullExp();
+       APc->FullExp();
    }
 }
 
@@ -90,17 +67,6 @@ float ApixelPlayerState::GetCurrentExp() const
 int32 ApixelPlayerState::GetCharacterLevel() const
 {
     return Level;
-}
-
-void ApixelPlayerState::ClientRPC_totalExp_Implementation()
-{
-    maxEXP();
-    ClientRPC_totalExp();
-}
-
-void ApixelPlayerState::ServerRPC_totalExp_Implementation()
-{
-    maxEXP();
 }
 
 void ApixelPlayerState::maxEXP()
@@ -138,110 +104,4 @@ void ApixelPlayerState::OnRep_currentEXP(float OldEXP)
     // currentEXP가 변경될 때 실행할 로직 작성
 	UE_LOG(LogTemp, Warning, TEXT("Current EXP changed from %f to %f"), OldEXP, currentEXP);
 }
-
-
-
-
-// 잠시 주석
-
-//ApixelPlayerState::ApixelPlayerState()
-//{
-//	
-//	bReplicates = true;
-//
-//
-//	
-//}
-//
-//
-//void ApixelPlayerState::SetaddUpEXP(float AcquireEXP)
-//{
-//	maxEXP();
-//
-//	currentEXP += AcquireEXP;
-//	
-//
-//	
-//
-//
-//	//PlayerMainUI->currentExpUpdate(this);
-//	//PlayerStatUI->UpdateLevel(this);
-//	UE_LOG(LogTemp, Warning, TEXT("UPEXP"));
-//
-//	OnRep_addUpEXP(AcquireEXP)
-//	
-//}
-//
-//void ApixelPlayerState::OnRep_addUpEXP(float AcquireEXP)
-//{
-//	GM = Cast<AMyGameModeBase>(GetWorld()->GetAuthGameMode());
-//	if (GM)
-//	{
-//		// GameMode에 접근하여 원하는 작업 수행
-//		GM->EXPmanagement(AcquireEXP, this);
-//	}
-//}
-//
-//void ApixelPlayerState::maxEXP()
-//{
-//	if (Level == 1)
-//	{
-//		totalEXP = 150;
-//	}
-//	else if (Level == 2)
-//	{
-//		totalEXP = 400;
-//	}
-//	else if (Level == 3)
-//	{
-//		totalEXP = 650;
-//	}
-//	else if (Level == 4)
-//	{
-//		totalEXP = 900;
-//	}
-//	else if (Level == 5)
-//	{
-//		totalEXP = 1150;
-//	}
-//}
-
-//void ApixelPlayerState::LevelUP()
-//{
-//
-//	Level += 1;
-//	
-//	maxEXP();
-//}
-//
-//
-//void ApixelPlayerState::InitPlayerData()
-//{
-//	//SetPlayerName(TEXT("Destiny")); 이름설정
-//	Level = 1; // 나중레벨저장
-//
-//}
-//
-//
-//
-//
-//
-//int32 ApixelPlayerState::GetCharacterLevel() const
-//{
-//	
-//	return Level;
-//}
-//
-//void ApixelPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-//{
-//	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-//
-//	// PlayerName 변수를 Replication 리스트에 추가
-//    DOREPLIFETIME_CONDITION(ApixelPlayerState, totalEXP, COND_OwnerOnly);
-//	DOREPLIFETIME_CONDITION(ApixelPlayerState, currentEXP, COND_OwnerOnly);
-//	DOREPLIFETIME_CONDITION(ApixelPlayerState, Level, COND_None);
-//
-//}
-
-
 

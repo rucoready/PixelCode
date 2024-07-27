@@ -134,6 +134,7 @@ public:
 	bool bFarmFoliage = false;
 	bool bMine = false;
 
+	bool bBindEnemy = false;
 
 	bool SkillZ = false;
 

@@ -129,9 +129,9 @@ void UNormallyWidget::firstUpdate(UStateComponent* PlayerStateComp)
 }
 void UNormallyWidget::firstStatedate(ApixelPlayerState* Ps)
 {
-	PB_Exp->SetPercent(PlayerState->currentEXP);
+	PB_Exp->SetPercent(Ps->currentEXP);
 
-	LEVEL = FString::FromInt(PlayerState->Level);  // float을 FString으로 변환
+	LEVEL = FString::FromInt(Ps->Level);  // float을 FString으로 변환
 	TB_LEVEL->SetText(FText::FromString(LEVEL));  // FString을 FText로 변환하여 UTextBlock에 설정
 }
 
@@ -142,15 +142,15 @@ void UNormallyWidget::currentStatUpdate(UStateComponent* PlayerStateComp)
 		PB_MP->SetPercent(PlayerStateComp->MaxMP/PlayerStateComp->currentMP);
 }
 
-void UNormallyWidget::currentExpUpdate(float currentEXP,float totalEXP)
+void UNormallyWidget::currentExpUpdate(ApixelPlayerState* Ps)
 {
-	PB_Exp->SetPercent(currentEXP/totalEXP);
+	PB_Exp->SetPercent(Ps->currentEXP/Ps->totalEXP);
 	//UE_LOG(LogTemp, Warning, TEXT("UPdateEXP"));
 }
 
 void UNormallyWidget::currentLevelUpdate(ApixelPlayerState* Ps)
 {
-	LEVEL = FString::FromInt(PlayerState->Level);
+	LEVEL = FString::FromInt(Ps->Level);
 	TB_LEVEL->SetText(FText::FromString(LEVEL));  
 }
 

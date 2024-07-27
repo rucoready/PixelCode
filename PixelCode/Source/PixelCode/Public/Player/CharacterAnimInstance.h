@@ -89,6 +89,9 @@ public:
 	UFUNCTION()
 	void AnimNotify_CounterCameraShake();
 
+	UFUNCTION()
+	void AnimNotify_BIndEnemy();
+
 };
 
 

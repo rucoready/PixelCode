@@ -94,6 +94,6 @@ public:
 
 	void UpdateStat(UStateComponent* PlayerStateComp);
 
-	void UpdateLevel();
+	void UpdateLevel(ApixelPlayerState* Ps);
 
 };

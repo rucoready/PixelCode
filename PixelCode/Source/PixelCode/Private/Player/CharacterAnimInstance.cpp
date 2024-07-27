@@ -182,3 +182,18 @@ void UCharacterAnimInstance::AnimNotify_CounterCameraShake()
 		}
 	}
 }
+
+void UCharacterAnimInstance::AnimNotify_BIndEnemy()
+{
+	if (myCharacter != nullptr)
+	{
+		if (!myCharacter->bBindEnemy)
+		{ 
+			myCharacter->bBindEnemy = true;
+		}
+		else
+		{
+			myCharacter->bBindEnemy = false;
+		}
+	}
+}

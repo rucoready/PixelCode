@@ -37,8 +37,6 @@ public:
 	
 	ApixelPlayerState();
 
-	//virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
 
     void SetaddUpEXP(float AcquireEXP); // float 타입으로 변경
     void LevelUP();
@@ -47,12 +45,6 @@ public:
 	float GetCurrentExp() const;
 
     int32 GetCharacterLevel() const;
-
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_totalExp();
-
-	UFUNCTION(Client, Reliable)
-	void ClientRPC_totalExp();
 
     UPROPERTY()
     int32 totalEXP;
@@ -70,55 +62,4 @@ public:
 
     UFUNCTION()
     void OnRep_currentEXP(float OldEXP);
-
-
-
-	
-
-
-
-	//UFUNCTION(BlueprintCallable, Category = "PlayerState")
- //   ApixelPlayerState* GetPlayerStateOfOtherPlayer(APCodePlayerController* OtherPlayerController);
-	
-	
-
-
-
-
-	// 잠시주석
-	//virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	/* UPROPERTY(ReplicatedUsing = OnRep_addUpEXP)
-	float totalEXP = 0;
-
-	 UPROPERTY(ReplicatedUsing = OnRep_addUpEXP)
-	float currentEXP = 0;
-
-	 UPROPERTY(ReplicatedUsing = OnRep_addUpEXP)
-	int32 Level;
-
-	UFUNCTION()
-	void OnRep_addUpEXP(float AcquireEXP);
-
-	UFUNCTION(BlueprintCallable, Category = "PlayerState")
-	void SetaddUpEXP(float AcquireEXP);
-
-
-	int32 GetCharacterLevel() const;
-
-
-
-	void InitPlayerData();
-
-
-
-
-	void maxEXP();
-	void LevelUP();
-
-	UStateComponent* stateComp;
-
-
-	AMyGameModeBase* GM;*/
-	
 };

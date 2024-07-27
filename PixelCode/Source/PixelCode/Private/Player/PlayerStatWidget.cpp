@@ -100,11 +100,9 @@ void UPlayerStatWidget::UpdateStat(UStateComponent* PlayerStateComp)
 	TB_CON->SetText(FText::FromString(CON));  
 }
 
-void UPlayerStatWidget::UpdateLevel()
+void UPlayerStatWidget::UpdateLevel(ApixelPlayerState* Ps)
 {
-	
-
-	LEVEL = FString::FromInt(PlayerState->Level);  // float을 FString으로 변환
+	LEVEL = FString::FromInt(Ps->Level);  // float을 FString으로 변환
 	TB_LEVEL->SetText(FText::FromString(LEVEL));  // FString을 FText로 변환하여 UTextBlock에 설정	
 	UE_LOG(LogTemp, Warning, TEXT("UPdateLEvel"));
 }

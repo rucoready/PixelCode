@@ -108,7 +108,7 @@ public:
 	ApixelPlayerState* PlayerState;
 
 	void currentStatUpdate(UStateComponent* PlayerStateComp);
-	void currentExpUpdate(float currentEXP, float totalEXP);
+	void currentExpUpdate(ApixelPlayerState* Ps);
 	void currentLevelUpdate(ApixelPlayerState* Ps);
 	
 	void QSetPercent();

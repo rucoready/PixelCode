@@ -174,18 +174,10 @@ public:
 	class AActor* Rock;
 
 	APixelCodeCharacter();
-	bool bIsStatVisible = true;
+	
 
 	// 진원 S
 	FORCEINLINE bool IsInteracting() const {return GetWorld()->GetTimerManager().IsTimerActive(TimerHandle_Interaction); }; // 현재 상호작용중인지 아닌지
-
-	bool bStatExp = false;
-
-	void PlayerStartWidget();
-
-	void FullExp();
-
-	void PlayerLevelUp();
 
 	void UpdateInteractionWidget() const;
 
@@ -201,25 +193,9 @@ public:
 
 	UPROPERTY()
 	UPlayerStatWidget* statWidget;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<UPlayerStatWidget> StatWidgetClass;
 
 	UPROPERTY()
 	UNormallyWidget* NormallyWidget;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<UNormallyWidget> NormallyWidgetClass;
-
-	
-
-	/*UFUNCTION(Server, Reliable)
-	void ServerRPC_PlayerState();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticastRPC_PlayerState();*/
-
-	bool bWidget = false;
 
 	class APCodePlayerController* Pc;
 

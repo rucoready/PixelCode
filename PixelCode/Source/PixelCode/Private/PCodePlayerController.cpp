@@ -24,65 +24,147 @@ void APCodePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	pixelPlayerState = nullptr;
+
 	if (HasAuthority())
 	{
 		GM = Cast<AMyGameModeBase>(GetWorld()->GetAuthGameMode());
 	}
+	MainPlayer = Cast<APixelCodeCharacter>(this->GetPawn());
 
 	statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
 
 	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
 
-	
-	MainPlayer = Cast<APixelCodeCharacter>(this->GetPawn());
-	
-	ServerRPC_bPlayerState();
+	PlayerStartWidget();
 
-}
+	// 플레이어 스테이트가 유효한지 검사하고 유효한 경우에만 Setup_PC 함수를 호출
 
-// State
-void APCodePlayerController::ServerSendPlayerStateToClient_Implementation(APlayerController* TargetPlayerController, ApixelPlayerState* PlayerStateData)
-{
-	// PlayerState 
-	NetMulticastReceivePlayerStateFromServer(TargetPlayerController, PlayerStateData);
-}
-
-void APCodePlayerController::NetMulticastReceivePlayerStateFromServer_Implementation(APlayerController* TargetPlayerController, ApixelPlayerState* PlayerStateData)
-{
-	// PlayerState 
-	if (PlayerStateData != nullptr)
+	if (ValidatePlayerState())
 	{
-		// PlayerStateData�� PlayerState�� ����
-		this->PlayerState = PlayerStateData;
+		PlayerWidgetUpdate();
+	}
+	
+}
 
-		//  PlayerState
-		UE_LOG(LogTemp, Warning, TEXT("Client received PlayerState: %s"), *PlayerState->GetPlayerName());
+void APCodePlayerController::FullExp()
+{
+	NormallyWidget->firstStatedate(pixelPlayerState);
+}
 
-		// PlayerState
+void APCodePlayerController::PlayerLevelUp()
+{
+	pixelPlayerState->SetaddUpEXP(30.0f);
+}
 
-		//MainPlayer = Cast<APixelCodeCharacter>(TargetPlayerController->GetOwner());
-		//MainPlayer->PlayerState = PlayerStateData;
+bool APCodePlayerController::ValidatePlayerState()
+{
+	// Ensures that the player state is Valid before we setup the PlayerController
+	// 플레이어 컨트롤러를 설정하기 전에, 플레이어 스테이트가 유효한지 보장한다.
+	FTimerHandle TimerHandle_PlayerStateCheck;
+
+	if (PlayerState->IsValidLowLevel())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("0 APC_Gameplay::PlayerState->IsValid"));
+		return true;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("0 APC_Gameplay::PlayerState->Is Not Valid"));
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_PlayerStateCheck, [&]() {
+			if (ValidatePlayerState())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("0 APC_Gameplay::PlayerState 다시 validate!!!!!!!!"));
+				PlayerWidgetUpdate();
+			}
+			}, 0.2f, false);
+
+		return false;
 	}
 }
+
+void APCodePlayerController::PlayerWidgetUpdate()
+{
+	pixelPlayerState = Cast<ApixelPlayerState>(PlayerState);
+
+		if (pixelPlayerState)
+		{
+			NormallyWidget->currentExpUpdate(pixelPlayerState);
+			NormallyWidget->firstStatedate(pixelPlayerState);
+;			statWidget->UpdateLevel(pixelPlayerState);
+		}
+}
+
+void APCodePlayerController::PlayerStartWidget()
+{
+	if (IsLocalController())
+	{
+
+		// 시작
+		if (StatWidgetClass)
+		{
+			statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
+			statWidget = statWidget;
+			if (statWidget != nullptr)
+			{
+				statWidget->AddToViewport(1);
+				statWidget->SetVisibility(ESlateVisibility::Collapsed);
+				UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
+			}
+
+		}
+
+		if (NormallyWidgetClass)
+		{
+			NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+			NormallyWidget = NormallyWidget;
+			if (NormallyWidget != nullptr)
+			{
+				NormallyWidget->AddToViewport(-1);
+				NormallyWidget->SetVisibility(ESlateVisibility::Visible);
+				UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
+			}
+		}
+	}
+}
+
+void APCodePlayerController::PlayerStatWidget()
+{
+	if (!MainPlayer->bIsJump)
+	{
+		if (bIsStatVisible)
+		{
+			statWidget->DisplayStat();
+			bIsStatVisible = false;
+			UE_LOG(LogTemp, Warning, TEXT("StatOn"));
+		}
+
+		else
+		{
+			statWidget->HideStat();
+			bIsStatVisible = true;
+			UE_LOG(LogTemp, Warning, TEXT("StatOff"));
+		}
+	}
+
+}
+
+
+
 
 void APCodePlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (NormallyWidget != nullptr && pixelPlayerState != nullptr)
+	if (pixelPlayerState != nullptr && NormallyWidget != nullptr)
 	{
-		//NormallyWidget->currentExpUpdate(pixelPlayerState->currentEXP, pixelPlayerState->totalEXP);
-
-		//NormallyWidget->currentLevelUpdate(pixelPlayerState);
-
+		NormallyWidget->currentExpUpdate(pixelPlayerState);
+		NormallyWidget->currentLevelUpdate(pixelPlayerState);
 	}
-	
-		
-		
-		
-
-	
-
+	if (MainPlayer != nullptr && NormallyWidget != nullptr)
+	{
+		NormallyWidget->currentStatUpdate(MainPlayer->stateComp);
+	}
 }
 
 void APCodePlayerController::OpenUI(bool bOpen)
@@ -111,290 +193,6 @@ void APCodePlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 }
 
-ApixelPlayerState* APCodePlayerController::GetPlayerStateOfOtherPlayer()
-{
-	//ApixelPlayerState* pixelPlayerState = nullptr;
-
-	//if (HasAuthority())
-	//{
-	//	PlayerState
-	//	auto temp = GetPlayerState<ApixelPlayerState>();
-
-	//	if (temp == nullptr)
-	//	{
-	//		int iTemp = 0;
-	//		iTemp = 1;
-	//		iTemp = 2;
-	//		iTemp = 3;
-	//		iTemp = 4;
-	//		iTemp = 5;
-	//		iTemp = 6;
-
-	//		if (pixelPlayerState == nullptr)
-	//		{
-	//			pixelPlayerState = Cast<ApixelPlayerState>(temp);
-	//		}
-	//	}
-
-	//	ApixelPlayerState* CurrentPlayerState = GetPlayerState<ApixelPlayerState>();
-
-	//	if (CurrentPlayerState != nullptr && pixelPlayerState == nullptr)
-	//	{
-	//		pixelPlayerState = CurrentPlayerState;
-	//	}
-
-	//	if (CurrentPlayerState != nullptr)
-	//	{
-	//		TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
-
-	//		// psArray���� CurrentPlayerState�� ��ġ�ϴ� PlayerState�� ã��
-	//		for (int i = 0; i < psArray.Num(); i++)
-	//		{
-	//			ApixelPlayerState* PlayerStateInArray = Cast<ApixelPlayerState>(psArray[i]);
-	//			if (PlayerStateInArray != nullptr && PlayerStateInArray == CurrentPlayerState)
-	//			{
-	//				pixelPlayerState = PlayerStateInArray;
-
-	//				return pixelPlayerState;
-	//				// ��ġ�ϴ� PlayerState�� ã���� ���� ����
-	//				// PlayerStateInArray�� �̿��ؼ� ���ϴ� �۾��� ����
-	//				// ��: PlayerStateInArray->SomeFunction();
-
-	//			/*	PlayerStateInArray->PlayerId;
-	//				UE_LOG(LogTemp, Warning, TEXT("%d"), PlayerStateInArray);
-	//				FString Message = FString::Printf(TEXT("���� �÷��̾� ������ �ε����� %d �Դϴ�."), PlayerStateInArray);
-	//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);*/
-
-
-	//				break; // ��ġ�ϴ� ���� ã�����Ƿ� ���� ����
-	//			}
-	//			else
-	//			{
-	//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("�÷��̾� ����(PlayerState)�� ã�� �� �����ϴ�."));
-	//				UE_LOG(LogTemp, Warning, TEXT("�÷��̾� ����(PlayerState)�� ã�� �� �����ϴ�."));
-	//			}
-	//		}
-	//	}
-	//	else
-	//	{
-	//		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("�÷��̾� ����(CurrentPlayerState)�� ã�� �� �����ϴ�."));
-	//		UE_LOG(LogTemp, Warning, TEXT("�÷��̾� ����(CurrentPlayerState)�� ã�� �� �����ϴ�."));
-	//	}
-	//}
-
-
-	return pixelPlayerState;
-}
-
-void APCodePlayerController::ServerRPC_bPlayerState_Implementation()
-{
-	//ClientRPC_bPlayerState();
-
-	auto temp = GetPlayerState<ApixelPlayerState>();
-
-	ClientRPC_bPlayerState(temp);
-}
-
-
-
-
-void APCodePlayerController::ClientRPC_bPlayerState_Implementation(ApixelPlayerState* serverPlayerState)
-{
-	ApixelPlayerState* CurrentPlayerState = serverPlayerState;
-
-	if (IsLocalController())
-	{
-		//pc->NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-		//pc->NormallyWidget->AddToViewport();
-
-		// 시작
-		if (StatWidgetClass)
-		{
-			statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-			//statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-			//statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-			statWidget = statWidget;
-			if (statWidget != nullptr)
-			{
-				statWidget->AddToViewport(1);
-				statWidget->SetVisibility(ESlateVisibility::Collapsed);
-				UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
-
-				//statWidget->UpdateStat(this->stateComp);
-				// 
-				//if (PlayerState != nullptr)
-				//{
-				//	//Pc->statWidget->UpdateLevel(PlayerState->Level);
-				//}
-			}
-
-		}
-
-		if (NormallyWidgetClass)
-		{
-			NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-			//NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-			NormallyWidget = NormallyWidget;
-			//NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-			if (NormallyWidget != nullptr)
-			{
-				NormallyWidget->AddToViewport(-1);
-				NormallyWidget->SetVisibility(ESlateVisibility::Visible);
-				UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
-
-				//NormallyWidget->firstUpdate(this->stateComp);
-				//NormallyWidget->currentStatUpdate(this->stateComp);
-
-				if (serverPlayerState)
-				{
-
-					NormallyWidget->currentExpUpdate(serverPlayerState->currentEXP, serverPlayerState->totalEXP);
-					serverPlayerState->SetaddUpEXP(30.0f);
-					UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("GetPawnName : %s"), *GetPawn()->GetActorNameOrLabel()));
-					UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("currentEXP : %d"), serverPlayerState->currentEXP));
-					UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("totalEXP: %d"), serverPlayerState->totalEXP));
-				}
-			}
-		}
-
-	}
-
-	//if (CurrentPlayerState != nullptr && pixelPlayerState == nullptr)
-	//{
-	//	pixelPlayerState = CurrentPlayerState;
-	//}
-
-	//if (CurrentPlayerState != nullptr)
-	//{
-	//	TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
-
-	//	// psArrayCurrentPlayerStatePlayerState
-	//	for (int i = 0; i < psArray.Num(); i++)
-	//	{
-	//		ApixelPlayerState* PlayerStateInArray = Cast<ApixelPlayerState>(psArray[i]);
-	//		if (PlayerStateInArray != nullptr && PlayerStateInArray == CurrentPlayerState)
-	//		{
-	//			pixelPlayerState = PlayerStateInArray;
-	//			
-
-	//			pixelPlayerState->InitPlayerData();
-	//			if (NormallyWidget)
-	//			{
-	//				//NormallyWidget->firstStatedate(pixelPlayerState);
-	//				//NormallyWidget->currentLevelUpdate(pixelPlayerState);
-	//				//NormallyWidget->currentExpUpdate(pixelPlayerState->currentEXP, pixelPlayerState->totalEXP);
-	//				//pixelPlayerState->SetaddUpEXP(30.0f);
-	//			}
-
-	//			// ��ġ�ϴ� PlayerState
-	//			// PlayerStateInArray
-	//			// ��: PlayerStateInArray->SomeFunction();
-
-	//			PlayerStateInArray->PlayerId;
-	//			UE_LOG(LogTemp, Warning, TEXT("%d"), PlayerStateInArray);
-	//			FString Message = FString::Printf(TEXT("Current On PlayerState Index: %d."), PlayerStateInArray);
-	//			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
-
-
-	//			break; // 
-	//		}
-	//		else
-	//		{
-	//			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("�÷��̾� ����(PlayerState)�� ã�� �� �����ϴ�."));
-	//			UE_LOG(LogTemp, Warning, TEXT("�÷��̾� ����(PlayerState)�� ã�� �� �����ϴ�."));
-	//		}
-	//	}
-	//}
-	//else
-	//{
-	//	pixelPlayerState = CurrentPlayerState;
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("�÷��̾� ����(CurrentPlayerState)�� ã�� �� �����ϴ�."));
-	//	UE_LOG(LogTemp, Warning, TEXT("�÷��̾� ����(CurrentPlayerState)�� ã�� �� �����ϴ�."));
-	//}
-	
-}
-
-
-
-
-
-
-
-
-//void APCodePlayerController::ServerRPC_StartUI_Implementation()
-//{
-//	StartUI();
-//	ClientRPC_StartUI();
-////	/*statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-////	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-////	PlayerState = Cast<ApixelPlayerState>(GetPlayerState<ApixelPlayerState>());*/
-////	
-////	/*if (HasAuthority())
-////	{
-////	statWidget->UpdateLevel(PlayerState->Level);
-////		ClientRPC_StartUI();*/
-////	
-////	
-//}
-
-
-
-
-	/*
-	NormallyWidget = CreateWidget<UNormallyWidget>(GetWorld(), NormallyWidgetClass);
-	NormallyWidget->AddToViewport(2);
-	NormallyWidget->SetVisibility(ESlateVisibility::Visible);
-	UE_LOG(LogTemp, Warning, TEXT("NormalAuth2")); */
-
-	/*statWidget = CreateWidget<UPlayerStatWidget>(GetWorld(), StatWidgetClass);
-	statWidget->AddToViewport(1);
-	statWidget->SetVisibility(ESlateVisibility::Collapsed);
-	UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));*/
-
-	//
-	//void APCodePlayerController::ClientRPC_StartUI_Implementation()
-	//{
-	//	StartUI();
-	//
-	//
-	//
-	//	//NormallyWidget->currentExpUpdate(PlayerState->currentEXP, PlayerState->totalEXP);
-	//}
-
-
-
-
-
-
-
-
-
-
-
-
-	//void APCodePlayerController::ServerRPC_ChangeSpectator_Implementation()
-	//{
-	//	// 
-	//	auto* oldPawn = GetPawn();
-
-	//	if (oldPawn)
-	//	{
-	
-	//		FTransform t = oldPawn->GetActorTransform();
-	//		FActorSpawnParameters params;
-	//		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	//
-	//		auto* newPawn = GetWorld()->SpawnActor<ASpectatorPawn>(GM->SpectatorClass, t, params);
-	//
-	//		
-	//		Possess(newPawn);
-	//		// oldPawn�� �ı��ϰ�ʹ�.
-	//		oldPawn->Destroy();
-	//		// 5���Ŀ� ServerRPC_RespawnPlayer_Implementation
-	//		FTimerHandle handle;
-	//		GetWorld()->GetTimerManager().SetTimer(handle, this, &APCodePlayerController::ServerRPC_RespawnPlayer_Implementation, 5, false);
-	//	}
-	//}
 
 void APCodePlayerController::ServerRPC_RespawnPlayer_Implementation()
 {
@@ -459,59 +257,6 @@ void APCodePlayerController::MulticastRPC_HideWidgetRobbyWidget_Implementation()
 
 	}
 }
-
-
-
-//void APCodePlayerController::ServerRPC_StartUI_Implementation()
-//{
-//	StartUI();
-//	ClientRPC_StartUI();
-////	/*statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-////	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-////	PlayerState = Cast<ApixelPlayerState>(GetPlayerState<ApixelPlayerState>());*/
-////	
-////	/*if (HasAuthority())
-////	{
-////	statWidget->UpdateLevel(PlayerState->Level);
-////		ClientRPC_StartUI();*/
-////	
-////	
-//}
-
-
-
-
-	/*
-	NormallyWidget = CreateWidget<UNormallyWidget>(GetWorld(), NormallyWidgetClass);
-	NormallyWidget->AddToViewport(2);
-	NormallyWidget->SetVisibility(ESlateVisibility::Visible);
-	UE_LOG(LogTemp, Warning, TEXT("NormalAuth2")); */
-
-	/*statWidget = CreateWidget<UPlayerStatWidget>(GetWorld(), StatWidgetClass);
-	statWidget->AddToViewport(1);
-	statWidget->SetVisibility(ESlateVisibility::Collapsed);
-	UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));*/
-
-	//
-	//void APCodePlayerController::ClientRPC_StartUI_Implementation()
-	//{
-	//	StartUI();
-	//
-	//
-	//
-	//	//NormallyWidget->currentExpUpdate(PlayerState->currentEXP, PlayerState->totalEXP);
-	//}
-
-
-
-
-
-
-
-
-
-
-
 
 	//void APCodePlayerController::ServerRPC_ChangeSpectator_Implementation()
 	//{

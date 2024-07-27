@@ -131,15 +131,6 @@ void APixelCodeCharacter::BeginPlay()
 	CameraBoom->bEnableCameraLag = true;
 	CameraBoom->CameraLagSpeed = 10.0f;
 
-	statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-
-	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-
-	/*APlayerController* UPc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	Pc = Cast<APCodePlayerController>(UPc);*/
-
-
-
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -166,218 +157,8 @@ void APixelCodeCharacter::BeginPlay()
 	
 	InterfaceActor = Cast<AInterfaceTestActor>(InterfaceActor);
 
-	/*if (Pc != nullptr && Pc->IsLocalPlayerController())
-	{
-		TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
-		for (int i = 0; i < psArray.Num(); i++)
-		{
-			 APlayerState* ps = psArray[i];
-			 PlayerState = Cast<ApixelPlayerState>(ps);
-			 if (PlayerState != nullptr)
-			 {
-				 PlayerState->SetaddUpEXP(30.0f);
-			 }
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp,Warning,TEXT("notPsArray"));
-	}*/
-
+	
 	Pc = Cast<APCodePlayerController>(GetWorld()->GetFirstPlayerController());
-	Pc->ServerRPC_bPlayerState();
-	
-	FString Message = FString::Printf(TEXT("현재 플레이어 상태의 인덱스는 %d 입니다."), pixelPlayerState);
-
-	//characterPlayerState();
-
-	
-
-	//if (HasAuthority())
-	//{
-	//	// 현재 플레이어의 PlayerState를 얻기
-	//	auto temp = Pc->GetPlayerState<ApixelPlayerState>();
-
-	//	if (temp == nullptr)
-	//	{
-	//		int iTemp = 0;
-	//		iTemp = 1;
-	//		iTemp = 2;
-	//		iTemp = 3;
-	//		iTemp = 4;
-	//		iTemp = 5;
-	//		iTemp = 6;
-
-	//		if (pixelPlayerState == nullptr)
-	//		{
-	//			pixelPlayerState = Cast<ApixelPlayerState>(temp);
-	//		}
-	//	}
-
-	//	ApixelPlayerState* CurrentPlayerState = Cast<ApixelPlayerState>(GetPlayerState());
-
-	//	if (CurrentPlayerState != nullptr && pixelPlayerState == nullptr)
-	//	{
-	//		pixelPlayerState = CurrentPlayerState;
-	//	}
-
-	//	if (CurrentPlayerState != nullptr)
-	//	{
-	//		TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
-
-	//		// psArray에서 CurrentPlayerState와 일치하는 PlayerState를 찾기
-	//		for (int i = 0; i < psArray.Num(); i++)
-	//		{
-	//			ApixelPlayerState* PlayerStateInArray = Cast<ApixelPlayerState>(psArray[i]);
-	//			if (PlayerStateInArray != nullptr && PlayerStateInArray == CurrentPlayerState)
-	//			{
-	//				pixelPlayerState = PlayerStateInArray;
-	//				NormallyWidget->currentExpUpdate(pixelPlayerState->currentEXP, pixelPlayerState->totalEXP);
-	//				//PlayerState->SetaddUpEXP(30.0f);
-	//				// 일치하는 PlayerState를 찾았을 때의 로직
-	//				// PlayerStateInArray를 이용해서 원하는 작업을 수행
-	//				// 예: PlayerStateInArray->SomeFunction();
-
-	//				PlayerStateInArray->PlayerId;
-	//				UE_LOG(LogTemp, Warning, TEXT("%d"), PlayerStateInArray);
-	//				FString Message = FString::Printf(TEXT("현재 플레이어 상태의 인덱스는 %d 입니다."), PlayerStateInArray);
-	//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
-
-
-	//				break; // 일치하는 것을 찾았으므로 루프 종료
-	//			}
-	//			else
-	//			{
-	//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
-	//				UE_LOG(LogTemp, Warning, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
-	//			}
-	//		}
-	//	}
-	//	else
-	//	{
-	//		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(CurrentPlayerState)를 찾을 수 없습니다."));
-	//		UE_LOG(LogTemp, Warning, TEXT("플레이어 상태(CurrentPlayerState)를 찾을 수 없습니다."));
-	//	}
-	//}
-
-	//if (Pc != nullptr && Pc->IsLocalPlayerController())
-	//{
-	//	// 현재 플레이어의 PlayerState를 얻기
-	//	auto temp = Pc->GetPlayerState<ApixelPlayerState>();
-
-	//	if (temp == nullptr)
-	//	{
-	//		int iTemp = 0;
-	//		iTemp = 1;
-	//		iTemp = 2;
-	//		iTemp = 3;
-	//		iTemp = 4;
-	//		iTemp = 5;
-	//		iTemp = 6;
-
-	//		if (pixelPlayerState == nullptr)
-	//		{
-	//			pixelPlayerState = Cast<ApixelPlayerState>(temp);
-	//		}
-	//	}
-
-	//	ApixelPlayerState* CurrentPlayerState = Cast<ApixelPlayerState>(GetPlayerState());
-
-	//	if (CurrentPlayerState != nullptr && pixelPlayerState == nullptr)
-	//	{
-	//		pixelPlayerState = CurrentPlayerState;
-	//	}
-
-	//	if (CurrentPlayerState != nullptr)
-	//	{
-	//		TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
-
-	//		// psArray에서 CurrentPlayerState와 일치하는 PlayerState를 찾기
-	//		for (int i = 0; i < psArray.Num(); i++)
-	//		{
-	//			ApixelPlayerState* PlayerStateInArray = Cast<ApixelPlayerState>(psArray[i]);
-	//			if (PlayerStateInArray != nullptr && PlayerStateInArray == CurrentPlayerState)
-	//			{
-	//				pixelPlayerState = PlayerStateInArray;
-	//				NormallyWidget->currentExpUpdate(pixelPlayerState->currentEXP, pixelPlayerState->totalEXP);
-	//				//PlayerState->SetaddUpEXP(30.0f);
-	//				// 일치하는 PlayerState를 찾았을 때의 로직
-	//				// PlayerStateInArray를 이용해서 원하는 작업을 수행
-	//				// 예: PlayerStateInArray->SomeFunction();
-
-	//				PlayerStateInArray->PlayerId;
-	//				UE_LOG(LogTemp,Warning,TEXT("%d"),PlayerStateInArray);
-	//				FString Message = FString::Printf(TEXT("현재 플레이어 상태의 인덱스는 %d 입니다."), PlayerStateInArray);
-	//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
-
-
-	//				break; // 일치하는 것을 찾았으므로 루프 종료
-	//			}
-	//			else
-	//			{
-	//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
-	//				UE_LOG(LogTemp, Warning, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
-	//			}
-	//		}
-	//	}
-	//	else
-	//	{
-	//		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(CurrentPlayerState)를 찾을 수 없습니다."));
-	//		UE_LOG(LogTemp, Warning, TEXT("플레이어 상태(CurrentPlayerState)를 찾을 수 없습니다."));
-	//	}
-	//}
-	//else
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(Pc)를 찾을 수 없습니다."));
-	//	UE_LOG(LogTemp, Warning, TEXT("플레이어 상태(Pc)를 찾을 수 없습니다."));
-	//}
-
-
-
-
-
-
-
-
-
-
-	/*if (Pc != nullptr && Pc->IsLocalPlayerController())
-	{
-		//PlayerState = Cast<ApixelPlayerState>(GetPlayerState());
-		TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
-		for (int i = 0; i < psArray.Num(); i++)
-		{
-
-			if (PlayerState == psArray[i])
-			{
-				APlayerState* ps = psArray[i];
-				PlayerState = Cast<ApixelPlayerState>(ps);
-			}
-		}
-	}*/
-
-	
-
-
-	/*if (PlayerArray != nullptr)
-	{
-		int32 StateIndex = PlayerState->PlayerId;
-		FString Message = FString::Printf(TEXT("현재 플레이어 상태의 인덱스는 %d 입니다."), StateIndex);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
-	}*/
-
-	/*if (IsLocallyControlled())
-	{
-		InitRandomItem();
-	}*/
-
-	//PlayerInventory->HandleAddItem();
-
-
 
 	// 서휘-----------------------------------------------------------------------------------------------------
 
@@ -407,9 +188,6 @@ void APixelCodeCharacter::BeginPlay()
 // 	}
 	
 	//GetAllChildActors()
-
-
-
 
 
  	if (!Builder)
@@ -450,14 +228,6 @@ void APixelCodeCharacter::BeginPlay()
 // 	FString sBuildings = Buildings ? TEXT("Buildings True") : TEXT("Buildings False");
 // 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay : %s : %s"), *sBuilder, *sBuildings);
 	// 서휘-----------------------------------------------------------------------------------------------------끝
-
-	//if (false == HasAuthority())
-	//{
-	//	InitMainUI();
-	//}
-	PlayerStartWidget();
-	
-	
 
 	// 요한----------------------------------------------------------------------
 
@@ -1694,73 +1464,6 @@ void APixelCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(APixelCodeCharacter, Iteminfos);
 }
 
-void APixelCodeCharacter::PlayerStartWidget()
-{
-	
-	
-
-
-		//NormallyWidget = pc->NormallyWidget;
-}
-
-void APixelCodeCharacter::FullExp()
-{
-	//NormallyWidget->firstStatedate();
-
-}
-
-
-void APixelCodeCharacter::PlayerLevelUp()
-{
-	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
-	
-
-	//bStatExp = true;
-
-	//PlayerState->SetaddUpEXP(30.0f);
-	//if (Pc != nullptr && Pc->IsLocalPlayerController())
-	//{
-	//	TArray<APlayerState*> psArray = GetWorld()->GetGameState()->PlayerArray;
-	//	for (int i = 0; i < psArray.Num(); i++)
-	//	{
-	//		PlayerState = Cast<ApixelPlayerState>(GetPlayerState());
-	//		if (PlayerState == psArray[i])
-	//		{
-	//			//PlayerState->SetaddUpEXP(30.0f);
-	//			
-
-	//		}
-	//		//APlayerState* ps = psArray[i];
-	//		
-	//		{
-	//			
-	//			
-	//		}
-	//			
-	//		
-	//	
-	//		/*if (PlayerState != nullptr)
-	//		{
-	//			
-	//		}*/
-	//	}
-	//}
-	//PlayerState->SetaddUpEXP(30.0f);
-
-	/*if (PlayerState)
-	{
-		int32 StateIndex = PlayerState->PlayerId;
-		FString Message = FString::Printf(TEXT("현재 플레이어 상태의 인덱스는 %d 입니다."), StateIndex);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, Message);
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("플레이어 상태(PlayerState)를 찾을 수 없습니다."));
-	}*/
-	
-
-
-}
 
 void APixelCodeCharacter::UpdateInteractionWidget() const
 {
@@ -1769,8 +1472,6 @@ void APixelCodeCharacter::UpdateInteractionWidget() const
 		HUD->UpdateInteractionWidget(TargetInteractable->InteractableData); // 포인터(*)확인해볼것
 	}
 }
-
-
 
 void APixelCodeCharacter::ServerRPC_DropItem_Implementation(UItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
@@ -1795,11 +1496,6 @@ void APixelCodeCharacter::ServerRPC_DropItem_Implementation(UItemBase* ItemToDro
 			UE_LOG(LogTemp, Warning, TEXT("Item to drop was Some how null"));
 		}
 }
-
-
-
-	
-
 	
 void APixelCodeCharacter::NetMulticastRPC_DropItem_Implementation(const FTransform ASpawnTransform)
 {
@@ -1826,22 +1522,7 @@ void APixelCodeCharacter::ToggleMenu()
 
 void APixelCodeCharacter::StatMenu()
 {
-	if (!bIsJump)
-	{
-		if (bIsStatVisible)
-		{
-			statWidget->DisplayStat();
-			bIsStatVisible = false;
-			UE_LOG(LogTemp, Warning, TEXT("StatOn"));
-		}
-
-		else
-		{
-			statWidget->HideStat();
-			bIsStatVisible = true;
-			UE_LOG(LogTemp, Warning, TEXT("StatOff"));
-		}
-	}
+	Pc->PlayerStatWidget();
 }
 
 
@@ -2508,7 +2189,7 @@ void APixelCodeCharacter::NetMulticastRPC_PlayerRunEnd_Implementation()
 
 void APixelCodeCharacter::PlayerExpUp(const FInputActionValue& Value)
 {
-	PlayerLevelUp();
+	Pc->PlayerLevelUp();
 }
 
 void APixelCodeCharacter::Tick(float DeltaTime)
@@ -2576,14 +2257,7 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		bSkillNSR = false;
 	}
 
-	if (NormallyWidget != nullptr)
-	{
-		NormallyWidget->currentStatUpdate(this->stateComp);
-	}
-	if (NormallyWidget != nullptr && bStatExp)
-	{
-		NormallyWidget->currentExpUpdate(pixelPlayerState->currentEXP, pixelPlayerState->totalEXP);
-	}
+
 	// 지논------------------------------------------------------------------------------------------------------
 
 }

@@ -47,51 +47,36 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UNormallyWidget> NormallyWidgetClass;
 	
-
-
 	ApixelPlayerState* pixelPlayerState;
-
-
 
 	APixelCodeCharacter* MainPlayer;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	// UI
-	
-	
-	ApixelPlayerState* GetPlayerStateOfOtherPlayer();
 
-	//UFUNCTION(Server, Reliable)
-	//void ServerRPC_StartUI();
+	void FullExp();
 
-	//UFUNCTION(Client, Reliable)
-	//void ClientRPC_StartUI();
+	void PlayerLevelUp();
+
+	bool ValidatePlayerState();
+
+	void PlayerWidgetUpdate();
+
+	void PlayerStartWidget();
+
+	void PlayerStatWidget();
 
 	bool bIsStatVisible = true;
 
+	bool bPlayerState = false;
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_RespawnPlayer();
 
-	
-	UFUNCTION(Server, Reliable)
-	void ServerSendPlayerStateToClient(APlayerController* TargetPlayerController, ApixelPlayerState* PlayerStateData);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticastReceivePlayerStateFromServer(APlayerController* TargetPlayerController, ApixelPlayerState* PlayerStateData);
-
-
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_bPlayerState();
-
-	UFUNCTION(Client, Reliable)
-	void ClientRPC_bPlayerState(ApixelPlayerState* serverPlayerState);
-
-
-
 	//UFUNCTION(Server, Reliable)
 	//void ServerRPC_ChangeSpectator();
+	// 
 // ������ �� ---------------------------------------------------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UPortalRobbyWidget> portalRobbyWidget;
