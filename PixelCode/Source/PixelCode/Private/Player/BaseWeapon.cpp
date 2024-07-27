@@ -170,8 +170,22 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.01, false);
 
 		boss->BossTakeDamage(10.0f);
+		//boss->BossFallDown();
 		bHit = true;
 		
+		
+		UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage1"));
+
+	}
+
+	///////boss Z Hit Reaction
+	if (boss && !bHit)
+	{
+		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.01, false);
+		//boss->BossFallDown();
+		bHit = true;
+
+
 		UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage1"));
 
 	}

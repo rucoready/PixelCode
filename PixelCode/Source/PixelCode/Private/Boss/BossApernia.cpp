@@ -534,6 +534,7 @@ void ABossApernia::ReflagCounterAttack()
     }
 }
 
+
 void ABossApernia::BossTakeDamage(float Damage)
 {
     bossCurrentHP = bossCurrentHP - Damage;
@@ -583,7 +584,7 @@ void ABossApernia::BossTakeDamage(float Damage)
                             ServerRPC_CounterPrecursorSpawnParticle();
 
                             FVector LaunchDirection = -GetActorForwardVector(); // 뒷 방향으로 설정
-                            LaunchCharacter(LaunchDirection * PulseStrength, true, true);
+                            //LaunchCharacter(LaunchDirection * PulseStrength, true, true);
                             
                         }
                     }
@@ -656,25 +657,37 @@ void ABossApernia::BossTakeDamage(float Damage)
 
 void ABossApernia::BossFallDown()
 {
-    PlayAnimMontage(bossFallDownMT);
-    if (ABossAIController* bossController = Cast<ABossAIController>(GetController()))
+    if (!onceBindSword)
     {
-        bossController->ClearFocus(EAIFocusPriority::Default);
-        bossController->StopMovement();
-        FRotator currentRotation = GetActorRotation();
-        SetActorRotation(currentRotation);
-        
-
-        if (UBehaviorTreeComponent* BTComponent = bossController->FindComponentByClass<UBehaviorTreeComponent>())
+        onceBindSword = true;
+        PlayAnimMontage(bossFallDownMT);
+        if (ABossAIController* bossController = Cast<ABossAIController>(GetController()))
         {
-            savedBTComponent = BTComponent; // Save the BTComponent
-            savedLocation = GetActorLocation(); // Save the current location
-            BTComponent->StopTree(EBTStopMode::Safe);
+            bossController->ClearFocus(EAIFocusPriority::Default);
+            bossController->StopMovement();
+            FRotator currentRotation = GetActorRotation();
+            SetActorRotation(currentRotation);
+
+
+            if (UBehaviorTreeComponent* BTComponent = bossController->FindComponentByClass<UBehaviorTreeComponent>())
+            {
+                savedBTComponent = BTComponent;
+                savedLocation = GetActorLocation();
+                BTComponent->StopTree(EBTStopMode::Safe);
+            }
+            GetWorldTimerManager().SetTimer(timerhandle_RepocessBehaviorTree, this, &ABossApernia::RepocessBehaviorTree, 6.0f, false);
+            GetWorldTimerManager().SetTimer(timerhandle_BindSword, this, &ABossApernia::RestoreBind, 10.0f, false);
+            bBossAttackFallDownAttack = true;
         }
-        GetWorldTimerManager().SetTimer(timerhandle_RepocessBehaviorTree, this, &ABossApernia::RepocessBehaviorTree, 6.0f, false);
-        bBossAttackFallDownAttack = true;
     }
+    
 }
+
+void ABossApernia::RestoreBind()
+{
+    onceBindSword = false;
+}
+
 
 void ABossApernia::RepocessBehaviorTree()
 { 

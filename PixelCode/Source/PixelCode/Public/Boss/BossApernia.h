@@ -164,6 +164,12 @@ public:
 
 	FTimerHandle timerhandle_SetOriginMatetrial;
 
+	FTimerHandle timerhandle_BindSword;
+
+	void RestoreBind();
+
+	bool onceBindSword = false;
+
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class USoundBase* counterSound; // 
 
