@@ -50,6 +50,10 @@ public:
 	//class UStaticMeshComponent* bossSwordComp;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UNiagaraComponent* phaseShieldComponent;
+
+
 	class UStaticMeshComponent* bossBackSwordComp;
 
 	//UPROPERTY(EditAnywhere, Category="MySettings")
@@ -79,7 +83,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	TSubclassOf<class ABossSword> bossSwordclass;
 
-	float bossMaxHP = 60000.0f;
+	float bossMaxHP = 43000.0f;
 
 	float bossCurrentHP;
 
@@ -708,5 +712,55 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_BossTakeDamageWidgetSet(int32 value2);
 
+	///////////////phase2
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	class UAnimMontage* bossRoar;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_Boss2phaseRoar();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_Boss2phaseRoar();
+
+	UPROPERTY(EditAnywhere, Category = "Particles")
+	class UParticleSystem* roarParticle;
+
+
+	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
+	class UNiagaraSystem* phaseShield;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_RoarParticle();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_RoarParticle();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnGigantSword();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnGigantSword();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_MoveGigantSword();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_MoveGigantSword();
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class APhase2GigantSword> gigantSword;
+
+	void SpawnGigantSword();
+
+	void MoveGigantSword();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_GigantSwordCameraShake();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_GigantSwordCameraShake();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
+	TSubclassOf<UCameraShakeBase> gigantSwordCameraShake;
 };

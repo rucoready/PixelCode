@@ -27,10 +27,13 @@
 #include "Sound/SoundBase.h" 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "BossMaInUI.h"
+#include "NiagaraSystem.h"
 #include "Blueprint/UserWidget.h"
 #include "Boss/BossAnimInstance.h"
 #include "DamageWidget.h"
 #include "DamageWidgetComponent.h"
+#include "GameFramework/Actor.h"
+#include "Phase2GigantSword.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -85,7 +88,7 @@ ABossApernia::ABossApernia()
     {
         bossBackSwordComp->SetStaticMesh(bossBackSwordMesh.Object);
     }
-
+    
     bossBackSwordComp->SetRelativeLocation(FVector(-28.945981f, -235.270012f, 29.204212f));
     bossBackSwordComp->SetRelativeRotation(FRotator(-0.016692f, 0.044553f, 20.539312f));
     bossBackSwordComp->SetWorldScale3D(FVector(0.7f, 0.5f, 1.0f));
@@ -96,6 +99,13 @@ ABossApernia::ABossApernia()
     damageWidgetComponentl->SetRelativeLocation(FVector(0, 0, 188));
     damageWidgetComponentl->SetRelativeRotation(FRotator(0, -99, 0));
 
+
+    phaseShieldComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PhaseShieldComponent"));
+    phaseShieldComponent->SetupAttachment(GetMesh());
+    phaseShieldComponent->SetVisibility(false);
+    phaseShieldComponent->SetRelativeLocation(FVector(0, 0, 170));
+    phaseShieldComponent->SetWorldScale3D(FVector(2.0f));
+    
     // Optionally, you can set a widget class to the DamageWidgetComponent
     static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/Engine.Blueprint'/Game/KMS_AI/Damage/BP_DamageWidgetComponent.BP_DamageWidgetComponent'"));
     if (WidgetClass.Succeeded())
@@ -1667,4 +1677,121 @@ void ABossApernia::MulticastRPC_BossTakeDamageWidgetSet_Implementation(int32 val
     }
 
    
+}
+
+void ABossApernia::ServerRPC_Boss2phaseRoar_Implementation()
+{
+    MulticastRPC_Boss2phaseRoar();
+}
+
+void ABossApernia::MulticastRPC_Boss2phaseRoar_Implementation()
+{
+    PlayAnimMontage(bossRoar);
+}
+
+void ABossApernia::ServerRPC_RoarParticle_Implementation()
+{
+    MulticastRPC_RoarParticle();
+}
+
+void ABossApernia::MulticastRPC_RoarParticle_Implementation()
+{
+    UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), roarParticle, GetActorLocation(), GetActorRotation(), FVector(2.0f));
+}
+
+void ABossApernia::ServerRPC_SpawnGigantSword_Implementation()
+{
+    MulticastRPC_SpawnGigantSword();
+}
+
+void ABossApernia::MulticastRPC_SpawnGigantSword_Implementation()
+{
+    SpawnGigantSword();
+}
+
+void ABossApernia::ServerRPC_MoveGigantSword_Implementation()
+{
+    MulticastRPC_MoveGigantSword();
+}
+
+void ABossApernia::MulticastRPC_MoveGigantSword_Implementation()
+{
+    MoveGigantSword();
+}
+
+void ABossApernia::SpawnGigantSword()
+{
+    if (gigantSword)
+    {
+        AActor* spawnedSword = GetWorld()->SpawnActor<AActor>(gigantSword, FVector(2490,4830,9400), FRotator::ZeroRotator);
+
+    }
+}
+
+void ABossApernia::MoveGigantSword()
+{
+    if (gigantSword)
+    {
+        FVector SpawnLocation(2490, 4830, 8400);
+        FRotator SpawnRotation = FRotator::ZeroRotator;
+
+        AActor* spawnedSword = GetWorld()->SpawnActor<AActor>(gigantSword, SpawnLocation, SpawnRotation);
+
+        if (spawnedSword)
+        {
+            float StartTime = GetWorld()->GetTimeSeconds();
+            float Duration = 4.0f; // 이동을 완료하는 데 걸리는 시간
+
+            FTimerHandle Handle;
+            GetWorld()->GetTimerManager().SetTimer(Handle, [&]()
+                {
+                    float CurrentTime = GetWorld()->GetTimeSeconds();
+                    float Alpha = (CurrentTime - StartTime) / Duration;
+
+                    // Lerping
+                    float LerpedValue = FMath::InterpEaseInOut<float>(0.0f, 1.0f, Alpha, 4); // 4는 easeInOutExponent
+
+                    // 이동할 위치 계산
+                    FVector TargetLocation = SpawnLocation;
+                    TargetLocation.Z -= 3000 * LerpedValue;
+
+                    // 이동 적용
+                    spawnedSword->SetActorLocation(TargetLocation);
+
+                    // Lerping이 완료되면 타이머 해제
+                    if (Alpha >= 1.0f)
+                    {
+                        GetWorld()->GetTimerManager().ClearTimer(Handle);
+                    }
+                }, 0.01f, true);
+        }
+    }
+}
+
+void ABossApernia::ServerRPC_GigantSwordCameraShake_Implementation()
+{
+    MulticastRPC_GigantSwordCameraShake();
+
+}
+
+void ABossApernia::MulticastRPC_GigantSwordCameraShake_Implementation()
+{
+    TArray<AActor*> foundCharacters;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
+
+    for (AActor* actor : foundCharacters)
+    {
+        APixelCodeCharacter* player = Cast<APixelCodeCharacter>(actor);
+        if (player)
+        {
+            APlayerController* pc = player->GetController<APlayerController>();
+            if (pc != nullptr)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
+                pc->ClientStartCameraShake(gigantSwordCameraShake);
+
+
+            }
+        }
+    }
 }
