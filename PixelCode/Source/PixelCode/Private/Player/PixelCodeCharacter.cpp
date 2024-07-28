@@ -1620,9 +1620,11 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 			EnhancedInputComponent->BindAction(IA_Weapon, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon);
 			EnhancedInputComponent->BindAction(IA_Weapon2, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon2);
 			EnhancedInputComponent->BindAction(IA_Weapon3, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon3);
+			EnhancedInputComponent->BindAction(IA_Weapon4, ETriggerEvent::Started, this, &APixelCodeCharacter::switchWeapon4);
+			
 			EnhancedInputComponent->BindAction(IA_ExpUp, ETriggerEvent::Started, this, &APixelCodeCharacter::PlayerExpUp);
 			
-			
+			EnhancedInputComponent->BindAction(IA_StopWidget, ETriggerEvent::Started, this, &APixelCodeCharacter::StopWidget);
 			
 			
 			EnhancedInputComponent->BindAction(IA_RemoveRock, ETriggerEvent::Started, this, &APixelCodeCharacter::OnRemoveRockPressed);
@@ -1649,37 +1651,66 @@ void APixelCodeCharacter::CharacterJump(const FInputActionValue& Value)
 
 void APixelCodeCharacter::SkillQ()
 {
-	if (!bIsJump)
+	if (!bIsJump && stateComp->currentMP >= 10.0f)
 	{
-		if (!bQskillCoolTime)
-		{ 
-			Mousehit();
-		
-			if (equipment->eWeaponType != EWeaponType::LightSword)
-			{
-				return;
-			}
+		if (equipment->eWeaponType == EWeaponType::LightSword)
+		{
 
-			if (false == combatComponent->bCombatEnable)
+			if (!bQskillCoolTime)
 			{
-				return;
-			}
-			if (combatComponent->bAttacking)
-			{
-				combatComponent->bAttackSaved = true;
-			}
-			else
-			{
-				if (bUseSkill)
-				{ 
-					PerformAttack(5, false);
-					combatComponent->attackCount = 0;
+				Mousehit();
+
+				if (false == combatComponent->bCombatEnable)
+				{
+					return;
 				}
+				if (combatComponent->bAttacking)
+				{
+					combatComponent->bAttackSaved = true;
+				}
+				else
+				{
+					if (bUseSkill)
+					{
+						PerformAttack(5, false);
+						combatComponent->attackCount = 0;
+						stateComp->AddStatePoint(MP, -10);
+					}
+				}
+
+				bQskillCoolTime = true;
+
+				GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
 			}
+		}
+		else if (equipment->eWeaponType == EWeaponType::MagicStaff)
+		{
+			if (!bQskillCoolTime)
+			{
+				Mousehit();
 
-			bQskillCoolTime = true;
+				if (false == combatComponent->bCombatEnable)
+				{
+					return;
+				}
+				if (combatComponent->bAttacking)
+				{
+					combatComponent->bAttackSaved = true;
+				}
+				else
+				{
+					if (bUseSkill)
+					{
+						PerformAttack(1, false);
+						combatComponent->attackCount = 0;
+						stateComp->AddStatePoint(MP, -10);
+					}
+				}
 
-			GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
+				bQskillCoolTime = true;
+
+				GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
+			}
 		}
 	}
 }
@@ -1702,38 +1733,66 @@ void APixelCodeCharacter::QskillTime()
 
 void APixelCodeCharacter::SkillE()
 {
-	if (!bIsJump)
+	if (!bIsJump && stateComp->currentMP >= 15.0f)
 	{
-		if (!bEskillCoolTime)
+		if (equipment->eWeaponType == EWeaponType::LightSword)
 		{
-			Mousehit();
 
-			if (equipment->eWeaponType != EWeaponType::LightSword)
+			if (!bEskillCoolTime)
 			{
-				return;
-			}
+				Mousehit();
 
-			if (false == combatComponent->bCombatEnable)
-			{
-				return;
-			}
-
-			if (combatComponent->bAttacking)
-			{
-				combatComponent->bAttackSaved = true;
-			}
-			else
-			{
-				if (bUseSkill)
+				if (false == combatComponent->bCombatEnable)
 				{
-					PerformAttack(6, false);
-					combatComponent->attackCount = 0;
+					return;
 				}
+				if (combatComponent->bAttacking)
+				{
+					combatComponent->bAttackSaved = true;
+				}
+				else
+				{
+					if (bUseSkill)
+					{
+						PerformAttack(6, false);
+						combatComponent->attackCount = 0;
+						stateComp->AddStatePoint(MP, -15);
+					}
+				}
+
+				bEskillCoolTime = true;
+
+				GetWorldTimerManager().SetTimer(ESkillTimer, this, &APixelCodeCharacter::EskillTime, 1.0f, true);
 			}
+		}
+		else if (equipment->eWeaponType == EWeaponType::MagicStaff)
+		{
+			if (!bEskillCoolTime)
+			{
+				Mousehit();
 
-			bEskillCoolTime = true;
+				if (false == combatComponent->bCombatEnable)
+				{
+					return;
+				}
+				if (combatComponent->bAttacking)
+				{
+					combatComponent->bAttackSaved = true;
+				}
+				else
+				{
+					if (bUseSkill)
+					{
+						PerformAttack(2, false);
+						combatComponent->attackCount = 0;
+						stateComp->AddStatePoint(MP, -15);
+					}
+				}
 
-			GetWorldTimerManager().SetTimer(ESkillTimer, this, &APixelCodeCharacter::EskillTime, 1.0f, true);
+				bEskillCoolTime = true;
+
+				GetWorldTimerManager().SetTimer(ESkillTimer, this, &APixelCodeCharacter::EskillTime, 1.0f, true);
+			}
 		}
 	}
 }
@@ -1755,39 +1814,64 @@ void APixelCodeCharacter::EskillTime()
 
 void APixelCodeCharacter::SkillR()
 {
-	if (!bIsJump)
+	if (!bIsJump&&stateComp->currentMP >= 20.0f)
 	{
-		if (!bRskillCoolTime)
+		if (equipment->eWeaponType == EWeaponType::LightSword)
 		{
-			Mousehit();
 
+			if (!bRskillCoolTime)
+			{
+				Mousehit();
 
-			if (equipment->eWeaponType != EWeaponType::LightSword)
-			{
-				return;
-			}
-
-			if (false == combatComponent->bCombatEnable)
-			{
-				return;
-			}
-
-			if (combatComponent->bAttacking)
-			{
-				combatComponent->bAttackSaved = true;
-			}
-			else
-			{
-				if (bUseSkill)
+				if (false == combatComponent->bCombatEnable)
 				{
-					PerformAttack(7, false);
-					combatComponent->attackCount = 0;
+					return;
 				}
+				if (combatComponent->bAttacking)
+				{
+					combatComponent->bAttackSaved = true;
+				}
+				else
+				{
+					if (bUseSkill)
+					{
+						PerformAttack(7, false);
+						combatComponent->attackCount = 0;
+						stateComp->AddStatePoint(MP, -20);
+					}
+				}
+
+				bRskillCoolTime = true;
+
+				GetWorldTimerManager().SetTimer(RSkillTimer, this, &APixelCodeCharacter::RskillTime, 1.0f, true);
 			}
+		}
+		else if (equipment->eWeaponType == EWeaponType::MagicStaff)
+		{
+			if (!bRskillCoolTime)
+			{
+				Mousehit();
+				if (false == combatComponent->bCombatEnable)
+				{
+					return;
+				}
+				if (combatComponent->bAttacking)
+				{
+					combatComponent->bAttackSaved = true;
+				}
+				else
+				{
+					if (bUseSkill)
+					{
+						PerformAttack(3, false);
+						combatComponent->attackCount = 0;
+						stateComp->AddStatePoint(MP, -20);
+					}
+				}
+				bRskillCoolTime = true;
 
-			bRskillCoolTime = true;
-
-			GetWorldTimerManager().SetTimer(RSkillTimer, this, &APixelCodeCharacter::RskillTime, 1.0f, true);
+				GetWorldTimerManager().SetTimer(RSkillTimer, this, &APixelCodeCharacter::RskillTime, 1.0f, true);
+			}
 		}
 	}
 }
@@ -1809,37 +1893,66 @@ void APixelCodeCharacter::RskillTime()
 
 void APixelCodeCharacter::SkillZ()
 {
-	if (!bIsJump)
+	if (!bIsJump, stateComp->currentMP >= 30.0f)
 	{
-		if (!bZskillCoolTime)
+		if (equipment->eWeaponType == EWeaponType::LightSword)
 		{
-			Mousehit();
 
-			if (equipment->eWeaponType != EWeaponType::LightSword)
+			if (!bZskillCoolTime)
 			{
-				return;
-			}
+				Mousehit();
 
-			if (false == combatComponent->bCombatEnable)
-			{
-				return;
-			}
-
-			if (combatComponent->bAttacking)
-			{
-				combatComponent->bAttackSaved = true;
-			}
-			else
-			{
-				if (bUseSkill)
+				if (false == combatComponent->bCombatEnable)
 				{
-					PerformAttack(8, false);
-					combatComponent->attackCount = 0;
+					return;
 				}
-			}
-			bZskillCoolTime = true;
+				if (combatComponent->bAttacking)
+				{
+					combatComponent->bAttackSaved = true;
+				}
+				else
+				{
+					if (bUseSkill)
+					{
+						PerformAttack(8, false);
+						combatComponent->attackCount = 0;
+						stateComp->AddStatePoint(MP, -30);
+					}
+				}
 
-			GetWorldTimerManager().SetTimer(ZSkillTimer, this, &APixelCodeCharacter::ZskillTime, 1.0f, true);
+				bZskillCoolTime = true;
+
+				GetWorldTimerManager().SetTimer(ZSkillTimer, this, &APixelCodeCharacter::ZskillTime, 1.0f, true);
+			}
+		}
+		else if (equipment->eWeaponType == EWeaponType::MagicStaff)
+		{
+			if (!bZskillCoolTime)
+			{
+				Mousehit();
+
+				if (false == combatComponent->bCombatEnable)
+				{
+					return;
+				}
+				if (combatComponent->bAttacking)
+				{
+					combatComponent->bAttackSaved = true;
+				}
+				else
+				{
+					if (bUseSkill)
+					{
+						PerformAttack(4, false);
+						combatComponent->attackCount = 0;
+						stateComp->AddStatePoint(MP, -30);
+					}
+				}
+
+				bZskillCoolTime = true;
+
+				GetWorldTimerManager().SetTimer(ZSkillTimer, this, &APixelCodeCharacter::ZskillTime, 1.0f, true);
+			}
 		}
 	}
 }
@@ -1870,21 +1983,24 @@ void APixelCodeCharacter::SkillRightMouse()
 			return;
 		}
 
-		if (equipment->eWeaponType != EWeaponType::LightSword)
+		if (equipment->eWeaponType == EWeaponType::LightSword || equipment->eWeaponType == EWeaponType::MagicStaff)
 		{
-			return;
-		}
-
-		if (combatComponent->bAttacking)
-		{
-			combatComponent->bAttackSaved = true;
-		}
-		else
-		{
-			if (bUseSkill)
+			if (combatComponent->bAttacking)
 			{
-				PerformAttack(9, false);
-				combatComponent->attackCount = 0;
+				combatComponent->bAttackSaved = true;
+			}
+			else
+			{
+				if (bUseSkill && equipment->eWeaponType == EWeaponType::LightSword)
+				{
+					PerformAttack(9, false);
+					combatComponent->attackCount = 0;
+				}
+				else
+				{
+					PerformAttack(5, false);
+					combatComponent->attackCount = 0;
+				}
 			}
 		}
 	}
@@ -1931,6 +2047,10 @@ void APixelCodeCharacter::switchWeapon()
 {
 	if (!bIsJump)
 	{
+		if (equipment != nullptr)
+		{
+			equipment->Destroy();
+		}
 		FActorSpawnParameters spawnParam;
 		spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
@@ -1956,6 +2076,10 @@ void APixelCodeCharacter::switchWeapon2()
 {
 	if (!bIsJump)
 	{
+		if (equipment != nullptr)
+		{
+			equipment->Destroy();
+		}
 		combatComponent->bCombatEnable = false;
 
 		FActorSpawnParameters spawnParam;
@@ -1980,6 +2104,10 @@ void APixelCodeCharacter::switchWeapon3()
 {
 	if (!bIsJump)
 	{
+		if (equipment != nullptr)
+		{
+			equipment->Destroy();
+		}
 		FActorSpawnParameters spawnParam;
 		spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
@@ -1999,6 +2127,41 @@ void APixelCodeCharacter::switchWeapon3()
 
 		combatComponent->bCombatEnable = true;
 	}
+}
+
+void APixelCodeCharacter::switchWeapon4()
+{
+	if (!bIsJump)
+	{
+		if (equipment != nullptr)
+		{
+			equipment->Destroy();
+		}
+		combatComponent->bCombatEnable = false;
+
+		FActorSpawnParameters spawnParam;
+		spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		spawnParam.Owner = this;
+		spawnParam.Instigator = this;
+
+
+		if (magicStaff != nullptr)
+		{
+			equipment = GetWorld()->SpawnActor<ABaseWeapon>(magicStaff, GetActorTransform(), spawnParam);
+		}
+		if (equipment)
+		{
+			equipment->OnEquipped();
+		}
+		combatComponent->bCombatEnable = true;
+	}
+}
+
+void APixelCodeCharacter::StopWidget()
+{
+	Pc->PlayerStopWidget();
+
 }
 
 void APixelCodeCharacter::Move(const FInputActionValue& Value)
@@ -2063,14 +2226,14 @@ void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 			{
 				AttackEvent();
 			}
-			else if (bUseSkill)
+			else if (equipment->eWeaponType != EWeaponType::LightSword)
 			{
 				AttackEvent();
 			}
-			/*if (axe != nullptr)
+			else if (equipment->eWeaponType != EWeaponType::MagicStaff)
 			{
 				AttackEvent();
-			}*/
+			}
 		}
 	}
 }
@@ -2084,6 +2247,10 @@ void APixelCodeCharacter::ToggleCombatFunction(const FInputActionValue& Value)
 		return;
 	}
 	else if (equipment->eWeaponType == EWeaponType::Pick)
+	{
+		return;
+	}
+	else if (equipment->eWeaponType == EWeaponType::MagicStaff)
 	{
 		return;
 	}
@@ -2120,6 +2287,7 @@ void APixelCodeCharacter::PlayerRoll(const FInputActionValue& Value)
 				AddControllerPitchInput(LookAxisVector.Y);
 			}
 			ServerRPC_PlayerRoll();
+			stateComp->AddStatePoint(SP,-10.0f);
 		}
 	}
 }

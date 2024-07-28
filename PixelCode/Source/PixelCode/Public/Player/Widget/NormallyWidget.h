@@ -42,6 +42,9 @@ public:
 	UProgressBar* PB_MP;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Stat", meta = (BindWidget))
+	UProgressBar* PB_SP;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Stat", meta = (BindWidget))
 	UProgressBar* PB_Exp;
 
 	UPROPERTY(VisibleAnywhere, Category = "Stat", meta = (BindWidget))
@@ -77,6 +80,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Respawn", meta = (BindWidget))
 	UCanvasPanel* CP_GameOverUI;
+
+	UPROPERTY(EditDefaultsOnly, Category = "StopWidget", meta = (BindWidget))
+	UCanvasPanel* CP_StopWidget;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Respawn", meta = (BindWidget))
 	UButton* BTN_Respawn;
@@ -123,5 +129,6 @@ public:
 	void OnMyButtonQuit();
 
 	void SetActiveGameOverUI(bool value);
+	void SetActiveStopWidgetUI(bool value);
 
 };

@@ -159,10 +159,16 @@ public:
 	// 카운터 관련
 	bool bAttackBlock = false;
 
+	// 카메라 쉐이크
+	bool bSwordQSkillCameraShake = false;
+
 	void SlowDownTime(float DilationAmount, float Duration, APlayerController* PlayerController);
 
 	UPROPERTY(EditAnywhere,Category = "MySettings|Varibles")
 	TSubclassOf<class UCameraShakeBase> PlayerHitShake_bp;
+
+	UPROPERTY(EditAnywhere,Category = "MySettings|Varibles")
+	TSubclassOf<class UCameraShakeBase> PlayerQSkillShake_bp;
 
 	bool bCounterCameraShake = false;
 

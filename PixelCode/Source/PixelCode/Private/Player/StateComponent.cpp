@@ -69,6 +69,7 @@ void UStateComponent::InitStat()
 
 		currentHP = stat.MaxHP;
 		currentSP = stat.MaxSP;
+		currentMP = stat.MaxMP;
 		currentATK = stat.ATK;
 		currentDEF = stat.DEF;
 		currentCritical = stat.Critical;

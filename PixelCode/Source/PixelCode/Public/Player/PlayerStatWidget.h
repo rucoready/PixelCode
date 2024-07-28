@@ -38,6 +38,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Stat", meta = (BindWidget))
 	UTextBlock* TB_MP;
 
+		UPROPERTY(VisibleAnywhere, Category = "Stat", meta = (BindWidget))
+	UTextBlock* TB_SP;
+
 	UPROPERTY(VisibleAnywhere, Category = "Stat", meta = (BindWidget))
 	UTextBlock* TB_ATK;
 
@@ -64,6 +67,7 @@ public:
 
 	FString HP;
 	FString MP;
+	FString SP;
 	FString ATK;
 	FString DEF;
 	FString CRITICAL;

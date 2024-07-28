@@ -92,6 +92,9 @@ public:
 	UFUNCTION()
 	void AnimNotify_BIndEnemy();
 
+	UFUNCTION()
+	void AnimNotify_SwordQSkillCameraShake();
+
 };
 
 

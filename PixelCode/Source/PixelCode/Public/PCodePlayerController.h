@@ -67,6 +67,8 @@ public:
 
 	void PlayerStatWidget();
 
+	void PlayerStopWidget();
+
 	bool bIsStatVisible = true;
 
 	bool bPlayerState = false;

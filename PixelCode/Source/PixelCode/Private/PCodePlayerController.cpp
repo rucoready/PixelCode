@@ -149,6 +149,11 @@ void APCodePlayerController::PlayerStatWidget()
 
 }
 
+void APCodePlayerController::PlayerStopWidget()
+{
+	NormallyWidget->SetActiveStopWidgetUI(true);
+}
+
 
 
 

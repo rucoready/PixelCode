@@ -131,6 +131,19 @@ void APlayerOrganism::Tick(float DeltaTime)
 		}
 		bCounterCameraShake = false;
 	}
+
+	if (bSwordQSkillCameraShake)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayerShake"));
+		APlayerController* APc = Cast<APlayerController>(this->GetController());
+		if (APc != nullptr)
+		{
+			UE_LOG(LogTemp,Warning,TEXT("PlayerShake1"));
+			APc->ClientStartCameraShake(PlayerQSkillShake_bp);
+		}
+		bSwordQSkillCameraShake = false;
+	}
+
 }
 
 /*if (SkillE)
@@ -482,11 +495,19 @@ void APlayerOrganism::ServerRPC_PerformAttack_Implementation(UAnimMontage* useMo
 	mainWeapon->weaponDamage = mainWeapon->weaponDamage;
 
 	// 카운트 증가
+
 	combatComponent->attackCount++;
 	if (combatComponent->attackCount >= 5)
 	{
 		combatComponent->attackCount = 0;
 	}
+
+	if (mainWeapon->eWeaponType == EWeaponType::MagicStaff)
+	{
+		combatComponent->attackCount = 0;
+	}
+
+	
 
 	int32 montageLastIndex = mainWeapon->attackMontages.Num() - 1;
 

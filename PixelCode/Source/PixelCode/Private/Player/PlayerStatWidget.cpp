@@ -32,39 +32,6 @@ void UPlayerStatWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	//APlayerState* CustomPlayerState = UGameplayStatics::GetPlayerState(GetWorld(), 0);
-	//PlayerState = Cast<ApixelPlayerState>(CustomPlayerState);
-	////ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
-	//if (PlayerState != nullptr)
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("StatOnPlayerState"));
-	//	
-	//	
-	//}
-	//else
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("StatNotPlayerState"));
-	//	return;
-	//}
-
-	/*AGameState* GS_Lobby = Cast<AGameState>(UGameplayStatics::GetGameState(GetWorld()));
-	if (APlayerController* OwningPlayer = this->GetOwningPlayer())
-	{
-		PlayerState = Cast<ApixelPlayerState>(OwningPlayer->PlayerState);
-		UpdateLevel();
-	}
-	else
-	{
-		UE_LOG(LogTemp,Error,TEXT("OwningPlayer is null"));
-	}*/
-	//PC_Lobby = Cast<APC_Lobby>(UGameplayStatics::Getplayer)
-	
-	/*Player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
-
-	PlayerState = Cast<ApixelPlayerState>(Player->pixelPlayerState);
-
-	UpdateLevel();*/
-
 }
 
 void UPlayerStatWidget::UpdateStat(UStateComponent* PlayerStateComp)
@@ -74,6 +41,9 @@ void UPlayerStatWidget::UpdateStat(UStateComponent* PlayerStateComp)
 
 	MP = FString::FromInt(PlayerStateComp->MaxMP);
 	TB_MP->SetText(FText::FromString(MP));  
+
+	SP = FString::FromInt(PlayerStateComp->MaxSP);
+	TB_SP->SetText(FText::FromString(SP));
 
 	ATK = FString::FromInt(PlayerStateComp->currentATK);
 	TB_ATK->SetText(FText::FromString(ATK));  

@@ -6,6 +6,9 @@
 #include <../../../../../../../Plugins/FX/Niagara/Source/Niagara/Public/NiagaraFunctionLibrary.h>
 #include <../../../../../../../Plugins/FX/Niagara/Source/Niagara/Classes/NiagaraSystem.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Components/SceneComponent.h>
+#include "DemonSword.h"
+#include "Grux.h"
+#include "DogBart.h"
 
 // Sets default values
 ASpawnSwordQSkill::ASpawnSwordQSkill()
@@ -75,10 +78,14 @@ void ASpawnSwordQSkill::DealDamageToActorsInTrace()
         for (const FHitResult& HitResult : HitResults)
         {
             AActor* HitActor = HitResult.GetActor();
-            if (HitActor && HitActor != this)
+            ABossApernia* boss = Cast<ABossApernia>(HitActor);
+            ADemonSword* demonSword = Cast<ADemonSword>(HitActor);
+            AGrux* grux = Cast<AGrux>(HitActor);
+            ADogBart* dogBart = Cast<ADogBart>(HitActor);
+            if (boss)
             {
                 // 특정 액터 타입인지 확인
-                ABossApernia* EnemyCharacter = Cast<ABossApernia>(HitActor);
+                ABossApernia* EnemyCharacter = boss;
                 if (EnemyCharacter)
                 {
                     // 피해를 입히는 예시: TakeDamage 함수 호출
@@ -86,6 +93,45 @@ void ASpawnSwordQSkill::DealDamageToActorsInTrace()
 
                     // 피해 입힌 액터 로그 출력
                     UE_LOG(LogTemp, Warning, TEXT("boss: %s"), *HitActor->GetName());
+                    DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, TraceRadius, 32, FColor::Green, false, 2.0f);
+                }
+            }
+            else if (demonSword)
+            {
+                ADemonSword* EnemyCharacter = demonSword;
+                if (EnemyCharacter)
+                {
+                    // 피해를 입히는 예시: TakeDamage 함수 호출
+                    EnemyCharacter->SwordTakeDamage(DamageAmount);
+
+                    // 피해 입힌 액터 로그 출력
+                    UE_LOG(LogTemp, Warning, TEXT("demonSword: %s"), *HitActor->GetName());
+                    DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, TraceRadius, 32, FColor::Green, false, 2.0f);
+                }
+            }
+            else if (grux)
+            {
+                AGrux* EnemyCharacter = grux;
+                if (EnemyCharacter)
+                {
+                    // 피해를 입히는 예시: TakeDamage 함수 호출
+                    EnemyCharacter->GruxTakeDamage(DamageAmount);
+
+                    // 피해 입힌 액터 로그 출력
+                    UE_LOG(LogTemp, Warning, TEXT("demonSword: %s"), *HitActor->GetName());
+                    DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, TraceRadius, 32, FColor::Green, false, 2.0f);
+                }
+            }
+            else if (dogBart)
+            {
+                ADogBart* EnemyCharacter = dogBart;
+                if (EnemyCharacter)
+                {
+                    // 피해를 입히는 예시: TakeDamage 함수 호출
+                    EnemyCharacter->DogBartTakeDamage(DamageAmount);
+
+                    // 피해 입힌 액터 로그 출력
+                    UE_LOG(LogTemp, Warning, TEXT("demonSword: %s"), *HitActor->GetName());
                     DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, TraceRadius, 32, FColor::Green, false, 2.0f);
                 }
             }

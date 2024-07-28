@@ -197,3 +197,11 @@ void UCharacterAnimInstance::AnimNotify_BIndEnemy()
 		}
 	}
 }
+
+void UCharacterAnimInstance::AnimNotify_SwordQSkillCameraShake()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordQSkillCameraShake = true;
+	}
+}

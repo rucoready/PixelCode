@@ -7,6 +7,9 @@
 #include <../../../../../../../Plugins/FX/Niagara/Source/Niagara/Public/NiagaraFunctionLibrary.h>
 #include <../../../../../../../Plugins/FX/Niagara/Source/Niagara/Classes/NiagaraSystem.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Components/SceneComponent.h>
+#include "DemonSword.h"
+#include "Grux.h"
+#include "DogBart.h"
 
 // Sets default values
 ASpawnSwordRSkill::ASpawnSwordRSkill()
@@ -61,13 +64,27 @@ void ASpawnSwordRSkill::Tick(float DeltaTime)
 
 void ASpawnSwordRSkill::OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("1"));
 	// OtherActor가 에너미이므로 데미지를 입힘
-	ABossApernia* EnemyCharacter = Cast<ABossApernia>(OtherActor);
-	if (EnemyCharacter)
+	ABossApernia* boss = Cast<ABossApernia>(OtherActor);
+	ADemonSword* demonSword = Cast<ADemonSword>(OtherActor);
+	AGrux* grux = Cast<AGrux>(OtherActor);
+	ADogBart* dogBart = Cast<ADogBart>(OtherActor);
+	if (boss)
 	{
 		// 데미지 적용 예시: TakeDamage 함수 호출
-		EnemyCharacter->BossTakeDamage(DamageAmount);
+		boss->BossTakeDamage(DamageAmount);
+	}
+	else if (demonSword)
+	{
+		demonSword->SwordTakeDamage(DamageAmount);
+	}
+	else if (grux)
+	{
+		grux->GruxTakeDamage(DamageAmount);
+	}
+	else if (dogBart)
+	{
+		dogBart->DogBartTakeDamage(DamageAmount);
 	}
 }
 

@@ -32,9 +32,6 @@ void UNormallyWidget::NativeConstruct()
 
 	BaseMaterial = LoadObject<UMaterial>(nullptr, TEXT("/Script/Engine.Material'/Game/Player/PlayerWidget/M_RoundProgressbar.M_RoundProgressbar'_C"));
 
-	
-	//DynamicMaterial = LoadObject<UMaterialInstanceDynamic>(nullptr, TEXT("/Script/Engine.MaterialInstanceConstant'/Game/Player/PlayerWidgetMI_RoundProgressbar.MI_RoundProgressbar'_C"));
-
 	//UMaterialInstanceDynamic를 생성합니다.
 	QDynamicMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, this);
 	EDynamicMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, this);
@@ -54,32 +51,6 @@ void UNormallyWidget::NativeConstruct()
 	// 리스폰
 	BTN_Respawn->OnClicked.AddDynamic(this, &UNormallyWidget::OnMyButtonRespawn);
 	BTN_Quit->OnClicked.AddDynamic(this, &UNormallyWidget::OnMyButtonQuit);
-	
-
-	
-	//
-	//AController* Pc = GetOwningPlayerPawn()->GetController();
-	//PlayerController = Cast<APCodePlayerController>(Pc);
-
-	//if (PlayerController)
-	//{
-	//	PlayerState = PlayerController->GetPlayerStateOfOtherPlayer();
-	//	if (PlayerState != nullptr)
-	//	{
-	//		UE_LOG(LogTemp, Warning, TEXT("NormallyOnPlayerState"));
-
-	//	}
-	//	else
-	//	{
-	//		UE_LOG(LogTemp, Warning, TEXT("NormallyNotPlayerState"));
-	//	
-	//	}
-	//	UE_LOG(LogTemp, Warning, TEXT("Pc"));
-	//}
-	//else
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("NotPc"));
-	//}
 
 
 	Player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
@@ -92,20 +63,7 @@ void UNormallyWidget::NativeConstruct()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Player Null!"));
 	}
-	//PlayerController = Cast<APCodePlayerController>(Player->GetController());
-	//PlayerState = Cast<ApixelPlayerState>(PlayerController->pixelPlayerState);
-
-
-	//PlayerState = Cast<ApixelPlayerState>(Player->GetPlayerState());
-
-	//ApixelPlayerState* CustomPlayerState = Cast<ApixelPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
 	
-
-	
-	//currentLevelUpdate();
-	//firstUpdate();
-	//currentExpUpdate(PlayerState->currentEXP, PlayerState->totalEXP);
-	//firstStatedate();
 }
 
 void UNormallyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -125,6 +83,7 @@ void UNormallyWidget::firstUpdate(UStateComponent* PlayerStateComp)
 {
 	PB_HP->SetPercent(PlayerStateComp->MaxHP);
 	PB_MP->SetPercent(PlayerStateComp->MaxMP);
+	PB_SP->SetPercent(PlayerStateComp->MaxSP);
 	//UE_LOG(LogTemp, Warning, TEXT("PlayerStateNonull"));
 }
 void UNormallyWidget::firstStatedate(ApixelPlayerState* Ps)
@@ -139,7 +98,8 @@ void UNormallyWidget::firstStatedate(ApixelPlayerState* Ps)
 void UNormallyWidget::currentStatUpdate(UStateComponent* PlayerStateComp)
 {
 		PB_HP->SetPercent(PlayerStateComp->currentHP/PlayerStateComp->MaxHP);
-		PB_MP->SetPercent(PlayerStateComp->MaxMP/PlayerStateComp->currentMP);
+		PB_MP->SetPercent(PlayerStateComp->currentMP/PlayerStateComp->MaxMP);
+		PB_SP->SetPercent(PlayerStateComp->currentSP/PlayerStateComp->MaxSP);
 }
 
 void UNormallyWidget::currentExpUpdate(ApixelPlayerState* Ps)
@@ -244,6 +204,11 @@ void UNormallyWidget::OnMyButtonQuit()
 void UNormallyWidget::SetActiveGameOverUI(bool value)
 {
 	CP_GameOverUI ->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+}
+
+void UNormallyWidget::SetActiveStopWidgetUI(bool value)
+{
+	CP_StopWidget->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }
 
 
