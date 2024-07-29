@@ -199,5 +199,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UWidgetComponent* damageWidgetComponentl;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class AEXPActor> expOrb;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_GruxDropExp();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_GruxDropExp();
+
+	bool onceDieDog = false;
+
+	bool preventDie = false;
+
 
 };

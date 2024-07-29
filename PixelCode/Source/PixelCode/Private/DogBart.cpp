@@ -44,6 +44,7 @@
 #include "DamageWidgetComponent.h"
 #include "Boss/BossAnimInstance.h"
 #include "Components/WidgetComponent.h"
+#include "EXPActor.h"
 
 
 
@@ -121,6 +122,7 @@ void ADogBart::BeginPlay()
 	damageBox->OnComponentBeginOverlap.AddDynamic(this, &ADogBart::OnBeginOverlapDamageCollision);
 
 	currentHp = maxHp;
+	onceDieDog = false;
 }
 
 // Called every frame
@@ -189,19 +191,22 @@ void ADogBart::DestroySelf()
 void ADogBart::DogBartTakeDamage(float Damage)
 {
 	//currentHp = currentHp - Damage;
-
-	int32 valueWhining = FMath::RandRange(1, 2);
+	if (!onceDieDog)
 	{
-		if (valueWhining == 1)
+		int32 valueWhining = FMath::RandRange(1, 2);
 		{
-			UGameplayStatics::PlaySoundAtLocation(this, whiningSound1, GetActorLocation());
+			if (valueWhining == 1)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, whiningSound1, GetActorLocation());
+			}
+			else
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, whiningSound2, GetActorLocation());
+			}
 		}
-		else
-		{
-			UGameplayStatics::PlaySoundAtLocation(this, whiningSound2, GetActorLocation());
-		}
+		ServerRPC_DogBartTakeDamageWidgetSet();
 	}
-	ServerRPC_DogBartTakeDamageWidgetSet();
+	
 }
 
 void ADogBart::DamageCollisionActive()
@@ -239,7 +244,11 @@ UBehaviorTree* ADogBart::GetBehaviorTree() const
 
 void ADogBart::ServerRPC_TakeDamage_Implementation()
 {
-	MulticastRPC_TakeDamage();
+	if (!preventDie)
+	{
+		MulticastRPC_TakeDamage();
+	}
+	
 }
 
 void ADogBart::MulticastRPC_TakeDamage_Implementation()
@@ -335,7 +344,14 @@ void ADogBart::ServerRPC_Die_Implementation()
 
 void ADogBart::MulticastRPC_Die_Implementation()
 {
-	PlayAnimMontage(die);
+	if (!onceDieDog)
+	{
+		onceDieDog = true;
+		preventDie = true;
+		PlayAnimMontage(die);
+		ServerRPC_GruxDropExp();
+	}
+	
 }
 
 void ADogBart::ServerRPC_GrowlSound_Implementation()
@@ -476,4 +492,31 @@ void ADogBart::MulticastRPC_DogBartTakeDamageWidgetSet_Implementation(int32 valu
 	}
 	
 	
+}
+
+void ADogBart::ServerRPC_GruxDropExp_Implementation()
+{
+	MulticastRPC_GruxDropExp();
+}
+
+void ADogBart::MulticastRPC_GruxDropExp_Implementation()
+{
+	if (expOrb)
+	{
+		FVector baseLocation = GetActorLocation();
+		FRotator spawnRotation = GetActorRotation();
+		float radius = 150.0f;
+		int numActors = 3;
+		float angleStep = 360.0f / numActors; // 각 객체 간의 각도 간격
+
+		for (int i = 0; i < numActors; ++i)
+		{
+			float angle = i * angleStep; // 각도 
+			float radians = FMath::DegreesToRadians(angle); // 라디안으로 
+			FVector offset = FVector(FMath::Cos(radians) * radius, FMath::Sin(radians) * radius, 200.0f);
+			FVector spawnLocation = baseLocation + offset;
+
+			AActor* SpawnedSword = GetWorld()->SpawnActor<AEXPActor>(expOrb, spawnLocation, spawnRotation);
+		}
+	}
 }

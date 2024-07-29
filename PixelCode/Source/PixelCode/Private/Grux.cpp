@@ -542,11 +542,18 @@ void AGrux::MulticastRPC_GruxDropExp_Implementation()
 {
     if (expOrb)
     {
-        for (int i = 0; i < 3; ++i)
-        {
+        FVector baseLocation = GetActorLocation();
+        FRotator spawnRotation = GetActorRotation();
+        float radius = 150.0f; 
+        int numActors = 5; 
+        float angleStep = 360.0f / numActors; // 각 객체 간의 각도 간격
 
-            FVector spawnLocation = GetActorLocation();
-            FRotator spawnRotation = GetActorRotation();
+        for (int i = 0; i < numActors; ++i)
+        {
+            float angle = i * angleStep; // 각도 
+            float radians = FMath::DegreesToRadians(angle); // 라디안으로 
+            FVector offset = FVector(FMath::Cos(radians) * radius, FMath::Sin(radians) * radius, 200.0f); 
+            FVector spawnLocation = baseLocation + offset;
 
             AActor* SpawnedSword = GetWorld()->SpawnActor<AEXPActor>(expOrb, spawnLocation, spawnRotation);
         }

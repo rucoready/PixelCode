@@ -28,7 +28,7 @@ AEXPActor::AEXPActor()
 
     expComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("orbMesh"));
     sphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("sphereComp"));
-
+    RunningTime = 0.0f;
     static ConstructorHelpers::FObjectFinder<UStaticMesh> expOrb(TEXT("/Script/Engine.StaticMesh'/Game/KMS_AI/Exp/SM_Exp.SM_Exp'"));
     if (expOrb.Succeeded())
     {
@@ -53,6 +53,10 @@ void AEXPActor::BeginPlay()
 	Super::BeginPlay();
 
 	sphereComp->OnComponentBeginOverlap.AddDynamic(this, &AEXPActor::OnBeginOverlapExpOrb);
+
+
+    FVector launchVelocity = FVector(0, 0, 700);
+    expComp->AddImpulse(launchVelocity, NAME_None, true);
 	
 }
 
@@ -60,7 +64,25 @@ void AEXPActor::BeginPlay()
 void AEXPActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+    // 월드에서 모든 APixelCodeCharacter 찾기
+    TArray<AActor*> FoundPlayers;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), FoundPlayers);
 
+    for (AActor* Actor : FoundPlayers)
+    {
+        APixelCodeCharacter* Player = Cast<APixelCodeCharacter>(Actor);
+        if (Player)
+        {
+            float Distance = FVector::Dist(this->GetActorLocation(), Player->GetActorLocation());
+
+            // 거리가 300 이하일 경우 Lerp로 이동
+            if (Distance <= 300.0f)
+            {
+                FVector NewLocation = FMath::VInterpTo(GetActorLocation(), Player->GetActorLocation(), DeltaTime, 5.0f); // 5.0f는 Lerp 속도
+                SetActorLocation(NewLocation);
+            }
+        }
+    }
 }
 
 void AEXPActor::OnBeginOverlapExpOrb(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
