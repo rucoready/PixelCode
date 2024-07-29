@@ -175,4 +175,13 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_GruxTakeDamageWidgetSet(int32 value2);
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class AEXPActor> expOrb;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_GruxDropExp();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_GruxDropExp();
+
 };

@@ -43,7 +43,7 @@ EBTNodeResult::Type UTask_Boss2PhaseGoUp::ExecuteTask(UBehaviorTreeComponent& Ow
             }
         }
     }
-    
+    OnceSpawnDecalSword = false;
     return EBTNodeResult::InProgress;
     
 }
@@ -86,9 +86,87 @@ void UTask_Boss2PhaseGoUp::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
         onceSpawnGigantSword = true;
         
     }
+    if (currentTime > 7.0f && !OnceSpawnDecalSword9)
+    {
+        boss->ServerRPC_SpawnDemonSword2Phase();
+        OnceSpawnDecalSword9 = true;
+
+    }
+
+    if (currentTime > 7.0f && !OnceFireSpawn)
+    {
+        boss->ServerRPC_SpawnDecalSword6();
+        OnceFireSpawn = true;
+
+    }
     if (currentTime > 9.5f&&!onceCameraShake)
     {
         onceCameraShake = true;
         boss->ServerRPC_GigantSwordCameraShake();
+    }
+    if (currentTime > 10.0f && !OnceFireSpawn2)
+    {
+        OnceFireSpawn2 = true;
+        boss->ServerRPC_SpawnDecalSword7();
+    }
+
+    if (currentTime > 10.0f&&!OnceSpawnDecalSword)
+    {
+        OnceSpawnDecalSword = true;
+        boss->ServerRPC_SpawnDecalSword();
+    }
+
+    if (currentTime > 13.0f && !OnceSpawnDecalSword2)
+    {
+        OnceSpawnDecalSword2= true;
+        boss->ServerRPC_SpawnDecalSword2();
+    }
+
+    if (currentTime > 13.2f && !OnceSpawnDecalSword3)
+    {
+        OnceSpawnDecalSword3 = true;
+        boss->ServerRPC_SpawnDecalSword3();
+    }
+
+    if (currentTime > 15.0f && !OnceSpawnDecalSword4)
+    {
+        OnceSpawnDecalSword4 = true;
+        boss->ServerRPC_SpawnDecalSword4();
+    }
+
+    if (currentTime > 17.0f && !OnceSpawnDecalSword5)
+    {
+        OnceSpawnDecalSword5 = true;
+        boss->ServerRPC_SpawnDecalSword5();
+    }
+    if (currentTime > 17.0f && !OnceSpawnDecalSword6)
+    {
+        OnceSpawnDecalSword6 = true;
+        boss->ServerRPC_SpawnDecalSword2();
+    }
+    if (currentTime > 17.5f && !OnceSpawnDecalSword7)
+    {
+        OnceSpawnDecalSword7 = true;
+        boss->ServerRPC_SpawnDecalSword4();
+    }
+
+    if (currentTime > 19.0f && !OnceSpawnDecalSword8)
+    {
+        OnceSpawnDecalSword8 = true;
+        boss->ServerRPC_SpawnDecalSword();
+        boss->ServerRPC_SpawnDecalSword5();
+    }
+    if (currentTime > 22.0f && !OnceSpawnDecalSword10)
+    {
+        OnceSpawnDecalSword10 = true;
+        boss->ServerRPC_SpawnDecalSword4();
+        boss->ServerRPC_SpawnDecalSword5();
+    }
+
+    if (currentTime > 28.0f && !OnceSpawnDecalSword11)
+    {
+        OnceSpawnDecalSword11 = true;
+        boss->ServerRPC_SpawnDecalSword();
+        boss->ServerRPC_SpawnDecalSword2();
     }
 }

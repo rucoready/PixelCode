@@ -34,10 +34,38 @@ public:
 
     bool onceCameraShake = false;
 
+    bool OnceSpawnDecalSword = false;
+
+    bool OnceSpawnDecalSword2 = false;
+
+    bool OnceSpawnDecalSword3 = false;
+
+    bool OnceSpawnDecalSword4 = false;
+
+    bool OnceSpawnDecalSword5 = false;
+
+    bool OnceSpawnDecalSword6 = false;
+
+    bool OnceSpawnDecalSword7 = false;
+
+    bool OnceSpawnDecalSword8 = false;
+
+    bool OnceSpawnDecalSword9 = false;
+
+    bool OnceSpawnDecalSword10 = false;
+
+    bool OnceSpawnDecalSword11 = false;
+
+    bool OnceFireSpawn = false;
+
+    bool OnceFireSpawn2 = false;
+
     float lerpDuration = 3.0f; 
 
     UPROPERTY(EditAnywhere, Category = "MySettings")
     class TSubclassOf<class ADemonSword> demonSwordFactory;
+
+    
 
 
 };

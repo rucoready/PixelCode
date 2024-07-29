@@ -1,0 +1,82 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "EXPActor.h"
+#include "Components/StaticMeshComponent.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/BoxComponent.h"
+#include "Kismet/KismetStringLibrary.h"
+#include "Player/PixelCodeCharacter.h"
+#include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
+#include "Particles/ParticleSystemComponent.h"
+#include "Particles/ParticleSystem.h"
+#include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+#include "CoreMinimal.h"
+#include "../../../../Plugins/FX/Niagara/Source/Niagara/Public/NiagaraFunctionLibrary.h"
+#include "Components/SphereComponent.h"
+#include "PCodePlayerController.h"
+#include "Player/pixelPlayerState.h"
+
+// Sets default values
+AEXPActor::AEXPActor()
+{
+    PrimaryActorTick.bCanEverTick = true;
+
+    expComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("orbMesh"));
+    sphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("sphereComp"));
+
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> expOrb(TEXT("/Script/Engine.StaticMesh'/Game/KMS_AI/Exp/SM_Exp.SM_Exp'"));
+    if (expOrb.Succeeded())
+    {
+        expComp->SetStaticMesh(expOrb.Object);
+    }
+
+    // Set sphereComp as the root component
+    SetRootComponent(expComp);
+
+    // Attach expComp to sphereComp
+    sphereComp->SetupAttachment(RootComponent);
+
+    // Optionally set the scale of expComp and sphereComp
+    expComp->SetWorldScale3D(FVector(0.1));
+    sphereComp->SetWorldScale3D(FVector(1.0));
+
+}
+
+// Called when the game starts or when spawned
+void AEXPActor::BeginPlay()
+{
+	Super::BeginPlay();
+
+	sphereComp->OnComponentBeginOverlap.AddDynamic(this, &AEXPActor::OnBeginOverlapExpOrb);
+	
+}
+
+// Called every frame
+void AEXPActor::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
+void AEXPActor::OnBeginOverlapExpOrb(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->GetName().Contains("Player"))
+	{
+		APixelCodeCharacter* Player = Cast<APixelCodeCharacter>(OtherActor);
+		APCodePlayerController* Pc = Cast<APCodePlayerController>(Player->GetController());
+		ApixelPlayerState* PlayerState = Cast<ApixelPlayerState>(Pc->pixelPlayerState);
+
+		PlayerState->SetaddUpEXP(50.0f);
+
+		Destroy();
+	}
+	
+
+
+}
+

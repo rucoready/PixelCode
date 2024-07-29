@@ -37,6 +37,7 @@
 #include "DamageWidget.h"
 #include "PCodePlayerController.h"
 #include "Components/WidgetComponent.h"
+#include "EXPActor.h"
 #include "Player/pixelPlayerState.h"
 
 // Sets default values
@@ -95,6 +96,7 @@ AGrux::AGrux()
 void AGrux::BeginPlay()
 {
 	Super::BeginPlay();
+    
     gruxDie = false;
     currentHp = maxHp;
     originLocation = GetActorLocation();
@@ -135,7 +137,7 @@ void AGrux::Tick(float DeltaTime)
          dieOnce = true;
          gruxDie = true;
          
-
+         ServerRPC_GruxDropExp();
 
          GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
          GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
@@ -223,11 +225,11 @@ void AGrux::GruxTakeDamage(float Damage)
     }
 
     
-
+    
 
 
     ServerRPC_GruxCameraShake();
-
+    
 
 
 }
@@ -235,6 +237,7 @@ void AGrux::GruxTakeDamage(float Damage)
 void AGrux::DestroySelf()
 {
     Destroy();
+    
 }
 
 void AGrux::RepocessBehaviorTreeRe()
@@ -371,13 +374,16 @@ void AGrux::MulticastRPC_GruxDie_Implementation()
     if (value2 == 1)
     {
         PlayAnimMontage(gruxDie1);
+        ServerRPC_GruxDropExp();
 
     }
     else
     {
         PlayAnimMontage(gruxDie2);
+        
 
     }
+    
 }
 
 void AGrux::ServerRPC_TakeDamage_Implementation()
@@ -523,4 +529,28 @@ void AGrux::MulticastRPC_GruxTakeDamageWidgetSet_Implementation(int32 vaule2)
 
     UE_LOG(LogTemp,Warning, TEXT("CURRENTT : %f"),currentHp);
 	
+}
+
+void AGrux::ServerRPC_GruxDropExp_Implementation()
+{
+    MulticastRPC_GruxDropExp();
+}
+
+
+
+void AGrux::MulticastRPC_GruxDropExp_Implementation()
+{
+    if (expOrb)
+    {
+        for (int i = 0; i < 3; ++i)
+        {
+
+            FVector spawnLocation = GetActorLocation();
+            FRotator spawnRotation = GetActorRotation();
+
+            AActor* SpawnedSword = GetWorld()->SpawnActor<AEXPActor>(expOrb, spawnLocation, spawnRotation);
+        }
+    }
+
+    
 }

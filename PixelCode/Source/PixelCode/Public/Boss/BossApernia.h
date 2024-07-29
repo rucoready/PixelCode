@@ -763,4 +763,73 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	TSubclassOf<UCameraShakeBase> gigantSwordCameraShake;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnDecalSword();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnDecalSword();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnDecalSword2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnDecalSword2();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnDecalSword3();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnDecalSword3();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnDecalSword4();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnDecalSword4();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnDecalSword5();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnDecalSword5();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnDecalSword6();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnDecalSword6();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnDecalSword7();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnDecalSword7();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnDemonSword2Phase();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnDemonSword2Phase();
+
+	void SpawnSwordDelay();
+
+	// 데칼 스폰을 위한 타이머 핸들
+	FTimerHandle TimerHandle;
+
+	// 현재 스폰할 데칼의 인덱스
+	int CurrentDecalIndex;
+
+	// 스폰 위치와 변환 정보를 저장할 배열
+	TArray<FTransform> SpawnTransforms;
+
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class AWarningCircleDecal> decalCircle;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class ADemonSword> demonSwordV2;
+
+	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
+	class UNiagaraSystem* fireNA;
 };
