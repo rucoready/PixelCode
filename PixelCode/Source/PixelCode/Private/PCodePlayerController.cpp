@@ -154,6 +154,15 @@ void APCodePlayerController::PlayerStopWidget()
 	NormallyWidget->SetActiveStopWidgetUI(true);
 }
 
+void APCodePlayerController::PlayerDieWidget()
+{
+	if (NormallyWidget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("RespawnOn22222"));
+		NormallyWidget->SetActiveGameOverUI(true);
+	}
+}
+
 
 
 

@@ -171,6 +171,11 @@ class APixelCodeCharacter : public APlayerOrganism
 	
 
 public:
+	// 플레이어 마나, 스테미너 시스템
+	float MPRegen = 0.0f;
+	float SPRegen = 0.0f;
+	float SPRegenTime = 0.0f;
+
 
 	class APickup* Pickup;
 

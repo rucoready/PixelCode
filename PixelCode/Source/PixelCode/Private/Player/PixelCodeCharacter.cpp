@@ -139,7 +139,7 @@ void APixelCodeCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-	
+
 	FActorSpawnParameters spawnParam;
 	spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
@@ -238,6 +238,8 @@ void APixelCodeCharacter::BeginPlay()
 	{
 		OwningInventoryntory = GameInst->LoadInventory();
 	}
+
+	
 
 }
 
@@ -1364,7 +1366,7 @@ void APixelCodeCharacter::DieFunction()
 {
 	auto param = GetMesh()->GetCollisionResponseToChannels();
 	param.SetResponse(ECC_Visibility, ECollisionResponse::ECR_Block);
-
+	UE_LOG(LogTemp, Warning, TEXT("RespawnOn"));
 	GetMesh()->SetCollisionResponseToChannels(param);
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -1373,18 +1375,17 @@ void APixelCodeCharacter::DieFunction()
 	// UI -> 리스폰 / 종료
 	if (IsLocallyControlled())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("RespawnOn333333"));
 		auto pc = Cast<APCodePlayerController>(Controller);
 		FollowCamera->PostProcessSettings.ColorSaturation = FVector4(0, 0, 0, 1);
 		
 		if (pc)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("RespawnOn444444"));
 			pc->SetInputMode(FInputModeUIOnly());
 			pc->SetShowMouseCursor(true);
 			DisableInput(pc);
-			if (NormallyWidget)
-			{
-				NormallyWidget->SetActiveGameOverUI(true);
-			}
+			pc->PlayerDieWidget();
 		}
 	}
 
@@ -1617,6 +1618,8 @@ void APixelCodeCharacter::CharacterJump(const FInputActionValue& Value)
 		return;
 	}
 
+	stateComp->AddStatePoint(SP, -7.0f);
+	SPRegenTime = 3.0f;
 	Super::Jump();
 }
 
@@ -1968,11 +1971,15 @@ void APixelCodeCharacter::SkillRightMouse()
 				{
 					PerformAttack(9, false);
 					combatComponent->attackCount = 0;
+					stateComp->AddStatePoint(SP, -20.0f);
+					SPRegenTime = 3.0f;
 				}
 				else
 				{
 					PerformAttack(5, false);
 					combatComponent->attackCount = 0;
+					stateComp->AddStatePoint(SP, -20.0f);
+					SPRegenTime = 3.0f;
 				}
 			}
 		}
@@ -2194,18 +2201,26 @@ void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 			if (equipment->eWeaponType != EWeaponType::GreatSword)
 			{
 				AttackEvent();
+				stateComp->AddStatePoint(SP, -3.0f);
+				SPRegenTime = 3.0f;
 			}
 			else if (equipment->eWeaponType != EWeaponType::Pick)
 			{
 				AttackEvent();
+				stateComp->AddStatePoint(SP, -3.0f);
+				SPRegenTime = 3.0f;
 			}
 			else if (equipment->eWeaponType != EWeaponType::LightSword)
 			{
 				AttackEvent();
+				stateComp->AddStatePoint(SP, -5.0f);
+				SPRegenTime = 3.0f;
 			}
 			else if (equipment->eWeaponType != EWeaponType::MagicStaff)
 			{
 				AttackEvent();
+				stateComp->AddStatePoint(SP, -10.0f);
+				SPRegenTime = 3.0f;
 			}
 		}
 	}
@@ -2261,6 +2276,7 @@ void APixelCodeCharacter::PlayerRoll(const FInputActionValue& Value)
 			}
 			ServerRPC_PlayerRoll();
 			stateComp->AddStatePoint(SP,-10.0f);
+			SPRegenTime = 3.0f;
 		}
 	}
 }
@@ -2293,6 +2309,8 @@ void APixelCodeCharacter::PlayerRun(const FInputActionValue& Value)
 	if (!bIsJump)
 	{
 		ServerRPC_PlayerRun();
+		stateComp->AddStatePoint(SP, -0.1f);
+		SPRegenTime = 3.0f;
 	}
 }
 
@@ -2397,6 +2415,33 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		bSkillNSR = false;
 	}
 
+	if (stateComp->currentMP / stateComp->MaxMP <= 1)
+	{
+		MPRegen += DeltaTime;
+		if (MPRegen >= 1.0f)
+		{	
+			stateComp->currentMP += 1.0f;
+			MPRegen = 0.0f;
+		}
+	}
+
+	if (stateComp->currentSP / stateComp->MaxSP <= 1)
+	{
+		SPRegenTime = FMath::Clamp(SPRegenTime, 0, 3);
+		SPRegenTime -= DeltaTime;
+		UE_LOG(LogTemp, Warning, TEXT("SPRegenTime : %f"), SPRegenTime);
+		if (SPRegenTime <= 0.0f)
+		{
+			SPRegen += DeltaTime;
+			if (SPRegen >= 1.0f)
+			{
+				stateComp->currentSP += 3.0f;
+				//stateComp->currentSP = FMath::Lerp(stateComp->currentSP, stateComp->currentSP += 3.0f, DeltaTime);
+				SPRegen = 0.0f;
+			}
+		}
+	}
+	
 
 	// 지논------------------------------------------------------------------------------------------------------
 

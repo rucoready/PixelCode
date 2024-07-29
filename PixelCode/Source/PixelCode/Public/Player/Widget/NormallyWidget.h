@@ -90,6 +90,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Respawn", meta = (BindWidget))
 	UButton* BTN_Quit;
 
+	UPROPERTY(EditDefaultsOnly, Meta=(BindWidget))
+	class UWidgetSwitcher* SwitcherUI;
+
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Material")
 	UMaterialInstance* MI_RoundProgressbar;
 

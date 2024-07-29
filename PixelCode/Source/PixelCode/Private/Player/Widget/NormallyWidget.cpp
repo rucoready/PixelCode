@@ -21,6 +21,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/Controller.h>
+#include <../../../../../../../Source/Runtime/UMG/Public/Components/WidgetSwitcher.h>
 
 
 
@@ -55,14 +56,7 @@ void UNormallyWidget::NativeConstruct()
 
 	Player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
 
-	if (Player != nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Not Player Null!"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player Null!"));
-	}
+	SwitcherUI->SetActiveWidgetIndex(0);
 	
 }
 
@@ -203,11 +197,16 @@ void UNormallyWidget::OnMyButtonQuit()
 
 void UNormallyWidget::SetActiveGameOverUI(bool value)
 {
-	CP_GameOverUI ->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	SwitcherUI->SetActiveWidgetIndex(0);
+	SwitcherUI->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	CP_GameOverUI->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	UE_LOG(LogTemp,Warning,TEXT("RespawnUI"));
 }
 
 void UNormallyWidget::SetActiveStopWidgetUI(bool value)
 {
+	SwitcherUI->SetActiveWidgetIndex(1);
+	SwitcherUI->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 	CP_StopWidget->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }
 
