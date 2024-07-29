@@ -300,8 +300,9 @@ FHitResult APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 
-	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
-
+	//GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
+	GetWorld()->CapsuleTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
+	GetWorld()->LineTraceSingleByChannel()
 	if (DrawDebug)
 	{
 		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1, 0U, 3.f);
