@@ -78,11 +78,32 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "SKillCollTime", meta = (BindWidget))
 	UImage* BP_ZSkillbar;
 
+	UPROPERTY(EditDefaultsOnly, Category = "SKillCollTime", meta = (BindWidget))
+	UImage* BP_mageQSkillbar;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SKillCollTime", meta = (BindWidget))
+	UImage* BP_mageESkillbar;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SKillCollTime", meta = (BindWidget))
+	UImage* BP_mageRSkillbar;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SKillCollTime", meta = (BindWidget))
+	UImage* BP_mageZSkillbar;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Respawn", meta = (BindWidget))
 	UCanvasPanel* CP_GameOverUI;
 
 	UPROPERTY(EditDefaultsOnly, Category = "StopWidget", meta = (BindWidget))
 	UCanvasPanel* CP_StopWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "StopWidget", meta = (BindWidget))
+	UCanvasPanel* CP_PlayerBaseState;
+
+	UPROPERTY(EditDefaultsOnly, Category = "StopWidget", meta = (BindWidget))
+	UCanvasPanel* CP_PlayerSwordSkill;
+
+	UPROPERTY(EditDefaultsOnly, Category = "StopWidget", meta = (BindWidget))
+	UCanvasPanel* CP_PlayerMageSkill;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Respawn", meta = (BindWidget))
 	UButton* BTN_Respawn;
@@ -92,6 +113,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Meta=(BindWidget))
 	class UWidgetSwitcher* SwitcherUI;
+
+	UPROPERTY(EditDefaultsOnly, Meta=(BindWidget))
+	class UWidgetSwitcher* SkillSwitcherUI;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Material")
 	UMaterialInstance* MI_RoundProgressbar;
@@ -111,6 +135,18 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Material")
 	UMaterialInstanceDynamic* ZDynamicMaterial;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Material")
+	UMaterialInstanceDynamic* mageQDynamicMaterial;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Material")
+	UMaterialInstanceDynamic* mageEDynamicMaterial;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Material")
+	UMaterialInstanceDynamic* mageRDynamicMaterial;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Material")
+	UMaterialInstanceDynamic* mageZDynamicMaterial;
+
 	void firstUpdate(UStateComponent* PlayerStateComp);
 	void firstStatedate(ApixelPlayerState* Ps);
 	
@@ -125,6 +161,11 @@ public:
 	void RSetPercent();
 	void ZSetPercent();
 
+	void mageQSetPercent();
+	void mageESetPercent();
+	void mageRSetPercent();
+	void mageZSetPercent();
+
 	UFUNCTION()
 	void OnMyButtonRespawn();
 
@@ -133,5 +174,9 @@ public:
 
 	void SetActiveGameOverUI(bool value);
 	void SetActiveStopWidgetUI(bool value);
+
+	void SetBaseSkillWidget(bool value);
+	void SetSwordSkillWidget(bool value);
+	void SetMageSkillWidget(bool value);
 
 };

@@ -1744,27 +1744,31 @@ void APixelCodeCharacter::SkillQ()
 			if (!bQskillCoolTime)
 			{
 				Mousehit();
-
+				UE_LOG(LogTemp, Warning, TEXT("QskillMage5"));
 				if (false == combatComponent->bCombatEnable)
 				{
+					UE_LOG(LogTemp, Warning, TEXT("QskillMage1"));
 					return;
 				}
 				if (combatComponent->bAttacking)
 				{
+					UE_LOG(LogTemp, Warning, TEXT("QskillMage2"));
 					combatComponent->bAttackSaved = true;
 				}
 				else
 				{
 					if (bUseSkill)
 					{
+						UE_LOG(LogTemp,Warning,TEXT("QskillMage"));
 						PerformAttack(1, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -10);
 					}
+					UE_LOG(LogTemp, Warning, TEXT("QskillMage6"));
 				}
 
 				bQskillCoolTime = true;
-
+				UE_LOG(LogTemp, Warning, TEXT("QskillMage3"));
 				GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
 			}
 		}
@@ -2121,6 +2125,7 @@ void APixelCodeCharacter::switchWeapon()
 		if (axe != nullptr)
 		{
 			equipment = GetWorld()->SpawnActor<ABaseWeapon>(axe, GetActorTransform(), spawnParam);
+			Pc->PlayerBaseSkillWidget();
 		}
 
 		if (equipment)
@@ -2152,6 +2157,7 @@ void APixelCodeCharacter::switchWeapon2()
 		if (defaultWeapon != nullptr)
 		{
 			equipment = GetWorld()->SpawnActor<ABaseWeapon>(defaultWeapon, GetActorTransform(), spawnParam);
+			Pc->PlayerSwordSkillWidget();
 		}
 		if (equipment)
 		{
@@ -2178,6 +2184,7 @@ void APixelCodeCharacter::switchWeapon3()
 		if (Pick != nullptr)
 		{
 			equipment = GetWorld()->SpawnActor<ABaseWeapon>(Pick, GetActorTransform(), spawnParam);
+			Pc->PlayerBaseSkillWidget();
 		}
 
 		if (equipment)
@@ -2209,6 +2216,8 @@ void APixelCodeCharacter::switchWeapon4()
 		if (magicStaff != nullptr)
 		{
 			equipment = GetWorld()->SpawnActor<ABaseWeapon>(magicStaff, GetActorTransform(), spawnParam);
+			Pc->PlayerMageSkillWidget();
+			bUseSkill = true;
 		}
 		if (equipment)
 		{

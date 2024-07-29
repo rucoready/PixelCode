@@ -69,6 +69,12 @@ public:
 
 	void PlayerStopWidget();
 
+	void PlayerBaseSkillWidget();
+
+	void PlayerSwordSkillWidget();
+
+	void PlayerMageSkillWidget();
+
 	void PlayerDieWidget();
 
 	bool bIsStatVisible = true;

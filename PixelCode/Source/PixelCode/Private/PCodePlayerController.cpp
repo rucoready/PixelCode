@@ -154,6 +154,21 @@ void APCodePlayerController::PlayerStopWidget()
 	NormallyWidget->SetActiveStopWidgetUI(true);
 }
 
+void APCodePlayerController::PlayerBaseSkillWidget()
+{
+	NormallyWidget->SetBaseSkillWidget(true);
+}
+
+void APCodePlayerController::PlayerSwordSkillWidget()
+{
+	NormallyWidget->SetSwordSkillWidget(true);
+}
+
+void APCodePlayerController::PlayerMageSkillWidget()
+{
+	NormallyWidget->SetMageSkillWidget(true);
+}
+
 void APCodePlayerController::PlayerDieWidget()
 {
 	if (NormallyWidget)
