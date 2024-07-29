@@ -501,7 +501,7 @@ void ABossApernia::SetOriginMaterial()
         USkeletalMeshComponent* MeshComp = GetMesh(); // SkeletalMeshComponent를 가져옵니다.
         if (MeshComp)
         {
-           
+            // 기존에 있는 머티리얼 슬롯 인덱스를 확인하고 적절히 설정합니다.
             int32 MaterialIndex = 0; // 적절한 슬롯 인덱스 지정
             int32 MaterialIndex2 = 1; // 적절한 슬롯 인덱스 지정
             MeshComp->SetMaterial(MaterialIndex, originalMaterial);
@@ -518,7 +518,7 @@ void ABossApernia::SetCounterMaterial()
         USkeletalMeshComponent* MeshComp = GetMesh(); // SkeletalMeshComponent를 가져옵니다.
         if (MeshComp)
         {
-            /*기존에 있는 머티리얼 슬롯 인덱스를 확인하고 적절히 설정합니다.*/
+            // 기존에 있는 머티리얼 슬롯 인덱스를 확인하고 적절히 설정합니다.
             int32 MaterialIndex = 0; // 적절한 슬롯 인덱스 지정
             int32 MaterialIndex2 = 1; // 적절한 슬롯 인덱스 지정
             MeshComp->SetMaterial(MaterialIndex, counterMaterial);
