@@ -165,30 +165,24 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 	ADemonSword* demonSword = Cast<ADemonSword>(hitActor);
 	AGrux* grux = Cast<AGrux>(hitActor);
 	ADogBart* dogBart = Cast<ADogBart>(hitActor);
+	Player = Cast<APlayerOrganism>(GetOwner());
 	if (boss && !bHit)
 	{		
 		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.01, false);
 
+		if (Player->bBindEnemy)
+		{
+			boss->BossFallDown();
+		}
 		boss->BossTakeDamage(10.0f);
-		//boss->BossFallDown();
+		
 		bHit = true;
 		
 		
 		UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage1"));
 
-	}
+	}	
 
-	///////boss Z Hit Reaction
-	if (boss && !bHit)
-	{
-		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.01, false);
-		//boss->BossFallDown();
-		bHit = true;
-
-
-		UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage1"));
-
-	}
 	if (demonSword && !bHit)
 	{
 		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.1, false);
@@ -218,12 +212,11 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 
 	}
 
-	Player = Cast<APlayerOrganism>(hitActor);
+	/*Player = Cast<APlayerOrganism>(hitActor);
 	if (Player)
 	{
-		Player->GetHit(lastHitStruct.ImpactPoint,false);
-	}
-
+		Player->GetHit(lastHitStruct.ImpactPoint, false);
+	}*/
 
 	auto interfaceCheck = Cast<ICombatInterface>(hitActor);
 
