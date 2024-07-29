@@ -521,9 +521,6 @@ public:
 	UFUNCTION(Server, Reliable)
  	void ServerRPC_SetBuildMode(bool mode);
 
-//  	UFUNCTION(Client, Reliable)
-//  	void ClientRPC_SetBuildMode(bool mode);
-
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiRPC_SetBuildMode(bool mode);
 
@@ -558,14 +555,8 @@ public:
  	UFUNCTION(Server, Reliable)
  	void ServerRPC_SpawnBuilding();
 
-	//UFUNCTION(NetMulticast, Reliable)
-	//void NetMulticastRPC_SpawnBuilding ();
-
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_SpawnBuilding(EBuildType BuildType, FTransform transf);
-
-// 	UFUNCTION(Client, Reliable)
-// 	void ClientRPC_SpawnBuilding(EBuildType BuildType, FTransform transf);
 
 	//------------------------------------------------------------------------------------------
 	UFUNCTION()
@@ -604,20 +595,20 @@ public:
 	UFUNCTION(NetMulticast, Reliable) 
 	void MultiRPC_RemoveFoliage(const FHitResult& HitResult);
 
-	
-
-
-// 	UFUNCTION(Server, Reliable)
-// 	void ServerRPC_RemoveFoliage();  
-// 
-// 	UFUNCTION(NetMulticast, Reliable)ee
-// 	void NetMulticastRPC_RemoveFoliage(const FHitResult& HitResult);
-//
 	UPROPERTY(EditAnywhere, Category=KSH)
 	TSubclassOf<class APickup> pickupWood;
 
 	UPROPERTY(EditAnywhere, Category=KSH)
 	TSubclassOf<class APickup> pickupRock;
+
+	UPROPERTY(EditAnywhere, Category=KSH)
+	TSubclassOf<class APickup> pickupMetal;
+
+	UPROPERTY(EditAnywhere, Category=KSH)
+	TSubclassOf<class APickup> pickupStone;
+
+	UPROPERTY(EditAnywhere, Category=KSH)
+	TSubclassOf<class APickup> pickupTwig;
 	//-----------------------------------------------------------------------------------
 
 	UFUNCTION()
@@ -628,6 +619,30 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable) 
 	void MultiRPC_RemoveRock(const FHitResult& HitResult);
+
+	UFUNCTION(Server, Reliable) 
+	void SeverRPC_RemoveMetal(const FHitResult& HitResult);
+
+	UFUNCTION(NetMulticast, Reliable) 
+	void MultiRPC_RemoveMetal(const FHitResult& HitResult);
+
+	UFUNCTION()
+	void OnRemoveStonePressed();  
+
+	UFUNCTION(Server, Reliable) 
+	void SeverRPC_RemoveStone(const FHitResult& HitResult);
+
+	UFUNCTION(NetMulticast, Reliable) 
+	void MultiRPC_RemoveStone(const FHitResult& HitResult);
+
+	UFUNCTION()
+	void OnRemoveBushPressed();  
+
+	UFUNCTION(Server, Reliable) 
+	void SeverRPC_RemoveBush(const FHitResult& HitResult);
+
+	UFUNCTION(NetMulticast, Reliable) 
+	void MultiRPC_RemoveBush(const FHitResult& HitResult);
 
 
 	// 서휘-----------------------------------------------------------------------------------------------------끝

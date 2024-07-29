@@ -54,6 +54,9 @@
 #include <../../../../../../../Source/Runtime/Engine/Public/EngineUtils.h>
 #include "GameFramework/GameStateBase.h"
 #include "ISMRockFoliage.h"
+#include "ISMStoneFoliage.h"
+#include "ISMBushFoliage.h"
+#include "ISMMetalFoliage.h"
 
 
 
@@ -1254,7 +1257,6 @@ void APixelCodeCharacter::SeverRPC_RemoveFoliage_Implementation(const FHitResult
 
 void APixelCodeCharacter::MultiRPC_RemoveFoliage_Implementation(const FHitResult& HitResult)
 {
-
 	if (HitResult.bBlockingHit)
 	{
 		UFoliageInstancedStaticMeshComponent* FoliageInstance = Cast< UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
@@ -1262,7 +1264,7 @@ void APixelCodeCharacter::MultiRPC_RemoveFoliage_Implementation(const FHitResult
 		{
 			FoliageInstance->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupWood, HitResult.ImpactPoint, GetActorRotation());
-			//GetWorld()->SpawnActor<APickup>(pickupItem, HitResult.ImpactPoint, GetActorRotation());
+			GetWorld()->SpawnActor<APickup>(pickupWood, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
 }
@@ -1270,9 +1272,10 @@ void APixelCodeCharacter::MultiRPC_RemoveFoliage_Implementation(const FHitResult
 void APixelCodeCharacter::OnRemoveRockPressed()
 {
 	SeverRPC_RemoveRock(PerformLineTrace(1000, true));
+	SeverRPC_RemoveMetal(PerformLineTrace(1000, true));
+	SeverRPC_RemoveStone(PerformLineTrace(1000, true));
+	SeverRPC_RemoveBush(PerformLineTrace(1000, true));
 }
-
-
 
 void APixelCodeCharacter::SeverRPC_RemoveRock_Implementation(const FHitResult& HitResult)
 {
@@ -1284,14 +1287,91 @@ void APixelCodeCharacter::MultiRPC_RemoveRock_Implementation(const FHitResult& H
 	if (HitResult.bBlockingHit)
 	{
 		
-		UISMRockFoliage* UComp = Cast<UISMRockFoliage>(HitResult.GetComponent());
+		UISMRockFoliage* RockComp = Cast<UISMRockFoliage>(HitResult.GetComponent());
 		
-		if (UComp && UComp->ComponentTags.Contains(TEXT("Rock")))
+		if (RockComp && RockComp->ComponentTags.Contains(TEXT("Rock")))
 		{
-			UComp->RemoveInstance(HitResult.Item);
+			UE_LOG(LogTemp, Warning, TEXT("Remove Rock"));
+
+			RockComp->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupRock, HitResult.ImpactPoint, GetActorRotation());
 
 			//GetWorld()->SpawnActor<APickup>(pickupRock, HitResult.ImpactPoint, GetActorRotation());
+		}
+	}
+}
+//---------------------------------------------------------------------------------------------------------------------------Farm Metal
+void APixelCodeCharacter::SeverRPC_RemoveMetal_Implementation(const FHitResult& HitResult)
+{
+	MultiRPC_RemoveMetal(HitResult);
+}
+
+void APixelCodeCharacter::MultiRPC_RemoveMetal_Implementation(const FHitResult& HitResult)
+{
+	if (HitResult.bBlockingHit)
+	{
+		UISMMetalFoliage* MetalComp = Cast<UISMMetalFoliage>(HitResult.GetComponent());
+
+		if (MetalComp && MetalComp->ComponentTags.Contains(TEXT("Metal")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Remove Metal"));
+
+			MetalComp->RemoveInstance(HitResult.Item);
+			GetWorld()->SpawnActor<APickup>(pickupMetal, HitResult.ImpactPoint, GetActorRotation());
+		}
+	}
+}
+//---------------------------------------------------------------------------------------------------------------------------Farm Metal
+
+
+void APixelCodeCharacter::OnRemoveStonePressed()
+{
+	SeverRPC_RemoveStone(PerformLineTrace(1000, true));
+}
+
+void APixelCodeCharacter::SeverRPC_RemoveStone_Implementation(const FHitResult& HitResult)
+{
+	MultiRPC_RemoveStone(HitResult);
+}
+
+void APixelCodeCharacter::MultiRPC_RemoveStone_Implementation(const FHitResult& HitResult)
+{
+	if (HitResult.bBlockingHit)
+	{
+		UISMStoneFoliage* StoneComp = Cast<UISMStoneFoliage>(HitResult.GetComponent());
+
+		if (StoneComp && StoneComp->ComponentTags.Contains(TEXT("Stone")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Remove Stone"));
+
+			StoneComp->RemoveInstance(HitResult.Item);
+			GetWorld()->SpawnActor<APickup>(pickupStone, HitResult.ImpactPoint, GetActorRotation());
+		}
+	}
+}
+
+void APixelCodeCharacter::OnRemoveBushPressed()
+{
+	SeverRPC_RemoveBush(PerformLineTrace(1000, true));
+}
+
+void APixelCodeCharacter::SeverRPC_RemoveBush_Implementation(const FHitResult& HitResult)
+{
+	MultiRPC_RemoveBush(HitResult);
+}
+
+void APixelCodeCharacter::MultiRPC_RemoveBush_Implementation(const FHitResult& HitResult)
+{
+	if (HitResult.bBlockingHit)
+	{
+		UISMBushFoliage* BushComp = Cast<UISMBushFoliage>(HitResult.GetComponent());
+
+		if (BushComp && BushComp->ComponentTags.Contains(TEXT("Bush")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Remove Bush"));
+
+			BushComp->RemoveInstance(HitResult.Item);
+			GetWorld()->SpawnActor<APickup>(pickupTwig, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
 }
