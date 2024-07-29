@@ -26,11 +26,25 @@ void UBuildItemSlot::SetData(uint16 Index, uint16 BuildIndexs, const FText& BIte
 
 void UBuildItemSlot::OnBuildItemClicked()
 {
-	/*if (BuildWidget.IsValid())
+	if (BuildWidget.IsValid())
 	{
-		BuildWidget->SetCraftingInfo(ItemIndex, ButtonIndex);
-		ActivateButton(true);
-	}*/
+		BuildWidget->SetBuildInfo(BuildIndex, ButtonBuildIndex);
+		ActivateBuildButton(true);
+	}
 }
 
 
+
+void UBuildItemSlot::ActivateBuildButton(bool bBActive)
+{
+	if (bBActive)
+	{
+		Btn_BuildButton->SetIsEnabled(false);
+		Btn_BuildButton->SetBackgroundColor(SelectedBuildColor);
+	}
+	else
+	{
+		Btn_BuildButton->SetIsEnabled(true);
+		Btn_BuildButton->SetBackgroundColor(DefalutBuildColor);
+	}
+}

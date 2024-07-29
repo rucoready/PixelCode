@@ -32,6 +32,9 @@ public:
 	UFUNCTION()
 	void OnBuildItemClicked();
 
+	UFUNCTION()
+	void ActivateBuildButton(bool bBActive);
+
 protected:
 	virtual void NativeConstruct() override;
 	
@@ -52,4 +55,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Widget")
 	TWeakObjectPtr<UBulidWIdget> BuildWidget;
+
+
+
+	// 버튼 컬러
+	UPROPERTY(EditAnywhere, Category = "Widget")
+	FLinearColor SelectedBuildColor;
+
+	UPROPERTY(EditAnywhere, Category = "Widget")
+	FLinearColor DefalutBuildColor;
 };
