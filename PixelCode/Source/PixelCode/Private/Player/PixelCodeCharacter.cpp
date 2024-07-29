@@ -1264,13 +1264,13 @@ void APixelCodeCharacter::MultiRPC_RemoveFoliage_Implementation(const FHitResult
 		{
 			FoliageInstance->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupWood, HitResult.ImpactPoint, GetActorRotation());
-			GetWorld()->SpawnActor<APickup>(pickupWood, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
 }
 
 void APixelCodeCharacter::OnRemoveRockPressed()
 {
+	//bFarmModeOn = true;
 	SeverRPC_RemoveRock(PerformLineTrace(1000, true));
 	SeverRPC_RemoveMetal(PerformLineTrace(1000, true));
 	SeverRPC_RemoveStone(PerformLineTrace(1000, true));
