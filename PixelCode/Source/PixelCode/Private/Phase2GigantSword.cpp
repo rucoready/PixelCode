@@ -26,7 +26,7 @@ APhase2GigantSword::APhase2GigantSword()
         swordComp->SetStaticMesh(swordOBJ.Object);
     }
 
-    // currentTime을 0으로 초기화합니다.
+    
     currentTime = 0.0f;
 }
 
@@ -34,7 +34,7 @@ APhase2GigantSword::APhase2GigantSword()
 void APhase2GigantSword::BeginPlay()
 {
 	Super::BeginPlay();
-	
+    
 }
 
 // Called every frame
@@ -42,30 +42,21 @@ void APhase2GigantSword::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    // 현재 시간을 누적합니다.
     currentTime += DeltaTime;
 
-    
     float MoveStartTime = 0.0f;
-    float MoveEndTime =2.9f;
+    float MoveEndTime = 3.0f;
 
-  
     if (currentTime > MoveStartTime && currentTime < MoveEndTime)
     {
-       
         FVector StartLocation = GetActorLocation();
-        FVector TargetLocation = StartLocation + FVector(0.0f, 0.0f, -70.0f);
-
-      
-    
+        FVector TargetLocation = StartLocation + FVector(0.0f, 0.0f, -85.0f);
         float LerpAlpha = FMath::Clamp((currentTime - MoveStartTime) / (MoveEndTime - MoveStartTime), 0.0f, 1.0f);
-
-        
         FVector NewLocation = FMath::Lerp(StartLocation, TargetLocation, LerpAlpha);
-
-    
         SetActorLocation(NewLocation);
     }
+
+    
 	
 }
 

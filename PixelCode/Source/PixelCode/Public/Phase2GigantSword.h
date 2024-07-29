@@ -29,6 +29,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class USceneComponent* sceneComp;
 
+	
+
 	float currentTime;
 
 	
