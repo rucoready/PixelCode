@@ -97,6 +97,7 @@ void APCodePlayerController::PlayerWidgetUpdate()
 
 void APCodePlayerController::PlayerStartWidget()
 {
+	MainPlayer = Cast<APixelCodeCharacter>(this->GetPawn());
 	if (IsLocalController())
 	{
 
@@ -122,6 +123,7 @@ void APCodePlayerController::PlayerStartWidget()
 			{
 				NormallyWidget->AddToViewport(-1);
 				NormallyWidget->SetVisibility(ESlateVisibility::Visible);
+				NormallyWidget->currentStatUpdate(MainPlayer->stateComp);
 				UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
 			}
 		}

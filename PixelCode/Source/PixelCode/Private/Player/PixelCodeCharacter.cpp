@@ -1418,17 +1418,13 @@ void APixelCodeCharacter::InitMainUI()
 	FString hasController = Controller ? TEXT("HasCont") : TEXT("NoCont");
 
 	UE_LOG(LogTemp, Warning, TEXT("[%s] %s - InitMainUI"), *netMode, *hasController);
-
-	if (IsLocallyControlled() && NormallyWidgetClass)
+	Pc = Cast<APCodePlayerController>(Controller);
+	if (IsLocallyControlled() && Pc->NormallyWidgetClass)
 	{
-		auto* pc = Cast<APCodePlayerController>(Controller);
-		if (nullptr == pc->NormallyWidget)
-		{
-			pc->NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-			pc->NormallyWidget->AddToViewport();
-		}
+		
+		Pc->PlayerStartWidget();
 
-		NormallyWidget = pc->NormallyWidget;
+		NormallyWidget = Pc->NormallyWidget;
 	}*/
 }
 
@@ -1485,10 +1481,12 @@ void APixelCodeCharacter::PossessedBy(AController* NewController)
 
 	// 내가 로컬이라면
 	//if (IsLocallyControlled())
-	
-		//InitMainUI(); 나중에 활성화?
-		UE_LOG(LogTemp, Warning, TEXT("Normal2"));
-	
+	//{ 
+	//	InitMainUI(); //나중에 활성화?
+	//	UE_LOG(LogTemp, Warning, TEXT("Normal2"));
+	//}
+
+
 }
 
 void APixelCodeCharacter::CreateInventory()
@@ -2518,7 +2516,7 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	{
 		SPRegenTime = FMath::Clamp(SPRegenTime, 0, 3);
 		SPRegenTime -= DeltaTime;
-		UE_LOG(LogTemp, Warning, TEXT("SPRegenTime : %f"), SPRegenTime);
+		//UE_LOG(LogTemp, Warning, TEXT("SPRegenTime : %f"), SPRegenTime);
 		if (SPRegenTime <= 0.0f)
 		{
 			SPRegen += DeltaTime;

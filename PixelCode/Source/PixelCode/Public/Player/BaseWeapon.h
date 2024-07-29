@@ -13,6 +13,7 @@ class UCollisionComponent;
 class UCombatComponent;
 class UAnimMontage;
 class APlayerOrganism;
+class UNiagaraSystem;
 
 UENUM(BlueprintType)
 enum class EWeaponType : uint8
@@ -41,6 +42,9 @@ protected:
 
 public:
 	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* NS_HitImpact;
 
 public:
 

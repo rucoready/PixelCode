@@ -14,6 +14,7 @@
 #include "Grux.h"
 #include "DogBart.h"
 #include "Player/PlayerOrganism.h"
+#include "../../../FX/Niagara/Source/Niagara/Public/NiagaraFunctionLibrary.h"
 
 ABaseWeapon::ABaseWeapon()
 {
@@ -212,6 +213,10 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 
 	}
 
+	if (NS_HitImpact != nullptr && eWeaponType ==  EWeaponType::LightSword)
+	{ 
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_HitImpact, lastHitStruct.ImpactPoint, lastHitStruct.ImpactNormal.Rotation());
+	}
 	/*Player = Cast<APlayerOrganism>(hitActor);
 	if (Player)
 	{
