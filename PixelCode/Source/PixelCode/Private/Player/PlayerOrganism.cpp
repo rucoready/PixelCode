@@ -175,6 +175,7 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 {
 	if (bAttackBlock)
 	{
+		bAttackBlock = false;
  		APlayerController* APc = Cast<APlayerController>(this->GetController());
  		if (APc != nullptr)
  		{
@@ -186,10 +187,9 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 		if (AnimInsatnce && AttackCounter != nullptr)
 		{ 
 			AnimInsatnce->Montage_Play(AttackCounter);
-
+			
 		}
 	UE_LOG(LogTemp,Warning,TEXT("PlayerCounter"));
-	bAttackBlock = false;
 		return 0.0f;
 	}
 

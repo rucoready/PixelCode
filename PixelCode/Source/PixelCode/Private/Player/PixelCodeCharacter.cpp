@@ -300,6 +300,7 @@ FHitResult APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 
+	//GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
 
 	if (DrawDebug)
@@ -1294,34 +1295,6 @@ void APixelCodeCharacter::MultiRPC_RemoveRock_Implementation(const FHitResult& H
 }
 	
 
-// void APixelCodeCharacter::RemoveRock(const FHitResult& HitResult)
-// {
-// 	if (HitResult.bBlockingHit)
-// 	{
-// 		UFoliageInstancedStaticMeshComponent* RockInstance = Cast<UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
-// 		if (RockInstance)
-// 		{
-// 			RockInstance->RemoveInstance(HitResult.Item);
-// 		}
-// 	}
-// }
-// 
-// void APixelCodeCharacter::SeverRPC_RemoveRock_Implementation(const FHitResult& HitResult)
-// {
-// 	MultiRPC_RemoveRock(HitResult);
-// }
-// 
-// void APixelCodeCharacter::MultiRPC_RemoveRock_Implementation(const FHitResult& HitResult)
-// {
-// 	if (HitResult.bBlockingHit)                                       
-// 	{
-// 		UFoliageInstancedStaticMeshComponent* RockInstance = Cast<UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
-// 		if (RockInstance)
-// 		{
-// 			RockInstance->RemoveInstance(HitResult.Item);
-// 		}
-// 	}
-// }
 
 // 서휘-----------------------------------------------------------------------------------------------------끝
 
