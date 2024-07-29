@@ -301,8 +301,8 @@ FHitResult APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug
 	Params.AddIgnoredActor(this);
 
 	//GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
-	GetWorld()->CapsuleTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
-	GetWorld()->LineTraceSingleByChannel()
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
+
 	if (DrawDebug)
 	{
 		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1, 0U, 3.f);
@@ -1295,34 +1295,6 @@ void APixelCodeCharacter::MultiRPC_RemoveRock_Implementation(const FHitResult& H
 }
 	
 
-// void APixelCodeCharacter::RemoveRock(const FHitResult& HitResult)
-// {
-// 	if (HitResult.bBlockingHit)
-// 	{
-// 		UFoliageInstancedStaticMeshComponent* RockInstance = Cast<UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
-// 		if (RockInstance)
-// 		{
-// 			RockInstance->RemoveInstance(HitResult.Item);
-// 		}
-// 	}
-// }
-// 
-// void APixelCodeCharacter::SeverRPC_RemoveRock_Implementation(const FHitResult& HitResult)
-// {
-// 	MultiRPC_RemoveRock(HitResult);
-// }
-// 
-// void APixelCodeCharacter::MultiRPC_RemoveRock_Implementation(const FHitResult& HitResult)
-// {
-// 	if (HitResult.bBlockingHit)                                       
-// 	{
-// 		UFoliageInstancedStaticMeshComponent* RockInstance = Cast<UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
-// 		if (RockInstance)
-// 		{
-// 			RockInstance->RemoveInstance(HitResult.Item);
-// 		}
-// 	}
-// }
 
 // 서휘-----------------------------------------------------------------------------------------------------끝
 
