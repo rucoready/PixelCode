@@ -697,6 +697,7 @@ void APixelCodeCharacter::BuildItem()
 	//		CraftedItem->Destroy();
 	//	}
 	//}
+	}
 
 }
 
@@ -1598,7 +1599,11 @@ void APixelCodeCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityTo
 		//Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
 		//Pickup->InitializeDrop(ItemToDrop, RemoveQuantity);
 
-		
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.bNoFail = true;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
 		NetMulticastRPC_DropItem(SpawnTransform,ItemToDrop,RemoveQuantity);
 		Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
 		Pickup->NetMulticastRPC_InitializeDrop(ItemToDrop, RemoveQuantity);
