@@ -36,11 +36,27 @@ void ABaseWeapon::BeginPlay()
 	{
 		int iTemp = 0;
 	}
+
+	
 }
 
 void ABaseWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	
+	
+	StartSwordMark = collisionComponent->startSocketLocation;
+	EndSwordMark = collisionComponent->endSocketLocation;
+	
+
+
+
+	// Optional: Update the rotation to face the direction of movement
+	
+	
+
+
 }
 
 void ABaseWeapon::OnEquipped()
@@ -224,10 +240,29 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 
 	}
 
+	//FVector SwordDirection = EndSwordMark -StartSwordMark;
+	
+	FVector Direction = (EndSwordMark - lastHitStruct.ImpactPoint).GetSafeNormal();
+	SwordMarkRotation = Direction.Rotation();
+
+
+
 	if (NS_HitImpact != nullptr && eWeaponType ==  EWeaponType::LightSword)
 	{ 
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_HitImpact, lastHitStruct.ImpactPoint, lastHitStruct.ImpactNormal.Rotation());
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_HitImpact, lastHitStruct.ImpactPoint, SwordMarkRotation);
 	}
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Initialization")
+	//FName AttachSocketName;
+
+	//FVector SwordSocketLocation = GetMesh()->GetSocketLocation(TEXT("SwordSocket"));
+	//FVector CharacterLocation = GetActorLocation();
+
+	//// 칼의 소켓 위치에서 캐릭터 위치를 빼서 방향 벡터를 계산합니다.
+	//FVector Direction = SwordSocketLocation - CharacterLocation;
+	//Direction.Normalize(); // 방향 벡터를 정규화하여 길이를 1로 만듭니다.
+
+
 	/*Player = Cast<APlayerOrganism>(hitActor);
 	if (Player)
 	{
@@ -261,3 +296,4 @@ void ABaseWeapon::HitCoolTimeSet()
 
 	bHit = false;
 }
+

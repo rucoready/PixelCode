@@ -4,19 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SpawnSwordQSkill.generated.h"
+#include "PlayerMageLeftAttackSpawnActor.generated.h"
 
-class UNiagaraSystem;
+
+class UParticleSystem;
 class USceneComponent;
+class USphereComponent;
+class UParticleSystemComponent;
 
 UCLASS()
-class PIXELCODE_API ASpawnSwordQSkill : public AActor
+class PIXELCODE_API APlayerMageLeftAttackSpawnActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ASpawnSwordQSkill();
+	APlayerMageLeftAttackSpawnActor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,24 +32,28 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Components")  // 보통 VisibleAnywhere로 선언하여 에디터에서 보이도록 설정
     USceneComponent* SceneComp;
 
+	UPROPERTY(EditAnywhere, Category = "Components");
+	USphereComponent * SphereComp;
+
 	UPROPERTY(EditAnywhere)
-	UNiagaraSystem* NS_SkillQ;
+	UParticleSystem* NA_MageLeftAttack;
+	
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* NA_MageLefthit;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystemComponent* NA_MageLeftAttackComp;
+
+	float Speed = 2000.f;
 
 	float DestroyTime = 0.0f;
-	float bhitTime = 0.0f;
 
 	bool bDestroy = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-    float DamageAmount = 4;
-
-	 UPROPERTY(EditDefaultsOnly, Category = "Skill")
-    float TraceDistance = 300.0f;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Skill")
-    float TraceRadius = 300.0f;
+    float DamageAmount = 50;
 
 	UFUNCTION()
-    void DealDamageToActorsInTrace();
+	void OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 };

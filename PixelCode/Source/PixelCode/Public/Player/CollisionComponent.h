@@ -41,6 +41,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Initialization")
 	FName endSocketName;
 
+	FVector startSocketLocation;
+	FVector endSocketLocation;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Initialization")
 	float traceRadius;
 

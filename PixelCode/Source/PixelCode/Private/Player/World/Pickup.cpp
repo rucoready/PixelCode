@@ -6,6 +6,7 @@
 #include "Player/inventory/ItemBase.h"
 #include "Player/PixelCodeCharacter.h"
 #include "Player/Inventory/InventoryComponent.h"
+#include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
 
 // Sets default values
 APickup::APickup()
@@ -64,7 +65,13 @@ void APickup::InitializePickup(const TSubclassOf<UItemBase> BaseClass, const int
 	}
 }
 
-void APickup::InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity)
+void APickup::ClientRPC_InitializeDrop_Implementation(UItemBase* ItemToDrop, const int32 InQuantity)
+{
+	
+	//NetMulticastRPC_InitializeDrop();
+}
+
+void APickup::NetMulticastRPC_InitializeDrop_Implementation(UItemBase* ItemToDrop, const int32 InQuantity)
 {
 	ItemReference = ItemToDrop;
 	InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);

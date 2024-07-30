@@ -34,6 +34,8 @@ class ASpawnSwordRSkill;
 class UPCodeGameInstance;
 class ApixelPlayerState;
 class AMyGameModeBase;
+class APlayerMageRightAttackSpawnActor;
+class APlayerMageLeftAttackSpawnActor;
 
 UENUM()
 enum class MyEnum : int8
@@ -193,11 +195,11 @@ public:
 
 	void DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
 
-	UFUNCTION(Server, Reliable)
- 	void ServerRPC_DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
+	//UFUNCTION(Server, Reliable)
+ //	void ServerRPC_DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticastRPC_DropItem(const FTransform ASpawnTransform);
+	void NetMulticastRPC_DropItem(const FTransform ASpawnTransform, UItemBase* ItemToDrop, int32 RemoveQuantity);
 
 	class AInterfaceTestActor* InterfaceActor;
 
@@ -261,11 +263,23 @@ public:
 	UPROPERTY()
 	ASpawnSwordRSkill* SpawnRSkillCollsion;
 
+	UPROPERTY()
+	APlayerMageRightAttackSpawnActor* mageSpawnRightAttackCollsion;
+
+	UPROPERTY()
+	APlayerMageLeftAttackSpawnActor* mageSpawnLeftAttackCollsion;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	TSubclassOf<ASpawnSwordQSkill> QSkillSpawn;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	TSubclassOf<ASpawnSwordRSkill> RSkillSpawn;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
+	TSubclassOf<APlayerMageRightAttackSpawnActor> mageRightAttackSpawn;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
+	TSubclassOf<APlayerMageLeftAttackSpawnActor> mageLeftAttackSpawn;
 
 	UFUNCTION(Server, Reliable) 
 	void SeverRPC_QSkillSpawn();
@@ -513,7 +527,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
 	TArray<ABuilding*> ActorsToSave;
-
 	//------------------------------------------------------------------------------------------
 	UFUNCTION()
 	void OnSetBuildModePressed();  

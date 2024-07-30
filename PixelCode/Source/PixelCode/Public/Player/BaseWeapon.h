@@ -100,4 +100,11 @@ public:
 
 	bool bHit = false;
 
+	FVector StartSwordMark;
+	FVector EndSwordMark;
+
+	FRotator SwordMarkRotation;
+
+
+
 };

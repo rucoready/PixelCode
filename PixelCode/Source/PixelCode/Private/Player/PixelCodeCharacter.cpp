@@ -58,6 +58,8 @@
 #include "ISMBushFoliage.h"
 #include "ISMMetalFoliage.h"
 #include "PCodeSaveGame.h"
+#include "Player/SpawnSkillActor/PlayerMageRightAttackSpawnActor.h"
+#include "Player/SpawnSkillActor/PlayerMageLeftAttackSpawnActor.h"
 
 
 
@@ -674,27 +676,27 @@ void APixelCodeCharacter::BuildItem()
 
 		//FVector SpawnLoc = FVector(440.f, 0.f, 0.f);
 
-		FVector SpawnLoc = FVector(6797.037641f, -38828.846065f, 3000.503557f);
-		APickup* CraftedItem = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
-		if (CraftedItem)
-		{
-			UItemBase* ItemQuantity = CraftedItem->GetItemData();
-			Iteminfos = CraftedItem->GetItemData();
+	//	FVector SpawnLoc = FVector(6797.037641f, -38828.846065f, 3000.503557f);
+	//	APickup* CraftedItem = GetWorld()->SpawnActor<APickup>(Template, SpawnLoc, FRotator(0.f), Params);
+	//	if (CraftedItem)
+	//	{
+	//		UItemBase* ItemQuantity = CraftedItem->GetItemData();
+	//		Iteminfos = CraftedItem->GetItemData();
 
-			//CraftedItem->InitializeDrop(Iteminfos, );
-			//DropedItem(Iteminfos);
+	//		//CraftedItem->InitializeDrop(Iteminfos, );
+	//		//DropedItem(Iteminfos);
 
-			// 수량제거
-			const int32 RemoveQuantity = PlayerInventory->RemoveAmountOfItem(Iteminfos, 1);
+	//		// 수량제거
+	//		const int32 RemoveQuantity = PlayerInventory->RemoveAmountOfItem(Iteminfos, 1);
 
-			//APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
+	//		//APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
 
-			CraftedItem->InitializeDrop(Iteminfos, RemoveQuantity);
+	//		CraftedItem->InitializeDrop(Iteminfos, RemoveQuantity);
 
-			UE_LOG(LogTemp, Warning, TEXT("Success Destroy"));
-			CraftedItem->Destroy();
-		}
-	}
+	//		UE_LOG(LogTemp, Warning, TEXT("Success Destroy"));
+	//		CraftedItem->Destroy();
+	//	}
+	//}
 
 }
 
@@ -1126,7 +1128,6 @@ void APixelCodeCharacter::SpawnBuilding()
 	{
 		Builder->SpawnBuilding();
 	}
-	
 }
 
 void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
@@ -1580,7 +1581,7 @@ void APixelCodeCharacter::UpdateInteractionWidget() const
 	}
 }
 
-void APixelCodeCharacter::ServerRPC_DropItem_Implementation(UItemBase* ItemToDrop, const int32 QuantityToDrop)
+void APixelCodeCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop)
 {
 	
 	// 인벤토리 null이 아니라면
@@ -1594,9 +1595,14 @@ void APixelCodeCharacter::ServerRPC_DropItem_Implementation(UItemBase* ItemToDro
 		// 수량제거
 		const int32 RemoveQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
 
-		NetMulticastRPC_DropItem(SpawnTransform);
+		//Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
+		//Pickup->InitializeDrop(ItemToDrop, RemoveQuantity);
 
-		Pickup->InitializeDrop(ItemToDrop, RemoveQuantity);
+		
+		NetMulticastRPC_DropItem(SpawnTransform,ItemToDrop,RemoveQuantity);
+		Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
+		Pickup->NetMulticastRPC_InitializeDrop(ItemToDrop, RemoveQuantity);
+		
 	}
 	else
 		{
@@ -1604,7 +1610,7 @@ void APixelCodeCharacter::ServerRPC_DropItem_Implementation(UItemBase* ItemToDro
 		}
 }
 	
-void APixelCodeCharacter::NetMulticastRPC_DropItem_Implementation(const FTransform ASpawnTransform)
+void APixelCodeCharacter::NetMulticastRPC_DropItem_Implementation(const FTransform ASpawnTransform, UItemBase* ItemToDrop, int32 RemoveQuantity)
 {
 	// 인벤토리 null이 아니라면
 	
@@ -1614,7 +1620,7 @@ void APixelCodeCharacter::NetMulticastRPC_DropItem_Implementation(const FTransfo
 	SpawnParams.bNoFail = true;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-
+	
 	Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), ASpawnTransform, SpawnParams);
 
 }
@@ -1633,36 +1639,36 @@ void APixelCodeCharacter::StatMenu()
 }
 
 
-void APixelCodeCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop)
-{
+//void APixelCodeCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop)
 //{
-//	// 인벤토리 null이 아니라면
-//	if (PlayerInventory->FindMatchingItem(ItemToDrop))
-//	{
-//		FActorSpawnParameters SpawnParams;
-//		SpawnParams.Owner = this;
-//		SpawnParams.bNoFail = true;
-//		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-//
-//		// 캐릭터 50앞방향에서 생성됨
-//		const FVector SpawnLocation{ GetActorLocation() + (GetActorForwardVector() * 50.0f) };
-//
-//		const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
-//
-//		// 수량제거
-//		const int32 RemoveQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
-//
-//		APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
-//
-//		Pickup->InitializeDrop(ItemToDrop, RemoveQuantity);
-//	}
-//	else
-//	{
-//		UE_LOG(LogTemp, Warning, TEXT("Item to drop was Some how null"));
-//	}
-//
-//	//ServerRPC_DropItem();
-}
+////{
+////	// 인벤토리 null이 아니라면
+////	if (PlayerInventory->FindMatchingItem(ItemToDrop))
+////	{
+////		FActorSpawnParameters SpawnParams;
+////		SpawnParams.Owner = this;
+////		SpawnParams.bNoFail = true;
+////		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+////
+////		// 캐릭터 50앞방향에서 생성됨
+////		const FVector SpawnLocation{ GetActorLocation() + (GetActorForwardVector() * 50.0f) };
+////
+////		const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
+////
+////		// 수량제거
+////		const int32 RemoveQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
+////
+////		APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
+////
+////		Pickup->InitializeDrop(ItemToDrop, RemoveQuantity);
+////	}
+////	else
+////	{
+////		UE_LOG(LogTemp, Warning, TEXT("Item to drop was Some how null"));
+////	}
+////
+////	//ServerRPC_DropItem();
+//}
 
 
 
@@ -2118,6 +2124,13 @@ void APixelCodeCharacter::SkillRightMouse()
 					combatComponent->attackCount = 0;
 					stateComp->AddStatePoint(SP, -20.0f);
 					SPRegenTime = 3.0f;
+					if (mageRightAttackSpawn != nullptr)
+					{
+						FActorSpawnParameters SpawnParams;
+						GetWorld()->SpawnActor<APlayerMageRightAttackSpawnActor>(mageRightAttackSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+						UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!"));
+
+					}
 				}
 			}
 		}
@@ -2327,8 +2340,10 @@ void APixelCodeCharacter::Look(const FInputActionValue& Value)
 
 void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 {
+	UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!!!!"));
 	if (!bIsJump)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!!!"));
 		Mousehit();
 	
 		if (false == combatComponent->bCombatEnable)
@@ -2341,29 +2356,37 @@ void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 		}
 		else
 		{
-			if (equipment->eWeaponType != EWeaponType::GreatSword)
+			if (equipment->eWeaponType == EWeaponType::GreatSword)
 			{
 				AttackEvent();
 				stateComp->AddStatePoint(SP, -3.0f);
 				SPRegenTime = 3.0f;
 			}
-			else if (equipment->eWeaponType != EWeaponType::Pick)
+			else if (equipment->eWeaponType == EWeaponType::Pick)
 			{
 				AttackEvent();
 				stateComp->AddStatePoint(SP, -3.0f);
 				SPRegenTime = 3.0f;
 			}
-			else if (equipment->eWeaponType != EWeaponType::LightSword)
+			else if (equipment->eWeaponType == EWeaponType::LightSword)
 			{
 				AttackEvent();
 				stateComp->AddStatePoint(SP, -5.0f);
 				SPRegenTime = 3.0f;
 			}
-			else if (equipment->eWeaponType != EWeaponType::MagicStaff)
+			else if (equipment->eWeaponType == EWeaponType::MagicStaff)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!!"));
 				AttackEvent();
 				stateComp->AddStatePoint(SP, -10.0f);
 				SPRegenTime = 3.0f;
+				if (mageLeftAttackSpawn != nullptr)
+				{
+					FActorSpawnParameters SpawnParams;
+					GetWorld()->SpawnActor<APlayerMageLeftAttackSpawnActor>(mageLeftAttackSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+					UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!"));
+
+				}
 			}
 		}
 	}
