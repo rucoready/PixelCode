@@ -18,7 +18,19 @@ class PIXELCODE_API AWarningCircleDecal : public ADecalActor
 public:
 	// 생성자
 	AWarningCircleDecal();
+	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	void OnBeginOverlapCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void ApplyDamageToTarget(AActor* OtherActor, float DamageAmount);
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class APlayerController* Pc;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class APixelCodeCharacter* Player;
 
 	// 데칼 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -29,6 +41,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USceneComponent* sceneComponent;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USphereComponent* sphereComp;
+
+	
 
 	virtual void Tick(float DeltaTime) override;
 

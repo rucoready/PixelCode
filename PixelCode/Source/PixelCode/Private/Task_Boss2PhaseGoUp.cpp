@@ -169,4 +169,40 @@ void UTask_Boss2PhaseGoUp::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
         boss->ServerRPC_SpawnDecalSword();
         boss->ServerRPC_SpawnDecalSword2();
     }
+
+    if (currentTime > 30.0f && !OnceSpawnDecalSword12)
+    {
+        OnceSpawnDecalSword12 = true;
+        boss->ServerRPC_lastSpawnDecalSword1();
+    }
+
+    if (currentTime > 35.0f && !OnceSpawnDecalSword13)
+    {
+        OnceSpawnDecalSword13 = true;
+        boss->ServerRPC_lastSpawnDecalSword2();
+    }
+
+    if (currentTime > 40.0f && !OnceSpawnDecalSword14)
+    {
+        OnceSpawnDecalSword14 = true;
+        boss->ServerRPC_lastSpawnDecalSword1();
+    }
+
+    if (currentTime > 45.0f && !OnceSpawnDecalSword15)
+    {
+        OnceSpawnDecalSword15 = true;
+        boss->ServerRPC_lastSpawnDecalSword2();
+    }
+
+    if (currentTime > 50.0f && !OnceSpawnDecalSword16)
+    {
+        OnceSpawnDecalSword16 = true;
+        boss->ServerRPC_lastSpawnDecalSword1();
+    }
+
+    if (currentTime > 60.0f && !OnceSpawnStatue)
+    {
+        boss->ServerRPC_SpawnLazorDragonStatue();
+        OnceSpawnStatue = true;
+    }
 }

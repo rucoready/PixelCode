@@ -182,6 +182,7 @@ void UTask_FarJumpAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
                     
                     pc->ClientStartCameraShake(cameraShakeOBJ);
                     boss->ServerRPC_FarJumpAttackCameraShake();
+                    boss->ServerRPC_SpawnBoundCollision2();
                     onceCameraShake = true;
                 }
             }

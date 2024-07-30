@@ -238,7 +238,7 @@ void UTask_JumpAttack03::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
                 ABossApernia* boss = Cast<ABossApernia>(ControlledPawn);
                 
                 boss->ServerRPC_SpawnJumpAttackNiagara3V1();
-
+                boss->ServerRPC_SpawnBoundCollision();
                 niagaraOnce = true;
 
                 if (player && !cameraMovingOnce)

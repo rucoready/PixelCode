@@ -14,6 +14,7 @@
 #include "Grux.h"
 #include "DogBart.h"
 #include "Player/PlayerOrganism.h"
+#include "DragonRazorStatue.h"
 #include "../../../FX/Niagara/Source/Niagara/Public/NiagaraFunctionLibrary.h"
 
 ABaseWeapon::ABaseWeapon()
@@ -166,6 +167,7 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 	ADemonSword* demonSword = Cast<ADemonSword>(hitActor);
 	AGrux* grux = Cast<AGrux>(hitActor);
 	ADogBart* dogBart = Cast<ADogBart>(hitActor);
+	ADragonRazorStatue* statue = Cast<ADragonRazorStatue>(hitActor);
 	Player = Cast<APlayerOrganism>(GetOwner());
 	if (boss && !bHit)
 	{		
@@ -183,6 +185,15 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 		UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage1"));
 
 	}	
+
+	if (statue && !bHit)
+	{
+		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.1, false);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), swordHitNA, GetActorLocation(), GetActorRotation(), FVector(10.0f));
+		statue->TakeDamage(10.0f);
+		bHit = true;
+
+	}
 
 	if (demonSword && !bHit)
 	{

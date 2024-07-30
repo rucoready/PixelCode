@@ -36,6 +36,9 @@
 #include "Phase2GigantSword.h"
 #include "WarningCircleDecal.h"
 #include "DemonSword.h"
+#include "DragonRazorStatue.h"
+#include "FireActor.h"
+#include "BoundCollision.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -398,6 +401,8 @@ void ABossApernia::BeginPlay()
     //set boss maxHP
     bossCurrentHP = bossMaxHP;
     InitMainUI();
+
+    
 }
 
 // Called every frame
@@ -1781,7 +1786,7 @@ void ABossApernia::MulticastRPC_SpawnDecalSword2_Implementation()
     {
         FVector center(2490.0f, 4920.0f, 70.0f); // 중앙점
         float radius = 1500.0f; // 반지름 설정
-        int numDecals = 35; // 데칼 개수
+        int numDecals = 20; // 데칼 개수
 
         for (int i = 0; i < numDecals; ++i)
         {
@@ -1859,7 +1864,7 @@ void ABossApernia::MulticastRPC_SpawnDecalSword3_Implementation()
     {
         FVector center(2490.0f, 4920.0f, 70.0f); // 중앙점
         float radius = 5000.0f; // 반지름 설정
-        int numDecals = 37; // 데칼 개수
+        int numDecals = 22; // 데칼 개수
 
         for (int i = 0; i < numDecals; ++i)
         {
@@ -1885,7 +1890,7 @@ void ABossApernia::MulticastRPC_SpawnDecalSword4_Implementation()
         FVector center(2490.0f, 4920.0f, 70.0f); // 중앙점
         float minRadius = 1000.0f; // 최소 반지름
         float maxRadius = 5500.0f; // 최대 반지름
-        int numDecals = 37; // 데칼 개수
+        int numDecals = 25; // 데칼 개수
 
         for (int i = 0; i < numDecals; ++i)
         {
@@ -1918,7 +1923,7 @@ void ABossApernia::MulticastRPC_SpawnDecalSword5_Implementation()
         FVector center(2490.0f, 4920.0f, 70.0f); // 중앙점
         float minRadius = 2500.0f; // 최소 반지름
         float maxRadius = 4000.0f; // 최대 반지름
-        int numDecals = 50; // 데칼 개수
+        int numDecals = 30; // 데칼 개수
         
         for (int i = 0; i < numDecals; ++i)
         {
@@ -2001,6 +2006,120 @@ void ABossApernia::SpawnSwordDelay()
     }
 }
 
+void ABossApernia::ServerRPC_lastSpawnDecalSword2_Implementation()
+{
+    MulticastRPC_lastSpawnDecalSword2();
+}
+
+void ABossApernia::MulticastRPC_lastSpawnDecalSword2_Implementation()
+{
+    if (decalCircle)
+    {
+        FVector center(2490.0f, 4920.0f, 70.0f);
+        float radius = 500.0f; // 반지름을 500으로 설정
+        int numVertices = 5;
+        int decalsPerVertex = 10;
+        float distanceBetweenDecals = 500.0f; // 각 데칼 사이의 거리
+        float timerInterval = 0.3f; // 타이머 간격을 0.3초로 설정
+
+        savedDecalClass = decalCircle;
+        savedSpawnLocations.Empty();  // 저장된 스폰 위치 초기화
+        timerhandle_FinalDecalSpawn.Empty(); // 타이머 핸들 배열 초기화
+        timerhandle_FinalDecalSpawn.SetNum(numVertices * decalsPerVertex); // 타이머 핸들 배열 크기 설정
+
+        // 오각형의 각 꼭지점을 계산
+        for (int i = 0; i < numVertices; ++i)
+        {
+            float angle = (2 * PI / numVertices) * i;
+            float vertexX = center.X + radius * FMath::Cos(angle);
+            float vertexY = center.Y + radius * FMath::Sin(angle);
+            FVector vertexLocation(vertexX, vertexY, center.Z);
+
+            // 각 꼭지점에서 일정 방향으로 데칼을 스폰
+            FVector direction = (vertexLocation - center).GetSafeNormal();
+            for (int j = 0; j < decalsPerVertex; ++j)
+            {
+                FVector spawnLocation = vertexLocation + direction * (j * distanceBetweenDecals);
+
+                savedSpawnLocations.Add(spawnLocation);
+
+                int32 Index = savedSpawnLocations.Num() - 1; // 현재 스폰 위치의 인덱스
+                GetWorld()->GetTimerManager().SetTimer(timerhandle_FinalDecalSpawn[Index], FTimerDelegate::CreateUObject(this, &ABossApernia::SpawnDecal, Index), timerInterval * (j + 1), false);
+            }
+        }
+    }
+}
+
+void ABossApernia::ServerRPC_SpawnLazorDragonStatue_Implementation()
+{
+    MulticastRPC_SpawnLazorDragonStatue();
+}
+
+void ABossApernia::MulticastRPC_SpawnLazorDragonStatue_Implementation()
+{
+    if (dragonStatue)
+    {
+        AActor* spawnStatue1 = GetWorld()->SpawnActor<AActor>(dragonStatue, FVector(-1746.005594,5189.687336,64.716881), FRotator(0, 168.351455,0));
+        AActor* spawnStatue2 = GetWorld()->SpawnActor<AActor>(dragonStatue, FVector(3228.653738,274.006166,64.716998), FRotator(0,-79.428149,0));
+        AActor* spawnStatue3 = GetWorld()->SpawnActor<AActor>(dragonStatue, FVector(5782.191366,6995.086981,0), FRotator(0,37.086981,0));
+
+    }
+}
+
+void ABossApernia::SpawnDecal(int32 Index)
+{
+    if (savedDecalClass && savedSpawnLocations.IsValidIndex(Index))
+    {
+        FVector spawnLocation = savedSpawnLocations[Index];
+        GetWorld()->SpawnActor<AActor>(savedDecalClass, spawnLocation, FRotator::ZeroRotator);
+    }
+}
+
+void ABossApernia::ServerRPC_lastSpawnDecalSword1_Implementation()
+{
+    MulticastRPC_lastSpawnDecalSword1();
+}
+
+void ABossApernia::MulticastRPC_lastSpawnDecalSword1_Implementation()
+{
+    if (decalCircle)
+    {
+        FVector center(2490.0f, 4920.0f, 70.0f);
+        float radius = 350.0f; // 오각형의 반지름
+        int numVertices = 30;
+        int decalsPerVertex = 8;
+        float distanceBetweenDecals = 900.0f; // 각 데칼 사이의 거리
+
+        savedDecalClass = decalCircle;
+        savedSpawnLocations.Empty();  
+        timerhandle_FinalDecalSpawn.Empty(); 
+        timerhandle_FinalDecalSpawn.SetNum(numVertices * decalsPerVertex); // 타이머 핸들 배열 크기 설정
+
+        // 오각형의 각 꼭지점을 계산
+        for (int i = 0; i < numVertices; ++i)
+        {
+            float angle = (2 * PI / numVertices) * i;
+            float vertexX = center.X + radius * FMath::Cos(angle);
+            float vertexY = center.Y + radius * FMath::Sin(angle);
+            FVector vertexLocation(vertexX, vertexY, center.Z);
+
+            // 각 꼭지점에서 일정 방향으로 데칼을 스폰
+            FVector direction = (vertexLocation - center).GetSafeNormal();
+            for (int j = 0; j < decalsPerVertex; ++j)
+            {
+                FVector spawnLocation = vertexLocation + direction * (j * distanceBetweenDecals);
+
+                savedSpawnLocations.Add(spawnLocation);
+
+                int32 Index = savedSpawnLocations.Num() - 1; // 현재 스폰 위치의 인덱스
+                GetWorld()->GetTimerManager().SetTimer(timerhandle_FinalDecalSpawn[Index], FTimerDelegate::CreateUObject(this, &ABossApernia::SpawnDecal, Index), j * 0.3f, false); // 타이머 간격 조정
+            }
+        }
+    }
+}
+
+
+
 void ABossApernia::ServerRPC_SpawnDecalSword6_Implementation()
 {
     MulticastRPC_SpawnDecalSword6();
@@ -2009,20 +2128,32 @@ void ABossApernia::ServerRPC_SpawnDecalSword6_Implementation()
 void ABossApernia::MulticastRPC_SpawnDecalSword6_Implementation()
 {
     
-        FVector center(2490.0f, 4920.0f, 70.0f); // 중앙점
-        float radius = 6000.0f; // 반지름 설정
-        int numDecals = 37; // 데칼 개수
+    // Central point
+    FVector center(2490.0f, 4920.0f, 70.0f);
+    float radius = 6000.0f;
+    int numDecals = 37;
 
-        for (int i = 0; i < numDecals; ++i)
+    for (int i = 0; i < numDecals; ++i)
+    {
+        // Calculate the angle for the current decal
+        float angle = (2 * PI / numDecals) * i;
+        float x = center.X + radius * FMath::Cos(angle);
+        float y = center.Y + radius * FMath::Sin(angle);
+        FVector spawnLocation(x, y, center.Z);
+
+        // Spawn the actor at the calculated location
+        if (fireActor)
         {
-            float angle = (2 * PI / numDecals) * i; // 
-            float x = center.X + radius * FMath::Cos(angle);
-            float y = center.Y + radius * FMath::Sin(angle);
-            FVector spawnLocation(x, y, center.Z);
+            // Spawn the actor and set its location
+            AFireActor* spawnedActor = GetWorld()->SpawnActor<AFireActor>(fireActor, spawnLocation + FVector(0, 0, -100), FRotator::ZeroRotator);
 
-            UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), fireNA, spawnLocation + FVector(0, 0, -100), FRotator::ZeroRotator, FVector(5.0f));
+            if (spawnedActor)
+            {
+                // Set the scale of the spawned actor
+                spawnedActor->SetActorScale3D(FVector(7.0f)); // Set the scale to 10
+            }
         }
-    
+    }
 }
 
 void ABossApernia::ServerRPC_SpawnDecalSword7_Implementation()
@@ -2038,11 +2169,68 @@ void ABossApernia::MulticastRPC_SpawnDecalSword7_Implementation()
 
     for (int i = 0; i < numDecals; ++i)
     {
-        float angle = (2 * PI / numDecals) * i; // 
+        float angle = (2 * PI / numDecals) * i; // 각도 계산
         float x = center.X + radius * FMath::Cos(angle);
         float y = center.Y + radius * FMath::Sin(angle);
         FVector spawnLocation(x, y, center.Z);
 
-        UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), fireNA, spawnLocation+FVector(0,0,-100), FRotator::ZeroRotator, FVector(5.0f));
+        if (fireActor)
+        {
+            AFireActor* spawnedActor = GetWorld()->SpawnActor<AFireActor>(fireActor, spawnLocation + FVector(0, 0, -100), FRotator::ZeroRotator);
+
+            if (spawnedActor)
+            {
+
+                spawnedActor->SetActorScale3D(FVector(5.0f)); 
+            }
+        }
+    }
+}
+
+void ABossApernia::ServerRPC_SpawnBoundCollision_Implementation()
+{
+    MulticastRPC_SpawnBoundCollision();
+}
+
+void ABossApernia::MulticastRPC_SpawnBoundCollision_Implementation()
+{
+    // 현재 위치와 방향을 가져옵니다.
+    FVector CurrentLocation = GetActorLocation();
+    FVector ForwardVector = GetActorForwardVector();
+
+    // 새로운 위치를 계산합니다.
+    FVector SpawnLocation = CurrentLocation + (ForwardVector * 400.0f);
+    SpawnLocation.Z -= 200.0f;
+
+    // 새로운 위치에서 액터를 스폰합니다.
+    ABoundCollision* spawnedActor = GetWorld()->SpawnActor<ABoundCollision>(boundCollision, SpawnLocation, GetActorRotation());
+
+    if (spawnedActor)
+    {
+        spawnedActor->SetActorScale3D(FVector(7.0f));
+    }
+}
+
+void ABossApernia::ServerRPC_SpawnBoundCollision2_Implementation()
+{
+    MulticastRPC_SpawnBoundCollision2();
+}
+
+void ABossApernia::MulticastRPC_SpawnBoundCollision2_Implementation()
+{
+    // 현재 위치와 방향을 가져옵니다.
+    FVector CurrentLocation = GetActorLocation();
+    FVector ForwardVector = GetActorForwardVector();
+
+    // 새로운 위치를 계산합니다.
+    FVector SpawnLocation = CurrentLocation + (ForwardVector * 100.0f);
+    SpawnLocation.Z -= 500.0f;
+
+    // 새로운 위치에서 액터를 스폰합니다.
+    ABoundCollision* spawnedActor = GetWorld()->SpawnActor<ABoundCollision>(boundCollision, SpawnLocation, GetActorRotation());
+
+    if (spawnedActor)
+    {
+        spawnedActor->SetActorScale3D(FVector(3.0f));
     }
 }

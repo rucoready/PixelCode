@@ -353,6 +353,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	TSubclassOf<UCameraShakeBase> cameraShakeCounterOBJ;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	TSubclassOf<class ABoundCollision> boundCollision;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnBoundCollision();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnBoundCollision();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnBoundCollision2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnBoundCollision2();
+
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_JumpAttack03V1();
 
@@ -814,8 +829,34 @@ public:
 
 	void SpawnSwordDelay();
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_lastSpawnDecalSword1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_lastSpawnDecalSword1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_lastSpawnDecalSword2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_lastSpawnDecalSword2();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnLazorDragonStatue();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnLazorDragonStatue();
+
+
+
+	void SpawnDecal(int32 Index);
+
 	// 데칼 스폰을 위한 타이머 핸들
 	FTimerHandle TimerHandle;
+
+	TArray<FVector> savedSpawnLocations;
+	TArray<FTimerHandle> timerhandle_FinalDecalSpawn;
+	TSubclassOf<AActor> savedDecalClass;
 
 	// 현재 스폰할 데칼의 인덱스
 	int CurrentDecalIndex;
@@ -829,6 +870,14 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class TSubclassOf<class ADemonSword> demonSwordV2;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class ADragonRazorStatue> dragonStatue;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class AFireActor> fireActor;
+
+	
 
 	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
 	class UNiagaraSystem* fireNA;

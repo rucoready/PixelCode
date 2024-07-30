@@ -56,9 +56,21 @@ public:
 
     bool OnceSpawnDecalSword11 = false;
 
+    bool OnceSpawnDecalSword12 = false;
+
+    bool OnceSpawnDecalSword13 = false;
+
+    bool OnceSpawnDecalSword14 = false;
+
+    bool OnceSpawnDecalSword15 = false;
+
+    bool OnceSpawnDecalSword16 = false;
+
     bool OnceFireSpawn = false;
 
     bool OnceFireSpawn2 = false;
+
+    bool OnceSpawnStatue = false;
 
     float lerpDuration = 3.0f; 
 
