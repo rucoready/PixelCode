@@ -6,6 +6,7 @@
 #include "Player/Interfaces/InteractionWidget.h"
 #include "Player/PlayerStatWidget.h"
 #include "CraftingWidget.h"
+#include "BulidWIdget.h"
 //#include "LootPanel.h"
 
 
@@ -175,4 +176,62 @@ void APlayerHUD::creatwidgets()
 	
 	
 
+}
+
+void APlayerHUD::ShowBuilding()
+{
+	if (Building)
+	{
+
+		Buildwidgets();
+		const FInputModeGameOnly InputMode;
+		Building->SetVisibility(ESlateVisibility::Visible);
+		//Building->RefreshCraftingScreen();
+		bIsbuildVisible = true;
+		GetOwningPlayerController()->SetShowMouseCursor(true);
+		GetOwningPlayerController()->SetInputMode(InputMode);
+	}
+}
+
+void APlayerHUD::HideBuildinging()
+{
+	if (Building)
+	{
+		Building->SetVisibility(ESlateVisibility::Collapsed);
+		bIsbuildVisible = false;
+		const FInputModeGameOnly InputMode; // 게임화면만 클릭하도록 설정
+		GetOwningPlayerController()->SetInputMode(InputMode);
+		GetOwningPlayerController()->SetShowMouseCursor(false);
+	}
+}
+
+void APlayerHUD::ToggleBuilding()
+{
+	if (bIsbuildVisible)
+	{
+		HideBuildinging();
+
+		const FInputModeGameOnly InputMode; // 게임화면만 클릭하도록 설정
+		GetOwningPlayerController()->SetInputMode(InputMode);
+		GetOwningPlayerController()->SetShowMouseCursor(false);
+	}
+	else
+	{
+		ShowBuilding();
+		//creatwidgets();
+
+		const FInputModeGameAndUI InputMode; // UI만 클릭하도록 설정
+		GetOwningPlayerController()->SetInputMode(InputMode);
+		GetOwningPlayerController()->SetShowMouseCursor(true);
+	}
+}
+
+void APlayerHUD::Buildwidgets()
+{
+	if (Building)
+	{
+		Building = CreateWidget<UBulidWIdget>(GetWorld(), BuildingClass);
+		Building->AddToViewport();
+		Building->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }

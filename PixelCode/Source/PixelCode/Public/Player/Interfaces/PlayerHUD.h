@@ -11,7 +11,9 @@ class UInteractionWidget;
 class UPlayerStatWidget;
 //class ULootPanel;
 class UCraftingWidget;
+class UBulidWIdget;
 struct FInteractableData;
+
 // HUD는 위젯을 생성하기 완벽한 장소
 /**
  *
@@ -71,6 +73,19 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	UCraftingWidget* Crafting;
+
+
+	void ShowBuilding();
+	void HideBuildinging();
+	bool bIsbuildVisible;
+	void ToggleBuilding();
+	void Buildwidgets();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	UBulidWIdget* Building;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UBulidWIdget> BuildingClass;
 	
 	
 

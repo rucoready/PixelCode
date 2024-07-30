@@ -166,7 +166,7 @@ class APixelCodeCharacter : public APlayerOrganism
 	UInputAction* IA_StopWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
-	UInputAction* IA_RemoveRock; 
+	UInputAction* IA_Build;
 
 	
 
@@ -614,8 +614,10 @@ public:
 	TSubclassOf<class APickup> pickupTwig;
 	//-----------------------------------------------------------------------------------
 
+
+	
 	UFUNCTION()
-	void OnRemoveRockPressed();  
+	void OnBuildUI();  
 
 	UFUNCTION(Server, Reliable) 
 	void SeverRPC_RemoveRock(const FHitResult& HitResult);

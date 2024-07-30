@@ -517,6 +517,26 @@ void APixelCodeCharacter::Interact()
 }
 
 
+// ============== 요한 빌드 UI ============================
+void APixelCodeCharacter::OnBuildUI()
+{
+	////bFarmModeOn = true;
+	//SeverRPC_RemoveRock(PerformLineTrace(1000, true));
+	//SeverRPC_RemoveMetal(PerformLineTrace(1000, true));
+	//SeverRPC_RemoveStone(PerformLineTrace(1000, true));
+	//SeverRPC_RemoveBush(PerformLineTrace(1000, true));
+	UE_LOG(LogTemp, Warning, TEXT("BULIDUI KET"));
+	if (!bIsJump)
+	{
+		if (HUD)
+		{
+			//HUD->ShowOrHideCrafting();
+			HUD->ToggleBuilding();
+		}
+	}
+}
+
+
 
 // 요한 ------------------------------------------------------------------------------------------
 
@@ -1311,14 +1331,7 @@ void APixelCodeCharacter::MultiRPC_RemoveFoliage_Implementation(const FHitResult
 	}
 }
 
-void APixelCodeCharacter::OnRemoveRockPressed()
-{
-	//bFarmModeOn = true;
-	SeverRPC_RemoveRock(PerformLineTrace(1000, true));
-	SeverRPC_RemoveMetal(PerformLineTrace(1000, true));
-	SeverRPC_RemoveStone(PerformLineTrace(1000, true));
-	SeverRPC_RemoveBush(PerformLineTrace(1000, true));
-}
+
 
 void APixelCodeCharacter::SeverRPC_RemoveRock_Implementation(const FHitResult& HitResult)
 {
@@ -1722,7 +1735,7 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 			EnhancedInputComponent->BindAction(IA_StopWidget, ETriggerEvent::Started, this, &APixelCodeCharacter::StopWidget);
 			
 			
-			EnhancedInputComponent->BindAction(IA_RemoveRock, ETriggerEvent::Started, this, &APixelCodeCharacter::OnRemoveRockPressed);
+			EnhancedInputComponent->BindAction(IA_Build, ETriggerEvent::Started, this, &APixelCodeCharacter::OnBuildUI);
 		}
 
 	}
