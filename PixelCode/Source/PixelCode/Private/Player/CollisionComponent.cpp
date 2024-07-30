@@ -61,8 +61,8 @@ void UCollisionComponent::ClearHitActor()
 
 void UCollisionComponent::CollisionTrace()
 {
-	FVector startSocketLocation = collisionMeshComponent->GetSocketLocation(startSocketName);
-	FVector endSocketLocation = collisionMeshComponent->GetSocketLocation(endSocketName);
+	startSocketLocation = collisionMeshComponent->GetSocketLocation(startSocketName);
+	endSocketLocation = collisionMeshComponent->GetSocketLocation(endSocketName);
 
 	TArray<FHitResult> arrayHits;
 	

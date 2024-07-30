@@ -34,7 +34,12 @@ public:
 
 	void InitializePickup(const TSubclassOf<UItemBase> BaseClass, const int32 InQuantity); // 픽업 초기화
 
-	void InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity); // 드랍 초기화
+
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity); // 드랍 초기화
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity); // 드랍 초기화
 
 	FORCEINLINE UItemBase* GetItemData() { return ItemReference; };
 
