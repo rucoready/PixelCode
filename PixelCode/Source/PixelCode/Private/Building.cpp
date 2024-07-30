@@ -279,8 +279,7 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 		}
 	}
 
-	//FTransform transform = BuildingSocketData.SocketTransform;
-	transform = BuildingSocketData.SocketTransform;
+	FTransform transform = BuildingSocketData.SocketTransform;
 	FString StrBuildType;
 
 // 	FBuildingData BuildingData;

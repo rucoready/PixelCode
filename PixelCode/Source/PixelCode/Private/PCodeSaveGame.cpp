@@ -133,47 +133,47 @@
 //    }
 //}
 
-void UPCodeSaveGame::AddBuildingData(FBuildingData param)
-{
-	//.Add(param);
-	//UGameplayStatics::SaveGameToSlot(this, slotName, 0);
-}
-
-void UPCodeSaveGame::SaveGame()
-{
-    UPCodeSaveGame* SaveGameInstance = Cast<UPCodeSaveGame>(UGameplayStatics::CreateSaveGameObject(UPCodeSaveGame::StaticClass()));
-    if (SaveGameInstance)
-    {
-        // 월드에서 모든 액터를 가져옴
-        TArray<ABuilding*> ActorsToSave;
-        //UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABuilding::StaticClass(), ActorsToSave);
-
-        for (TActorIterator<ABuilding> var(GetWorld()); var; ++var)
-        {
-            ActorsToSave.Add( *var);
-        }
-
-        // 액터들의 정보 저장
-        for (ABuilding* Actor : ActorsToSave)
-        {
-            if (Actor)
-            {
-                FBuildingData ActorData;
-                ActorData.ABuilding = Actor->GetClass();
-                ActorData.BuildingLocation = Actor->GetActorLocation();
-                ActorData.BuildingRotation = Actor->GetActorRotation();
-
-                // 액터 데이터를 세이브 게임 인스턴스에 추가
-                SaveGameInstance->SavedActors.Add(ActorData);
-            }
-        }
-
-        // 세이브 게임 슬롯에 저장
-        UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("BuildingDataStorage"), 0);
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Failed to create save game instance"));
-    }
-
-}
+// void UPCodeSaveGame::AddBuildingData(FBuildingData param)
+// {
+// 	//.Add(param);
+// 	//UGameplayStatics::SaveGameToSlot(this, slotName, 0);
+// }
+// 
+// void UPCodeSaveGame::SaveGame()
+// {
+//     UPCodeSaveGame* SaveGameInstance = Cast<UPCodeSaveGame>(UGameplayStatics::CreateSaveGameObject(UPCodeSaveGame::StaticClass()));
+//     if (SaveGameInstance)
+//     {
+//         // 월드에서 모든 액터를 가져옴
+//         TArray<ABuilding*> ActorsToSave;
+//         //UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABuilding::StaticClass(), ActorsToSave);
+// 
+//         for (TActorIterator<ABuilding> var(GetWorld()); var; ++var)
+//         {
+//             ActorsToSave.Add( *var);
+//         }
+// 
+//         // 액터들의 정보 저장
+//         for (ABuilding* Actor : ActorsToSave)
+//         {
+//             if (Actor)
+//             {
+//                 FBuildingData ActorData;
+//                 ActorData.ABuilding = Actor->GetClass();
+//                 ActorData.BuildingLocation = Actor->GetActorLocation();
+//                 ActorData.BuildingRotation = Actor->GetActorRotation();
+// 
+//                 // 액터 데이터를 세이브 게임 인스턴스에 추가
+//                 SaveGameInstance->SavedActors.Add(ActorData);
+//             }
+//         }
+// 
+//         // 세이브 게임 슬롯에 저장
+//         UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("BuildingDataStorage"), 0);
+//     }
+//     else
+//     {
+//         UE_LOG(LogTemp, Warning, TEXT("Failed to create save game instance"));
+//     }
+// 
+// }
