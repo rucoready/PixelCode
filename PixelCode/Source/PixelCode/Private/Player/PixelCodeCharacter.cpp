@@ -60,7 +60,8 @@
 #include "PCodeSaveGame.h"
 #include "Player/SpawnSkillActor/PlayerMageRightAttackSpawnActor.h"
 #include "Player/SpawnSkillActor/PlayerMageLeftAttackSpawnActor.h"
-
+#include "Player/SpawnSkillActor/PlayerMageQSkillSpawnActor.h"
+#include "Player/SpawnSkillActor/PlayerMageESkillSpawnActor.h"
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -1809,31 +1810,30 @@ void APixelCodeCharacter::SkillQ()
 			if (!bQskillCoolTime)
 			{
 				Mousehit();
-				UE_LOG(LogTemp, Warning, TEXT("QskillMage5"));
+			
 				if (false == combatComponent->bCombatEnable)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("QskillMage1"));
+				
 					return;
 				}
 				if (combatComponent->bAttacking)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("QskillMage2"));
 					combatComponent->bAttackSaved = true;
 				}
 				else
 				{
 					if (bUseSkill)
 					{
-						UE_LOG(LogTemp,Warning,TEXT("QskillMage"));
+					
 						PerformAttack(1, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -10);
+						FActorSpawnParameters SpawnParams;
+						GetWorld()->SpawnActor<APlayerMageQSkillSpawnActor>(mageQSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
 					}
-					UE_LOG(LogTemp, Warning, TEXT("QskillMage6"));
 				}
 
 				bQskillCoolTime = true;
-				UE_LOG(LogTemp, Warning, TEXT("QskillMage3"));
 				GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
 			}
 		}
@@ -1911,6 +1911,8 @@ void APixelCodeCharacter::SkillE()
 						PerformAttack(2, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -15);
+						FActorSpawnParameters SpawnParams;
+						GetWorld()->SpawnActor<APlayerMageESkillSpawnActor>(mageESkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
 					}
 				}
 
@@ -1991,6 +1993,8 @@ void APixelCodeCharacter::SkillR()
 						PerformAttack(3, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -20);
+						FActorSpawnParameters SpawnParams;
+						GetWorld()->SpawnActor<APlayerMageESkillSpawnActor>(mageESkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
 					}
 				}
 				bRskillCoolTime = true;

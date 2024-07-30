@@ -4,22 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PlayerMageLeftAttackSpawnActor.generated.h"
+#include "PlayerMageQSkillSpawnActor.generated.h"
+
 
 
 class UParticleSystem;
 class USceneComponent;
-class USphereComponent;
 class UParticleSystemComponent;
+class UBoxComponent;
 
 UCLASS()
-class PIXELCODE_API APlayerMageLeftAttackSpawnActor : public AActor
+class PIXELCODE_API APlayerMageQSkillSpawnActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	APlayerMageLeftAttackSpawnActor();
+	APlayerMageQSkillSpawnActor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,30 +31,37 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, Category = "Components")  // 보통 VisibleAnywhere로 선언하여 에디터에서 보이도록 설정
-    USceneComponent* SceneComp;
+	USceneComponent* SceneComp;
 
 	UPROPERTY(EditAnywhere, Category = "Components");
-	USphereComponent* SphereComp;
+	UBoxComponent* boxComp;
+
+	//UPROPERTY(EditAnywhere, Category = "Components");
+	//UBoxComponent* boxComp2;
+
+	//UPROPERTY(EditAnywhere, Category = "Components");
+	//UBoxComponent* boxComp3;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* NA_MageLeftAttack;
-	
-	UPROPERTY(EditAnywhere)
-	UParticleSystem* NA_MageLefthit;
+	UParticleSystem* NA_MageQSkill;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystemComponent* NA_MageLeftAttackComp;
+	UParticleSystem* NA_MageQSkillHit;
 
-	float Speed = 2000.f;
-
-	float DestroyTime = 0.0f;
-
-	bool bDestroy = false;
+	UPROPERTY(EditAnywhere)
+	UParticleSystemComponent* NA_MageQSkillComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-    float DamageAmount = 50;
+	float DamageAmount = 50;
 
 	UFUNCTION()
 	void OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	FVector InitialScale;
+	float ElapsedTime = 0.0f;
+	float MaxScaleFactor;
+	float ScaleSpeed;
+
+
 
 };

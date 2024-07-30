@@ -4,22 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PlayerMageLeftAttackSpawnActor.generated.h"
+#include "PlayerMageESkillSpawnActor.generated.h"
 
-
-class UParticleSystem;
+class UNiagaraSystem;
 class USceneComponent;
 class USphereComponent;
-class UParticleSystemComponent;
+class UNiagaraComponent;
+
 
 UCLASS()
-class PIXELCODE_API APlayerMageLeftAttackSpawnActor : public AActor
+class PIXELCODE_API APlayerMageESkillSpawnActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	APlayerMageLeftAttackSpawnActor();
+	APlayerMageESkillSpawnActor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,28 +30,20 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, Category = "Components")  // 보통 VisibleAnywhere로 선언하여 에디터에서 보이도록 설정
-    USceneComponent* SceneComp;
+		USceneComponent* SceneComp;
 
 	UPROPERTY(EditAnywhere, Category = "Components");
 	USphereComponent* SphereComp;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* NA_MageLeftAttack;
-	
-	UPROPERTY(EditAnywhere)
-	UParticleSystem* NA_MageLefthit;
-
-	UPROPERTY(EditAnywhere)
-	UParticleSystemComponent* NA_MageLeftAttackComp;
-
-	float Speed = 2000.f;
+	UNiagaraSystem* NS_MageESkillhit;
 
 	float DestroyTime = 0.0f;
 
 	bool bDestroy = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-    float DamageAmount = 50;
+	float DamageAmount = 300;
 
 	UFUNCTION()
 	void OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

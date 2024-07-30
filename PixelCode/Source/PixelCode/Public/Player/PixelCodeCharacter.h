@@ -36,6 +36,9 @@ class ApixelPlayerState;
 class AMyGameModeBase;
 class APlayerMageRightAttackSpawnActor;
 class APlayerMageLeftAttackSpawnActor;
+class APlayerMageQSkillSpawnActor;
+class APlayerMageESkillSpawnActor;
+
 
 UENUM()
 enum class MyEnum : int8
@@ -257,6 +260,8 @@ public:
 	float CurrentRSkillCoolTime = 0;
 	float CurrentZSkillCoolTime = 0;
 
+	// 스킬 스폰
+
 	UPROPERTY()
 	ASpawnSwordQSkill* SpawnQSkillCollsion;
 
@@ -269,6 +274,12 @@ public:
 	UPROPERTY()
 	APlayerMageLeftAttackSpawnActor* mageSpawnLeftAttackCollsion;
 
+	UPROPERTY()
+	APlayerMageQSkillSpawnActor* mageSpawnQSkillCollsion;
+
+	UPROPERTY()
+	APlayerMageESkillSpawnActor* mageSpawnESkillCollsion;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	TSubclassOf<ASpawnSwordQSkill> QSkillSpawn;
 
@@ -280,6 +291,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	TSubclassOf<APlayerMageLeftAttackSpawnActor> mageLeftAttackSpawn;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
+	TSubclassOf<APlayerMageQSkillSpawnActor> mageQSkillSpawn;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
+	TSubclassOf<APlayerMageESkillSpawnActor> mageESkillSpawn;
 
 	UFUNCTION(Server, Reliable) 
 	void SeverRPC_QSkillSpawn();
