@@ -7,9 +7,13 @@
 #include "Player/ParentItem.h"
 #include <../../../../../../../Source/Runtime/Core/Public/Templates/SharedPointer.h>
 #include "OnlineSessionSettings.h"
+#include "PCodeSaveGame.h"
+
 #include "Online/OnlineSessionNames.h"
 //#include <../../../../../../../Source/Runtime/Core/Public/Templates/SharedPointer.h>
 #include <xstring>
+#include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetArrayLibrary.h>
 
 void UPCodeGameInstance::Init()
 {
@@ -26,6 +30,25 @@ void UPCodeGameInstance::Init()
 		
 		sessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UPCodeGameInstance::OnJoinSessionComplete);
 	}
+
+ 	// 이미 세이브 된 빌딩 데이터가 있는지 확인해서 로드하기
+// 	if (UGameplayStatics::DoesSaveGameExist("BuildingDataStorage", 0))
+//  	{
+// 		UE_LOG(LogTemp, Warning, TEXT("-----------------------------*&^(*&^(*&^(*&^(*&^(*&^(*&^*(&^(*&^(*&^(^ Casted :: Ready to Load"));
+// 		//UPCodeSaveGame*saveGameCast = Cast<UPCodeSaveGame>(UGameplayStatics::LoadGameFromSlot("BuildingDataStorage", 0));
+// 		
+// 		//saveGameCast = Cast<UPCodeSaveGame>(UGameplayStatics::LoadGameFromSlot("BuildingDataStorage", 0));
+// 		UE_LOG(LogTemp, Warning, TEXT("-----------------------------*&^(*&^(*&^(*&^(*&^(*&^(*&^*(&^(*&^(*&^(^ Load Successful"));
+// 
+//  	}
+//  	else
+//  	{
+// 		UE_LOG(LogTemp, Warning, TEXT("-----------------------------*&^(*&^(*&^(*&^(*&^(*&^(*&^*(&^(*&^(*&^(^ No Save Game EXIST :: Ready to Create"));
+// 
+// 		UGameplayStatics::CreateSaveGameObject(UPCodeSaveGame::StaticClass());
+// 		UE_LOG(LogTemp, Warning, TEXT("-----------------------------*&^(*&^(*&^(*&^(*&^(*&^(*&^*(&^(*&^(*&^(^ No Save Game EXIST :: CreateSaveGameObject"));
+// 
+//  	}
 }
 
 void UPCodeGameInstance::CreateMySession(FString roomName,  int32 PlayerCount)
@@ -279,4 +302,20 @@ TArray<UInventoryComponent*> UPCodeGameInstance::LoadInventory()
 	return PlayerInventory;
 }
 
-//============================================================================================================
+
+// 서휘---------------빌딩 세이브
+// 	void UPCodeGameInstance::AddBuildingData(FBuildingData param)
+// 	{
+// 		SaveGame->Arr_BuildingData.Add(param);
+// 	
+// 		UGameplayStatics::SaveGameToSlot(SaveGame, SavedBuildingDataName, 0);
+// 	}
+// 	
+// 	void UPCodeGameInstance::RemoveBuildingData(FBuildingData param)
+// 	{
+// 		for (FBuildingData* data : SaveGame->Arr_BuildingData)
+// 		{
+// 	
+// 		}
+// 		UGameplayStatics::SaveGameToSlot(SaveGame, SavedBuildingDataName, 0);
+//}

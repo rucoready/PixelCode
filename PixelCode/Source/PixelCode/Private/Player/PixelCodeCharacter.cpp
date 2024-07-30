@@ -57,6 +57,7 @@
 #include "ISMStoneFoliage.h"
 #include "ISMBushFoliage.h"
 #include "ISMMetalFoliage.h"
+#include "PCodeSaveGame.h"
 
 
 
@@ -1105,6 +1106,7 @@ void APixelCodeCharacter::SpawnBuilding()
 	{
 		Builder->SpawnBuilding();
 	}
+	
 }
 
 void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
@@ -1175,6 +1177,47 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 			break;
 		}
 	}
+
+	UPCodeSaveGame* saveGameCast = Cast<UPCodeSaveGame>(UGameplayStatics::CreateSaveGameObject(UPCodeSaveGame::StaticClass()));
+
+	if (saveGameCast)
+	{
+		//saveGameCast->SaveGame();
+		UE_LOG(LogTemp, Warning, TEXT("---------***&*&*&*&*&*&&*&*&&*&*&*&&*&*&*&*&&&*&*&*&*----SaveGame"));
+
+		// 월드에서 모든 액터를 가져옴
+		/*TArray<ABuilding*> ActorsToSave;*/
+		//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABuilding::StaticClass(), ActorsToSave);
+
+		for (TActorIterator<ABuilding> var(GetWorld()); var; ++var)
+		{
+			ActorsToSave.Add(*var);
+		}
+
+		// 액터들의 정보 저장
+		for (ABuilding* Actor : ActorsToSave)
+		{
+			if (Actor)
+			{
+				FBuildingData ActorData;
+				ActorData.ABuilding = Actor->GetClass();
+				ActorData.BuildingLocation = Actor->GetActorLocation();
+				ActorData.BuildingRotation = Actor->GetActorRotation();
+			
+
+				// 액터 데이터를 세이브 게임 인스턴스에 추가
+				saveGameCast->SavedActors.Add(ActorData);
+			}
+		}
+
+		// 세이브 게임 슬롯에 저장
+		UGameplayStatics::SaveGameToSlot(saveGameCast, TEXT("BuildingDataStorage"), 0);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to create save game instance"));
+	}
+	
 }
 
 //------------------------------------Destroy Building Network
@@ -1195,27 +1238,27 @@ void APixelCodeCharacter::DestroyBuildingInstance()
 		Builder->DestroyInstance(PerformLineTrace());
 	}
 }
-/////////////////////////////////////////////////
-void APixelCodeCharacter::ServerRPC_DestroyBuildingInstanceV2_Implementation(const FHitResult& HitResult)
-{
-		MulticastRPC_DestroyBuildingInstanceV2(HitResult);
-
-}
-
-void APixelCodeCharacter::MulticastRPC_DestroyBuildingInstanceV2_Implementation(const FHitResult& HitResult)
-{
-	if (HitResult.bBlockingHit)
-	{
-		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
-
-		if (Instance)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("------------------Destroy MultiRPC"));
-
-			Instance->DestroyComponent();
-		}
-	}
-}
+// 
+// void APixelCodeCharacter::ServerRPC_DestroyBuildingInstanceV2_Implementation(const FHitResult& HitResult)
+// {
+// 		MulticastRPC_DestroyBuildingInstanceV2(HitResult);
+// 
+// }
+// 
+// void APixelCodeCharacter::MulticastRPC_DestroyBuildingInstanceV2_Implementation(const FHitResult& HitResult)
+// {
+// 	if (HitResult.bBlockingHit)
+// 	{
+// 		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
+// 
+// 		if (Instance)
+// 		{
+// 			UE_LOG(LogTemp, Warning, TEXT("------------------Destroy MultiRPC"));
+// 
+// 			Instance->DestroyComponent();
+// 		}
+// 	}
+// }
 /////////////////////////////////////////////////
 void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation()
 {

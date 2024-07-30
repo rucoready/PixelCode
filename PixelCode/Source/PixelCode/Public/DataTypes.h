@@ -76,6 +76,28 @@ struct FInstanceSocketCheck
 	TArray<FBuildIndexSockets> InstanceSocketInformation;
 };
 
+USTRUCT(BlueprintType)
+struct FBuildingData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KSH")
+    TSubclassOf<class ABuilding> ABuilding;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KSH")
+	EBuildType BuildType;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KSH")
+	FTransform Transf;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KSH")
+    FVector BuildingLocation;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KSH")
+	FRotator BuildingRotation;
+
+};
+
 
 /**
  * 

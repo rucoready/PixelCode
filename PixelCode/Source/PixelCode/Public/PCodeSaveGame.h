@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "DataTypes.h"
 #include "PCodeSaveGame.generated.h"
 
 /**
@@ -14,4 +15,14 @@ class PIXELCODE_API UPCodeSaveGame : public USaveGame
 {
 	GENERATED_BODY()
 	
+public:
+	
+	FString slotName = "BuildingDataStorage";
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
+	TArray<FBuildingData> SavedActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
+	UPCodeSaveGame* saveGameCast;
+
 };

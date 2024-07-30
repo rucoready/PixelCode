@@ -511,6 +511,9 @@ public:
 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
 	ABuilding* Buildings;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
+	TArray<ABuilding*> ActorsToSave;
+
 	//------------------------------------------------------------------------------------------
 	UFUNCTION()
 	void OnSetBuildModePressed();  
@@ -573,12 +576,12 @@ public:
 
 	
 	/// //////////////////
-	
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_DestroyBuildingInstanceV2(const FHitResult& HitResult);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastRPC_DestroyBuildingInstanceV2(const FHitResult& HitResult);
+// 	
+// 	UFUNCTION(Server, Reliable)
+// 	void ServerRPC_DestroyBuildingInstanceV2(const FHitResult& HitResult);
+// 
+// 	UFUNCTION(NetMulticast, Reliable)
+// 	void MulticastRPC_DestroyBuildingInstanceV2(const FHitResult& HitResult);
 
 	////////
 

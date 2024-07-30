@@ -86,14 +86,12 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 		if (Pc)
 		{
 			pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
-
 			FRotator ControlRotation = Pc->GetControlRotation();
 
 			// Z축 회전을 컨트롤러의 회전으로 설정
 			FRotator NewRotation = GetActorRotation();
 			NewRotation.Yaw = ControlRotation.Yaw;
-			SetActorRotation(NewRotation);
-			//UE_LOG(LogTemp, Warning, TEXT("+++++++++++++++++++++++++++++++++++++++"));
+			SetActorRotation(NewRotation);		//플레이어 시점을 따라 메시가 이동하도록
 		}
 		SetActorHiddenInGame(false); // BuildingVisual 프리뷰 보이기
 		InteractingBuilding = GetHitBuildingActor(HitResult); // HitResult를 Building의 Actor로 캐스팅
@@ -101,9 +99,6 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
  		// #19 건축 자재 스냅시키기
  		if (InteractingBuilding)
  		{
- 			FString sMode = bReturnedMesh ? TEXT("ReturnMesh : True") : TEXT("ReturnMesh : False");
- 			//UE_LOG(LogTemp, Warning, TEXT("------------------ %s"), *sMode);
- 
  			if (!bReturnedMesh)
  			{
  				ReturnMeshToSelected(); // 여기서 bReturnMesh = true
@@ -118,7 +113,7 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
  				if (MaterialTrue && !bMaterialIsTrue)
  				{
  					bMaterialIsTrue = true;
- 					BuildMesh->SetMaterial(0, MaterialTrue);
+ 					BuildMesh->SetMaterial(0, MaterialTrue);		// 프리뷰 초록색으로
  				}
  				return;
  			}
@@ -127,9 +122,9 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
  				if (MaterialFalse && bMaterialIsTrue)
  				{
  					bMaterialIsTrue = false;
- 					BuildMesh->SetMaterial(0, MaterialFalse);
+ 					BuildMesh->SetMaterial(0, MaterialFalse);		// 프리뷰 빨간색으로
  				}
- 				SetActorLocation/*AndRotation*/(HitResult.Location/*, GetActorRotation()*/); // 라인트레이스 거리 안에 빌딩 메쉬가 감지되면 소켓 데이터를 받아 스냅시긴다
+ 				SetActorLocation/*AndRotation*/(HitResult.Location/*, GetActorRotation()*/);		// 스냅배치 회전값을 초기화
   			}
  		}
  		else
@@ -147,7 +142,7 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 			NewLoc = Loc;
 			NewLoc.Z =Loc.Z + 40.f;
 //  			SetActorLocation(HitResult.ImpactPoint);
-			SetActorLocation(NewLoc);
+			SetActorLocation(NewLoc);		// 땅에서 40cm 위로 프리뷰 띄우기
  		}
 	}
 	else

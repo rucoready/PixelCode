@@ -156,5 +156,26 @@ class PIXELCODE_API UPCodeGameInstance : public UGameInstance
 
 	UPROPERTY(EditAnywhere, Category = "KYH")
 	TArray<UInventoryComponent*> PlayerInventory;
+
+// 	UPROPERTY(EditAnywhere, Category = KSH)
+// 	TArray<ABuilding*> ActorsToSave;
+
+
+public:
+	
+// 	FString SavedBuildingDataName = TEXT("BuildingStorage");
+// 
+// 	
+// 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings")
+// 	class UPCodeSaveGame* SaveGame;
+// 
+// 	TSubclassOf<class UPCodeSaveGame> C_SaveGame;
+// 
+// 	UFUNCTION(BlueprintCallable, Category = KSH)
+// 	void AddBuildingData(FBuildingData param);
+// 	
+// 	UFUNCTION(BlueprintCallable, Category = KSH)
+// 	void RemoveBuildingData(FBuildingData param);
+
 };
 

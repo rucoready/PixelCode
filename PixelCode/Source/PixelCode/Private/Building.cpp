@@ -5,6 +5,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/Components/InstancedStaticMeshComponent.h>
 #include "Player/PixelCodeCharacter.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
+#include "PCodeSaveGame.h"
 
 ABuilding::ABuilding()
 {
@@ -278,8 +279,17 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 		}
 	}
 
-	FTransform transform = BuildingSocketData.SocketTransform;
+	//FTransform transform = BuildingSocketData.SocketTransform;
+	transform = BuildingSocketData.SocketTransform;
 	FString StrBuildType;
+
+// 	FBuildingData BuildingData;
+// 	BuildingData.ABuilding = this->GetClass();
+// 	BuildingData.BuildingLocation = transform.GetLocation();
+// 	BuildingData.BuildingRotation = transform.GetRotation();
+// 
+// 	UPCodeSaveGame* SaveGameInstance = Cast<UPCodeSaveGame>(UGameplayStatics:;CreateSaveGameObject(UPCodeSaveGame::StaticClass()));
+
 
 	switch (BuildType)
 	{		
@@ -342,6 +352,8 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 		break;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("------------------BuildType %s"), *StrBuildType);
+
+
 
  	auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
  
