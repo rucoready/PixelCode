@@ -857,26 +857,31 @@ void APixelCodeCharacter::OnSetBuildModePressed()
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-	if (HasAuthority())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server player"));
 
-		bInBuildMode = !GetBuildMode();
-		if (Builder)
-		{
-			Builder->SetActorHiddenInGame(!bInBuildMode);
-			UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server On"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @client player"));
-		ServerRPC_SetBuildMode(!GetBuildMode());
-	}
+	SetBuildMode(!GetBuildMode());
+
+
+
+// 		if (HasAuthority())
+// 		{
+// 			UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server player"));
+// 
+// 			bInBuildMode = !GetBuildMode();
+// 			if (Builder)
+// 			{
+// 				Builder->SetActorHiddenInGame(!bInBuildMode);
+// 				UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server On"));
+// 			}
+// 			else
+// 			{
+// 				UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
+// 			}
+// 		}
+// 		else
+// 		{
+// 			UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @client player"));
+// 			ServerRPC_SetBuildMode(!GetBuildMode());
+// 		}
 }
 
 void APixelCodeCharacter::SetBuildMode(bool Enabled)
@@ -928,19 +933,30 @@ void APixelCodeCharacter::ServerRPC_SetBuildMode_Implementation(bool mode)
 		}
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ServerRPC"));
-   	bInBuildMode = mode;
-   	if (Builder)
-   	{
-   		Builder->SetActorHiddenInGame(!bInBuildMode);
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ServerRPC On"));
-   	}
-   	else
-   	{
-   		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
-   	}
+
+
+
+
+
+
+
+//  	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ServerRPC"));
+//    	bInBuildMode = mode;
+//    	if (Builder)
+//    	{
+//    		Builder->SetActorHiddenInGame(!bInBuildMode);
+// 		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ServerRPC On"));
+//    	}
+//    	else
+//    	{
+//    		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
+//    	}
 
  	MultiRPC_SetBuildMode(mode);
+
+
+
+
 // 	ClientRPC_SetBuildMode(mode);
 }
 
