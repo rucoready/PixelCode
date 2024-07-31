@@ -1632,7 +1632,7 @@ void APixelCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(APixelCodeCharacter, BuildingClass);
 	DOREPLIFETIME(APixelCodeCharacter, Builder);
 	DOREPLIFETIME(APixelCodeCharacter, Buildings); 
-	DOREPLIFETIME(APixelCodeCharacter, bInBuildMode); 
+	// DOREPLIFETIME(APixelCodeCharacter, bInBuildMode); 
 	DOREPLIFETIME(APixelCodeCharacter, RollAnim);
 	DOREPLIFETIME(APixelCodeCharacter, Iteminfos);
 }
