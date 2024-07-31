@@ -40,6 +40,8 @@ public:
 
 	void TakeDamage(float damage);
 
+	void OnMyClickBlackRoom();
+
 	float currentHp;
 
 	float maxHp = 30.0f;

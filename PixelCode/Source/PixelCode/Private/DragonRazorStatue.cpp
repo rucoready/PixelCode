@@ -100,6 +100,10 @@ void ADragonRazorStatue::TakeDamage(float damage)
     
 }
 
+void ADragonRazorStatue::OnMyClickBlackRoom()
+{
+}
+
 void ADragonRazorStatue::SpawnFractureStatue()
 {
     if (fractureStatue)

@@ -22,7 +22,7 @@ class PIXELCODE_API APCodePlayerController : public APlayerController
 	
 public:
 	
-	
+	class APlayerController* PlayerController;
 
 // ������ ---------------------------------------------------------------------
 

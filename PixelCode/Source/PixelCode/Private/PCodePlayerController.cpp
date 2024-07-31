@@ -301,7 +301,7 @@ void APCodePlayerController::MulticastRPC_HideWidgetRobbyWidget_Implementation()
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
 		APlayerController* BaseController = It->Get();
-		APCodePlayerController* PlayerController = Cast<APCodePlayerController>(BaseController);
+		PlayerController = Cast<APCodePlayerController>(BaseController);
 		if (PlayerController && WidgetInstance)
 		{
 			WidgetInstance->RemoveFromParent();

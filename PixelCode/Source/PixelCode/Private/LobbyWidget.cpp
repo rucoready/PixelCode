@@ -27,6 +27,9 @@ void ULobbyWidget::NativeConstruct()
 	Button_GoFindRoom->OnClicked.AddDynamic(this, &ULobbyWidget::OnMyClickGoFindRoom);
 	Button_FindRoom->OnClicked.AddDynamic(this, &ULobbyWidget::OnMyClickFindRoom);
 	
+
+	Button_Back1->OnClicked.AddDynamic(this, &ULobbyWidget::OnMyClickBackRoom);
+	Button_Back2->OnClicked.AddDynamic(this, &ULobbyWidget::OnMyClickBackRoom);
 	
 	SwitcherUI->SetActiveWidgetIndex(0);
 
@@ -34,6 +37,11 @@ void ULobbyWidget::NativeConstruct()
 
 	Slider_PlayerCount->OnValueChanged.AddDynamic(this, &ULobbyWidget::OnValueChanged);
 
+	SwitcherUI->SetActiveWidgetIndex(0);
+}
+
+void ULobbyWidget::OnMyClickBackRoom()
+{
 	SwitcherUI->SetActiveWidgetIndex(0);
 }
 
