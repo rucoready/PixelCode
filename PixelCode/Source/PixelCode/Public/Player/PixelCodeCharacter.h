@@ -544,6 +544,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
 	TArray<ABuilding*> ActorsToSave;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
+	TArray<UInstancedStaticMeshComponent*> InstsToSave;
+
+
+ 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
+ 	UInstancedStaticMeshComponent* InstMeshComp;
+
+
 	//------------------------------------------------------------------------------------------
 	UFUNCTION()
 	void OnSetBuildModePressed();  

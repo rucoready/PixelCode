@@ -77,18 +77,12 @@ struct FInstanceSocketCheck
 };
 
 USTRUCT(BlueprintType)
-struct FBuildingData
+struct FBuildingActorData
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KSH")
     TSubclassOf<class ABuilding> ABuilding;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KSH")
-	EBuildType BuildType;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KSH")
-	FTransform Transf;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KSH")
     FVector BuildingLocation;
@@ -98,10 +92,19 @@ struct FBuildingData
 
 };
 
+USTRUCT(BlueprintType)
+struct FBuildingInstanceData
+{
+	GENERATED_BODY()
 
-/**
- * 
- */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KSH")
+	UInstancedStaticMeshComponent* InstancedComponent;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "KSH")
+	FTransform InstTransform;	  
+};
+
+
 //UCLASS()
 //class PIXELCODE_API UDataTypes : public UObject
 //{

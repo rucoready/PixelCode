@@ -20,9 +20,12 @@ public:
 	FString slotName = "BuildingDataStorage";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
-	TArray<FBuildingData> SavedActors;
+	TArray<FBuildingActorData> SavedActors;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
-	UPCodeSaveGame* saveGameCast;
+	TArray<FBuildingInstanceData> SavedInstances;
+
+// 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
+// 	UPCodeSaveGame* saveGameCast;
 
 };

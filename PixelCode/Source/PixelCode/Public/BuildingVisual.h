@@ -31,6 +31,7 @@ public:
 	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
 	TSubclassOf<ABuilding> BuildingClass;
 
+
 	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
 	TArray<FBuildingVisualType> BuildingTypes;
 

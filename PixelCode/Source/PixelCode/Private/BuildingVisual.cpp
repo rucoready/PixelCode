@@ -9,6 +9,7 @@
 #include "Player/PixelCodeCharacter.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
+#include "PCodeSaveGame.h"
 
 
 // Sets default values
@@ -207,8 +208,49 @@ void ABuildingVisual::SpawnBuilding()
 							}
 							else
 							{
-								GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
+								//GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
+								ABuilding* AbuildingClass = GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
 								UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Spawn Actor"));
+ 
+								
+
+								UPCodeSaveGame* castSave = Cast<UPCodeSaveGame>(UGameplayStatics::CreateSaveGameObject(UPCodeSaveGame::StaticClass()));
+
+								UPCodeSaveGame* castLoad = Cast<UPCodeSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("BuildingDataStorage"), 0));
+								
+								if (castLoad)
+								{
+
+									int32 arrnum = castLoad->SavedActors.Num();
+									UE_LOG(LogTemp, Warning, TEXT("-------------SaveGametoSLOT__ACTOR Load :: %d "), arrnum);
+
+									FBuildingActorData BuildingActorData;
+									BuildingActorData.ABuilding = AbuildingClass->GetClass();
+									BuildingActorData.BuildingLocation = AbuildingClass->GetActorLocation();
+									BuildingActorData.BuildingRotation = AbuildingClass->GetActorRotation();
+
+									castLoad->SavedActors.Add(BuildingActorData);
+									UGameplayStatics::SaveGameToSlot(castLoad, TEXT("BuildingDataStorage"), 0);
+									UE_LOG(LogTemp, Warning, TEXT("-------------SaveGametoSLOT__ACTOR Load :: %d "), arrnum);
+
+								}
+
+ 								else if (castSave)
+ 								{
+									int32 arrnum = castSave->SavedActors.Num();
+									UE_LOG(LogTemp, Warning, TEXT("-------------SaveGametoSLOT__ACTOR Cast :: %d "), arrnum);
+
+ 									FBuildingActorData BuildingActorData;
+ 									BuildingActorData.ABuilding = AbuildingClass->GetClass();
+ 									BuildingActorData.BuildingLocation = AbuildingClass->GetActorLocation();
+ 									BuildingActorData.BuildingRotation = AbuildingClass->GetActorRotation();
+ 
+ 									castSave->SavedActors.Add(BuildingActorData);
+ 									UGameplayStatics::SaveGameToSlot(castSave, TEXT("BuildingDataStorage"), 0);
+
+ 									UE_LOG(LogTemp, Warning, TEXT("-------------SaveGametoSLOT__ACTOR Cast :: %d "), arrnum);
+ 
+ 								}
 							}
 						}
 					}
