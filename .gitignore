@@ -40,6 +40,7 @@
 *.sdf
 *.VC.db
 *.VC.opendb
+*.bat
 
 # Precompiled Assets
 **/SourceArt/**/*.png
@@ -70,7 +71,10 @@ Build/*/**
 **/Intermediate/*
 **/Plugins/*/Intermediate/*
 
-**/PixelCode.bat/*
-
 # Cache files for the editor to use
 **/DerivedDataCache/*
+
+#bat file
+
+**/*.bat
+*/*.bat
