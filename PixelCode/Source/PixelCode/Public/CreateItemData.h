@@ -50,6 +50,10 @@
 	ETN_WoodRoof = 47		UMETA(DisplayName = "WoodRoof"),
 	ETN_WoodGable = 48 		UMETA(DisplayName = "WoodGable"),
 	ETN_CreateItem = 60		UMETA(DisplayName = "CreateItem"),
+	ETN_BlueSoulStone = 61  UMETA(DisplayName = "BlueSoulStone"),
+	ETN_PupplStone = 62		UMETA(DisplayName = "PupplStone"),
+	ETN_GreenStone = 63		UMETA(DisplayName = "GreenStone"),
+	ETN_YellowStone = 64    UMETA(DisplayName = "YellowStone"),
 
 	ETN_MAX					UMETA(DisplayName = "MAX")
 
