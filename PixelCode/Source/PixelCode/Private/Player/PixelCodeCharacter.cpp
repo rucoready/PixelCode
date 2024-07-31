@@ -53,6 +53,7 @@
 #include "GameFramework/PlayerState.h"
 #include <../../../../../../../Source/Runtime/Engine/Public/EngineUtils.h>
 #include "GameFramework/GameStateBase.h"
+#include "ISMTreeFoliage.h"
 #include "ISMRockFoliage.h"
 #include "ISMStoneFoliage.h"
 #include "ISMBushFoliage.h"
@@ -1387,10 +1388,10 @@ void APixelCodeCharacter::MultiRPC_RemoveFoliage_Implementation(const FHitResult
 {
 	if (HitResult.bBlockingHit)
 	{
-		UFoliageInstancedStaticMeshComponent* FoliageInstance = Cast< UFoliageInstancedStaticMeshComponent>(HitResult.GetComponent());
-		if (FoliageInstance)
+		UISMTreeFoliage* TreeComp = Cast< UISMTreeFoliage>(HitResult.GetComponent());
+		if (TreeComp && TreeComp->ComponentTags.Contains(TEXT("Tree")))
 		{
-			FoliageInstance->RemoveInstance(HitResult.Item);
+			TreeComp->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupWood, HitResult.ImpactPoint, GetActorRotation());
 		}
 	}
