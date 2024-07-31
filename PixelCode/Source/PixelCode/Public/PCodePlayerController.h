@@ -161,6 +161,12 @@ public:
 
 	void CreateWidgetBossEnterWidget();
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_HideLastBossPortal();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_HideLastBossPortal();
+
 	// 요한
 
 	UFUNCTION(Server, Reliable)

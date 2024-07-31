@@ -275,7 +275,18 @@ void APCodePlayerController::MulticastRPC_CreateWidgetRobbyWidget_Implementation
 			bEnableClickEvents = true;
 			bEnableMouseOverEvents = true;
 
-			//MyGameMode->bIsReadyToReady=true;
+			FInputModeUIOnly InputMode;
+			InputMode.SetWidgetToFocus(WidgetInstance->TakeWidget());
+			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+			SetInputMode(InputMode);
+
+			PlayerController = GetWorld()->GetFirstPlayerController();
+			if (PlayerController)
+			{
+				PlayerController->SetIgnoreLookInput(true);
+				PlayerController->SetIgnoreMoveInput(true);
+			}
+
 		}
 	}
 }
@@ -297,6 +308,16 @@ void APCodePlayerController::MulticastRPC_HideWidgetRobbyWidget_Implementation()
 			PlayerController->bShowMouseCursor = false;
 			PlayerController->bEnableClickEvents = false;
 			PlayerController->bEnableTouchEvents = false;
+
+			FInputModeGameOnly InputMode;
+			PlayerController->SetInputMode(InputMode);
+
+
+			if (PlayerController)
+			{
+				PlayerController->SetIgnoreLookInput(false);
+				PlayerController->SetIgnoreMoveInput(false);
+			}
 		}
 
 	}
@@ -463,10 +484,17 @@ void APCodePlayerController::CreateWidgetBossEnterWidget()
 		{
 			// 위젯을 화면에 추가
 			bossEnterWidgets->AddToViewport();
-			
+
 			bShowMouseCursor = true;
 			bEnableClickEvents = true;
 			bEnableMouseOverEvents = true;
+
+			PlayerController = GetWorld()->GetFirstPlayerController();
+			if (PlayerController)
+			{
+				PlayerController->SetIgnoreLookInput(true);
+				PlayerController->SetIgnoreMoveInput(true);
+			}
 		}
 	}
 }
@@ -536,9 +564,37 @@ void APCodePlayerController::CreateWidgetMyMAPs()
 			bShowMouseCursor = true;
 			bEnableClickEvents = true;
 			bEnableMouseOverEvents = true;
+
+
 		}
 	}
 
 }
 
+void APCodePlayerController::ServerRPC_HideLastBossPortal_Implementation()
+{
+	MulticastRPC_HideLastBossPortal();
+}
 
+void APCodePlayerController::MulticastRPC_HideLastBossPortal_Implementation()
+{
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		APlayerController* BaseController = It->Get();
+		PlayerController = Cast<APCodePlayerController>(BaseController);
+		if (PlayerController && bossEnterWidgets)
+		{
+			bossEnterWidgets->RemoveFromParent();
+			PlayerController->bShowMouseCursor = false;
+			PlayerController->bEnableClickEvents = false;
+			PlayerController->bEnableTouchEvents = false;
+
+			FInputModeGameOnly InputMode;
+			PlayerController->SetInputMode(InputMode);
+
+			PlayerController->SetIgnoreLookInput(false);
+			PlayerController->SetIgnoreMoveInput(false);
+		}
+
+	}
+}
