@@ -1552,18 +1552,18 @@ float APixelCodeCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 
 void APixelCodeCharacter::InitMainUI()
 {
-	/*FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
+	FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
 	FString hasController = Controller ? TEXT("HasCont") : TEXT("NoCont");
 
 	UE_LOG(LogTemp, Warning, TEXT("[%s] %s - InitMainUI"), *netMode, *hasController);
 	Pc = Cast<APCodePlayerController>(Controller);
 	if (IsLocallyControlled() && Pc->NormallyWidgetClass)
 	{
-		
+
 		Pc->PlayerStartWidget();
 
 		NormallyWidget = Pc->NormallyWidget;
-	}*/
+	}
 }
 
 void APixelCodeCharacter::ServerRPC_Die_Implementation()
@@ -1620,7 +1620,7 @@ void APixelCodeCharacter::PossessedBy(AController* NewController)
 	// 내가 로컬이라면
 	//if (IsLocallyControlled())
 	//{ 
-	//	InitMainUI(); //나중에 활성화?
+		InitMainUI(); //나중에 활성화?
 	//	UE_LOG(LogTemp, Warning, TEXT("Normal2"));
 	//}
 

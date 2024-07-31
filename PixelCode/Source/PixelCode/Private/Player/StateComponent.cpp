@@ -7,6 +7,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
 #include "PCodeGameInstance.h"
 #include "Player/Widget/NormallyWidget.h"
+#include "PCodePlayerController.h"
 
 // Sets default values for this component's properties
 UStateComponent::UStateComponent()
@@ -26,6 +27,7 @@ void UStateComponent::BeginPlay()
 
 
 	character = GetOwner<APlayerOrganism>();
+	Pc = Cast<APCodePlayerController>(GetWorld()->GetFirstPlayerController());
 
 	//NormallyWidget->firstUpdate();
 		
@@ -43,6 +45,9 @@ void UStateComponent::BeginPlay()
 	//	SetIsReplicated(true);
 	//}
 	// ...
+
+	
+
 }
 
 
@@ -50,6 +55,7 @@ void UStateComponent::BeginPlay()
 void UStateComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
 
 	// ...
 }
@@ -126,10 +132,12 @@ float UStateComponent::AddStatePoint(EStateType stateType, float value)
 	case SP:
 		temp = currentSP + value;
 		currentSP = temp;
+
 		break;
 	case MP:
 		temp = currentMP + value;
 		currentMP = temp;
+		
 		break;
 	default:
 		//UE_LOG(LogTemp, Warning, TEXT("Type Error, %s, %d"), __FILE__, __LINE__);

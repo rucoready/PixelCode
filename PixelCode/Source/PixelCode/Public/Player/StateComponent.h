@@ -17,6 +17,7 @@ enum EStateType
 
 class APlayerOrganism;
 class UNormallyWidget;
+class APCodePlayerController;
 
 // DataTable(베이스 포인트)
 USTRUCT(BlueprintType)
@@ -82,6 +83,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UNormallyWidget* NormallyWidget;
+	APCodePlayerController* Pc;
 
 private:
 

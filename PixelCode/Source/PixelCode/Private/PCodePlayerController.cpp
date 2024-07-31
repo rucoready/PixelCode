@@ -26,13 +26,15 @@ void APCodePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	pixelPlayerState = nullptr;
+	//pixelPlayerState = nullptr;
 
 	if (HasAuthority())
 	{
 		GM = Cast<AMyGameModeBase>(GetWorld()->GetAuthGameMode());
 	}
-	MainPlayer = Cast<APixelCodeCharacter>(this->GetPawn());
+
+	MainPlayer = Cast<APixelCodeCharacter>(GetPawn());
+	
 
 	statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
 
@@ -125,7 +127,6 @@ void APCodePlayerController::PlayerStartWidget()
 			{
 				NormallyWidget->AddToViewport(-1);
 				NormallyWidget->SetVisibility(ESlateVisibility::Visible);
-				NormallyWidget->currentStatUpdate(MainPlayer->stateComp);
 				UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
 			}
 		}
@@ -194,10 +195,14 @@ void APCodePlayerController::Tick(float DeltaSeconds)
 		NormallyWidget->currentExpUpdate(pixelPlayerState);
 		NormallyWidget->currentLevelUpdate(pixelPlayerState);
 	}
-	if (MainPlayer != nullptr && NormallyWidget != nullptr)
+
+	/*if (MainPlayer->stateComp != nullptr && NormallyWidget != nullptr && MainPlayer != nullptr)
 	{
 		NormallyWidget->currentStatUpdate(MainPlayer->stateComp);
-	}
+	}*/
+	
+
+	
 }
 
 void APCodePlayerController::OpenUI(bool bOpen)
@@ -232,10 +237,16 @@ void APCodePlayerController::ServerRPC_RespawnPlayer_Implementation()
 	
 	auto* oldPawn = GetPawn();
 
+	UE_LOG(LogTemp, Warning, TEXT("Possess"));
 	
+	NormallyWidget->RemoveFromParent();
+	statWidget->RemoveFromParent();
+
 	UnPossess();
 
+
 	
+
 	if (oldPawn)
 	{
 		oldPawn->Destroy();
