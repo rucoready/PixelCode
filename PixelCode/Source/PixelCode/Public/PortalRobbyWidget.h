@@ -20,6 +20,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UButton* button_Player1;
 
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	class UButton* button_Exit;
+
 // 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 // 	class UButton* button_Player2;
 
@@ -52,6 +55,9 @@ public:
 	void UpdateCountdown();
 
 	void PlayCountdownAnimation();
+
+	UFUNCTION()
+	void ExitWidget();
 
 	UPROPERTY(Editanywhere, Category="MySettings", meta=(BindWidgetAnim),Transient)
 	class UWidgetAnimation* CountAnimations;

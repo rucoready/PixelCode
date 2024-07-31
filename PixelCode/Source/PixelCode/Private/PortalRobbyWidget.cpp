@@ -18,6 +18,11 @@ void UPortalRobbyWidget::NativeConstruct()
 	{
 		button_Player1->OnClicked.AddDynamic(this, &UPortalRobbyWidget::OnMyclickButtonPlayer1);
 	}
+	if (button_Exit)
+	{
+		
+		button_Exit->OnClicked.AddDynamic(this, &UPortalRobbyWidget::ExitWidget);
+	}
 
 // 	if (button_Player2)
 // 	{
@@ -78,7 +83,7 @@ void UPortalRobbyWidget::UpdateCountdown()
 			if (PCodePlayerController)
 			{
 				PCodePlayerController->ServerRPC_CreateWidgetLoading1();
-				UE_LOG(LogTemp, Warning, TEXT("I55"));
+				
 			}
 		}
 
@@ -100,6 +105,19 @@ void UPortalRobbyWidget::PlayCountdownAnimation()
 	
 }
 
+void UPortalRobbyWidget::ExitWidget()
+{
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		// PCodePlayerController 타입으로 캐스팅
+		PCodePlayerController = Cast<APCodePlayerController>(It->Get());
+		if (PCodePlayerController)
+		{
+			PCodePlayerController->ServerRPC_HideWidgetRobbyWidget();
+		}
+	}
+}
+
 void UPortalRobbyWidget::ServerRPC_ShowReady_Implementation()
 {
 	bIsReadyTextPlayer1 = !bIsReadyTextPlayer1;
@@ -110,7 +128,7 @@ void UPortalRobbyWidget::ServerRPC_ShowReady_Implementation()
 
 void UPortalRobbyWidget::MulticastRPC_ShowReady_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("IS999"));
+	
 	ChangeReady1Test = true;
 	if (readyButtonText1)
 	{
@@ -150,26 +168,10 @@ void UPortalRobbyWidget::OnMyclickButtonPlayer1()
 	
 	
 	MyGameMode->bIsReadyToReady=true;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Button Status Changed"));
 	ServerRPC_ShowReady();
  	StartCountdown();
  	PlayCountdownAnimation();
-// 
-// 	// 상태 토글
-// 	bIsReadyTextPlayer1 = !bIsReadyTextPlayer1;
-// 
-// 	// 상태에 따라 텍스트 설정
-// 	if (bIsReadyTextPlayer1)
-// 	{
-// 		readyButtonText1->SetText(FText::FromString(TEXT("Ready!")));
-// 	}
-// 	else
-// 	{
-// 		readyButtonText1->SetText(FText::GetEmpty());
-// 	}
-// 
-// 	// 서버 RPC 호출
-// 	ServerRPC_ShowReady();
+
 	
 	
 }

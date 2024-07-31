@@ -22,6 +22,10 @@ void UBossEnterWidget::NativeConstruct()
 	{
 		enterButton->OnClicked.AddDynamic(this, &UBossEnterWidget::OnMyclickButtonEnter);
 	}
+	if (exitButton)
+	{
+		exitButton->OnClicked.AddDynamic(this, &UBossEnterWidget::OnMyclickExit);
+	}
 }
 
 void UBossEnterWidget::OnMyclickButtonEnter()
@@ -34,7 +38,21 @@ void UBossEnterWidget::OnMyclickButtonEnter()
 		if (PCodePlayerController)
 		{
 			PCodePlayerController->ServerRPC_CreateWidgetBossLoading();
-			UE_LOG(LogTemp, Warning, TEXT("I55"));
+			
+		}
+	}
+}
+
+void UBossEnterWidget::OnMyclickExit()
+{
+	UE_LOG(LogTemp, Warning, TEXT("I55"));
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		// PCodePlayerController 타입으로 캐스팅
+		PCodePlayerController = Cast<APCodePlayerController>(It->Get());
+		if (PCodePlayerController)
+		{
+			PCodePlayerController->ServerRPC_HideLastBossPortal();
 		}
 	}
 }

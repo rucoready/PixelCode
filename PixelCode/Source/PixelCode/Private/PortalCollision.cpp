@@ -35,18 +35,6 @@ void APortalCollision::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
     
-// 	if (WidgetInstance)
-// 	{
-//         UE_LOG(LogTemp, Warning, TEXT("9988"));
-//         if (WidgetInstance->ChangeReady1Test == true)
-//         {
-// 
-//             MyGameMode->bIsReadyToReady = true;
-//             
-//         }
-//     }
-    
-    
 }
 
 bool APortalCollision::IsServer() const
@@ -70,6 +58,7 @@ void APortalCollision::OnBeginOverlapPortal(UPrimitiveComponent* OverlappedCompo
                 if (OverlappedPlayerController)
                 {
                     OverlappedPlayerController->ServerRPC_CreateWidgetRobbyWidget();
+
                 }
             }
         }
@@ -81,7 +70,6 @@ void APortalCollision::OneEndOverlapPortal(UPrimitiveComponent* OverlappedCompon
 {
     if (OtherActor && OtherActor->GetName().Contains("Player"))
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Overlap Disable"));
         ServerRPC_HideRobbyWidget();
     }
 }
@@ -89,11 +77,7 @@ void APortalCollision::OneEndOverlapPortal(UPrimitiveComponent* OverlappedCompon
 void APortalCollision::ServerTravel()
 {
     
-        
 
-        // 서버 트래블 호출
-       
-        //GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/Dungeon2?listen"));
     
 }
 
@@ -143,54 +127,16 @@ void APortalCollision::MulticastRPC_HideRobbyWidget_Implementation()
     }
     
 
-//     for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-//     {
-//         APlayerController* BaseController = It->Get();
-//         APCodePlayerController* PlayerController = Cast<APCodePlayerController>(BaseController);
-//         if (PlayerController && WidgetInstance)
-//         {
-//             WidgetInstance->RemoveFromParent();
-//             PlayerController->bShowMouseCursor = false;
-//             PlayerController->bEnableClickEvents = false;
-//             PlayerController->bEnableTouchEvents = false;
-//         }
-//     }
 }
 
 void APortalCollision::ServerRPC_ShowRobbyWidget_Implementation()
 {
-//     if (portalRobbyWidget)
-//     {
-//         for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-//         {
-//             // PCodePlayerController 타입으로 캐스팅
-//             APCodePlayerController* PCodePlayerController = Cast<APCodePlayerController>(It->Get());
-//             if (PCodePlayerController)
-//             {
-//                 PCodePlayerController->ServerRPC_CreateWidgetRobbyWidget();
-// 
-// 
-//             }
-//         }
-//     }
+
 }
 
 void APortalCollision::MulticastRPC_ShowRobbyWidget_Implementation()
 {
-//     if (portalRobbyWidget)
-//     {
-//         for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-//         {
-//             // PCodePlayerController 타입으로 캐스팅
-//             APCodePlayerController* PCodePlayerController = Cast<APCodePlayerController>(It->Get());
-//             if (PCodePlayerController)
-//             {
-//                 PCodePlayerController->ServerRPC_CreateWidgetRobbyWidget();
-//  
-//                  
-//             }
-//         }
-//     }
+
 }
 
 void APortalCollision::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -198,5 +144,5 @@ void APortalCollision::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(APortalCollision, bIsReady);
-    /*DOREPLIFETIME(APortalCollision, bIsReadyTextPlayer2);*/
+
 }

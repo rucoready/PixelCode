@@ -20,8 +20,14 @@ class PIXELCODE_API UBossEnterWidget : public UUserWidget
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UButton* enterButton;
 
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	class UButton* exitButton;
+
 	UFUNCTION()
 	void OnMyclickButtonEnter();
+
+	UFUNCTION()
+	void OnMyclickExit();
 
 	void ServerTravel();
 
