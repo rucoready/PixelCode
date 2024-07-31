@@ -52,7 +52,7 @@ void UBossEnterWidget::OnMyclickExit()
 		PCodePlayerController = Cast<APCodePlayerController>(It->Get());
 		if (PCodePlayerController)
 		{
-			PCodePlayerController->ServerRPC_HideLastBossPortal();
+			//PCodePlayerController->ServerRPC_HideLastBossPortal();
 		}
 	}
 }

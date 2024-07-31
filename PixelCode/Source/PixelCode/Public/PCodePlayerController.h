@@ -161,4 +161,30 @@ public:
 
 	void CreateWidgetBossEnterWidget();
 
+	// 요한
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_CreateWidgetMyMap();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_CreateWidgetMyMap();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_HideWidgetMyMap();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_HideWidgetMyMapLoding();
+
+	void CreateWidgetMyMAPs();
+
+	class UMyMapWidget* MyMapEnterWidgets;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UMyMapWidget> MyMapEnterWidget;
+
+	class UMyMapLodingWidget* MyMapLoadingWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UMyMapLodingWidget> LoadingWidgetMyMap;
+
 };

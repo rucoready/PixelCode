@@ -17,6 +17,8 @@
 #include "LoadingWidget1.h"
 #include "BossEnterWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "MyMapWidget.h"
+#include "MyMapLodingWidget.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
 
 
@@ -456,6 +458,76 @@ void APCodePlayerController::CreateWidgetBossEnterWidget()
 			bEnableMouseOverEvents = true;
 		}
 	}
+}
+
+// =========================================== 요한 =========================================================
+
+void APCodePlayerController::ServerRPC_CreateWidgetMyMap_Implementation()
+{
+	MulticastRPC_CreateWidgetMyMap();
+}
+
+void APCodePlayerController::MulticastRPC_CreateWidgetMyMap_Implementation()
+{
+
+	if (LoadingWidgetMyMap)
+	{
+		MyMapLoadingWidget = CreateWidget<UMyMapLodingWidget>(this, LoadingWidgetMyMap);
+		if (MyMapLoadingWidget)
+		{
+			// 위젯을 화면에 추가
+			MyMapLoadingWidget->AddToViewport();
+			UE_LOG(LogTemp, Warning, TEXT("111112222223333344444555666777888999"));
+			bShowMouseCursor = true;
+			bEnableClickEvents = true;
+			bEnableMouseOverEvents = true;
+
+			//MyGameMode->bIsReadyToReady=true;
+		}
+	}
+}
+
+void APCodePlayerController::ServerRPC_HideWidgetMyMap_Implementation()
+{
+	MulticastRPC_HideWidgetMyMapLoding();
+}
+
+void APCodePlayerController::MulticastRPC_HideWidgetMyMapLoding_Implementation()
+{
+	if (LoadingWidgetMyMap)
+	{
+		MyMapLoadingWidget = CreateWidget<UMyMapLodingWidget>(this, LoadingWidgetMyMap);
+		if (MyMapLoadingWidget)
+		{
+			// 위젯을 화면에 추가
+			MyMapLoadingWidget->RemoveFromParent();
+
+			bShowMouseCursor = true;
+			bEnableClickEvents = true;
+			bEnableMouseOverEvents = true;
+
+			//MyGameMode->bIsReadyToReady=true;
+		}
+	}
+}
+
+void APCodePlayerController::CreateWidgetMyMAPs()
+{
+	if (MyMapEnterWidget)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("CALL4455"));
+		MyMapEnterWidgets = CreateWidget<UMyMapWidget>(this, MyMapEnterWidget);
+		if (MyMapEnterWidgets)
+		{
+			// 위젯을 화면에 추가
+			MyMapEnterWidgets->AddToViewport();
+
+			bShowMouseCursor = true;
+			bEnableClickEvents = true;
+			bEnableMouseOverEvents = true;
+		}
+	}
+
 }
 
 
