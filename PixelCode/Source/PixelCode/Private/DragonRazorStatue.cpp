@@ -20,6 +20,9 @@
 #include "Components/SphereComponent.h"
 #include "PCodePlayerController.h"
 #include "FractureDragonStatue.h"
+#include "Boss/BossApernia.h"
+#include "Boss/BossAIController.h"
+#include "EngineUtils.h"
 #include "Player/pixelPlayerState.h"
 
 // Sets default values
@@ -112,6 +115,19 @@ void ADragonRazorStatue::DestroySelf()
     statueComp->DestroyComponent(true);
     razorComponent->SetVisibility(false);
     fireComponent->SetVisibility(false);
+    for (TActorIterator<ABossAIController> It(GetWorld()); It; ++It)
+    {
+        ABossAIController* BossAIController = *It;
+        if (BossAIController)
+        {
+            if (ABossApernia* boss = Cast<ABossApernia>(BossAIController->GetPawn()))
+            {
+                UE_LOG(LogTemp, Warning, TEXT("Call333"));
+                boss->statueDestroyCount += 1;
+            }
+        }
+
+    }
    
 }
 
@@ -122,6 +138,10 @@ void ADragonRazorStatue::DrestroyFractureStatue()
     {
         
         fracturStatue->Destroy();
+        
+        
+		
+        
     }
 
 }

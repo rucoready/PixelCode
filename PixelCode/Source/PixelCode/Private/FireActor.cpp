@@ -71,18 +71,22 @@ void AFireActor::ApplyDamage()
         ApplyDamageToTarget(OverlappingActor, 5.0f);
 
         // OverlappingActor의 컨트롤러를 가져옴
-        AController* Controller = OverlappingActor->GetInstigatorController();
-        if (Controller && Controller->IsLocalController())
+        if (Controller)
         {
-            APCodePlayerController* pc = Cast<APCodePlayerController>(Controller);
-            if (pc != nullptr)
+            Controller = OverlappingActor->GetInstigatorController();
+            if (Controller && Controller->IsLocalController())
             {
-                UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
-                pc->ClientStartCameraShake(cameraShakeFire);
+                APCodePlayerController* pc = Cast<APCodePlayerController>(Controller);
+                if (pc != nullptr)
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
+                    pc->ClientStartCameraShake(cameraShakeFire);
+                }
             }
-        }
 
-        GetWorldTimerManager().SetTimer(FireDotDamageHandle, this, &AFireActor::DisappearFire, 3.0f, false);
+            GetWorldTimerManager().SetTimer(FireDotDamageHandle, this, &AFireActor::DisappearFire, 3.0f, false);
+        }
+        
     }
 }
 

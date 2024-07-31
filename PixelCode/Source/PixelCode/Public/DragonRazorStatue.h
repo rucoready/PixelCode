@@ -74,5 +74,10 @@ public:
 
 	void RestoreOriginMaterial();
 
+	int32 destroyCount;
+
+
+	class ABossApernia* TargetPawn;
+
 
 };

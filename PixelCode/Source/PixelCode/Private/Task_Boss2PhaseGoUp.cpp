@@ -15,7 +15,7 @@
 
 UTask_Boss2PhaseGoUp::UTask_Boss2PhaseGoUp(FObjectInitializer const& ObjectInitializer)
 {
-	NodeName = TEXT("Dodge Right");
+	NodeName = TEXT("2Phase Start Motion");
 
 	bNotifyTick = true;
     
@@ -43,7 +43,11 @@ EBTNodeResult::Type UTask_Boss2PhaseGoUp::ExecuteTask(UBehaviorTreeComponent& Ow
             }
         }
     }
-    OnceSpawnDecalSword = false;
+
+    //test
+    //boss->ServerRPC_SpawnLazorDragonStatue();
+    //boss->ServerRPC_CheckingStatueSurvive();
+   
     return EBTNodeResult::InProgress;
     
 }
@@ -205,4 +209,22 @@ void UTask_Boss2PhaseGoUp::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
         boss->ServerRPC_SpawnLazorDragonStatue();
         OnceSpawnStatue = true;
     }
+
+//     if (currentTime > 60.0f)
+//     {
+//         boss->ServerRPC_CheckingStatueSurvive();
+//     }
+ 
+    if (boss)
+    {
+        if (boss->statueDestroyCount == 3)
+        {
+
+            OwnerComp.GetBlackboardComponent()->SetValueAsBool(GetSelectedBlackboardKey(), true);
+            boss->phaseShieldComponent->SetVisibility(false);
+            boss->bossSwordComp->SetVisibility(true);
+            FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+        }
+    }
+    
 }

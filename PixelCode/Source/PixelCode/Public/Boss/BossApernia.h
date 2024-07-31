@@ -83,8 +83,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	TSubclassOf<class ABossSword> bossSwordclass;
 
-	float bossMaxHP = 43000.0f;
-
+	//float bossMaxHP = 43000.0f;
+	float bossMaxHP = 80000.0f;
 	float bossCurrentHP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
@@ -877,8 +877,28 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class TSubclassOf<class AFireActor> fireActor;
 
-	
+	class ADragonRazorStatue* drangonStatue;
 
 	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
 	class UNiagaraSystem* fireNA;
+
+	bool allStatueDestroy = false;
+
+	bool onceRestore2PhaseBoss = false;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_CheckingStatueSurvive();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_CheckingStatueSurvive();
+
+	AActor* spawnStatue1;
+
+	AActor* spawnStatue2;
+
+	AActor* spawnStatue3;
+
+	int statueDestroyCount;
+
+
 };

@@ -39,6 +39,7 @@
 #include "DragonRazorStatue.h"
 #include "FireActor.h"
 #include "BoundCollision.h"
+#include "EngineUtils.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -410,7 +411,11 @@ void ABossApernia::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    
+    UE_LOG(LogTemp, Warning, TEXT("StatueDestroyCount : %d"), statueDestroyCount);
+    if (allStatueDestroy)
+    {
+        ServerRPC_CheckingStatueSurvive();
+    }
 
     if (bossCurrentHP <= 0.0f&&!bossOnceDie)
     {
@@ -437,7 +442,12 @@ void ABossApernia::Tick(float DeltaTime)
         }
         
     }
-    
+    if (statueDestroyCount == 3&& !onceRestore2PhaseBoss)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("oo99"));
+        onceRestore2PhaseBoss = true;
+        RepocessBehaviorTree();
+    }
 
 }
 
@@ -592,7 +602,7 @@ void ABossApernia::BossTakeDamage(float Damage)
                         APlayerController* pc = player->GetController<APlayerController>();
                         if (pc != nullptr)
                         {
-                            UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
+                            
                             pc->ClientStartCameraShake(cameraShakeCounterOBJ);
                             FVector ForwardVector = GetActorForwardVector();  // 현재 액터의 forwardVector 가져오기
                
@@ -790,7 +800,7 @@ void ABossApernia::InitMainUI()
        bossMainWidget = CreateWidget<UBossMaInUI>(GetWorld(), MainUIFactory);
        if (bossMainWidget)
        {
-           bossMainWidget->AddToViewport();
+           bossMainWidget->AddToViewport(-1);
        }
     }
     bossMainWidget->UpdateHPBar(bossCurrentHP);
@@ -2050,21 +2060,7 @@ void ABossApernia::MulticastRPC_lastSpawnDecalSword2_Implementation()
     }
 }
 
-void ABossApernia::ServerRPC_SpawnLazorDragonStatue_Implementation()
-{
-    MulticastRPC_SpawnLazorDragonStatue();
-}
 
-void ABossApernia::MulticastRPC_SpawnLazorDragonStatue_Implementation()
-{
-    if (dragonStatue)
-    {
-        AActor* spawnStatue1 = GetWorld()->SpawnActor<AActor>(dragonStatue, FVector(-1746.005594,5189.687336,64.716881), FRotator(0, 168.351455,0));
-        AActor* spawnStatue2 = GetWorld()->SpawnActor<AActor>(dragonStatue, FVector(3228.653738,274.006166,64.716998), FRotator(0,-79.428149,0));
-        AActor* spawnStatue3 = GetWorld()->SpawnActor<AActor>(dragonStatue, FVector(5782.191366,6995.086981,0), FRotator(0,37.086981,0));
-
-    }
-}
 
 void ABossApernia::SpawnDecal(int32 Index)
 {
@@ -2074,6 +2070,8 @@ void ABossApernia::SpawnDecal(int32 Index)
         GetWorld()->SpawnActor<AActor>(savedDecalClass, spawnLocation, FRotator::ZeroRotator);
     }
 }
+
+
 
 void ABossApernia::ServerRPC_lastSpawnDecalSword1_Implementation()
 {
@@ -2232,5 +2230,43 @@ void ABossApernia::MulticastRPC_SpawnBoundCollision2_Implementation()
     if (spawnedActor)
     {
         spawnedActor->SetActorScale3D(FVector(3.0f));
+    }
+}
+
+void ABossApernia::ServerRPC_SpawnLazorDragonStatue_Implementation()
+{
+    MulticastRPC_SpawnLazorDragonStatue();
+}
+
+void ABossApernia::MulticastRPC_SpawnLazorDragonStatue_Implementation()
+{
+    if (dragonStatue)
+    {
+        spawnStatue1 = GetWorld()->SpawnActor<AActor>(dragonStatue, FVector(-1746.005594, 5189.687336, 64.716881), FRotator(0, 168.351455, 0));
+        spawnStatue2 = GetWorld()->SpawnActor<AActor>(dragonStatue, FVector(3228.653738, 274.006166, 64.716998), FRotator(0, -79.428149, 0));
+        spawnStatue3 = GetWorld()->SpawnActor<AActor>(dragonStatue, FVector(5782.191366, 6995.086981, 0), FRotator(0, 37.086981, 0));
+
+        allStatueDestroy = true;
+    }
+}
+void ABossApernia::ServerRPC_CheckingStatueSurvive_Implementation()
+{
+    MulticastRPC_CheckingStatueSurvive();
+}
+
+void ABossApernia::MulticastRPC_CheckingStatueSurvive_Implementation()
+{
+    TArray<AActor*> FoundActors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADragonRazorStatue::StaticClass(), FoundActors);
+
+    
+    if (FoundActors.Num() == 0)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("hello330"));  
+    }
+    
+    if (FoundActors.Num() > 0)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("hello331"));  
     }
 }
