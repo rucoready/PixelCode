@@ -4,22 +4,28 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "APlayerMageZSkillSpawnActor.generated.h"
+#include "PlayerMageZSkillSpawnActor.generated.h"
 
 
 class UParticleSystem;
 class USceneComponent;
 class USphereComponent;
 class UParticleSystemComponent;
+class ABossApernia;
+class ADemonSword;
+class AGrux;
+class ADogBart;
+
+
 
 UCLASS()
-class PIXELCODE_API AAPlayerMageZSkillSpawnActor : public AActor
+class PIXELCODE_API APlayerMageZSkillSpawnActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AAPlayerMageZSkillSpawnActor();
+	APlayerMageZSkillSpawnActor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,24 +42,44 @@ public:
 	USphereComponent* SphereComp;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* NA_MageLeftAttack;
+	UParticleSystem* NA_MageZSkillAttack;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* NA_MageLefthit;
+	UParticleSystem* NA_MagicCircle;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystemComponent* NA_MageLeftAttackComp;
+	UParticleSystem* NA_MageZSkillhit;
 
-	float Speed = 2000.f;
+
+	ABossApernia* boss;
+	ADemonSword* demonSword;
+	AGrux* grux;
+	ADogBart* dogBart;
+
+	// Timer handles
+	FTimerHandle DamageTimerHandle;
 
 	float DestroyTime = 0.0f;
 
 	bool bDestroy = false;
 
+	bool bMagicCircle = false;
+
+	float MagicCircleAttackSpawnTime = 0.0f;
+
+	// State tracking
+	bool bIsOverlapping;
+	AActor* OverlappingActor;
+
+	void ApplyDamage();
+
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-	float DamageAmount = 50;
+	float DamageAmount = 10;
 
 	UFUNCTION()
 	void OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+    void OnEndOverlapCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 };

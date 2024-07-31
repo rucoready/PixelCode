@@ -30,7 +30,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, Category = "Components")  // 보통 VisibleAnywhere로 선언하여 에디터에서 보이도록 설정
-		USceneComponent* SceneComp;
+	USceneComponent* SceneComp;
 
 	UPROPERTY(EditAnywhere, Category = "Components");
 	USphereComponent* SphereComp;
@@ -38,12 +38,18 @@ public:
 	UPROPERTY(EditAnywhere)
 	UNiagaraSystem* NS_MageESkillhit;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	float launchForce = 30000.0f;
+
 	float DestroyTime = 0.0f;
 
 	bool bDestroy = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	float DamageAmount = 300;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class ABoundCollision> bounceCollision;
 
 	UFUNCTION()
 	void OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

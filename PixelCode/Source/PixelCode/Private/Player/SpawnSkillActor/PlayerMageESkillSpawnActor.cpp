@@ -7,9 +7,12 @@
 #include "DemonSword.h"
 #include "Grux.h"
 #include "DogBart.h"
+#include "BoundCollision.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Components/SphereComponent.h>
 #include <../../../../../../../Plugins/FX/Niagara/Source/Niagara/Public/NiagaraFunctionLibrary.h>
 #include <../../../../../../../Plugins/FX/Niagara/Source/Niagara/Classes/NiagaraSystem.h>
+#include "PCodePlayerController.h"
+#include "Player/PixelCodeCharacter.h"
 
 
 // Sets default values
@@ -49,12 +52,10 @@ void APlayerMageESkillSpawnActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Warning, TEXT("PlayerLocation"));
-
 	if (bDestroy)
 	{
 		DestroyTime += DeltaTime;
-		if (DestroyTime >= 5.0f)
+		if (DestroyTime >= 0.1f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("destroy"));
 			bDestroy = false;
@@ -72,26 +73,56 @@ void APlayerMageESkillSpawnActor::OnOverlapEnemy(UPrimitiveComponent* Overlapped
 	ADemonSword* demonSword = Cast<ADemonSword>(OtherActor);
 	AGrux* grux = Cast<AGrux>(OtherActor);
 	ADogBart* dogBart = Cast<ADogBart>(OtherActor);
+	APCodePlayerController* Pc = Cast<APCodePlayerController>(GetWorld()->GetFirstPlayerController());
+	APixelCodeCharacter* Player = Cast<APixelCodeCharacter>(Pc->GetPawn());
 
 	if (boss)
 	{
 		// 데미지 적용 예시: TakeDamage 함수 호출
 		boss->BossTakeDamage(DamageAmount);
+		if (NS_MageESkillhit != nullptr)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MageESkillhit, OtherActor->GetActorLocation(), OtherActor->GetActorRotation());
+		}
 	}
+	
 	else if (demonSword)
 	{
 		demonSword->SwordTakeDamage(DamageAmount);
+		if (NS_MageESkillhit != nullptr)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MageESkillhit, OtherActor->GetActorLocation(), OtherActor->GetActorRotation());
+		}
 	}
 	else if (grux)
 	{
 		grux->GruxTakeDamage(DamageAmount);
+		grux->ServerRPC_TakeDamage();
+		if (NS_MageESkillhit != nullptr)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MageESkillhit, OtherActor->GetActorLocation(), OtherActor->GetActorRotation());
+			UE_LOG(LogTemp, Warning, TEXT("Gruxdamage"));
+		}
 	}
 	else if (dogBart)
 	{
 		dogBart->DogBartTakeDamage(DamageAmount);
-	}
+		//dogBart->ServerRPC_TakeDamage();
+		FVector PlayerLoc = Player->GetActorLocation();
+		FVector dogBartLocation = dogBart->GetActorLocation();
+		FVector direction = dogBartLocation - PlayerLoc;
+		direction.Normalize();
 
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MageESkillhit, SweepResult.ImpactPoint, GetActorRotation());
+
+		dogBart->LaunchCharacter(direction * launchForce, true, true);
+
+		
+		if (NS_MageESkillhit != nullptr)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MageESkillhit, OtherActor->GetActorLocation(),OtherActor->GetActorRotation());
+		}
+		UE_LOG(LogTemp,Warning,TEXT("dogbartdamage"));
+	}
 
 }
 
