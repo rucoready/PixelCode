@@ -87,7 +87,7 @@ public:
 	TSubclassOf<class ABossSword> bossSwordclass;
 
 	//float bossMaxHP = 43000.0f;
-	float bossMaxHP = 100.0f;
+	float bossMaxHP = 43000.0f;
 	float bossCurrentHP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
@@ -917,6 +917,15 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_SpawnStoneDecal();
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DropBossExp();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_DropBossExp();
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class AEXPActor> expOrb;
+
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class TSubclassOf<class ABossStoneChangeDecal> stoneDecal;
 
@@ -925,9 +934,15 @@ public:
 
 	void SpawnFractureBoss();
 
+	AActor* spawnDecalActor;
+
 	AActor* fractureBossMesh;
 
 	FTimerHandle timerhandle_SpawnFractureBoss;
+
+	FTimerHandle timerhandle_DestroyDecalActor;
+
+	void DestroyStoneDecal();
 
 	class UCapsuleComponent* CapsuleComponent;
 
@@ -940,4 +955,5 @@ public:
 
 	
 	class AGeometryCollectionActor* fractureBossMesh2;
+	
 };
