@@ -33,18 +33,38 @@ public:
     USceneComponent* SceneComp;
 
 	UPROPERTY(EditAnywhere, Category = "Components");
-	USphereComponent * SphereComp;
+	USphereComponent * SphereComp1;
+
+
+	UPROPERTY(EditAnywhere, Category = "Components");
+	USphereComponent* SphereComp2;
+
+	UPROPERTY(EditAnywhere, Category = "Components");
+	USphereComponent* SphereComp3;
+
+	UPROPERTY(EditAnywhere, Category = "Components");
+	USphereComponent* SphereComp4;
+
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* NA_MageRightAttack;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystemComponent* NA_MageRightAttackComp;
+	UParticleSystemComponent* NA_MageRightAttackComp1;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystemComponent* NA_MageRightAttackComp2;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystemComponent* NA_MageRightAttackComp3;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystemComponent* NA_MageRightAttackComp4;
 
 	UPROPERTY()
 	ACharacter* Enemys;
 
-	float Speed = 3100.f;
+	float Speed = 2200.f;
 
 	float DestroyTime = 0.0f;
 
@@ -56,10 +76,6 @@ public:
 	UFUNCTION()
 	void OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
-	
-	void CheckForObjectsInRadius();
-
-
 	
 
 

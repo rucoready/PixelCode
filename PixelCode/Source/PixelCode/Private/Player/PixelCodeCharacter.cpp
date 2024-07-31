@@ -63,7 +63,7 @@
 #include "Player/SpawnSkillActor/PlayerMageLeftAttackSpawnActor.h"
 #include "Player/SpawnSkillActor/PlayerMageQSkillSpawnActor.h"
 #include "Player/SpawnSkillActor/PlayerMageESkillSpawnActor.h"
-
+#include "Player/SpawnSkillActor/PlayerMageZSkillSpawnActor.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -2154,6 +2154,8 @@ void APixelCodeCharacter::SkillZ()
 						PerformAttack(4, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -30);
+						FActorSpawnParameters SpawnParams;
+						GetWorld()->SpawnActor<APlayerMageZSkillSpawnActor>(mageZSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
 					}
 				}
 

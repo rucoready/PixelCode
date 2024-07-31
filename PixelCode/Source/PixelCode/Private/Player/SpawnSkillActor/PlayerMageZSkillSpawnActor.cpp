@@ -30,7 +30,7 @@ APlayerMageZSkillSpawnActor::APlayerMageZSkillSpawnActor()
 
 	SphereComp->SetGenerateOverlapEvents(true);
 
-	SphereComp->SetRelativeScale3D(FVector(15, 15, 15));
+	SphereComp->SetRelativeScale3D(FVector(40));
 	
 }
 
@@ -43,6 +43,8 @@ void APlayerMageZSkillSpawnActor::BeginPlay()
 	bDestroy = true;
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &APlayerMageZSkillSpawnActor::OnOverlapEnemy);
 	bMagicCircle = true;
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MagicCircle, GetActorLocation(), GetActorRotation());
 }
 
 // Called every frame
@@ -53,8 +55,9 @@ void APlayerMageZSkillSpawnActor::Tick(float DeltaTime)
 	if (bMagicCircle)
 	{
 		MagicCircleAttackSpawnTime += DeltaTime;
-		if (MagicCircleAttackSpawnTime >= 0.3f)
+		if (MagicCircleAttackSpawnTime >= 1.0f)
 		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillAttack, GetActorLocation(), GetActorRotation());
 			MagicCircleAttackSpawnTime = 0.0f;
 			bMagicCircle = false;
 		}
@@ -83,13 +86,14 @@ void APlayerMageZSkillSpawnActor::ApplyDamage()
 		
 		// 데미지 적용 예시: TakeDamage 함수 호출
 		boss->BossTakeDamage(DamageAmount);
+		//boss->ServerRPC_TakeDamage();
 		if (NA_MageZSkillhit != nullptr)
 		{
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OverlappingActor->GetActorLocation(), OverlappingActor->GetActorRotation());
 		}
 		
 	}
-	else if (OverlappingActor == demonSword && bIsOverlapping)
+	if (OverlappingActor == demonSword && bIsOverlapping)
 	{
 		demonSword->SwordTakeDamage(DamageAmount);
 		if (NA_MageZSkillhit != nullptr)
@@ -97,7 +101,7 @@ void APlayerMageZSkillSpawnActor::ApplyDamage()
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OverlappingActor->GetActorLocation(), OverlappingActor->GetActorRotation());
 		}
 	}
-	else if (OverlappingActor == grux && bIsOverlapping)
+	if (OverlappingActor == grux && bIsOverlapping)
 	{
 		grux->GruxTakeDamage(DamageAmount);
 		grux->ServerRPC_TakeDamage();
@@ -107,7 +111,7 @@ void APlayerMageZSkillSpawnActor::ApplyDamage()
 			UE_LOG(LogTemp, Warning, TEXT("Gruxdamage"));
 		}
 	}
-	else if (OverlappingActor == dogBart && bIsOverlapping)
+	if (OverlappingActor == dogBart && bIsOverlapping)
 	{
 		dogBart->DogBartTakeDamage(DamageAmount);
 		dogBart->ServerRPC_TakeDamage();
@@ -168,46 +172,46 @@ void APlayerMageZSkillSpawnActor::OnOverlapEnemy(UPrimitiveComponent* Overlapped
 
 
 
-	if (boss)
-	{
-		// 데미지 적용 예시: TakeDamage 함수 호출
-		boss->BossTakeDamage(DamageAmount);
-		if (NA_MageZSkillhit != nullptr)
-		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OtherActor->GetActorLocation(), OtherActor->GetActorRotation());
-		}
-	}
+	//if (boss)
+	//{
+	//	// 데미지 적용 예시: TakeDamage 함수 호출
+	//	boss->BossTakeDamage(DamageAmount);
+	//	if (NA_MageZSkillhit != nullptr)
+	//	{
+	//		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OtherActor->GetActorLocation(), OtherActor->GetActorRotation());
+	//	}
+	//}
 
-	else if (demonSword)
-	{
-		demonSword->SwordTakeDamage(DamageAmount);
-		if (NA_MageZSkillhit != nullptr)
-		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OtherActor->GetActorLocation(), OtherActor->GetActorRotation());
-		}
-	}
-	else if (grux)
-	{
-		grux->GruxTakeDamage(DamageAmount);
-		grux->ServerRPC_TakeDamage();
-		if (NA_MageZSkillhit != nullptr)
-		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OtherActor->GetActorLocation(), OtherActor->GetActorRotation());
-			UE_LOG(LogTemp, Warning, TEXT("Gruxdamage"));
-		}
-	}
-	else if (dogBart)
-	{
-		dogBart->DogBartTakeDamage(DamageAmount);
-		dogBart->ServerRPC_TakeDamage();
-		
+	//else if (demonSword)
+	//{
+	//	demonSword->SwordTakeDamage(DamageAmount);
+	//	if (NA_MageZSkillhit != nullptr)
+	//	{
+	//		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OtherActor->GetActorLocation(), OtherActor->GetActorRotation());
+	//	}
+	//}
+	//else if (grux)
+	//{
+	//	grux->GruxTakeDamage(DamageAmount);
+	//	grux->ServerRPC_TakeDamage();
+	//	if (NA_MageZSkillhit != nullptr)
+	//	{
+	//		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OtherActor->GetActorLocation(), OtherActor->GetActorRotation());
+	//		UE_LOG(LogTemp, Warning, TEXT("Gruxdamage"));
+	//	}
+	//}
+	//else if (dogBart)
+	//{
+	//	dogBart->DogBartTakeDamage(DamageAmount);
+	//	dogBart->ServerRPC_TakeDamage();
+	//	
 
-		if (NA_MageZSkillhit != nullptr)
-		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OtherActor->GetActorLocation(), OtherActor->GetActorRotation());
-		}
-		UE_LOG(LogTemp, Warning, TEXT("dogbartdamage"));
-	}
+	//	if (NA_MageZSkillhit != nullptr)
+	//	{
+	//		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OtherActor->GetActorLocation(), OtherActor->GetActorRotation());
+	//	}
+	//	UE_LOG(LogTemp, Warning, TEXT("dogbartdamage"));
+	//}
 
 
 

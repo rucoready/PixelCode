@@ -38,7 +38,7 @@ class APlayerMageRightAttackSpawnActor;
 class APlayerMageLeftAttackSpawnActor;
 class APlayerMageQSkillSpawnActor;
 class APlayerMageESkillSpawnActor;
-
+class APlayerMageZSkillSpawnActor;
 
 UENUM()
 enum class MyEnum : int8
@@ -280,6 +280,9 @@ public:
 	UPROPERTY()
 	APlayerMageESkillSpawnActor* mageSpawnESkillCollsion;
 
+	UPROPERTY()
+	APlayerMageZSkillSpawnActor* mageSpawnZSkillCollsion;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	TSubclassOf<ASpawnSwordQSkill> QSkillSpawn;
 
@@ -297,6 +300,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	TSubclassOf<APlayerMageESkillSpawnActor> mageESkillSpawn;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
+	TSubclassOf<APlayerMageZSkillSpawnActor> mageZSkillSpawn;
 
 	UFUNCTION(Server, Reliable) 
 	void SeverRPC_QSkillSpawn();
