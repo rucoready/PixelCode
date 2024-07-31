@@ -30,6 +30,18 @@ class PIXELCODE_API ULobbyWidget : public UUserWidget
 	class UPCodeGameInstance* gi;
 
 
+	// 뒤로 버튼 및 함수
+	UPROPERTY(EditDefaultsOnly, Meta=(BindWidget))
+	class UButton* Button_Back1;
+
+	
+	UPROPERTY(EditDefaultsOnly, Meta=(BindWidget))
+	class UButton* Button_Back2;
+
+	UFUNCTION()
+	void OnMyClickBackRoom();
+
+
 	// 크리에이트 룸 UI
 	UPROPERTY(EditDefaultsOnly, Meta=(BindWidget))
 	class UEditableText* Edit_RoomName;
