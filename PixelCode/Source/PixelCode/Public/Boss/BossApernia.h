@@ -74,9 +74,6 @@ public:
 	bool destroyOnce = false;
 
 	FTimerHandle timerhandle_Destroy;
-	FTimerHandle timerhandle_Destroy2;
-
-	void DestroySelfOriginMesh();
 
 	void DestroySelf();
 
@@ -87,7 +84,7 @@ public:
 	TSubclassOf<class ABossSword> bossSwordclass;
 
 	//float bossMaxHP = 43000.0f;
-	float bossMaxHP = 100.0f;
+	float bossMaxHP = 80000.0f;
 	float bossCurrentHP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
@@ -140,8 +137,6 @@ public:
 	class UMaterial* originalMaterial;
 	UPROPERTY(EditAnywhere, Category="MyMaterial")
 	class UMaterial* originalMaterial2;
-
-	
 
 	UPROPERTY(EditAnywhere, Category="MyMaterial")
 	class UMaterial* damageMaterial;
@@ -852,7 +847,7 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_SpawnLazorDragonStatue();
 
-	float currentTime;
+
 
 	void SpawnDecal(int32 Index);
 
@@ -906,38 +901,4 @@ public:
 	int statueDestroyCount;
 
 
-	class UMaterialInstanceDynamic* DynamicMaterialInstance;
-
-	UPROPERTY(EditAnywhere, Category = "MyMaterial")
-	class UMaterial* stoneMaterial;
-
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_SpawnStoneDecal();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastRPC_SpawnStoneDecal();
-
-	UPROPERTY(EditAnywhere, Category = "MySettings")
-	class TSubclassOf<class ABossStoneChangeDecal> stoneDecal;
-
-	UPROPERTY(EditAnywhere, Category = "MySettings")
-	class TSubclassOf<class AFractureBoss> fractureBoss;
-
-	void SpawnFractureBoss();
-
-	AActor* fractureBossMesh;
-
-	FTimerHandle timerhandle_SpawnFractureBoss;
-
-	class UCapsuleComponent* CapsuleComponent;
-
-	class UPrimitiveComponent* RootComponent;
-
-	
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
-	TSubclassOf<class AGeometryCollectionActor> FractureBossClass;
-
-	
-	class AGeometryCollectionActor* fractureBossMesh2;
 };

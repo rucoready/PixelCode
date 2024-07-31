@@ -8,6 +8,6 @@ public class PixelCode : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "AIModule", "NavigationSystem", "PhysicsCore","UMG", "Slate", "SlateCore", "OnlineSubsystem", "OnlineSubsystemSteam", "HeadMountedDisplay", "GameplayTasks", "Niagara", "Foliage", "GeometryCollectionEngine" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "AIModule", "NavigationSystem", "PhysicsCore","UMG", "Slate", "SlateCore", "OnlineSubsystem", "OnlineSubsystemSteam", "HeadMountedDisplay", "GameplayTasks", "Niagara", "Foliage" });
 	}
 }

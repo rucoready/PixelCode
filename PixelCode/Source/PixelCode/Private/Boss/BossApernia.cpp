@@ -40,10 +40,6 @@
 #include "FireActor.h"
 #include "BoundCollision.h"
 #include "EngineUtils.h"
-#include "BossStoneChangeDecal.h"
-#include "FractureBoss.h"
-#include "Components/CapsuleComponent.h"
-#include "GeometryCollection/GeometryCollectionActor.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -415,8 +411,6 @@ void ABossApernia::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    currentTime +=DeltaTime;
-    
     UE_LOG(LogTemp, Warning, TEXT("StatueDestroyCount : %d"), statueDestroyCount);
     if (allStatueDestroy)
     {
@@ -427,7 +421,6 @@ void ABossApernia::Tick(float DeltaTime)
     {
         bossOnceDie = true;
         ServerRPC_BossDie();
-        
         if (ABossAIController* bossController = Cast<ABossAIController>(GetController()))
         {
             if (UBehaviorTreeComponent* BTComponent = bossController->FindComponentByClass<UBehaviorTreeComponent>())
@@ -444,12 +437,7 @@ void ABossApernia::Tick(float DeltaTime)
                 FRotator currentRotation = GetActorRotation();
                 SetActorRotation(currentRotation);
                 //BTComponent->StopTree(EBTStopMode::Safe);
-                GetWorldTimerManager().SetTimer(timerhandle_Destroy, this, &ABossApernia::DestroySelf, 3.0f, false);
-                
-                GetWorldTimerManager().SetTimer(timerhandle_SpawnFractureBoss, this, &ABossApernia::SpawnFractureBoss, 5.0f, false);
-                GetWorldTimerManager().SetTimer(timerhandle_Destroy2, this, &ABossApernia::DestroySelfOriginMesh, 5.000001f, false);
-                
-                
+                GetWorldTimerManager().SetTimer(timerhandle_Destroy, this, &ABossApernia::DestroySelf, 4.2f, false);
             }
         }
         
@@ -513,15 +501,9 @@ void ABossApernia::SwordCollisionDeactive()
 
 }
 
-void ABossApernia::DestroySelfOriginMesh()
-{
-    Destroy();
-}
-
 void ABossApernia::DestroySelf()
 {
-    ServerRPC_SpawnStoneDecal();
-    //Destroy();
+    Destroy();
 }
 
 void ABossApernia::BossFallDownReset()
@@ -2089,34 +2071,6 @@ void ABossApernia::SpawnDecal(int32 Index)
     }
 }
 
-void ABossApernia::SpawnFractureBoss()
-{
-    
-  
-    FVector ActorLocation = GetActorLocation();
-    FRotator ActorRotation = GetActorRotation();
-
- 
-    FVector SpawnLocation = ActorLocation - FVector(0.0f, 0.0f, 200.0f); 
-    FRotator SpawnRotation = ActorRotation;
-
-
-    SpawnRotation.Yaw -= 90.0f;
-
-
-    
-
-    if (FractureBossClass)
-    {
-        fractureBossMesh2 = GetWorld()->SpawnActor<AGeometryCollectionActor>(FractureBossClass, SpawnLocation, SpawnRotation);
-
-
-    }
-    
-}
-
-
-
 
 
 void ABossApernia::ServerRPC_lastSpawnDecalSword1_Implementation()
@@ -2314,19 +2268,5 @@ void ABossApernia::MulticastRPC_CheckingStatueSurvive_Implementation()
     if (FoundActors.Num() > 0)
     {
         UE_LOG(LogTemp, Warning, TEXT("hello331"));  
-    }
-}
-
-void ABossApernia::ServerRPC_SpawnStoneDecal_Implementation()
-{
-    MulticastRPC_SpawnStoneDecal();
-}
-
-void ABossApernia::MulticastRPC_SpawnStoneDecal_Implementation()
-{
-    if (stoneDecal)
-    {
-        AActor* spawnedSword = GetWorld()->SpawnActor<AActor>(stoneDecal, GetActorLocation(), GetActorRotation());
-
     }
 }
