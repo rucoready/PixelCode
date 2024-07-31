@@ -70,5 +70,7 @@ Build/*/**
 **/Intermediate/*
 **/Plugins/*/Intermediate/*
 
+**/PixelCode.bat/*
+
 # Cache files for the editor to use
 **/DerivedDataCache/*
