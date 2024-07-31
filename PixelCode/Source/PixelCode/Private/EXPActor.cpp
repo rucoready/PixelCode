@@ -20,6 +20,7 @@
 #include "Components/SphereComponent.h"
 #include "PCodePlayerController.h"
 #include "Player/pixelPlayerState.h"
+#include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
 
 // Sets default values
 AEXPActor::AEXPActor()
@@ -87,18 +88,60 @@ void AEXPActor::Tick(float DeltaTime)
 
 void AEXPActor::OnBeginOverlapExpOrb(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->GetName().Contains("Player"))
+	/*if (OtherActor->GetName().Contains("Player"))
 	{
 		APixelCodeCharacter* Player = Cast<APixelCodeCharacter>(OtherActor);
-		APCodePlayerController* Pc = Cast<APCodePlayerController>(Player->GetController());
-		ApixelPlayerState* PlayerState = Cast<ApixelPlayerState>(Pc->pixelPlayerState);
 
-		PlayerState->SetaddUpEXP(50.0f);
+			APCodePlayerController* Pc = Cast<APCodePlayerController>(Player->GetController());
+			if (Pc->IsLocalController())
+			{
+				ApixelPlayerState* PlayerState = Cast<ApixelPlayerState>(Pc->pixelPlayerState);
+				PlayerState->SetaddUpEXP(50.0f);
+			}
+
 
 		Destroy();
-	}
-	
+	}*/
 
+    if (OtherActor->GetName().Contains("Player"))
+    {
+        APixelCodeCharacter* Player = Cast<APixelCodeCharacter>(OtherActor);
+        if (Player)
+        {
+            APCodePlayerController* Pc = Cast<APCodePlayerController>(Player->GetController());
+            if (Pc && Pc->IsLocalController())
+            {
+                // 서버에서 클라이언트의 PlayerState를 업데이트하려면 RPC를 사용하는 것이 좋습니다.
+                if (Pc->IsLocalController()) // 클라이언트에서만 실행됨
+                {
+                    ApixelPlayerState* PlayerState = Cast<ApixelPlayerState>(Pc->PlayerState);
+                    if (PlayerState)
+                    {
+                        PlayerState->SetaddUpEXP(50.0f);
+                    }
+                }
+                else
+                {
+                    // 서버에서 RPC 호출
+                    ClientAddExp(Pc, 50.0f);
+                }
+            }
+        }
+
+        Destroy();
+    }
 
 }
 
+
+void AEXPActor::ClientAddExp_Implementation(APCodePlayerController* Pc, float ExpAmount)
+{
+    if (Pc && Pc->IsLocalController())
+    {
+        ApixelPlayerState* PlayerState = Cast<ApixelPlayerState>(Pc->PlayerState);
+        if (PlayerState)
+        {
+            PlayerState->SetaddUpEXP(ExpAmount);
+        }
+    }
+}
