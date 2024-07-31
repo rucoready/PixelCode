@@ -119,7 +119,7 @@ void APCodePlayerController::PlayerStartWidget()
 		{
 			NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
 			NormallyWidget = NormallyWidget;
-			if (NormallyWidget != nullptr)
+			if (NormallyWidget != nullptr && MainPlayer != nullptr)
 			{
 				NormallyWidget->AddToViewport(-1);
 				NormallyWidget->SetVisibility(ESlateVisibility::Visible);
