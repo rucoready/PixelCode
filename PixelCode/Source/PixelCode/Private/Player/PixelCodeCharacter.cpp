@@ -1620,7 +1620,7 @@ void APixelCodeCharacter::PossessedBy(AController* NewController)
 	// 내가 로컬이라면
 	//if (IsLocallyControlled())
 	//{ 
-		InitMainUI(); //나중에 활성화?
+		//InitMainUI(); //나중에 활성화?
 	//	UE_LOG(LogTemp, Warning, TEXT("Normal2"));
 	//}
 
