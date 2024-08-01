@@ -1486,8 +1486,8 @@ void APixelCodeCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	Pc = Cast<APCodePlayerController>(NewController);
-	Pc->StatComponent = this->stateComp;
+	//Pc = Cast<APCodePlayerController>(NewController);
+	//Pc->StatComponent = this->stateComp;
 
 	
 	//Pc->bPossess = false;
@@ -1498,7 +1498,7 @@ void APixelCodeCharacter::PossessedBy(AController* NewController)
 	UE_LOG(LogTemp, Warning, TEXT("[%s] %s - PossessedBy"), *netMode, *hasController);
 	
 
-	Pc->ClientRPC_PlayerStartWidget();
+	//Pc->ClientRPC_PlayerStartWidget();
 
 
 	// 내가 로컬이라면
@@ -1507,7 +1507,7 @@ void APixelCodeCharacter::PossessedBy(AController* NewController)
 		//InitMainUI(); //나중에 활성화?
 	//	UE_LOG(LogTemp, Warning, TEXT("Normal2"));
 	//}
-
+	
 
 }
 
