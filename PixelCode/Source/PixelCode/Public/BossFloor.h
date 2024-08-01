@@ -34,9 +34,9 @@ public:
 	UPROPERTY(EditAnywhere, Category="MySettings")
 	class TSubclassOf<class ADemonSword> demonSwordFactory;
 
-	// Å¸ÀÌ¸Ó¸¦ ÃÊ±âÈ­ÇÕ´Ï´Ù.
-	float spawnTimerInterval = 20.0f; // 20ÃÊ °£°ÝÀ¸·Î ½ºÆù
-	float spawnDelay = 1.0f; // ½ºÆù µô·¹ÀÌ
+	// Å¸ï¿½Ì¸Ó¸ï¿½ ï¿½Ê±ï¿½È­ï¿½Õ´Ï´ï¿½.
+	float spawnTimerInterval = 20.0f; // 20ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	float spawnDelay = 1.0f; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	void SpawnSword();
 
@@ -47,7 +47,7 @@ public:
 
 	bool bOnceActive = false;
 
-	void TimerSpawnSword();
+	void DestroyAllSword();
 
 	
 

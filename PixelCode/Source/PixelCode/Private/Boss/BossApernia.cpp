@@ -47,6 +47,7 @@
 #include "Components/CapsuleComponent.h"
 #include "PortalCollision.h"   //temporary
 #include "GeometryCollection/GeometryCollectionActor.h"
+#include "BossFloor.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -411,6 +412,15 @@ void ABossApernia::BeginPlay()
     InitMainUI();
 
     
+//     ABossFloor* floorActor = Cast<ABossFloor>(floor);
+//     if (floorActor)
+//     {
+//         UE_LOG(LogTemp, Warning, TEXT("FloorC1"));
+//     }
+//     if (floorActor == NULL)
+//     {
+//         UE_LOG(LogTemp, Warning, TEXT("FloorC000"));
+//     }
 }
 
 // Called every frame
@@ -453,7 +463,7 @@ void ABossApernia::Tick(float DeltaTime)
                 GetWorldTimerManager().SetTimer(timerhandle_Destroy2, this, &ABossApernia::DestroySelfOriginMesh, 5.000001f, false);
                 
                 
-                //drop exp
+                
                 
 
 
@@ -1742,7 +1752,7 @@ void ABossApernia::ServerRPC_RoarParticle_Implementation()
 
 void ABossApernia::MulticastRPC_RoarParticle_Implementation()
 {
-    UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), roarParticle, GetActorLocation(), GetActorRotation(), FVector(2.0f));
+    UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), roarParticle, GetActorLocation(), GetActorRotation(), FVector(1.0f));
 }
 
 void ABossApernia::ServerRPC_SpawnGigantSword_Implementation()
@@ -1912,6 +1922,19 @@ void ABossApernia::MulticastRPC_DropBossExp_Implementation()
         myMapCollsionActor = GetWorld()->SpawnActor<AMyMapCollsionActor>(endPortal, spawnLocation, GetActorRotation());
 
     }
+    if (floor)
+    {
+        //찾는 액터가 한개일떈
+        ABossFloor* FloorActor2 = Cast<ABossFloor>(UGameplayStatics::GetActorOfClass(GetWorld(), floor));
+        //여러개면 GetAllActorsOfClass를 사용해야함 
+        if (FloorActor2)
+        {
+           FloorActor2->DestroyAllSword();
+        }
+        //floorActor->DestroyAllSword();
+        
+    }
+    
 
     
 }
@@ -2054,6 +2077,17 @@ void ABossApernia::DestroyStoneDecal()
     {
         spawnDecalActor->Destroy();
     }
+}
+
+void ABossApernia::ServerRPC_DestroyShield_Implementation()
+{
+    MulticastRPC_DestroyShield();
+}
+
+void ABossApernia::MulticastRPC_DestroyShield_Implementation()
+{
+    phaseShieldComponent->SetVisibility(false);
+    bossSwordComp->SetVisibility(true);
 }
 
 

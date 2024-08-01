@@ -46,7 +46,7 @@ ABossFloor::ABossFloor()
 void ABossFloor::BeginPlay()
 {
     Super::BeginPlay();
-   
+    //DestroyAllSword();
 }
 
 // Called every frame
@@ -97,8 +97,10 @@ void ABossFloor::SpawnSword()
 
 
 //GetWorld()->GetTimerManager().SetTimer(timerhandle_SpawnSword, this, &ABossFloor::TimerSpawnSword, DelayTime, false);
-void ABossFloor::TimerSpawnSword()
+
+
+void ABossFloor::DestroyAllSword()
 {
-    
+    demonSwordFactory = nullptr;
 }
 

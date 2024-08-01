@@ -964,6 +964,12 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_Boss2phaseGoUp();
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DestroyShield();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_DestroyShield();
+
 	bool onceShield = false;
 
 	float lerpDuration = 3.0f;
@@ -998,4 +1004,11 @@ public:
 	class TSubclassOf<class AMyMapCollsionActor> endPortal;
 
 	class AMyMapCollsionActor* myMapCollsionActor;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class ABossFloor> floor;
+
+	class ABossFloor* floorActor;
+
+	
 };

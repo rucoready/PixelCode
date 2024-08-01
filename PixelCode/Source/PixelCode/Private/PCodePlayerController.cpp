@@ -335,32 +335,36 @@ void APCodePlayerController::ServerRPC_CreateWidgetRobbyWidget_Implementation()
 
 void APCodePlayerController::MulticastRPC_CreateWidgetRobbyWidget_Implementation()
 {
-	if (portalRobbyWidget)
+	if (HasAuthority())
 	{
-		WidgetInstance = CreateWidget<UPortalRobbyWidget>(this, portalRobbyWidget);
-		if (WidgetInstance)
+		if (portalRobbyWidget)
 		{
-			// 위젯을 화면에 추가
-			WidgetInstance->AddToViewport();
-
-			bShowMouseCursor = true;
-			bEnableClickEvents = true;
-			bEnableMouseOverEvents = true;
-
-			FInputModeUIOnly InputMode;
-			InputMode.SetWidgetToFocus(WidgetInstance->TakeWidget());
-			InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-			SetInputMode(InputMode);
-
-			PlayerController = GetWorld()->GetFirstPlayerController();
-			if (PlayerController)
+			WidgetInstance = CreateWidget<UPortalRobbyWidget>(this, portalRobbyWidget);
+			if (WidgetInstance)
 			{
-				PlayerController->SetIgnoreLookInput(true);
-				PlayerController->SetIgnoreMoveInput(true);
-			}
+				// 위젯을 화면에 추가
+				WidgetInstance->AddToViewport();
 
+				bShowMouseCursor = true;
+				bEnableClickEvents = true;
+				bEnableMouseOverEvents = true;
+
+				FInputModeUIOnly InputMode;
+				InputMode.SetWidgetToFocus(WidgetInstance->TakeWidget());
+				InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+				SetInputMode(InputMode);
+
+				PlayerController = GetWorld()->GetFirstPlayerController();
+				if (PlayerController)
+				{
+					PlayerController->SetIgnoreLookInput(true);
+					PlayerController->SetIgnoreMoveInput(true);
+				}
+
+			}
 		}
 	}
+	
 }
 
 void APCodePlayerController::ServerRPC_HideWidgetRobbyWidget_Implementation()
@@ -549,28 +553,31 @@ void APCodePlayerController::ChangeRobbyWidgetButtonReady()
 
 void APCodePlayerController::CreateWidgetBossEnterWidget()
 {
-	
-	if (bossEnterWidget)
+	if (HasAuthority())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CALL4455"));
-		bossEnterWidgets = CreateWidget<UBossEnterWidget>(this, bossEnterWidget);
-		if (bossEnterWidgets)
+		if (bossEnterWidget)
 		{
-			// 위젯을 화면에 추가
-			bossEnterWidgets->AddToViewport();
-
-			bShowMouseCursor = true;
-			bEnableClickEvents = true;
-			bEnableMouseOverEvents = true;
-
-			PlayerController = GetWorld()->GetFirstPlayerController();
-			if (PlayerController)
+			UE_LOG(LogTemp, Warning, TEXT("CALL4455"));
+			bossEnterWidgets = CreateWidget<UBossEnterWidget>(this, bossEnterWidget);
+			if (bossEnterWidgets)
 			{
-				PlayerController->SetIgnoreLookInput(true);
-				PlayerController->SetIgnoreMoveInput(true);
+				// 위젯을 화면에 추가
+				bossEnterWidgets->AddToViewport();
+
+				bShowMouseCursor = true;
+				bEnableClickEvents = true;
+				bEnableMouseOverEvents = true;
+
+				PlayerController = GetWorld()->GetFirstPlayerController();
+				if (PlayerController)
+				{
+					PlayerController->SetIgnoreLookInput(true);
+					PlayerController->SetIgnoreMoveInput(true);
+				}
 			}
 		}
 	}
+	
 }
 
 // =========================================== 요한 =========================================================

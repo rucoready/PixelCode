@@ -23,6 +23,7 @@
 #include "Boss/BossApernia.h"
 #include "Boss/BossAIController.h"
 #include "EngineUtils.h"
+#include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
 #include "Player/pixelPlayerState.h"
 
 // Sets default values
@@ -116,23 +117,8 @@ void ADragonRazorStatue::SpawnFractureStatue()
 
 void ADragonRazorStatue::DestroySelf()
 {
-    statueComp->DestroyComponent(true);
-    razorComponent->SetVisibility(false);
-    fireComponent->SetVisibility(false);
-    for (TActorIterator<ABossAIController> It(GetWorld()); It; ++It)
-    {
-        ABossAIController* BossAIController = *It;
-        if (BossAIController)
-        {
-            if (ABossApernia* boss = Cast<ABossApernia>(BossAIController->GetPawn()))
-            {
-                UE_LOG(LogTemp, Warning, TEXT("Call333"));
-                boss->statueDestroyCount += 1;
-            }
-        }
-
-    }
-   
+    
+    ServerRPC_DestroyCheck();
 }
 
 void ADragonRazorStatue::DrestroyFractureStatue()
@@ -154,6 +140,30 @@ void ADragonRazorStatue::RestoreOriginMaterial()
 {
     int32 MaterialIndex2 = 0; // 적절한 슬롯 인덱스 지정
     statueComp->SetMaterial(MaterialIndex2, originalMaterial);
+}
+
+void ADragonRazorStatue::ServerRPC_DestroyCheck_Implementation()
+{
+    MulticastRPC_DestroyCheck();
+}
+
+void ADragonRazorStatue::MulticastRPC_DestroyCheck_Implementation()
+{
+    statueComp->DestroyComponent(true);
+    razorComponent->SetVisibility(false);
+    fireComponent->SetVisibility(false);
+    for (TActorIterator<ABossAIController> It(GetWorld()); It; ++It)
+    {
+        ABossAIController* BossAIController = *It;
+        if (BossAIController)
+        {
+            if (ABossApernia* boss = Cast<ABossApernia>(BossAIController->GetPawn()))
+            {
+                boss->statueDestroyCount += 1;
+            }
+        }
+
+    }
 }
 
 

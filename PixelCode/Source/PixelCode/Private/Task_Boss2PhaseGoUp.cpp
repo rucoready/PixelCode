@@ -44,9 +44,6 @@ EBTNodeResult::Type UTask_Boss2PhaseGoUp::ExecuteTask(UBehaviorTreeComponent& Ow
         }
     }
 
-    //test
-    //boss->ServerRPC_SpawnLazorDragonStatue();
-    //boss->ServerRPC_CheckingStatueSurvive();
    
     return EBTNodeResult::InProgress;
     
@@ -218,8 +215,7 @@ void UTask_Boss2PhaseGoUp::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
         {
 
             OwnerComp.GetBlackboardComponent()->SetValueAsBool(GetSelectedBlackboardKey(), true);
-            boss->phaseShieldComponent->SetVisibility(false);
-            boss->bossSwordComp->SetVisibility(true);
+            boss->ServerRPC_DestroyShield();
             FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
         }
     }

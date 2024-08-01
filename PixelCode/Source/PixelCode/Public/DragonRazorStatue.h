@@ -81,5 +81,11 @@ public:
 
 	class ABossApernia* TargetPawn;
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DestroyCheck();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_DestroyCheck();
+
 
 };
