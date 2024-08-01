@@ -31,13 +31,13 @@ void UGruxAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bAttack = grux->bPlayAttack;
 	if (grux->bPlayAttack)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("32323232329999999999999"));
+	
 	}
 	if(grux->attackSensing == true &&!playonce)
 	{
 		playonce = true;
 		
-		UE_LOG(LogTemp, Warning, TEXT("3232323232888888888888888"));
+	
 	}
 }
 

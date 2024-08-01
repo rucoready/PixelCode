@@ -16,7 +16,7 @@ void ULoadingWidget1::NativeConstruct()
 		loadingBar->SetPercent(progress);
 	};
 
-	// 타이머 시작 (0.01초마다 호출하여 부드러운 업데이트)
+	
 	GetWorld()->GetTimerManager().SetTimer(timerHandle_TimerhandleProgressLoading, this, &ULoadingWidget1::UpdateProgressBar, 0.01f, true);
 }
 

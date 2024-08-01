@@ -78,16 +78,12 @@ void UBossCollisionComponent::CollisionTrace()
 	FVector startSocketLocation = collisionMeshComponent->GetSocketLocation(startSocketName);
 	FVector endSocketLocation = collisionMeshComponent->GetSocketLocation(endSocketName);
 
-	UE_LOG(LogTemp, Warning, TEXT("Start Socket Location: %s"), *startSocketLocation.ToString());
-	UE_LOG(LogTemp, Warning, TEXT("End Socket Location: %s"), *endSocketLocation.ToString());
-
 	TArray<FHitResult> arrayHits;
 
 	UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), startSocketLocation, endSocketLocation, traceRadius, collisionObjectTypes, false, actorsToIgnore, drawDebugType, arrayHits, true, FLinearColor::Red, FLinearColor::Green, 1.0f);
 	
 	if (onHitDeligate.IsBound())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CollisionBegin0"));
 		onHitDeligate.Execute(lastHitStruct);
 	}
 }

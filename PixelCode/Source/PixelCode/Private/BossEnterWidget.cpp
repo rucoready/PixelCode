@@ -45,7 +45,6 @@ void UBossEnterWidget::OnMyclickButtonEnter()
 
 void UBossEnterWidget::OnMyclickExit()
 {
-	UE_LOG(LogTemp, Warning, TEXT("I55"));
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
 		// PCodePlayerController 타입으로 캐스팅

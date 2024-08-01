@@ -54,7 +54,6 @@ void ABossFloor::Tick(float DeltaTime)
 {
     
 	Super::Tick(DeltaTime);
-    UE_LOG(LogTemp, Warning, TEXT("BossFloorTick"));
     currentTime += DeltaTime;
 
     if (currentTime >= 30.0 && !bOnceActive)
@@ -81,8 +80,6 @@ void ABossFloor::SpawnSword()
         float radius = 3000.0f;  
         FVector ranLoc = origin + FVector(FMath::RandRange(-radius, radius), FMath::RandRange(-radius, radius), 0.0f);
 
-     
-        //DrawDebugSphere(GetWorld(), ranLoc, 100.0f, 24, FColor::Green, true);
 
        
         if (demonSwordFactory)
@@ -92,11 +89,9 @@ void ABossFloor::SpawnSword()
         }
     }
 }
-//float DelayTime = i * 0.3f;
 
 
 
-//GetWorld()->GetTimerManager().SetTimer(timerhandle_SpawnSword, this, &ABossFloor::TimerSpawnSword, DelayTime, false);
 void ABossFloor::TimerSpawnSword()
 {
     

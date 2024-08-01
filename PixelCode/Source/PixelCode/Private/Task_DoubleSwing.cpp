@@ -143,7 +143,7 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
                         targetLocation = currentLocation + movement;
                     }
 
-                    UE_LOG(LogTemp, Warning, TEXT("이동 중: 최대 200"));
+                
                     // 실제 이동
                     bossPawn->SetActorLocation(targetLocation);
                 }
@@ -162,8 +162,6 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
                         targetLocation = currentLocation + movement;
                     }
 
-                    UE_LOG(LogTemp, Warning, TEXT("이동 중: 최대 700"));
-                    // 실제 이동
                     bossPawn->SetActorLocation(targetLocation);
                 }
 
@@ -247,7 +245,6 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
                         targetLocation = currentLocation + movement;
                     }
 
-                    UE_LOG(LogTemp, Warning, TEXT("이동 중: 최대 200"));
                     // 실제 이동
                     bossPawn->SetActorLocation(targetLocation);
                 }
@@ -266,7 +263,6 @@ void UTask_DoubleSwing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
                         targetLocation = currentLocation + movement;
                     }
 
-                    UE_LOG(LogTemp, Warning, TEXT("이동 중: 최대 700"));
                     // 실제 이동
                     bossPawn->SetActorLocation(targetLocation);
                 }

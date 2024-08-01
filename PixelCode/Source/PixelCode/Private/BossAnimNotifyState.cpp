@@ -22,15 +22,7 @@ void UBossAnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSe
 				auto combatComp = Cast<UCombatComponent>(Comp);
 				if (combatComp != nullptr)
 				{
-					//ABossSword* mainWeapon = 
-
-					//if (IsValid(mainWeapon))
-					//{
-					//	if (mainWeapon->bossCollisionComponent != nullptr)
-					//	{
-					//		mainWeapon->bossCollisionComponent->SetEnableCollision(true);	// Enable
-					//	}
-					//}
+					
 				}
 			}
 
@@ -52,15 +44,7 @@ void UBossAnimNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequ
 				auto combatComp = Cast<UCombatComponent>(Comp);
 				if (combatComp != nullptr)
 				{
-					//ABossSword* mainWeapon = 
-
-					//if (IsValid(mainWeapon))
-					//{
-					//	if (mainWeapon->bossCollisionComponent != nullptr)
-					//	{
-					//		mainWeapon->bossCollisionComponent->SetEnableCollision(false);	// Disable
-					//	}
-					//}
+					
 				}
 			}
 

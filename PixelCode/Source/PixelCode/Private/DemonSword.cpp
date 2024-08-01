@@ -240,7 +240,6 @@ void ADemonSword::OnBeginOverlapSwordFloor(UPrimitiveComponent* OverlappedCompon
 			Destroy();
 			onceSound = false;
 			ApplyDamageToTarget(OtherActor, 7);
-			UE_LOG(LogTemp, Warning, TEXT("OVerlap Floor"));
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), grounSwordImpact2, GetActorLocation(), GetActorRotation(), FVector(0.5f));
 			//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), groundSwordImpact, GetActorLocation(), GetActorRotation(), FVector(3.0f));
 			TArray<AActor*> foundCharacters;

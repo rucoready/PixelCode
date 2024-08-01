@@ -91,10 +91,6 @@ void UPortalRobbyWidget::UpdateCountdown()
 
 
 
-
-
-
-		//GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/Dungeon2?listen"));
 	}
 }
 
@@ -193,7 +189,7 @@ void UPortalRobbyWidget::OnRep_ReadyTextPlayer1()
 void UPortalRobbyWidget::SetText()
 {
 	
-	//readyButtonText1->SetText(FText::FromString(TEXT("Ready!")));
+	
 	
 }
 
@@ -204,18 +200,6 @@ void UPortalRobbyWidget::NoSetText()
 
 void UPortalRobbyWidget::OnRep_ReadyTextPlayer2()
 {
-// 	if (readyButtonText2)
-// 	{
-// 		if (bIsReadyTextPlayer2)
-// 		{
-// 			readyButtonText2->SetText(FText::FromString(TEXT("Ready!")));
-// 
-// 		}
-// 		else
-// 		{
-// 			readyButtonText2->SetText(FText::GetEmpty());
-// 		}
-// 	}
 
 
 }
@@ -231,14 +215,6 @@ void UPortalRobbyWidget::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 void UPortalRobbyWidget::NormalChangeButton1()
 {
 	
-// 	if (bIsReadyTextPlayer1)
-// 	{
-// 		readyButtonText1->SetText(FText::FromString(TEXT("Ready!")));
-// 	}
-// 	else
-// 	{
-// 		readyButtonText1->SetText(FText::GetEmpty());
-// 	}
 
 	
 }
