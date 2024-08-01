@@ -1520,7 +1520,7 @@ void APixelCodeCharacter::CreateInventory()
 	}
 
 	PlayerInventory->SetSlotsCapacity(60); //인벤토리 슬롯 20개생성
-	PlayerInventory->SetWeightCapacity(1000.0f); // 무게용량 50설정
+	PlayerInventory->SetWeightCapacity(1000000000.0f); // 무게용량 50설정
 }
 
 void APixelCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
