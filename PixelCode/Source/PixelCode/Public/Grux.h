@@ -178,6 +178,21 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class TSubclassOf<class AEXPActor> expOrb;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class APickup> pickUpActor1;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class APickup> pickUpActor2;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class APickup> pickUpActor3;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class APickup> pickUpActor4;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class APickup> pickUpActor5;
+
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_GruxDropExp();
 

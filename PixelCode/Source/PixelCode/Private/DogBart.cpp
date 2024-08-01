@@ -43,6 +43,7 @@
 #include "DamageWidget.h"
 #include "DamageWidgetComponent.h"
 #include "Boss/BossAnimInstance.h"
+#include "player/World/Pickup.h"
 #include "Components/WidgetComponent.h"
 #include "EXPActor.h"
 
@@ -517,6 +518,31 @@ void ADogBart::MulticastRPC_GruxDropExp_Implementation()
 			FVector spawnLocation = baseLocation + offset;
 
 			AActor* SpawnedSword = GetWorld()->SpawnActor<AEXPActor>(expOrb, spawnLocation, spawnRotation);
+		}
+	}
+
+	TArray<TSubclassOf<APickup>> PickupOptions;
+	PickupOptions.Add(pickUpActor1);
+	PickupOptions.Add(pickUpActor2);
+	PickupOptions.Add(pickUpActor3);
+	PickupOptions.Add(pickUpActor4);
+	PickupOptions.Add(pickUpActor5);
+
+	// Randomly select a pickup with a 30% chance
+	float RandomChance = FMath::FRand(); // Generates a random float between 0 and 1
+
+	if (RandomChance < 0.3f) // 30% chance
+	{
+		// Choose a random pickup class from the array
+		int32 RandomIndex = FMath::RandRange(0, PickupOptions.Num() - 1);
+		TSubclassOf<APickup> SelectedPickup = PickupOptions[RandomIndex];
+
+		// Spawning the pickup actor
+		if (SelectedPickup)
+		{
+			FVector SpawnLocation = GetActorLocation(); // Use appropriate location
+			FRotator SpawnRotation = GetActorRotation(); // Use appropriate rotation
+			GetWorld()->SpawnActor<APickup>(SelectedPickup, SpawnLocation, SpawnRotation);
 		}
 	}
 }

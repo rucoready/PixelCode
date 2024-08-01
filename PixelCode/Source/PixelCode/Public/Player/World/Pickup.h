@@ -32,14 +32,14 @@ public:
 	//================================================================================
 	APickup();
 
-	void InitializePickup(const TSubclassOf<UItemBase> BaseClass, const int32 InQuantity); // ÇÈ¾÷ ÃÊ±âÈ­
+	void InitializePickup(const TSubclassOf<UItemBase> BaseClass, const int32 InQuantity); // ï¿½È¾ï¿½ ï¿½Ê±ï¿½È­
 
 
 	UFUNCTION(Client, Reliable)
-	void ClientRPC_InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity); // µå¶ø ÃÊ±âÈ­
+	void ClientRPC_InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity); // ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticastRPC_InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity); // µå¶ø ÃÊ±âÈ­
+	void NetMulticastRPC_InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity); // ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
 
 	FORCEINLINE UItemBase* GetItemData() { return ItemReference; };
 
@@ -59,15 +59,15 @@ protected:
 
 
 	UPROPERTY(EditDefaultsOnly, Category = "Pickup | Item Reference")
-	UItemBase* ItemReference; // ÇÈ¾÷ÀÌ °¡¸®Å°´Â Ç×¸ñ
+	UItemBase* ItemReference; // ï¿½È¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½×¸ï¿½
 
 	UPROPERTY(EditDefaultsOnly, Category = "Pickup | Item Initialization")
-	int32 ItemQuantity; // ¼ö·®
+	int32 ItemQuantity; // ï¿½ï¿½ï¿½ï¿½
 
 	UPROPERTY(EditDefaultsOnly, Category = "Pickup | Interaction")
-	FInteractableData InstanceInteractableData; // ÀÎ½ºÅÏ½º »óÈ£ÀÛ¿ë°¡´É
+	FInteractableData InstanceInteractableData; // ï¿½Î½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½È£ï¿½Û¿ë°¡ï¿½ï¿½
 
-	// Å×½ºÆ® 
+	// ï¿½×½ï¿½Æ® 
 	/*UPROPERTY(EditAnywhere, Category = "Item")
 	TMap<uint8, TSubclassOf<AActor>> ItemTemplates;*/
 
@@ -94,7 +94,7 @@ protected:
 	//================================================================================
 	
 
-#if WITH_EDITOR // ¸ÅÅ©·Î
+#if WITH_EDITOR // ï¿½ï¿½Å©ï¿½ï¿½
 	//virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
 
@@ -111,7 +111,7 @@ public:
 	virtual void Interact(APixelCodeCharacter* PlayerCharacter) override;
 	void UpdateInteractableData();
 
-	void TakePickup(const APlayerOrganism* Taker); // Ä³¸¯ÅÍÀÇ ÀÎº¥Åä¸®¿Í ÀÎÅÍÆäÀÌ½ºÇØ¾ßÇÔ
+	void TakePickup(const APlayerOrganism* Taker); // Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½
 
 
 	FInteractableData GetItemInfo();

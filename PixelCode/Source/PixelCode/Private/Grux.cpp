@@ -38,6 +38,7 @@
 #include "PCodePlayerController.h"
 #include "Components/WidgetComponent.h"
 #include "EXPActor.h"
+#include "player/World/Pickup.h"
 #include "Player/pixelPlayerState.h"
 
 // Sets default values
@@ -159,19 +160,6 @@ void AGrux::Tick(float DeltaTime)
          }
          UE_LOG(LogTemp, Warning, TEXT("GRUX DIE!"));
 
-         //UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
-         //if (animInstance)
-         //{
-             // BossAnimInstance 타입으로 캐스팅합니다.
-         //    UGruxAnimInstance* gruxInstance = Cast<UGruxAnimInstance>(animInstance);
-         //    if (gruxInstance)
-         //    {
-         //        gruxInstance = NULL;
-         //    }
-         //}
-
-         
-         //ServerRPC_GruxDie();
          
 
          
@@ -544,20 +532,42 @@ void AGrux::MulticastRPC_GruxDropExp_Implementation()
     {
         FVector baseLocation = GetActorLocation();
         FRotator spawnRotation = GetActorRotation();
-        float radius = 150.0f; 
-        int numActors = 5; 
+        float radius = 150.0f;
+        int numActors = 3;
         float angleStep = 360.0f / numActors; // 각 객체 간의 각도 간격
 
         for (int i = 0; i < numActors; ++i)
         {
             float angle = i * angleStep; // 각도 
             float radians = FMath::DegreesToRadians(angle); // 라디안으로 
-            FVector offset = FVector(FMath::Cos(radians) * radius, FMath::Sin(radians) * radius, 200.0f); 
+            FVector offset = FVector(FMath::Cos(radians) * radius, FMath::Sin(radians) * radius, 200.0f);
             FVector spawnLocation = baseLocation + offset;
 
             AActor* SpawnedSword = GetWorld()->SpawnActor<AEXPActor>(expOrb, spawnLocation, spawnRotation);
         }
     }
+    TArray<TSubclassOf<APickup>> PickupOptions;
+    PickupOptions.Add(pickUpActor1);
+    PickupOptions.Add(pickUpActor2);
+    PickupOptions.Add(pickUpActor3);
+    PickupOptions.Add(pickUpActor4);
+    PickupOptions.Add(pickUpActor5);
 
-    
+    // Randomly select a pickup with a 30% chance
+    float RandomChance = FMath::FRand(); // Generates a random float between 0 and 1
+
+    if (RandomChance < 0.3f) // 30% chance
+    {
+        // Choose a random pickup class from the array
+        int32 RandomIndex = FMath::RandRange(0, PickupOptions.Num() - 1);
+        TSubclassOf<APickup> SelectedPickup = PickupOptions[RandomIndex];
+
+        // Spawning the pickup actor
+        if (SelectedPickup)
+        {
+            FVector SpawnLocation = GetActorLocation(); // Use appropriate location
+            FRotator SpawnRotation = GetActorRotation(); // Use appropriate rotation
+            GetWorld()->SpawnActor<APickup>(SelectedPickup, SpawnLocation, SpawnRotation);
+        }
+    }
 }
