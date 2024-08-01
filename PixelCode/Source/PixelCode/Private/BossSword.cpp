@@ -59,6 +59,7 @@ void ABossSword::Tick(float DeltaTime)
 
 	FString CollisionString = UKismetStringLibrary::Conv_IntToString(damageSphereComp->GetCollisionEnabled());
 
+	//GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Emerald, CollisionString);
 
 }
 
@@ -74,6 +75,7 @@ void ABossSword::ApplyDamageToTarget(AActor* OtherActor, float DamageAmount)
 
 void ABossSword::Testing1()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Testing"));
 }
 
 void ABossSword::RestoreOverlap()
@@ -99,6 +101,7 @@ void ABossSword::OnBeginOverlapSwordCollision(UPrimitiveComponent* OverlappedCom
 
 void ABossSword::SwordCollisionActive()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Sword Collision Activate"));
 	damageSphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	
 }

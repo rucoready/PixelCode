@@ -33,7 +33,11 @@ EBTNodeResult::Type UTask_DogBartMoveToPlayer::ExecuteTask(UBehaviorTreeComponen
                 
                 dogBartController->MoveToLocation(NearestPlayerLocation);
             }
-            
+            if (dogBartController == NULL)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("8787878787878787878787"));
+            }
+        }
 
         
     }

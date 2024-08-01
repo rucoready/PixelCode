@@ -47,7 +47,7 @@ void APortalCollision::OnBeginOverlapPortal(UPrimitiveComponent* OverlappedCompo
     
     if (OtherActor && OtherActor->GetName().Contains("Player"))
     {
-        
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Overlap Check"));
         if (portalRobbyWidget)
         {
             APawn* OverlappedPawn = Cast<APawn>(OtherActor);

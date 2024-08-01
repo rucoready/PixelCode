@@ -157,7 +157,22 @@ void AGrux::Tick(float DeltaTime)
              GetWorldTimerManager().SetTimer(timerhandle_Destroy, this, &AGrux::DestroySelf, 7.0f, false);
 
          }
-        
+         UE_LOG(LogTemp, Warning, TEXT("GRUX DIE!"));
+
+         //UAnimInstance* animInstance = GetMesh()->GetAnimInstance();
+         //if (animInstance)
+         //{
+             // BossAnimInstance 타입으로 캐스팅합니다.
+         //    UGruxAnimInstance* gruxInstance = Cast<UGruxAnimInstance>(animInstance);
+         //    if (gruxInstance)
+         //    {
+         //        gruxInstance = NULL;
+         //    }
+         //}
+
+         
+         //ServerRPC_GruxDie();
+         
 
          
 
@@ -203,7 +218,7 @@ void AGrux::GruxTakeDamage(float Damage)
         APCodePlayerController* PCodePlayerController = Cast<APCodePlayerController>(It->Get());
         if (PCodePlayerController)
         {
-          
+            //PCodePlayerController->ServerRPC_CreateDamageWidget();
 
 
         }
@@ -462,7 +477,7 @@ void AGrux::ServerRPC_GruxTakeDamageWidgetSet_Implementation()
            // damageWidgetInstance->PlayDamageAnimation05();
         }
 
-      
+        UE_LOG(LogTemp, Warning, TEXT("damageAmount : %d"), damageAmount);
     }
 
 
@@ -512,7 +527,7 @@ void AGrux::MulticastRPC_GruxTakeDamageWidgetSet_Implementation(int32 vaule2)
 
     }
 
-   
+    UE_LOG(LogTemp,Warning, TEXT("CURRENTT : %f"),currentHp);
 	
 }
 

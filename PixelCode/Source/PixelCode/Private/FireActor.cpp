@@ -70,7 +70,7 @@ void AFireActor::ApplyDamage()
     {
         ApplyDamageToTarget(OverlappingActor, 5.0f);
 
-   
+        // OverlappingActor의 컨트롤러를 가져옴
         if (Controller)
         {
             Controller = OverlappingActor->GetInstigatorController();
@@ -79,7 +79,7 @@ void AFireActor::ApplyDamage()
                 APCodePlayerController* pc = Cast<APCodePlayerController>(Controller);
                 if (pc != nullptr)
                 {
-               
+                    UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
                     pc->ClientStartCameraShake(cameraShakeFire);
                 }
             }

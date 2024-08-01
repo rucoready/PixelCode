@@ -31,21 +31,23 @@ void ABossStoneChangeDecal::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	UE_LOG(LogTemp, Warning, TEXT("CA55"));
 	currentTime += DeltaTime;
 	
 	if (currentTime >= 0.0f && currentTime <= 2.0f)
 	{
-		FVector currentScale = decalStoneSurface->GetRelativeScale3D();  
+		FVector currentScale = decalStoneSurface->GetRelativeScale3D();  // 로컬 스케일 가져오기
 
 		// X축만 증가
 		float previousXScale = currentScale.X;
 		currentScale.X += 0.005f;
-		decalStoneSurface->SetRelativeScale3D(currentScale);  
+		decalStoneSurface->SetRelativeScale3D(currentScale);  // 로컬 스케일 설정
 
+		// X축 스케일 증가로 인한 위치 조정
 		FVector currentLocation = decalStoneSurface->GetRelativeLocation();
-		float deltaScaleX = currentScale.X - previousXScale;  
-		currentLocation.X += deltaScaleX * 0.5f;  
-		decalStoneSurface->SetRelativeLocation(currentLocation);  
+		float deltaScaleX = currentScale.X - previousXScale;  // 스케일 증가량
+		currentLocation.X += deltaScaleX * 0.5f;  // 위치를 스케일 증가량에 비례하여 이동
+		decalStoneSurface->SetRelativeLocation(currentLocation);  // 위치 설정
 	}
 
 

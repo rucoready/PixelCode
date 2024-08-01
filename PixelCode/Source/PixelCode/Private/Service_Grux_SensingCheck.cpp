@@ -84,7 +84,8 @@ void UService_Grux_SensingCheck::TickNode(UBehaviorTreeComponent& OwnerComp, uin
                             closestPlayer = detectedPlayer;
                             closestDistance = distance;
                             bAnyPlayerDetected = true;
-                            
+                            // 디버그 로그
+                            UE_LOG(LogTemp, Warning, TEXT("Detected Player: %s, Distance: %f"), *actorName, distance);
                         }
                     }
                 }
@@ -107,7 +108,7 @@ void UService_Grux_SensingCheck::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 
             grux->SetActorRotation(newRotation);
             BlackboardComp->SetValueAsVector(nearlestPlayerLocation.SelectedKeyName, playerLoc);
-       
+            UE_LOG(LogTemp, Warning, TEXT("Setting Blackboard Key to: %s"), *playerLoc.ToString());
 
             // 거리 기반의 행동 결정
             if (closestDistance < 250.0f)
@@ -192,7 +193,7 @@ void UService_Grux_SensingCheck::CheckBehindAfterAttack(UBlackboardComponent* Bl
 
         bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, gruxLoc, traceEnd, ECC_Visibility, queryParams);
 
-      
+        // DrawDebugLine(GetWorld(), gruxLoc, traceEnd, FColor::Blue, false, 0.1f, 0, 2.0f);
 
         if (bHit && hitResult.GetActor())
         {

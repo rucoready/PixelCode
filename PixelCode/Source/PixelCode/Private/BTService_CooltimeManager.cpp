@@ -206,6 +206,7 @@ void UBTService_CooltimeManager::TickNode(UBehaviorTreeComponent& OwnerComp, uin
             if (boss->TaskCheckCounterHit == true)
             {
                 coolTimeCounterHit = false;
+                UE_LOG(LogTemp, Warning, TEXT("III999"));
                 BlackboardComp->SetValueAsBool(jumpAttack2CoolTime.SelectedKeyName, coolTimeCounterHit);
                 BlackboardComp->SetValueAsBool(normalAttack02CoolTime.SelectedKeyName, coolTimeCounterHit);
             }

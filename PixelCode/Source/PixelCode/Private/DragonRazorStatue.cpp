@@ -126,6 +126,7 @@ void ADragonRazorStatue::DestroySelf()
         {
             if (ABossApernia* boss = Cast<ABossApernia>(BossAIController->GetPawn()))
             {
+                UE_LOG(LogTemp, Warning, TEXT("Call333"));
                 boss->statueDestroyCount += 1;
             }
         }
@@ -151,7 +152,7 @@ void ADragonRazorStatue::DrestroyFractureStatue()
 
 void ADragonRazorStatue::RestoreOriginMaterial()
 {
-    int32 MaterialIndex2 = 0; 
+    int32 MaterialIndex2 = 0; // 적절한 슬롯 인덱스 지정
     statueComp->SetMaterial(MaterialIndex2, originalMaterial);
 }
 

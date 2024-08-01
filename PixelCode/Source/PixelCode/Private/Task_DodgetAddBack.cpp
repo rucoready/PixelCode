@@ -77,6 +77,7 @@ EBTNodeResult::Type UTask_DodgetAddBack::ExecuteTask(UBehaviorTreeComponent& Own
 
                     // 보스의 캐릭터를 LaunchCharacter로 발사
                     boss->LaunchCharacter(LaunchVelocity, true, true);
+                    UE_LOG(LogTemp, Warning, TEXT("Launch Characters!"));
 
                     // 보스가 플레이어를 바라보도록 회전
                     boss->SetActorRotation(directionToPlayer.Rotation());

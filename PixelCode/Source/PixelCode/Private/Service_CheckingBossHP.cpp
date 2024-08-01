@@ -2,7 +2,7 @@
 
 
 #include "Service_CheckingBossHP.h"
-#include "Player/PixelCodeCharacter.h" //дЁО©╫О©╫О©╫О©╫ О©╫с╫О©╫
+#include "Player/PixelCodeCharacter.h" //дЁ╦╞ем юс╫ц
 #include "Boss/BossApernia.h"
 #include "Kismet/GameplayStatics.h"
 #include "Boss/BossAIController.h"
@@ -17,11 +17,11 @@ UService_CheckingBossHP::UService_CheckingBossHP()
 void UService_CheckingBossHP::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
     Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
-  
+    // BossApernia цё╠Б
     ABossApernia* bossCharacter = Cast<ABossApernia>(UGameplayStatics::GetActorOfClass(GetWorld(), ABossApernia::StaticClass()));
     if (!bossCharacter)
     {
-      
+        UE_LOG(LogTemp, Error, TEXT("Failed to find boss character."));
         return;
     }
     if (bossCharacter)

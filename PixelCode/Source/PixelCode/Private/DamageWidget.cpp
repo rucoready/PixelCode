@@ -17,6 +17,36 @@ void UDamageWidget::NativeConstruct()
 
 void UDamageWidget::PlayDamageAnimation()
 {
+// 	value = FMath::RandRange(1, 5);
+// 
+// 
+// 	if (value == 1)
+// 	{
+// 		PlayAnimation(DamageAnimation);
+// 		/*damageAmount = FMath::RandRange(800, 900);*/
+// 	}
+// 	else if (value == 2)
+// 	{
+// 		PlayAnimation(DamageAnimation2);
+// 		/*damageAmount = FMath::RandRange(2000, 2100);*/
+// 	}
+// 	else if (value == 3)
+// 	{
+// 		PlayAnimation(DamageAnimation3);
+// 		/*damageAmount = FMath::RandRange(700, 800);*/
+// 	}
+// 	else if (value == 4)
+// 	{
+// 		PlayAnimation(DamageAnimation4);
+// 		/*damageAmount = FMath::RandRange(500, 1000);*/
+// 	}
+// 	else
+// 	{
+// 		PlayAnimation(DamageAnimation5);
+// 		/*damageAmount = FMath::RandRange(1000,1200);*/
+// 	}
+// 
+// 	/*damageText->SetText(FText::AsNumber(damageAmount));*/
 
 	
 	
