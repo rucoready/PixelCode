@@ -593,7 +593,7 @@ protected:
 	// 서휘-----------------------------------------------------------------------------------------------------
 	FHitResult PerformLineTrace(float Distance = 650.0f, bool DrawDebug = false);
 
-	UPROPERTY(ReplicatedUsing=OnRep_SetBuildMode, BlueprintReadOnly, Category = KSH)
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = KSH)
 	bool bInBuildMode;
 
 	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
@@ -753,13 +753,12 @@ public:
  	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
  	UInstancedStaticMeshComponent* InstMeshComp;
 
-
+ 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
+	bool bBuildCheatMode = false;
+	
 	//------------------------------------------------------------------------------------------
 	UFUNCTION()
 	void OnSetBuildModePressed();  
-
-	UFUNCTION(BlueprintCallable, Category = KSH)
-	void OnRep_SetBuildMode();
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void SetBuildMode(bool Enabled);

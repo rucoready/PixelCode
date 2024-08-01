@@ -38,13 +38,13 @@ public:
 	UPROPERTY(Replicated)
 	uint8 BuildingTypeIndex;
 
-	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
+	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadWrite, Category = KSH)
 	UMaterialInstance* MaterialFalse;
 
-	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
+	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadWrite, Category = KSH)
 	UMaterialInstance* MaterialTrue;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, BlueprintReadWrite, EditDefaultsOnly,  Category = KSH)
 	bool bMaterialIsTrue;
 
 	FVector Loc;
@@ -81,6 +81,8 @@ public:
 	void SetBuildPosition(const FHitResult& HitResult);
 
 	void SpawnBuilding();
+
+	void SpawnBuilding_Cheat();
 
 	void DestroyInstance(const FHitResult& HitResult);
 	void CycleMesh();

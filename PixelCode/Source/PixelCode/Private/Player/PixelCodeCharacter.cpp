@@ -181,20 +181,20 @@ void APixelCodeCharacter::BeginPlay()
 // 		Buildings = *vars;
 // 	}
 
-//   	if (!Builder)
-//   	{
-//   		if (BuildingClass)
-//   		{
-//   			Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass, FVector::ZeroVector, FRotator::ZeroRotator);
-//   		}
-//   	}
-//   	if (!Buildings)
-//   	{
-//   		if (BuildingC)
-//   		{
-//   			Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC, FVector::ZeroVector, FRotator::ZeroRotator);
-//   		}
-//   	}
+   	if (!Builder)
+   	{
+   		if (BuildingClass)
+   		{
+   			Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass, FVector::ZeroVector, FRotator::ZeroRotator);
+   		}
+   	}
+   	if (!Buildings)
+   	{
+   		if (BuildingC)
+   		{
+   			Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC, FVector::ZeroVector, FRotator::ZeroRotator);
+   		}
+   	}
 
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
@@ -792,41 +792,31 @@ void APixelCodeCharacter::UpdateGameInstanceInventory()
 
 void APixelCodeCharacter::OnSetBuildModePressed()
 {
-	SetBuildMode(!GetBuildMode());
+	//SetBuildMode(!GetBuildMode());
 
-// 		if (HasAuthority())
-// 		{
-// 			UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server player"));
-// 
-// 			bInBuildMode = !GetBuildMode();
-// 			if (Builder)
-// 			{
-// 				Builder->SetActorHiddenInGame(!bInBuildMode);
-// 				UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server On"));
-// 			}
-// 			else
-// 			{
-// 				UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
-// 			}
-// 		}
-// 		else
-// 		{
-// 			UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @client player"));
-// 			ServerRPC_SetBuildMode(!GetBuildMode());
-// 		}
+ 		if (HasAuthority())
+ 		{
+ 			UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server player"));
+ 
+ 			bInBuildMode = !GetBuildMode();
+ 			if (Builder)
+ 			{
+ 				Builder->SetActorHiddenInGame(!bInBuildMode);
+ 				UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server On"));
+ 			}
+ 			else
+ 			{
+ 				UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
+ 			}
+ 		}
+ 		else
+ 		{
+ 			UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @client player"));
+ 			ServerRPC_SetBuildMode(!GetBuildMode());
+ 		}
 }
 
-void APixelCodeCharacter::OnRep_SetBuildMode()
-{
-	if (bInBuildMode && Builder)
-	{
-		Builder->SetActorHiddenInGame(!bInBuildMode);
-	}
-	else
-	{
-		Builder->SetActorHiddenInGame(true);
-	}
-}
+
 
 void APixelCodeCharacter::SetBuildMode(bool Enabled)
 {
@@ -845,10 +835,17 @@ void APixelCodeCharacter::SetBuildMode(bool Enabled)
 
 void APixelCodeCharacter::ServerRPC_SetBuildMode_Implementation(bool mode)
 {
-
+	bInBuildMode = mode;
+	if (Builder)
+	{
+		Builder->SetActorHiddenInGame(!bInBuildMode);
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ServerRPC On"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
+	}
  	MultiRPC_SetBuildMode(mode);
-
-
 // 	ClientRPC_SetBuildMode(mode);
 }
 
@@ -1139,64 +1136,7 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 			UE_LOG(LogTemp, Warning, TEXT("-------------INST Cast :: %d "), arrnum);
 
 		}
-
-
 	}
- 
-//  	UPCodeSaveGame* cast = Cast<UPCodeSaveGame>(UGameplayStatics::CreateSaveGameObject(UPCodeSaveGame::StaticClass()));
-//  	if (cast)
-//  	{
-//  		UE_LOG(LogTemp, Warning, TEXT("---------***&*&*&*&*&*&&*&*&&*&*&*&&*&*&*&*&&&*&*&*&*----SaveGametoSLOT"));
-//  
-// 		InstsToSave.Add(InstMeshComp);
-// 
-//  		FBuildingInstanceData BuildingInstanceData;
-//  		BuildingInstanceData.InstancedComponent = InstMeshComp;
-//  		BuildingInstanceData.InstTransform = transf;
-//  
-//  		cast->SavedInstances.Add(BuildingInstanceData);
-//  		UGameplayStatics::SaveGameToSlot(cast, TEXT("BuildingDataStorage"), 0);
-//  
-//  		UE_LOG(LogTemp, Warning, TEXT("---------***&*&*&*&*&*&&*&*&&*&*&*&&*&*&*&*&&&*&*&*&*----SaveGametoSLOT"));
-//  	}
-
-
-
-
-//   	UPCodeSaveGame* saveGameCast = Cast<UPCodeSaveGame>(UGameplayStatics::CreateSaveGameObject(UPCodeSaveGame::StaticClass()));
-//   	if (saveGameCast)
-//   	{
-//   		UE_LOG(LogTemp, Warning, TEXT("---------***&*&*&*&*&*&&*&*&&*&*&*&&*&*&*&*&&&*&*&*&*----SaveGame"));
-//   		 /*월드에서 모든 액터를 가져옴
-//   		TArray<ABuilding*> ActorsToSave;
-//   		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABuilding::StaticClass(), ActorsToSave);*/
-//   
-//   		for (TActorIterator<ABuilding> var(GetWorld()); var; ++var)
-//   		{
-//   			ActorsToSave.Add(*var);
-//   		}
-//   		// 액터들의 정보 저장
-//   		for (ABuilding* Actor : ActorsToSave)
-//   		{
-//   			if (Actor)
-//   			{
-//   				FBuildingActorData ActorData;
-//   				ActorData.ABuilding = Actor->GetClass();
-//   				ActorData.BuildingLocation = Actor->GetActorLocation();
-//   				ActorData.BuildingRotation = Actor->GetActorRotation();
-//   			
-//   				// 액터 데이터를 세이브 게임 인스턴스에 추가
-//   				saveGameCast->SavedActors.Add(ActorData);
-//   			}
-//   		}
-//   		// 세이브 게임 슬롯에 저장
-//   		UGameplayStatics::SaveGameToSlot(saveGameCast, TEXT("BuildingDataStorage"), 0);
-//   	}
-//   	else
-//   	{
-//   		UE_LOG(LogTemp, Warning, TEXT("Failed to create save game instance"));
-//   	}
-	
 }
 
 //------------------------------------Destroy Building Network
@@ -1712,6 +1652,9 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 			
 			
 			EnhancedInputComponent->BindAction(IA_Build, ETriggerEvent::Started, this, &APixelCodeCharacter::OnBuildUI);
+
+
+
 		}
 
 	}
