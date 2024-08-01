@@ -111,9 +111,12 @@ void UNormallyWidget::firstStatedate(ApixelPlayerState* Ps)
 
 void UNormallyWidget::currentStatUpdate(UStateComponent* PlayerStateComp)
 {
-	PB_HP->SetPercent(PlayerStateComp->currentHP/PlayerStateComp->MaxHP);
-	PB_MP->SetPercent(PlayerStateComp->currentMP/PlayerStateComp->MaxMP);
-	PB_SP->SetPercent(PlayerStateComp->currentSP/PlayerStateComp->MaxSP);
+	if (PlayerStateComp != nullptr)
+	{ 
+		PB_HP->SetPercent(PlayerStateComp->currentHP/PlayerStateComp->MaxHP);
+		PB_MP->SetPercent(PlayerStateComp->currentMP/PlayerStateComp->MaxMP);
+		PB_SP->SetPercent(PlayerStateComp->currentSP/PlayerStateComp->MaxSP);
+	}
 }
 
 void UNormallyWidget::currentExpUpdate(ApixelPlayerState* Ps)

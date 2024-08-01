@@ -20,6 +20,7 @@
 #include "MyMapWidget.h"
 #include "MyMapLodingWidget.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
+#include "Player/StateComponent.h"
 
 
 void APCodePlayerController::BeginPlay()
@@ -33,21 +34,27 @@ void APCodePlayerController::BeginPlay()
 		GM = Cast<AMyGameModeBase>(GetWorld()->GetAuthGameMode());
 	}
 
-	MainPlayer = Cast<APixelCodeCharacter>(GetPawn());
+	MainPlayer = Cast<APixelCodeCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	StatComponent = Cast<UStateComponent>(MainPlayer->stateComp);
+
+	
+	ClientRPC_PlayerStartWidget();
 	
 
-	statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
 
-	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
 
-	PlayerStartWidget();
+	//PlayerBeginWidget();
 
-	// 플레이어 스테이트가 유효한지 검사하고 유효한 경우에만 Setup_PC 함수를 호출
+	
+	
+	
 
 	if (ValidatePlayerState())
 	{
 		PlayerWidgetUpdate();
 	}
+
+	// 플레이어 스테이트가 유효한지 검사하고 유효한 경우에만 Setup_PC 함수를 호출
 	
 }
 
@@ -87,11 +94,13 @@ bool APCodePlayerController::ValidatePlayerState()
 	}
 }
 
+
+
 void APCodePlayerController::PlayerWidgetUpdate()
 {
 	pixelPlayerState = Cast<ApixelPlayerState>(PlayerState);
 
-		if (pixelPlayerState)
+		if (pixelPlayerState && NormallyWidget != nullptr && statWidget != nullptr)
 		{
 			NormallyWidget->currentExpUpdate(pixelPlayerState);
 			NormallyWidget->firstStatedate(pixelPlayerState);
@@ -99,39 +108,93 @@ void APCodePlayerController::PlayerWidgetUpdate()
 		}
 }
 
-void APCodePlayerController::PlayerStartWidget()
+void APCodePlayerController::ClientRPC_PlayerStartWidget_Implementation()
 {
-	MainPlayer = Cast<APixelCodeCharacter>(this->GetPawn());
-	if (IsLocalController())
+	statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
+
+	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+
+	// 시작
+	if (StatWidgetClass)
 	{
-
-		// 시작
-		if (StatWidgetClass)
+		if (statWidget != nullptr)
 		{
-			statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-			statWidget = statWidget;
-			if (statWidget != nullptr)
-			{
-				statWidget->AddToViewport(1);
-				statWidget->SetVisibility(ESlateVisibility::Collapsed);
-				UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
-			}
-
+			statWidget->AddToViewport(1);
+			statWidget->SetVisibility(ESlateVisibility::Collapsed);
+			UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
 		}
 
-		if (NormallyWidgetClass)
+	}
+
+	if (NormallyWidgetClass)
+	{
+		if (NormallyWidget != nullptr)
 		{
-			NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
-			NormallyWidget = NormallyWidget;
-			if (NormallyWidget != nullptr && MainPlayer != nullptr)
-			{
-				NormallyWidget->AddToViewport(-1);
-				NormallyWidget->SetVisibility(ESlateVisibility::Visible);
-				UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
-			}
+			NormallyWidget->AddToViewport(-1);
+			NormallyWidget->SetVisibility(ESlateVisibility::Visible);
+			UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
 		}
 	}
+
+
 }
+
+//void APCodePlayerController::PlayerStartWidget()
+//{
+//	
+//	statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
+//
+//	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
+//
+//	// 시작
+//	if (StatWidgetClass)
+//	{
+//		if (statWidget != nullptr)
+//		{
+//			statWidget->AddToViewport(1);
+//			statWidget->SetVisibility(ESlateVisibility::Collapsed);
+//			UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
+//		}
+//
+//	}
+//
+//	if (NormallyWidgetClass)
+//	{
+//		if (NormallyWidget != nullptr)
+//		{
+//			NormallyWidget->AddToViewport(-1);
+//			NormallyWidget->SetVisibility(ESlateVisibility::Visible);
+//			UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
+//		}
+//	}
+//
+//
+//}
+
+//void APCodePlayerController::PlayerBeginWidget()
+//{
+//	// 시작
+//	if (StatWidgetClass)
+//	{
+//		if (statWidget != nullptr)
+//		{
+//			statWidget->AddToViewport(1);
+//			statWidget->SetVisibility(ESlateVisibility::Collapsed);
+//			UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
+//		}
+//
+//	}
+//
+//	if (NormallyWidgetClass)
+//	{
+//		if (NormallyWidget != nullptr)
+//		{
+//			NormallyWidget->AddToViewport(-1);
+//			NormallyWidget->SetVisibility(ESlateVisibility::Visible);
+//			UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
+//		}
+//	}
+//}
 
 void APCodePlayerController::PlayerStatWidget()
 {
@@ -190,18 +253,26 @@ void APCodePlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	if (MainPlayer == nullptr)
+	{
+		MainPlayer = Cast<APixelCodeCharacter>(GetPawn());
+		if (MainPlayer == nullptr)
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("MainPlayer is still nullptr in Tick!"));
+			return;
+		}
+	}
+
 	if (pixelPlayerState != nullptr && NormallyWidget != nullptr)
 	{
 		NormallyWidget->currentExpUpdate(pixelPlayerState);
 		NormallyWidget->currentLevelUpdate(pixelPlayerState);
 	}
-
-	/*if (MainPlayer->stateComp != nullptr && NormallyWidget != nullptr && MainPlayer != nullptr)
-	{
-		NormallyWidget->currentStatUpdate(MainPlayer->stateComp);
-	}*/
 	
-
+	if (MainPlayer->stateComp != nullptr && NormallyWidget != nullptr && MainPlayer != nullptr)
+	{
+		NormallyWidget->currentStatUpdate(StatComponent);
+	}
 	
 }
 
@@ -225,8 +296,7 @@ void APCodePlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	// PlayerName  Replication 
-	DOREPLIFETIME(APCodePlayerController, statWidget);
-	DOREPLIFETIME(APCodePlayerController, NormallyWidget);
+
 
 
 }
@@ -234,25 +304,27 @@ void APCodePlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 void APCodePlayerController::ServerRPC_RespawnPlayer_Implementation()
 {
-	
+
 	auto* oldPawn = GetPawn();
 
 	UE_LOG(LogTemp, Warning, TEXT("Possess"));
-	
-	NormallyWidget->RemoveFromParent();
-	statWidget->RemoveFromParent();
 
+	if (IsLocalController())
+	{
+		NormallyWidget->RemoveFromParent();
+		statWidget->RemoveFromParent();
+	}
+	
 	UnPossess();
 
-
+	// 시작
 	
-
 	if (oldPawn)
 	{
 		oldPawn->Destroy();
 	}
 
-	
+
 	GM->RestartPlayer(this);
 }
 
@@ -325,23 +397,25 @@ void APCodePlayerController::MulticastRPC_HideWidgetRobbyWidget_Implementation()
 
 	//void APCodePlayerController::ServerRPC_ChangeSpectator_Implementation()
 	//{
-	//	// ���� ���ΰ��� ����ϰ�ʹ�.
+	//	
+	//	// 재시작요청을 하면 서버RPC로 관전자를 생성해서 빙의하라고한다.
+	//	// 관전자를 생성하고
 	//	auto* oldPawn = GetPawn();
-	//	// ���� oldPawn�� �ִٸ�
+
 	//	if (oldPawn)
 	//	{
-	//		// �����ڸ� ���� 
+	//	
 	//		FTransform t = oldPawn->GetActorTransform();
 	//		FActorSpawnParameters params;
 	//		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	//
 	//		auto* newPawn = GetWorld()->SpawnActor<ASpectatorPawn>(GM->SpectatorClass, t, params);
-	//
-	//		// ���� �ϰ�ʹ�.
+	//		
+	//		// 관전자로 빙의
 	//		Possess(newPawn);
-	//		// oldPawn�� �ı��ϰ�ʹ�.
+	//		
 	//		oldPawn->Destroy();
-	//		// 5���Ŀ� ServerRPC_RespawnPlayer_Implementation�� ȣ���ϰ�ʹ�.
+	//
 	//		FTimerHandle handle;
 	//		GetWorld()->GetTimerManager().SetTimer(handle, this, &APCodePlayerController::ServerRPC_RespawnPlayer_Implementation, 5, false);
 	//	}

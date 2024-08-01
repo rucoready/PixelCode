@@ -1552,7 +1552,7 @@ float APixelCodeCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 
 void APixelCodeCharacter::InitMainUI()
 {
-	FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
+	/*FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
 	FString hasController = Controller ? TEXT("HasCont") : TEXT("NoCont");
 
 	UE_LOG(LogTemp, Warning, TEXT("[%s] %s - InitMainUI"), *netMode, *hasController);
@@ -1563,7 +1563,7 @@ void APixelCodeCharacter::InitMainUI()
 		Pc->PlayerStartWidget();
 
 		NormallyWidget = Pc->NormallyWidget;
-	}
+	}*/
 }
 
 void APixelCodeCharacter::ServerRPC_Die_Implementation()
@@ -1589,13 +1589,11 @@ void APixelCodeCharacter::DieFunction()
 	// UI -> 리스폰 / 종료
 	if (IsLocallyControlled())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("RespawnOn333333"));
 		auto pc = Cast<APCodePlayerController>(Controller);
 		FollowCamera->PostProcessSettings.ColorSaturation = FVector4(0, 0, 0, 1);
 		
 		if (pc)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("RespawnOn444444"));
 			pc->SetInputMode(FInputModeUIOnly());
 			pc->SetShowMouseCursor(true);
 			DisableInput(pc);
@@ -1612,10 +1610,20 @@ void APixelCodeCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	Pc = Cast<APCodePlayerController>(NewController);
+	Pc->StatComponent = this->stateComp;
+
+	
+	//Pc->bPossess = false;
+
 	FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
 	FString hasController = Controller ? TEXT("HasCont") : TEXT("NoCont");
 
 	UE_LOG(LogTemp, Warning, TEXT("[%s] %s - PossessedBy"), *netMode, *hasController);
+	
+
+	Pc->ClientRPC_PlayerStartWidget();
+
 
 	// 내가 로컬이라면
 	//if (IsLocallyControlled())

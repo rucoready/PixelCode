@@ -12,6 +12,8 @@ class UNormallyWidget;
 class UPlayerStatWidget;
 class ApixelPlayerState;
 class APixelCodeCharacter;
+class UStateComponent;
+
 /**
  * 
  */
@@ -32,16 +34,18 @@ public:
 	// �Է� ��� ����, �Ű����� �������� Ŀ�� ǥ��
 	void OpenUI(bool bOpen); 
 
+
+
 	UPROPERTY()
 	AMyGameModeBase* GM;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	UPlayerStatWidget* statWidget;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UPlayerStatWidget> StatWidgetClass;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	UNormallyWidget* NormallyWidget;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
@@ -50,6 +54,8 @@ public:
 	ApixelPlayerState* pixelPlayerState;
 
 	APixelCodeCharacter* MainPlayer;
+
+	UStateComponent* StatComponent;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -63,7 +69,10 @@ public:
 
 	void PlayerWidgetUpdate();
 
-	void PlayerStartWidget();
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_PlayerStartWidget();
+
+	void PlayerBeginWidget();
 
 	void PlayerStatWidget();
 
@@ -192,5 +201,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UMyMapLodingWidget> LoadingWidgetMyMap;
+
+	bool bPoss = false;
 
 };
