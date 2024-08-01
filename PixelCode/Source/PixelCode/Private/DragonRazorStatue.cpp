@@ -138,8 +138,12 @@ void ADragonRazorStatue::DrestroyFractureStatue()
 
 void ADragonRazorStatue::RestoreOriginMaterial()
 {
-    int32 MaterialIndex2 = 0; // 적절한 슬롯 인덱스 지정
-    statueComp->SetMaterial(MaterialIndex2, originalMaterial);
+    if (statueComp)
+    {
+        int32 MaterialIndex2 = 0; // 적절한 슬롯 인덱스 지정
+        statueComp->SetMaterial(MaterialIndex2, originalMaterial);
+    }
+    
 }
 
 void ADragonRazorStatue::ServerRPC_DestroyCheck_Implementation()

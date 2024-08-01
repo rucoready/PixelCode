@@ -1913,12 +1913,7 @@ void ABossApernia::MulticastRPC_DropBossExp_Implementation()
 
     if (endPortal)
     {
-        FVector dieLocation = GetActorLocation();
-        FVector dieBackVector = -GetActorForwardVector();
-
-        // 벡터에 거리를 곱하여 새로운 위치를 계산
-        FVector spawnLocation = dieLocation + (dieBackVector * 10.0f);
-
+        FVector spawnLocation(114.781257f, 4507.0f, 307.0f);
         myMapCollsionActor = GetWorld()->SpawnActor<AMyMapCollsionActor>(endPortal, spawnLocation, GetActorRotation());
 
     }
