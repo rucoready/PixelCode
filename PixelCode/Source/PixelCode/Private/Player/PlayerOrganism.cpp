@@ -197,9 +197,9 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 
 	
 
-	if (HitSound)
+	if (PlayerHitSound)
 	{
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerHitSound, GetActorLocation());
 	}
 
 	if (hitReaction != nullptr)
@@ -557,6 +557,16 @@ void APlayerOrganism::DieFunction()
 
 	bDead = true;
 
+}
+
+void APlayerOrganism::ServerRPC_PlayerHitSound_Implementation()
+{
+	NetMulticastRPC_PlayerHitSound();
+}
+
+void APlayerOrganism::NetMulticastRPC_PlayerHitSound_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerHitSound, GetActorLocation());
 }
 
 void APlayerOrganism::SlowDownTime(float DilationAmount, float Duration, APlayerController* PlayerController)

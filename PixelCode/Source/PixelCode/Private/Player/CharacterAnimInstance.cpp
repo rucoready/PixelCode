@@ -207,6 +207,22 @@ void UCharacterAnimInstance::AnimNotify_SwordQSkillCameraShake()
 	}
 }
 
+void UCharacterAnimInstance::AnimNotify_SB_SwordInSound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordInSound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordOutSound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordOutSound = true;
+	}
+}
+
 void UCharacterAnimInstance::AnimNotify_SB_PlayerBaseSound1()
 {
 	if (myCharacter != nullptr)
@@ -244,6 +260,22 @@ void UCharacterAnimInstance::AnimNotify_SB_PlayerBaseSound5()
 	if (myCharacter != nullptr)
 	{
 		myCharacter->bBaseSwordSound5 = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_PlayerRightSwordSound1()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bRightSwordSound1 = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_PlayerRightSwordSound2()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bRightSwordSound2 = true;
 	}
 }
 

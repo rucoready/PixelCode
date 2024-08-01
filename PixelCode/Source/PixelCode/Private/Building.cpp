@@ -97,7 +97,7 @@ void ABuilding::BeginPlay()
 
 void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData, const FHitResult& HitResult)
 {	
-	UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDING DestroyInstance"));
+	//UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDING DestroyInstance"));
 	
 	if (BuildingSocketData.InstancedComponent)
 	{
@@ -113,7 +113,7 @@ void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData, c
 		//InstancedStaticMeshComponent->RemoveInstance(InstancedStaticMeshComponent->GetInstanceIndex());
 		//InstancedStaticMeshComponent->GetInstanceIndexForId()
 
-		UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDING RemoveInstance"));
+		//UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDING RemoveInstance"));
 
 		//if (!HasAuthority())
 		{

@@ -336,6 +336,12 @@ public:
 
 	// 사운드
 	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerSwordOutSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerSwordInSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
 	USoundBase* PlayerSwordBaseAttackSound1;
 
 	UPROPERTY(EditAnywhere, Category = "Sounds")
@@ -349,6 +355,12 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Sounds")
 	USoundBase* PlayerSwordBaseAttackSound5;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerSwordRightAttackSound1;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerSwordRightAttackSound2;
 
 	UPROPERTY(EditAnywhere, Category = "Sounds")
 	USoundBase* PlayerQSound1;
@@ -397,7 +409,25 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Sounds")
 	USoundBase* PlayerZSound5;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerJumpSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerDieSound;
+
 	
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerSwordOutSound();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerSwordOutSound();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerSwordInSound();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerSwordInSound();
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_PlayerSwordBaseAttackSound1();
@@ -428,6 +458,18 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_PlayerSwordBaseAttackSound5();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerSwordRightAttackSound1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerSwordRightAttackSound1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerSwordRightAttackSound2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerSwordRightAttackSound2();
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_PlayerQSound1();
@@ -525,7 +567,13 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_PlayerZSound5();
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerJumpSound();
 
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerJumpSound();
+
+	
 	void Soundcollection();
 
 	// 진원 E

@@ -163,6 +163,10 @@ public:
 	bool bSwordQSkillCameraShake = false;
 
 	// 플레이어 사운드
+	bool bSwordInSound = false;
+
+	bool bSwordOutSound = false;
+
 	bool bBaseSwordSound1 = false;
 
 	bool bBaseSwordSound2 = false;
@@ -172,6 +176,10 @@ public:
 	bool bBaseSwordSound4 = false;
 
 	bool bBaseSwordSound5 = false;
+
+	bool bRightSwordSound1 = false;
+
+	bool bRightSwordSound2 = false;
 
 	bool bSwordQ1Sound = false;
 
@@ -204,6 +212,16 @@ public:
 	bool bSwordZ4Sound = false;
 
 	bool bSwordZ5Sound = false;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerHitSound;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerHitSound();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerHitSound();
+
 
 	void SlowDownTime(float DilationAmount, float Duration, APlayerController* PlayerController);
 

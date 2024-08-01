@@ -55,7 +55,7 @@ ABuilding* ABuildingVisual::GetHitBuildingActor(const FHitResult& HitResult)
 
 void ABuildingVisual::SetMeshTo(EBuildType BuildType)
 {
- 	UE_LOG(LogTemp, Warning, TEXT("SetMeshTo :"));
+ 	//UE_LOG(LogTemp, Warning, TEXT("SetMeshTo :"));
 
 	bReturnedMesh = false;
 	for (const FBuildingVisualType& Building : BuildingTypes)
@@ -70,7 +70,7 @@ void ABuildingVisual::SetMeshTo(EBuildType BuildType)
 
 void ABuildingVisual::ReturnMeshToSelected()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ReturnMeshToSelected"));
+	//UE_LOG(LogTemp, Warning, TEXT("ReturnMeshToSelected"));
 
 	bReturnedMesh = true;
 	if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
@@ -182,14 +182,14 @@ void ABuildingVisual::SpawnBuilding()
 								{
 									// ABuilding 클래스의 AddInstance() 호출
 									InteractingBuilding->AddInstance(SocketData, BuildingTypes[BuildingTypeIndex].BuildType);
-									UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Add Instance"));
+									//UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Add Instance"));
 								}
 							}
 							else
 							{
 								//GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
 								ABuilding* AbuildingClass = GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
-								UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Spawn Actor"));
+								//UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Spawn Actor"));
  
 								
 
@@ -208,7 +208,7 @@ void ABuildingVisual::SpawnBuilding()
 									UGameplayStatics::SaveGameToSlot(castLoad, TEXT("BuildingDataStorage"), 0);
 
 									int32 arrnum = castLoad->SavedActors.Num();
-									UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Load :: %d "), arrnum);
+									//UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Load :: %d "), arrnum);
 								}
 
  								else if (castSave)
@@ -222,7 +222,7 @@ void ABuildingVisual::SpawnBuilding()
  									UGameplayStatics::SaveGameToSlot(castSave, TEXT("BuildingDataStorage"), 0);
 
 									int32 arrnum = castSave->SavedActors.Num();
-									UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Cast :: %d "), arrnum);
+									//UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Cast :: %d "), arrnum);
  								}
 							}
 						}
@@ -245,14 +245,14 @@ void ABuildingVisual::SpawnBuilding_Cheat()
 			{
 				// ABuilding 클래스의 AddInstance() 호출
 				InteractingBuilding->AddInstance(SocketData, BuildingTypes[BuildingTypeIndex].BuildType);
-				UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Add Instance"));
+				//UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Add Instance"));
 			}
 		}
 		else
 		{
 			//GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
 			ABuilding* AbuildingClass = GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
-			UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Spawn Actor"));
+			//UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Spawn Actor"));
 
 
 
@@ -271,7 +271,7 @@ void ABuildingVisual::SpawnBuilding_Cheat()
 				UGameplayStatics::SaveGameToSlot(castLoad, TEXT("BuildingDataStorage"), 0);
 
 				int32 arrnum = castLoad->SavedActors.Num();
-				UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Load :: %d "), arrnum);
+				//UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Load :: %d "), arrnum);
 			}
 
 			else if (castSave)
@@ -285,7 +285,7 @@ void ABuildingVisual::SpawnBuilding_Cheat()
 				UGameplayStatics::SaveGameToSlot(castSave, TEXT("BuildingDataStorage"), 0);
 
 				int32 arrnum = castSave->SavedActors.Num();
-				UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Cast :: %d "), arrnum);
+				//UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Cast :: %d "), arrnum);
 			}
 		}
 	}
@@ -326,7 +326,7 @@ void ABuildingVisual::DestroyInstance(const FHitResult& HitResult)
 void ABuildingVisual::CycleMesh()
 {
 	FString sMode = bReturnedMesh ? TEXT("ReturnMesh : True") : TEXT("ReturnMesh : False");
-	UE_LOG(LogTemp, Warning, TEXT("------------------ %s"), *sMode);
+	//UE_LOG(LogTemp, Warning, TEXT("------------------ %s"), *sMode);
 
 //  	if (bReturnedMesh) //$$
 //  	{

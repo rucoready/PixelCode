@@ -96,6 +96,12 @@ public:
 	void AnimNotify_SwordQSkillCameraShake();
 
 	UFUNCTION()
+	void AnimNotify_SB_SwordInSound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordOutSound();
+
+	UFUNCTION()
 	void AnimNotify_SB_PlayerBaseSound1();
 
 	UFUNCTION()
@@ -110,6 +116,12 @@ public:
 	UFUNCTION()
 	void AnimNotify_SB_PlayerBaseSound5();
 	
+	UFUNCTION()
+	void AnimNotify_SB_PlayerRightSwordSound1();
+
+	UFUNCTION()
+	void AnimNotify_SB_PlayerRightSwordSound2();
+
 	UFUNCTION()
 	void AnimNotify_SB_SwordQ1Sound();
 

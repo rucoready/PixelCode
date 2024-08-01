@@ -275,7 +275,7 @@ FHitResult APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug
 
 	if (DrawDebug)
 	{
-		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1, 0U, 3.f);
+		//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1, 0U, 3.f);
 	}
 	return HitResult;
 }
@@ -306,7 +306,7 @@ void APixelCodeCharacter::NetMulticastRPC_ToggleCombat_Implementation()
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("ToggleCombatFunction : %d"), __LINE__);
+			//UE_LOG(LogTemp, Warning, TEXT("ToggleCombatFunction : %d"), __LINE__);
 		}
 	}
 	else
@@ -319,7 +319,7 @@ void APixelCodeCharacter::NetMulticastRPC_ToggleCombat_Implementation()
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("ToggleCombatFunction : %d"), __LINE__);
+			//UE_LOG(LogTemp, Warning, TEXT("ToggleCombatFunction : %d"), __LINE__);
 		}
 	}
 
@@ -488,7 +488,7 @@ void APixelCodeCharacter::OnBuildUI()
 	//SeverRPC_RemoveMetal(PerformLineTrace(1000, true));
 	//SeverRPC_RemoveStone(PerformLineTrace(1000, true));
 	//SeverRPC_RemoveBush(PerformLineTrace(1000, true));
-	UE_LOG(LogTemp, Warning, TEXT("BULIDUI KET"));
+	//UE_LOG(LogTemp, Warning, TEXT("BULIDUI KET"));
 	if (!bIsJump)
 	{
 		if (HUD)
@@ -554,7 +554,7 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 			PlayerInventory->HandleAddItem(Iteminfos);
 			CraftedItem->Destroy();
 
-			UE_LOG(LogTemp, Warning, TEXT("Success Spawn"));
+			//UE_LOG(LogTemp, Warning, TEXT("Success Spawn"));
 		}
 	}
 }
@@ -796,22 +796,22 @@ void APixelCodeCharacter::OnSetBuildModePressed()
 
  		if (HasAuthority())
  		{
- 			UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server player"));
+ 			//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server player"));
  
  			bInBuildMode = !GetBuildMode();
  			if (Builder)
  			{
  				Builder->SetActorHiddenInGame(!bInBuildMode);
- 				UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server On"));
+ 				//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @server On"));
  			}
  			else
  			{
- 				UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
+ 				//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
  			}
  		}
  		else
  		{
- 			UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @client player"));
+ 			//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode @client player"));
  			ServerRPC_SetBuildMode(!GetBuildMode());
  		}
 }
@@ -824,11 +824,11 @@ void APixelCodeCharacter::SetBuildMode(bool Enabled)
 	if (Builder)
 	{
 		Builder->SetActorHiddenInGame(!bInBuildMode);
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder"));
+		//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
+		//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
 	}
 
 }
@@ -839,11 +839,11 @@ void APixelCodeCharacter::ServerRPC_SetBuildMode_Implementation(bool mode)
 	if (Builder)
 	{
 		Builder->SetActorHiddenInGame(!bInBuildMode);
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ServerRPC On"));
+		//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ServerRPC On"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
+		//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
 	}
  	MultiRPC_SetBuildMode(mode);
 // 	ClientRPC_SetBuildMode(mode);
@@ -852,18 +852,18 @@ void APixelCodeCharacter::ServerRPC_SetBuildMode_Implementation(bool mode)
 void APixelCodeCharacter::MultiRPC_SetBuildMode_Implementation(bool mode)
 {
 
-	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode MultiRPC"));
+	//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode MultiRPC"));
 
 	bInBuildMode = mode;
   	if (Builder)
   	{
   		Builder->SetActorHiddenInGame(!bInBuildMode);
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode MultiRPC On"));
+		//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode MultiRPC On"));
 
 	}
   	else
   	{
-  		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
+  		//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
   	}
 }
 
@@ -885,18 +885,18 @@ void APixelCodeCharacter::ClientRPC_SetBuildMode_Implementation(bool mode)
 		}
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	UE_LOG(LogTemp, Warning, TEXT("------------------ClientRPC"));
+	//UE_LOG(LogTemp, Warning, TEXT("------------------ClientRPC"));
 
 	//bInBuildMode = mode;
 	if (Builder)
 	{
 		Builder->SetActorHiddenInGame(!bInBuildMode);
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ClientRPC On"));
+		//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ClientRPC On"));
 
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
+		//UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
 	}
 }
 
@@ -904,16 +904,16 @@ void APixelCodeCharacter::ClientRPC_SetBuildMode_Implementation(bool mode)
 
 void APixelCodeCharacter::OnCycleMeshPressed()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------CycleMesh Pressed"));
+	//UE_LOG(LogTemp, Warning, TEXT("------------------CycleMesh Pressed"));
 
 	if (HasAuthority())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------CycleMesh : authority"));
+		//UE_LOG(LogTemp, Warning, TEXT("------------------CycleMesh : authority"));
 		CycleBuildingMesh();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------CycleMesh : no authority"));
+		//UE_LOG(LogTemp, Warning, TEXT("------------------CycleMesh : no authority"));
 		ServerRPC_CycleBuildingMesh();
 	}
 }
@@ -937,7 +937,7 @@ void APixelCodeCharacter::CycleBuildingMesh()
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	FString sMode = bInBuildMode ? TEXT("Cycle_Auth BuildMode : ON") : TEXT("Cycle_Auth BuildMode : Off");
-	UE_LOG(LogTemp, Warning, TEXT("------------------ %s"), *sMode);
+	//UE_LOG(LogTemp, Warning, TEXT("------------------ %s"), *sMode);
 	if (bInBuildMode && Builder)
 	{
  
@@ -985,12 +985,12 @@ void APixelCodeCharacter::OnSpawnBuildingPressed()
 
 	if (HasAuthority())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding : authority"));
+		//UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding : authority"));
 		SpawnBuilding();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding : no authority"));
+		//UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding : no authority"));
 		ServerRPC_SpawnBuilding();
 	}
 }
@@ -1015,7 +1015,7 @@ void APixelCodeCharacter::SpawnBuilding()
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	FString sbInBuildMode = bInBuildMode ? TEXT("BuildMode On") : TEXT("BuildMode Off");
 	FString sBuilder = Builder ? TEXT("Builder true") : TEXT("Builder false");
-	UE_LOG(LogTemp, Warning, TEXT("SpawnBuilding() ; %s : %s"), *sbInBuildMode, *sBuilder);
+	//UE_LOG(LogTemp, Warning, TEXT("SpawnBuilding() ; %s : %s"), *sbInBuildMode, *sBuilder);
 
 	if (bInBuildMode && Builder)
 	{
@@ -1025,7 +1025,7 @@ void APixelCodeCharacter::SpawnBuilding()
 
 void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding : Server"));
+	//UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding : Server"));
 	SpawnBuilding();
 }
 
@@ -1109,7 +1109,7 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 		{
 
 			int32 arrnum = castLoad->SavedInstances.Num();
-			UE_LOG(LogTemp, Warning, TEXT("-------------INST Load :: %d "), arrnum);
+			//UE_LOG(LogTemp, Warning, TEXT("-------------INST Load :: %d "), arrnum);
 
 			FBuildingInstanceData BuildingInstData;
 			BuildingInstData.InstancedComponent = InstMeshComp;
@@ -1117,14 +1117,14 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 
 			castLoad->SavedInstances.Add(BuildingInstData);
 			UGameplayStatics::SaveGameToSlot(castLoad, TEXT("BuildingiNSTDataStorage"), 0);
-			UE_LOG(LogTemp, Warning, TEXT("-------------INST Load :: %d "), arrnum);
+			//UE_LOG(LogTemp, Warning, TEXT("-------------INST Load :: %d "), arrnum);
 
 		}
 
 		else if (castSave)
 		{
 			int32 arrnum = castSave->SavedInstances.Num();
-			UE_LOG(LogTemp, Warning, TEXT("-------------INST Cast :: %d "), arrnum);
+			//UE_LOG(LogTemp, Warning, TEXT("-------------INST Cast :: %d "), arrnum);
 
 			FBuildingInstanceData BuildingInstData;
 			BuildingInstData.InstancedComponent = InstMeshComp;
@@ -1133,7 +1133,7 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 			castSave->SavedInstances.Add(BuildingInstData);
 			UGameplayStatics::SaveGameToSlot(castSave, TEXT("BuildingiNSTDataStorage"), 0);
 
-			UE_LOG(LogTemp, Warning, TEXT("-------------INST Cast :: %d "), arrnum);
+			//UE_LOG(LogTemp, Warning, TEXT("-------------INST Cast :: %d "), arrnum);
 
 		}
 	}
@@ -1143,7 +1143,7 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 
 void APixelCodeCharacter::OnDestroyBuildingPressed()
 {
-	UE_LOG(LogTemp, Warning, TEXT("------------------Destroy Pressed"));
+	//UE_LOG(LogTemp, Warning, TEXT("------------------Destroy Pressed"));
 
 	//ServerRPC_DestroyBuildingInstanceV2(PerformLineTrace());
 
@@ -1246,7 +1246,7 @@ void APixelCodeCharacter::MultiRPC_RemoveRock_Implementation(const FHitResult& H
 		
 		if (RockComp && RockComp->ComponentTags.Contains(TEXT("Rock")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Remove Rock"));
+			//UE_LOG(LogTemp, Warning, TEXT("Remove Rock"));
 
 			RockComp->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupRock, HitResult.ImpactPoint, GetActorRotation());
@@ -1269,7 +1269,7 @@ void APixelCodeCharacter::MultiRPC_RemoveMetal_Implementation(const FHitResult& 
 
 		if (MetalComp && MetalComp->ComponentTags.Contains(TEXT("Metal")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Remove Metal"));
+			//UE_LOG(LogTemp, Warning, TEXT("Remove Metal"));
 
 			MetalComp->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupMetal, HitResult.ImpactPoint, GetActorRotation());
@@ -1297,7 +1297,7 @@ void APixelCodeCharacter::MultiRPC_RemoveStone_Implementation(const FHitResult& 
 
 		if (StoneComp && StoneComp->ComponentTags.Contains(TEXT("Stone")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Remove Stone"));
+			//UE_LOG(LogTemp, Warning, TEXT("Remove Stone"));
 
 			StoneComp->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupStone, HitResult.ImpactPoint, GetActorRotation());
@@ -1323,7 +1323,7 @@ void APixelCodeCharacter::MultiRPC_RemoveBush_Implementation(const FHitResult& H
 
 		if (BushComp && BushComp->ComponentTags.Contains(TEXT("Bush")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Remove Bush"));
+			//UE_LOG(LogTemp, Warning, TEXT("Remove Bush"));
 
 			BushComp->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupTwig, HitResult.ImpactPoint, GetActorRotation());
@@ -1397,7 +1397,7 @@ void APixelCodeCharacter::DieFunction()
 {
 	auto param = GetMesh()->GetCollisionResponseToChannels();
 	param.SetResponse(ECC_Visibility, ECollisionResponse::ECR_Block);
-	UE_LOG(LogTemp, Warning, TEXT("RespawnOn"));
+	//UE_LOG(LogTemp, Warning, TEXT("RespawnOn"));
 	GetMesh()->SetCollisionResponseToChannels(param);
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -1418,6 +1418,8 @@ void APixelCodeCharacter::DieFunction()
 		}
 	}
 
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerDieSound, GetActorLocation());
+
 	motionState = ECharacterMotionState::Die;
 
 	Super::DieFunction();
@@ -1436,7 +1438,7 @@ void APixelCodeCharacter::PossessedBy(AController* NewController)
 	FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
 	FString hasController = Controller ? TEXT("HasCont") : TEXT("NoCont");
 
-	UE_LOG(LogTemp, Warning, TEXT("[%s] %s - PossessedBy"), *netMode, *hasController);
+	//UE_LOG(LogTemp, Warning, TEXT("[%s] %s - PossessedBy"), *netMode, *hasController);
 	
 
 	//Pc->ClientRPC_PlayerStartWidget();
@@ -1516,7 +1518,7 @@ void APixelCodeCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityTo
 	}
 	else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Item to drop was Some how null"));
+			//UE_LOG(LogTemp, Warning, TEXT("Item to drop was Some how null"));
 		}
 }
 	
@@ -1660,7 +1662,7 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	}
 	else
 	{
-		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+		//UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
 }
 
@@ -1673,6 +1675,7 @@ void APixelCodeCharacter::CharacterJump(const FInputActionValue& Value)
 
 	stateComp->AddStatePoint(SP, -7.0f);
 	SPRegenTime = 3.0f;
+	ServerRPC_PlayerJumpSound();
 	Super::Jump();
 }
 
@@ -1751,7 +1754,7 @@ void APixelCodeCharacter::QskillTime()
 {
 	if (CurrentQSkillCoolTime >= QSkillCoolTime)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Timer Function Qoff"));
+		//UE_LOG(LogTemp, Warning, TEXT("Timer Function Qoff"));
 		// Stop the timer
 		bQskillCoolTime = false;
 		CurrentQSkillCoolTime = 0;
@@ -1835,14 +1838,14 @@ void APixelCodeCharacter::EskillTime()
 {
 	if (CurrentESkillCoolTime >= ESkillCoolTime)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Timer Function Eoff"));
+		//UE_LOG(LogTemp, Warning, TEXT("Timer Function Eoff"));
 		// Stop the timer
 		bEskillCoolTime = false;
 		CurrentESkillCoolTime = 0;
 		GetWorldTimerManager().ClearTimer(ESkillTimer);
 		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Timer Function EON"));
+	//UE_LOG(LogTemp, Warning, TEXT("Timer Function EON"));
 	CurrentESkillCoolTime++;
 }
 
@@ -1916,14 +1919,14 @@ void APixelCodeCharacter::RskillTime()
 {
 	if (CurrentRSkillCoolTime >= RSkillCoolTime)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Timer Function Roff"));
+		//UE_LOG(LogTemp, Warning, TEXT("Timer Function Roff"));
 		// Stop the timer
 		bRskillCoolTime = false;
 		CurrentRSkillCoolTime = 0;
 		GetWorldTimerManager().ClearTimer(RSkillTimer);
 		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Timer Function RON"));
+	//UE_LOG(LogTemp, Warning, TEXT("Timer Function RON"));
 	CurrentRSkillCoolTime++;
 }
 
@@ -1999,14 +2002,14 @@ void APixelCodeCharacter::ZskillTime()
 {
 	if (CurrentZSkillCoolTime >= ZSkillCoolTime)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Timer Function Zoff"));
+		//UE_LOG(LogTemp, Warning, TEXT("Timer Function Zoff"));
 		// Stop the timer
 		bZskillCoolTime = false;
 		CurrentZSkillCoolTime = 0;
 		GetWorldTimerManager().ClearTimer(ZSkillTimer);
 		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Timer Function ZON"));
+	//UE_LOG(LogTemp, Warning, TEXT("Timer Function ZON"));
 	CurrentZSkillCoolTime++;
 }
 
@@ -2046,7 +2049,7 @@ void APixelCodeCharacter::SkillRightMouse()
 					{
 						FActorSpawnParameters SpawnParams;
 						GetWorld()->SpawnActor<APlayerMageRightAttackSpawnActor>(mageRightAttackSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
-						UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!"));
+						//UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!"));
 
 					}
 				}
@@ -2220,8 +2223,23 @@ void APixelCodeCharacter::StopWidget()
 
 // 플레이어 사운드
 
+
 void APixelCodeCharacter::Soundcollection()
 {
+	if (bSwordOutSound)
+	{
+		ServerRPC_PlayerSwordOutSound();
+		bSwordOutSound = false;
+		UE_LOG(LogTemp, Warning, TEXT("PlayerOut"));
+	}
+
+	if (bSwordInSound)
+	{
+		ServerRPC_PlayerSwordInSound();
+		bSwordInSound = false;
+		UE_LOG(LogTemp, Warning, TEXT("PlayerIn"));
+	}
+
 	if (bBaseSwordSound1)
 	{
 		ServerRPC_PlayerSwordBaseAttackSound1();
@@ -2246,6 +2264,18 @@ void APixelCodeCharacter::Soundcollection()
 	{
 		ServerRPC_PlayerSwordBaseAttackSound5();
 		bBaseSwordSound5 = false;
+	}
+
+	if (bRightSwordSound1)
+	{
+		ServerRPC_PlayerSwordRightAttackSound1();
+		bRightSwordSound1 = false;
+	}
+
+	if (bRightSwordSound2)
+	{
+		ServerRPC_PlayerSwordRightAttackSound2();
+		bRightSwordSound2 = false;
 	}
 
 
@@ -2338,6 +2368,36 @@ void APixelCodeCharacter::Soundcollection()
 
 }
 
+void APixelCodeCharacter::ServerRPC_PlayerJumpSound_Implementation()
+{
+	NetMulticastRPC_PlayerJumpSound();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerJumpSound_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerJumpSound, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerSwordOutSound_Implementation()
+{
+	NetMulticastRPC_PlayerSwordOutSound();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerSwordOutSound_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerSwordOutSound, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerSwordInSound_Implementation()
+{
+	NetMulticastRPC_PlayerSwordInSound();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerSwordInSound_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerSwordInSound, GetActorLocation());
+}
+
 void APixelCodeCharacter::ServerRPC_PlayerSwordBaseAttackSound1_Implementation()
 {
 	NetMulticastRPC_PlayerSwordBaseAttackSound1();
@@ -2388,7 +2448,25 @@ void APixelCodeCharacter::NetMulticastRPC_PlayerSwordBaseAttackSound5_Implementa
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerSwordBaseAttackSound5, GetActorLocation());
 }
 
+void APixelCodeCharacter::ServerRPC_PlayerSwordRightAttackSound1_Implementation()
+{
+	NetMulticastRPC_PlayerSwordRightAttackSound1();
+}
 
+void APixelCodeCharacter::NetMulticastRPC_PlayerSwordRightAttackSound1_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerSwordRightAttackSound1, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerSwordRightAttackSound2_Implementation()
+{
+	NetMulticastRPC_PlayerSwordRightAttackSound2();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerSwordRightAttackSound2_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerSwordRightAttackSound2, GetActorLocation());
+}
 
 void APixelCodeCharacter::ServerRPC_PlayerQSound1_Implementation()
 {
@@ -2597,10 +2675,10 @@ void APixelCodeCharacter::Look(const FInputActionValue& Value)
 
 void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!!!!"));
+	//UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!!!!"));
 	if (!bIsJump)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!!!"));
+		//UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!!!"));
 		Mousehit();
 	
 		if (false == combatComponent->bCombatEnable)
@@ -2633,7 +2711,7 @@ void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 			}
 			else if (equipment->eWeaponType == EWeaponType::MagicStaff)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!!"));
+				//UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!!"));
 				AttackEvent();
 				stateComp->AddStatePoint(SP, -10.0f);
 				SPRegenTime = 3.0f;
@@ -2641,7 +2719,7 @@ void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 				{
 					FActorSpawnParameters SpawnParams;
 					GetWorld()->SpawnActor<APlayerMageLeftAttackSpawnActor>(mageLeftAttackSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
-					UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!"));
+					//UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!"));
 
 				}
 			}
@@ -2723,7 +2801,7 @@ void APixelCodeCharacter::NetMulticastRPC_PlayerRoll_Implementation()
 	GetMesh()->GetAnimInstance()->Montage_Play(RollAnim);
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	bRoll = true;
-	UE_LOG(LogTemp, Warning, TEXT("Start"));
+	//UE_LOG(LogTemp, Warning, TEXT("Start"));
 
 }
 
@@ -2894,6 +2972,6 @@ void APixelCodeCharacter::PrintInfo()
 	FString str = FString::Printf(TEXT("localRole : %s\nremoteRole : %s\nowner : %s\nnetConn : %s\nnetMode : %s\nhasController : %s\n HP : %s\n SP : %s"), *localRole, *remoteRole, *owner, *netConn, *netMode, *hasController, *strHP, *strSP);
 
 	FVector loc = GetActorLocation() + FVector(0, 0, 50);
-	DrawDebugString(GetWorld(), loc, str, nullptr, FColor::White, 0, true);
+	//DrawDebugString(GetWorld(), loc, str, nullptr, FColor::White, 0, true);
 }
 
