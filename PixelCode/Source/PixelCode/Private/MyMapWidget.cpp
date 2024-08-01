@@ -22,6 +22,10 @@ void UMyMapWidget::NativeConstruct()
 	{
 		MapTravelButton->OnClicked.AddDynamic(this, &UMyMapWidget::OnMyclickMyMap);
 	}
+	if (Button_MyMapBack)
+	{
+		Button_MyMapBack->OnClicked.AddDynamic(this, &UMyMapWidget::OnMyMapExit);
+	}
 }
 
 void UMyMapWidget::OnMyclickMyMap()
@@ -42,4 +46,18 @@ void UMyMapWidget::OnMyclickMyMap()
 void UMyMapWidget::MyServerTravel()
 {
 	GetWorld()->ServerTravel(TEXT("/Game/KSH/Maps/Map?Listen"));
+}
+
+void UMyMapWidget::OnMyMapExit()
+{
+
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		// PCodePlayerController 타입으로 캐스팅
+		PCodePlayerController = Cast<APCodePlayerController>(It->Get());
+		if (PCodePlayerController)
+		{
+			PCodePlayerController->ServerRPC_HidMyMap();
+		}
+	}
 }

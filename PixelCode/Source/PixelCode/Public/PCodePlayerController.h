@@ -192,6 +192,15 @@ public:
 
 	void CreateWidgetMyMAPs();
 
+	
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_HidMyMap();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_HidMyMap();
+
+	
+
 	class UMyMapWidget* MyMapEnterWidgets;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")

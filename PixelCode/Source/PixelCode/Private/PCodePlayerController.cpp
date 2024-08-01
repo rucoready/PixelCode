@@ -590,7 +590,7 @@ void APCodePlayerController::MulticastRPC_CreateWidgetMyMap_Implementation()
 		{
 			// 위젯을 화면에 추가
 			MyMapLoadingWidget->AddToViewport();
-			UE_LOG(LogTemp, Warning, TEXT("111112222223333344444555666777888999"));
+			//UE_LOG(LogTemp, Warning, TEXT("111112222223333344444555666777888999"));
 			bShowMouseCursor = true;
 			bEnableClickEvents = true;
 			bEnableMouseOverEvents = true;
@@ -644,6 +644,36 @@ void APCodePlayerController::CreateWidgetMyMAPs()
 	}
 
 }
+
+void APCodePlayerController::ServerRPC_HidMyMap_Implementation()
+{
+	MulticastRPC_HidMyMap();
+}
+
+void APCodePlayerController::MulticastRPC_HidMyMap_Implementation()
+{
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		APlayerController* BaseController = It->Get();
+		PlayerController = Cast<APCodePlayerController>(BaseController);
+		if (PlayerController && MyMapEnterWidgets)
+		{
+			MyMapEnterWidgets->RemoveFromParent();
+			PlayerController->bShowMouseCursor = false;
+			PlayerController->bEnableClickEvents = false;
+			PlayerController->bEnableTouchEvents = false;
+
+			FInputModeGameOnly InputMode;
+			PlayerController->SetInputMode(InputMode);
+
+			PlayerController->SetIgnoreLookInput(false);
+			PlayerController->SetIgnoreMoveInput(false);
+		}
+
+	}
+}
+
+// ==================== 요한 =====================================
 
 void APCodePlayerController::ServerRPC_HideLastBossPortal_Implementation()
 {

@@ -20,11 +20,16 @@ class PIXELCODE_API UMyMapWidget : public UUserWidget
 	// Button and text block widgets
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UButton* MapTravelButton;
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	class UButton* Button_MyMapBack;
 
 	UFUNCTION()
 	void OnMyclickMyMap();
 
 	void MyServerTravel();
+
+	UFUNCTION()
+	void OnMyMapExit();
 
 	class APCodePlayerController* PCodePlayerController;
 };
