@@ -398,7 +398,7 @@ protected:
 	// 서휘-----------------------------------------------------------------------------------------------------
 	FHitResult PerformLineTrace(float Distance = 650.0f, bool DrawDebug = false);
 
-	UPROPERTY( BlueprintReadOnly, Category = KSH)
+	UPROPERTY(ReplicatedUsing=OnRep_SetBuildMode, BlueprintReadOnly, Category = KSH)
 	bool bInBuildMode;
 
 	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
@@ -562,6 +562,9 @@ public:
 	//------------------------------------------------------------------------------------------
 	UFUNCTION()
 	void OnSetBuildModePressed();  
+
+	UFUNCTION(BlueprintCallable, Category = KSH)
+	void OnRep_SetBuildMode();
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void SetBuildMode(bool Enabled);

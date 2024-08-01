@@ -155,43 +155,22 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 
 void ABuildingVisual::SpawnBuilding()
 {
-	
 	auto Pc = Cast<APlayerOrganism>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
-	
-	FString strpc1 = Pc ? TEXT("PC1 True") : TEXT("PC1 False");
-	UE_LOG(LogTemp, Warning, TEXT("++++++++++++++&&&&&&&&&&&&&&++++++++++++++ %s"), *strpc1);
-
 	if (Pc)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("++++++++++++++&&&&&&&&&&&&&&++++++++++++++"));
-
 		TArray<UItemBase*> InventoryContentSArray = Pc->PlayerInventory->GetInventoryContents();
 		//uint8 BulidAmount = Recipe.Amount;
 		uint8 Index = 0;
 		TArray<uint8> RemoveedIndex;
 
-
-		FString strindex1 = InventoryContentSArray.IsValidIndex(Index) ? TEXT("Index True") : TEXT("Index False");
-		UE_LOG(LogTemp, Warning, TEXT("++++++++++++++&&&&&&&&&&&&&&++++++++++++++ %s"), *strindex1);
-
 		if (InventoryContentSArray.IsValidIndex(Index))
 		{
 			for (UItemBase* Item : InventoryContentSArray)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("++++++++++++++++++++++++++++%d"), Item->Quantity);
-
-
-
 				if (Item && Item->Buildtypes == BuildingTypes[BuildingTypeIndex].BuildType)
 				{
-						UE_LOG(LogTemp, Warning, TEXT("++++++++++++++++++++++++++++%d"), Item->Quantity);
-
-					if (Item->Quantity > 0)
+					if (Item->Quantity < 1)
 					{
-
-						UE_LOG(LogTemp, Warning, TEXT("++++++++++++++++++++++++++++%d"), Item->Quantity);
-
-
 						// ABuilding ÀÌ ¼û±èÀÌ ¾Æ´Ò ¶§ = °ÇÃàÀÚÀç°¡ preview »óÅÂÀÏ ¶§
 						if (BuildingClass && !IsHidden())
 						{
@@ -220,10 +199,6 @@ void ABuildingVisual::SpawnBuilding()
 								
 								if (castLoad)
 								{
-
-									int32 arrnum = castLoad->SavedActors.Num();
-									UE_LOG(LogTemp, Warning, TEXT("-------------SaveGametoSLOT__ACTOR Load :: %d "), arrnum);
-
 									FBuildingActorData BuildingActorData;
 									BuildingActorData.ABuilding = AbuildingClass->GetClass();
 									BuildingActorData.BuildingLocation = AbuildingClass->GetActorLocation();
@@ -231,15 +206,13 @@ void ABuildingVisual::SpawnBuilding()
 
 									castLoad->SavedActors.Add(BuildingActorData);
 									UGameplayStatics::SaveGameToSlot(castLoad, TEXT("BuildingDataStorage"), 0);
-									UE_LOG(LogTemp, Warning, TEXT("-------------SaveGametoSLOT__ACTOR Load :: %d "), arrnum);
 
+									int32 arrnum = castLoad->SavedActors.Num();
+									UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Load :: %d "), arrnum);
 								}
 
  								else if (castSave)
  								{
-									int32 arrnum = castSave->SavedActors.Num();
-									UE_LOG(LogTemp, Warning, TEXT("-------------SaveGametoSLOT__ACTOR Cast :: %d "), arrnum);
-
  									FBuildingActorData BuildingActorData;
  									BuildingActorData.ABuilding = AbuildingClass->GetClass();
  									BuildingActorData.BuildingLocation = AbuildingClass->GetActorLocation();
@@ -248,8 +221,8 @@ void ABuildingVisual::SpawnBuilding()
  									castSave->SavedActors.Add(BuildingActorData);
  									UGameplayStatics::SaveGameToSlot(castSave, TEXT("BuildingDataStorage"), 0);
 
- 									UE_LOG(LogTemp, Warning, TEXT("-------------SaveGametoSLOT__ACTOR Cast :: %d "), arrnum);
- 
+									int32 arrnum = castSave->SavedActors.Num();
+									UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Cast :: %d "), arrnum);
  								}
 							}
 						}

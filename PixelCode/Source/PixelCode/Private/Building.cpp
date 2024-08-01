@@ -247,8 +247,6 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 						if (SocketInformation.SocketName == BuildingSocketData.SocketName/*$.ToString()*/)
 						{
 							SocketInformation.bSocketInUse = true;
- 							UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------------------------@@@@@@@@@@@@@@@@@@@@@@"));
-
 							break;
 						}
 					}
@@ -270,7 +268,6 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 					if (SocketName.IsEqual(BuildingSocketData.SocketName))
 					{
 						SocketInformation.bSocketInUse = true;
- 						UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------------------------########################"));
 					}
 					BuildIndexSockets.SocketsInformation.Add(SocketInformation);
 				}
@@ -281,82 +278,70 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 
 	FTransform transform = BuildingSocketData.SocketTransform;
 	FString StrBuildType;
-
-// 	FBuildingData BuildingData;
-// 	BuildingData.ABuilding = this->GetClass();
-// 	BuildingData.BuildingLocation = transform.GetLocation();
-// 	BuildingData.BuildingRotation = transform.GetRotation();
-// 
-// 	UPCodeSaveGame* SaveGameInstance = Cast<UPCodeSaveGame>(UGameplayStatics:;CreateSaveGameObject(UPCodeSaveGame::StaticClass()));
-
+	bool bAddInstanceSuccess=false;
 
 	switch (BuildType)
 	{		
 		case EBuildType::Base:
 		BaseInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType=TEXT("FoundationInstancedMesh");
-// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Foundation BuildType"));
+		bAddInstanceSuccess = true;
 		break;
 
 		case EBuildType::Wall:
 		WallInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType = TEXT("WallInstancedMesh");
-// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wall BuildType"));
+		bAddInstanceSuccess = true;
 		break;
 
 		case EBuildType::Ceiling:
 		CeilingInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType = TEXT("CeilingInstancedMesh");
-// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Ceiling BuildType"));
+		bAddInstanceSuccess = true;
 		break;
 
 		case EBuildType::Roof:
 		RoofInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType = TEXT("RoofInstancedMesh");
-// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
+		bAddInstanceSuccess = true;
 		break;
 
 		case EBuildType::Gable:
 		GableInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType = TEXT("GableInstancedMesh");
-		// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
+		bAddInstanceSuccess = true;
 		break;
 
 		case EBuildType::Stairs:
 		StairsInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 		StrBuildType = TEXT("StairsInstancedMesh");
-		// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
+		bAddInstanceSuccess = true;
 		break;
 
 		case EBuildType::Window:
 			WindowInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 			StrBuildType = TEXT("WindowInstancedMesh");
-			// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
+			bAddInstanceSuccess = true;
 			break;
 
 		case EBuildType::Arch:
 			ArchInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 			StrBuildType = TEXT("ArchInstancedMesh");
-			// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
+			bAddInstanceSuccess = true;
 			break;	
 			
 		case EBuildType::Floor:
 			FloorInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
 			StrBuildType = TEXT("FloorInstancedMesh");
-			// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Wooden Pilar BuildType"));
+			bAddInstanceSuccess = true;
 			break;
 
 		default:
-// 		UE_LOG(LogTemp, Warning, TEXT("**************************************************Unknown BuildType"));
 		break;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("------------------BuildType %s"), *StrBuildType);
-
-
 
  	auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
- 
- 	if (Pc && ROLE_AutonomousProxy)
+ 	if (Pc && bAddInstanceSuccess /* ROLE_AutonomousProxy*/)
  	{
  		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
 		if (transform.IsValid())
@@ -364,8 +349,6 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 			pc->NetMulticastRPC_SpawnBuilding(BuildType, transform);
 		}
 		pc->AGetSpecificBuildingAmount(BuildType);
-
-		UE_LOG(LogTemp, Warning, TEXT("55555555555555555555565656565656"));
  	}	
 }
 

@@ -180,43 +180,6 @@ void APixelCodeCharacter::BeginPlay()
 // 		Buildings = *vars;
 // 	}
 
-// 	if (!Builder)
-// 	{
-// 		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
-// 		{
-// 			Builder = *var;
-// 		}
-// 	}
-// 	if (!Buildings)
-// 	{
-// 		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
-// 		{
-// 			Buildings = *vars;
-// 		}
-// 	}
-	
-	//GetAllChildActors()
-
-
- 	if (!Builder)
- 	{
- 		if (BuildingClass)
- 		{
- 			//Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass, FVector::ZeroVector, FRotator::ZeroRotator);
- 		}
- 	}
- 	if (!Buildings)
- 	{
- 		if (BuildingC)
- 		{
- 			//Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC, FVector::ZeroVector, FRotator::ZeroRotator);
- 		}
- 	}
-
-	FString sBuilder = Builder ? TEXT("Builder True") : TEXT("Builder False");
-	FString sBuildings = Buildings ? TEXT("Buildings True") : TEXT("Buildings False");
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay : %s : %s"), *sBuilder, *sBuildings);
-
 //   	if (!Builder)
 //   	{
 //   		if (BuildingClass)
@@ -231,10 +194,7 @@ void APixelCodeCharacter::BeginPlay()
 //   			Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC, FVector::ZeroVector, FRotator::ZeroRotator);
 //   		}
 //   	}
-// 
-// 	FString sBuilder = Builder ? TEXT("Builder True") : TEXT("Builder False");
-// 	FString sBuildings = Buildings ? TEXT("Buildings True") : TEXT("Buildings False");
-// 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay : %s : %s"), *sBuilder, *sBuildings);
+
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
 	// 요한----------------------------------------------------------------------
@@ -310,14 +270,12 @@ FHitResult APixelCodeCharacter::PerformLineTrace(float Distance , bool DrawDebug
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 
-	//GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
 
 	if (DrawDebug)
 	{
 		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1, 0U, 3.f);
 	}
-	//BuildLoc = HitResult.ImpactPoint;
 	return HitResult;
 }
 // 서휘-----------------------------------------------------------------------------------------------------끝
@@ -833,34 +791,7 @@ void APixelCodeCharacter::UpdateGameInstanceInventory()
 
 void APixelCodeCharacter::OnSetBuildModePressed()
 {
-	FString sbInBuildMode = !bInBuildMode ? TEXT("bInBuildMode : true") : TEXT("bInBuildMode : false");
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *sbInBuildMode);
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (!Builder)
-	{
-		Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass, FVector::ZeroVector, FRotator::ZeroRotator);
-
-//  		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
-//  		{
-//  			Builder = *var;
-//  		}
-	}
-	if (!Buildings)
-	{
-		Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC, FVector::ZeroVector, FRotator::ZeroRotator);
-
-//  		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
-//  		{
-//  			Buildings = *vars;
-//  		}
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 	SetBuildMode(!GetBuildMode());
-
-
 
 // 		if (HasAuthority())
 // 		{
@@ -884,24 +815,20 @@ void APixelCodeCharacter::OnSetBuildModePressed()
 // 		}
 }
 
+void APixelCodeCharacter::OnRep_SetBuildMode()
+{
+	if (bInBuildMode && Builder)
+	{
+		Builder->SetActorHiddenInGame(!bInBuildMode);
+	}
+	else
+	{
+		Builder->SetActorHiddenInGame(true);
+	}
+}
+
 void APixelCodeCharacter::SetBuildMode(bool Enabled)
 {
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (!Builder)
-	{
-		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
-		{
-			Builder = *var;
-		}
-	}
-	if (!Buildings)
-	{
-		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
-		{
-			Buildings = *vars;
-		}
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	bInBuildMode = Enabled;
 	if (Builder)
 	{
@@ -917,44 +844,8 @@ void APixelCodeCharacter::SetBuildMode(bool Enabled)
 
 void APixelCodeCharacter::ServerRPC_SetBuildMode_Implementation(bool mode)
 {
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (!Builder)
-	{
-		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
-		{
-			Builder = *var;
-		}
-	}
-	if (!Buildings)
-	{
-		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
-		{
-			Buildings = *vars;
-		}
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-//  	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ServerRPC"));
-//    	bInBuildMode = mode;
-//    	if (Builder)
-//    	{
-//    		Builder->SetActorHiddenInGame(!bInBuildMode);
-// 		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode ServerRPC On"));
-//    	}
-//    	else
-//    	{
-//    		UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode : Builder nullptr"));
-//    	}
 
  	MultiRPC_SetBuildMode(mode);
-
-
 
 
 // 	ClientRPC_SetBuildMode(mode);
@@ -962,22 +853,7 @@ void APixelCodeCharacter::ServerRPC_SetBuildMode_Implementation(bool mode)
 
 void APixelCodeCharacter::MultiRPC_SetBuildMode_Implementation(bool mode)
 {
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (!Builder)
-	{
-		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
-		{
-			Builder = *var;
-		}
-	}
-	if (!Buildings)
-	{
-		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
-		{
-			Buildings = *vars;
-		}
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	UE_LOG(LogTemp, Warning, TEXT("------------------SetBuildMode MultiRPC"));
 
 	bInBuildMode = mode;
