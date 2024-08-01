@@ -52,7 +52,7 @@ void ASpawnSwordQSkill::Tick(float DeltaTime)
 		
 		if (DestroyTime >= 1.2f)
 		{ 
-			UE_LOG(LogTemp, Warning, TEXT("destroy"));
+			//UE_LOG(LogTemp, Warning, TEXT("destroy"));
 			bDestroy = false;
 			DestroyTime = 0.0f;
 
@@ -92,8 +92,8 @@ void ASpawnSwordQSkill::DealDamageToActorsInTrace()
                     EnemyCharacter->BossTakeDamage(DamageAmount);
 
                     // 피해 입힌 액터 로그 출력
-                    UE_LOG(LogTemp, Warning, TEXT("boss: %s"), *HitActor->GetName());
-                    DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, TraceRadius, 32, FColor::Green, false, 2.0f);
+                    //UE_LOG(LogTemp, Warning, TEXT("boss: %s"), *HitActor->GetName());
+                    //DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, TraceRadius, 32, FColor::Green, false, 2.0f);
                 }
             }
             else if (demonSword)
@@ -105,8 +105,8 @@ void ASpawnSwordQSkill::DealDamageToActorsInTrace()
                     EnemyCharacter->SwordTakeDamage(DamageAmount);
 
                     // 피해 입힌 액터 로그 출력
-                    UE_LOG(LogTemp, Warning, TEXT("demonSword: %s"), *HitActor->GetName());
-                    DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, TraceRadius, 32, FColor::Green, false, 2.0f);
+                    //UE_LOG(LogTemp, Warning, TEXT("demonSword: %s"), *HitActor->GetName());
+                   // DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, TraceRadius, 32, FColor::Green, false, 2.0f);
                 }
             }
             else if (grux)
@@ -118,8 +118,8 @@ void ASpawnSwordQSkill::DealDamageToActorsInTrace()
                     EnemyCharacter->GruxTakeDamage(DamageAmount);
 
                     // 피해 입힌 액터 로그 출력
-                    UE_LOG(LogTemp, Warning, TEXT("demonSword: %s"), *HitActor->GetName());
-                    DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, TraceRadius, 32, FColor::Green, false, 2.0f);
+                    //UE_LOG(LogTemp, Warning, TEXT("demonSword: %s"), *HitActor->GetName());
+                   // DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, TraceRadius, 32, FColor::Green, false, 2.0f);
                 }
             }
             else if (dogBart)
@@ -131,8 +131,8 @@ void ASpawnSwordQSkill::DealDamageToActorsInTrace()
                     EnemyCharacter->DogBartTakeDamage(DamageAmount);
 
                     // 피해 입힌 액터 로그 출력
-                    UE_LOG(LogTemp, Warning, TEXT("demonSword: %s"), *HitActor->GetName());
-                    DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, TraceRadius, 32, FColor::Green, false, 2.0f);
+                    //UE_LOG(LogTemp, Warning, TEXT("demonSword: %s"), *HitActor->GetName());
+                   // DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, TraceRadius, 32, FColor::Green, false, 2.0f);
                 }
             }
         }

@@ -95,6 +95,68 @@ public:
 	UFUNCTION()
 	void AnimNotify_SwordQSkillCameraShake();
 
+	UFUNCTION()
+	void AnimNotify_SB_PlayerBaseSound1();
+
+	UFUNCTION()
+	void AnimNotify_SB_PlayerBaseSound2();
+
+	UFUNCTION()
+	void AnimNotify_SB_PlayerBaseSound3();
+
+	UFUNCTION()
+	void AnimNotify_SB_PlayerBaseSound4();
+
+	UFUNCTION()
+	void AnimNotify_SB_PlayerBaseSound5();
+	
+	UFUNCTION()
+	void AnimNotify_SB_SwordQ1Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordQ2Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordQ3Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordQ4Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordQ5Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordE1Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordE2Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordE3Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordE4Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordE5Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordR1Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordZ1Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordZ2Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordZ3Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordZ4Sound();
+
+	UFUNCTION()
+	void AnimNotify_SB_SwordZ5Sound();
 };
 
 

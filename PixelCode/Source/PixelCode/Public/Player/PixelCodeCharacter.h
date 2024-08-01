@@ -39,6 +39,7 @@ class APlayerMageLeftAttackSpawnActor;
 class APlayerMageQSkillSpawnActor;
 class APlayerMageESkillSpawnActor;
 class APlayerMageZSkillSpawnActor;
+class USoundBase;
 
 UENUM()
 enum class MyEnum : int8
@@ -332,6 +333,200 @@ public:
 	void StopWidget();
 
 	//void RollCharacterForward(APixelCodeCharacter* PixelCodeCharacter, float RollDistance);
+
+	// 사운드
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerSwordBaseAttackSound1;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerSwordBaseAttackSound2;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerSwordBaseAttackSound3;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerSwordBaseAttackSound4;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerSwordBaseAttackSound5;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerQSound1;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerQSound2;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerQSound3;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerQSound4;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerQSound5;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerESound1;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerESound2;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerESound3;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerESound4;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerESound5;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerRSound1;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerZSound1;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerZSound2;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerZSound3;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerZSound4;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerZSound5;
+	
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerSwordBaseAttackSound1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerSwordBaseAttackSound1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerSwordBaseAttackSound2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerSwordBaseAttackSound2();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerSwordBaseAttackSound3();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerSwordBaseAttackSound3();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerSwordBaseAttackSound4();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerSwordBaseAttackSound4();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerSwordBaseAttackSound5();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerSwordBaseAttackSound5();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerQSound1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerQSound1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerQSound2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerQSound2();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerQSound3();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerQSound3();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerQSound4();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerQSound4();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerQSound5();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerQSound5();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerESound1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerESound1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerESound2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerESound2();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerESound3();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerESound3();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerESound4();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerESound4();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerESound5();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerESound5();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerRSound1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerRSound1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerZSound1();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerZSound1();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerZSound2();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerZSound2();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerZSound3();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerZSound3();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerZSound4();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerZSound4();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_PlayerZSound5();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastRPC_PlayerZSound5();
+
+
+	void Soundcollection();
 
 	// 진원 E
 protected:

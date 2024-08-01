@@ -206,3 +206,173 @@ void UCharacterAnimInstance::AnimNotify_SwordQSkillCameraShake()
 		myCharacter->bSwordQSkillCameraShake = true;
 	}
 }
+
+void UCharacterAnimInstance::AnimNotify_SB_PlayerBaseSound1()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bBaseSwordSound1 = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_PlayerBaseSound2()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bBaseSwordSound2 = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_PlayerBaseSound3()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bBaseSwordSound3 = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_PlayerBaseSound4()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bBaseSwordSound4 = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_PlayerBaseSound5()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bBaseSwordSound5 = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordQ1Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordQ1Sound = true;
+	}
+
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordQ2Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordQ2Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordQ3Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordQ3Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordQ4Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordQ4Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordQ5Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordQ5Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordE1Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordE1Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordE2Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordE2Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordE3Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordE3Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordE4Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordE4Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordE5Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordE5Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordR1Sound()
+{	
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordR1Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordZ1Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordZ1Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordZ2Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordZ2Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordZ3Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordZ3Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordZ4Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordZ4Sound = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_SB_SwordZ5Sound()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bSwordZ5Sound = true;
+	}
+}
+

@@ -67,6 +67,7 @@
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
+
 //////////////////////////////////////////////////////////////////////////
 // APixelCodeCharacter
 
@@ -1507,7 +1508,7 @@ void APixelCodeCharacter::PossessedBy(AController* NewController)
 		//InitMainUI(); //나중에 활성화?
 	//	UE_LOG(LogTemp, Warning, TEXT("Normal2"));
 	//}
-	
+
 
 }
 
@@ -2274,6 +2275,345 @@ void APixelCodeCharacter::StopWidget()
 
 }
 
+// 플레이어 사운드
+
+void APixelCodeCharacter::Soundcollection()
+{
+	if (bBaseSwordSound1)
+	{
+		ServerRPC_PlayerSwordBaseAttackSound1();
+		bBaseSwordSound1 = false;
+	}
+	if (bBaseSwordSound2)
+	{
+		ServerRPC_PlayerSwordBaseAttackSound2();
+		bBaseSwordSound2 = false;
+	}
+	if (bBaseSwordSound3)
+	{
+		ServerRPC_PlayerSwordBaseAttackSound3();
+		bBaseSwordSound3 = false;
+	}
+	if (bBaseSwordSound4)
+	{
+		ServerRPC_PlayerSwordBaseAttackSound4();
+		bBaseSwordSound4 = false;
+	}
+	if (bBaseSwordSound5)
+	{
+		ServerRPC_PlayerSwordBaseAttackSound5();
+		bBaseSwordSound5 = false;
+	}
+
+
+	if (bSwordQ1Sound)
+	{
+		ServerRPC_PlayerQSound1();
+	}
+	if (bSwordQ2Sound)
+	{
+		ServerRPC_PlayerQSound2();
+	}
+	if (bSwordQ3Sound)
+	{
+		ServerRPC_PlayerQSound3();
+	}
+	if (bSwordQ4Sound)
+	{
+		ServerRPC_PlayerQSound4();
+	}
+	if (bSwordQ5Sound)
+	{
+		ServerRPC_PlayerQSound5();
+	}
+
+	if (bSwordE1Sound)
+	{
+		ServerRPC_PlayerESound1();
+		bSwordE1Sound = false;
+	}
+
+	if (bSwordE2Sound)
+	{
+		ServerRPC_PlayerESound2();
+		bSwordE2Sound = false;
+	}
+
+	if (bSwordE3Sound)
+	{
+		ServerRPC_PlayerESound3();
+		bSwordE3Sound = false;
+	}
+
+	if (bSwordE4Sound)
+	{
+		ServerRPC_PlayerESound4();
+		bSwordE4Sound = false;
+	}
+
+	if (bSwordE5Sound)
+	{
+		ServerRPC_PlayerESound5();
+		bSwordE5Sound = false;
+	}
+
+	if (bSwordR1Sound)
+	{
+		ServerRPC_PlayerRSound1();
+		bSwordR1Sound = false;
+	}
+
+	if (bSwordZ1Sound)
+	{
+		ServerRPC_PlayerZSound1();
+		bSwordZ1Sound = false;
+	}
+
+	if (bSwordZ2Sound)
+	{
+		ServerRPC_PlayerZSound2();
+		bSwordZ2Sound = false;
+	}
+
+	if (bSwordZ3Sound)
+	{
+		ServerRPC_PlayerZSound3();
+		bSwordZ3Sound = false;
+	}
+
+	if (bSwordZ4Sound)
+	{
+		ServerRPC_PlayerZSound4();
+		bSwordZ4Sound = false;
+	}
+
+	if (bSwordZ5Sound)
+	{
+		ServerRPC_PlayerZSound5();
+		bSwordZ5Sound = false;
+	}
+
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerSwordBaseAttackSound1_Implementation()
+{
+	NetMulticastRPC_PlayerSwordBaseAttackSound1();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerSwordBaseAttackSound1_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerSwordBaseAttackSound1, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerSwordBaseAttackSound2_Implementation()
+{
+	NetMulticastRPC_PlayerSwordBaseAttackSound2();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerSwordBaseAttackSound2_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerSwordBaseAttackSound2, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerSwordBaseAttackSound3_Implementation()
+{
+	NetMulticastRPC_PlayerSwordBaseAttackSound3();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerSwordBaseAttackSound3_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerSwordBaseAttackSound3, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerSwordBaseAttackSound4_Implementation()
+{
+	NetMulticastRPC_PlayerSwordBaseAttackSound4();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerSwordBaseAttackSound4_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerSwordBaseAttackSound4, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerSwordBaseAttackSound5_Implementation()
+{
+	NetMulticastRPC_PlayerSwordBaseAttackSound5();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerSwordBaseAttackSound5_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerSwordBaseAttackSound5, GetActorLocation());
+}
+
+
+
+void APixelCodeCharacter::ServerRPC_PlayerQSound1_Implementation()
+{
+	NetMulticastRPC_PlayerQSound1();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerQSound1_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerQSound1, GetActorLocation());
+	bSwordQ1Sound = false;
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerQSound2_Implementation()
+{
+	NetMulticastRPC_PlayerQSound2();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerQSound2_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerQSound2, GetActorLocation());
+	bSwordQ2Sound = false;
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerQSound3_Implementation()
+{
+	NetMulticastRPC_PlayerQSound3();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerQSound3_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerQSound3, GetActorLocation());
+	bSwordQ3Sound = false;
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerQSound4_Implementation()
+{
+	NetMulticastRPC_PlayerQSound4();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerQSound4_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerQSound4, GetActorLocation());
+	bSwordQ4Sound = false;
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerQSound5_Implementation()
+{
+	NetMulticastRPC_PlayerQSound5();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerQSound5_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerQSound5, GetActorLocation());
+	bSwordQ5Sound = false;
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerESound1_Implementation()
+{
+	NetMulticastRPC_PlayerESound1();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerESound1_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerESound1, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerESound2_Implementation()
+{
+	NetMulticastRPC_PlayerESound2();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerESound2_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerESound2, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerESound3_Implementation()
+{
+	NetMulticastRPC_PlayerESound3();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerESound3_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerESound3, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerESound4_Implementation()
+{
+	NetMulticastRPC_PlayerESound4();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerESound4_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerESound4, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerESound5_Implementation()
+{
+	NetMulticastRPC_PlayerESound5();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerESound5_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerESound5, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerRSound1_Implementation()
+{
+	NetMulticastRPC_PlayerRSound1();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerRSound1_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerRSound1, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerZSound1_Implementation()
+{
+	NetMulticastRPC_PlayerZSound1();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerZSound1_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerZSound1, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerZSound2_Implementation()
+{
+	NetMulticastRPC_PlayerZSound2();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerZSound2_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerZSound2, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerZSound3_Implementation()
+{
+	NetMulticastRPC_PlayerZSound3();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerZSound3_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerZSound3, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerZSound4_Implementation()
+{
+	NetMulticastRPC_PlayerZSound4();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerZSound4_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerZSound4, GetActorLocation());
+}
+
+void APixelCodeCharacter::ServerRPC_PlayerZSound5_Implementation()
+{
+	NetMulticastRPC_PlayerZSound5();
+}
+
+void APixelCodeCharacter::NetMulticastRPC_PlayerZSound5_Implementation()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerZSound5, GetActorLocation());
+}
+
+
+
 void APixelCodeCharacter::Move(const FInputActionValue& Value)
 {
 
@@ -2582,7 +2922,7 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		}
 	}
 	
-
+	Soundcollection();
 	// 지논------------------------------------------------------------------------------------------------------
 
 }
@@ -2613,3 +2953,4 @@ void APixelCodeCharacter::PrintInfo()
 	FVector loc = GetActorLocation() + FVector(0, 0, 50);
 	DrawDebugString(GetWorld(), loc, str, nullptr, FColor::White, 0, true);
 }
+

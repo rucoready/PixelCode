@@ -162,6 +162,49 @@ public:
 	// 카메라 쉐이크
 	bool bSwordQSkillCameraShake = false;
 
+	// 플레이어 사운드
+	bool bBaseSwordSound1 = false;
+
+	bool bBaseSwordSound2 = false;
+
+	bool bBaseSwordSound3 = false;
+
+	bool bBaseSwordSound4 = false;
+
+	bool bBaseSwordSound5 = false;
+
+	bool bSwordQ1Sound = false;
+
+	bool bSwordQ2Sound = false;
+
+	bool bSwordQ3Sound = false;
+
+	bool bSwordQ4Sound = false;
+
+	bool bSwordQ5Sound = false;
+
+	bool bSwordE1Sound = false;
+	
+	bool bSwordE2Sound = false;
+
+	bool bSwordE3Sound = false;
+
+	bool bSwordE4Sound = false;
+
+	bool bSwordE5Sound = false;
+
+	bool bSwordR1Sound = false;
+
+	bool bSwordZ1Sound = false;
+
+	bool bSwordZ2Sound = false;
+
+	bool bSwordZ3Sound = false;
+	
+	bool bSwordZ4Sound = false;
+
+	bool bSwordZ5Sound = false;
+
 	void SlowDownTime(float DilationAmount, float Duration, APlayerController* PlayerController);
 
 	UPROPERTY(EditAnywhere,Category = "MySettings|Varibles")
