@@ -87,7 +87,8 @@ public:
 	TSubclassOf<class ABossSword> bossSwordclass;
 
 	//float bossMaxHP = 43000.0f;
-	float bossMaxHP = 100.0f;
+	UPROPERTY(EditAnywhere, Category = "HP")
+	float bossMaxHP = 80000.0f;
 	float bossCurrentHP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
@@ -991,5 +992,10 @@ public:
 	class TSubclassOf<class APortalCollision> exitBackGate;
 
 	class APortalCollision* portalGate;
+
 	
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class AMyMapCollsionActor> endPortal;
+
+	class AMyMapCollsionActor* myMapCollsionActor;
 };

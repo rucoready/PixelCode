@@ -42,6 +42,7 @@
 #include "EngineUtils.h"
 #include "BossStoneChangeDecal.h"
 #include "FractureBoss.h"
+#include "MyMapCollsionActor.h"
 #include "EXPActor.h"
 #include "Components/CapsuleComponent.h"
 #include "PortalCollision.h"   //temporary
@@ -1900,14 +1901,19 @@ void ABossApernia::MulticastRPC_DropBossExp_Implementation()
         }
     }
 
-    if (exitBackGate)
+    if (endPortal)
     {
         FVector dieLocation = GetActorLocation();
         FVector dieBackVector = -GetActorForwardVector();
 
-        portalGate = GetWorld()->SpawnActor<APortalCollision>(exitBackGate, dieBackVector * 100, GetActorRotation());
+        // 벡터에 거리를 곱하여 새로운 위치를 계산
+        FVector spawnLocation = dieLocation + (dieBackVector * 10.0f);
+
+        myMapCollsionActor = GetWorld()->SpawnActor<AMyMapCollsionActor>(endPortal, spawnLocation, GetActorRotation());
 
     }
+
+    
 }
 
 void ABossApernia::SpawnFractureBoss()
