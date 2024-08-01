@@ -74,6 +74,12 @@ public:
 
     float lerpDuration = 3.0f; 
 
+    bool OnceMove = false;
+
+    bool onceResetBossCurrentTime = false;
+
+    bool onceSetFirst2PhaseLocation = false;
+
     UPROPERTY(EditAnywhere, Category = "MySettings")
     class TSubclassOf<class ADemonSword> demonSwordFactory;
 

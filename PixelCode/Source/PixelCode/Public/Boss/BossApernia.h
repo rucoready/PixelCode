@@ -87,7 +87,7 @@ public:
 	TSubclassOf<class ABossSword> bossSwordclass;
 
 	//float bossMaxHP = 43000.0f;
-	float bossMaxHP = 43000.0f;
+	float bossMaxHP = 100.0f;
 	float bossCurrentHP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
@@ -806,13 +806,13 @@ public:
 	void ServerRPC_SpawnDecalSword4();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastRPC_SpawnDecalSword4();
+	void MulticastRPC_SpawnDecalSword4(const TArray<FVector>& decalLocations4);
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_SpawnDecalSword5();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastRPC_SpawnDecalSword5();
+	void MulticastRPC_SpawnDecalSword5(const TArray<FVector>& decalLocations);
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_SpawnDecalSword6();
@@ -830,7 +830,8 @@ public:
 	void ServerRPC_SpawnDemonSword2Phase();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastRPC_SpawnDemonSword2Phase();
+	void MulticastRPC_SpawnDemonSword2Phase(const TArray<FTransform>& SpawnTransformsD);
+
 
 	void SpawnSwordDelay();
 
@@ -955,5 +956,40 @@ public:
 
 	
 	class AGeometryCollectionActor* fractureBossMesh2;
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_Boss2phaseGoUp();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_Boss2phaseGoUp();
+
+	bool onceShield = false;
+
+	float lerpDuration = 3.0f;
+
+	bool bIsMovingUp = false;
+
+	bool bHasReachedTarget = false;
+
+	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	FVector targetLocationPhase2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float movementDurationPhase2;
+
+	FVector startLocationPhase2;
+	FVector endLocationPhase2;
+	bool bIsMovingPhase2;
+	float moveDurationPhase2;
+	float elapsedTimePhase2;
+
+	FTimerHandle movementTimerHandle;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class APortalCollision> exitBackGate;
+
+	class APortalCollision* portalGate;
 	
 };

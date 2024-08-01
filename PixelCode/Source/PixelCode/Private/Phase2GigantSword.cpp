@@ -11,6 +11,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Classes/GameFramework/PlayerController.h>
 #include "Player/PlayerOrganism.h"
 
+
 // Sets default values
 APhase2GigantSword::APhase2GigantSword()
 {
@@ -44,18 +45,7 @@ void APhase2GigantSword::Tick(float DeltaTime)
 
     currentTime += DeltaTime;
 
-    float MoveStartTime = 0.0f;
-    float MoveEndTime = 3.0f;
-
-    if (currentTime > MoveStartTime && currentTime < MoveEndTime)
-    {
-        FVector StartLocation = GetActorLocation();
-        FVector TargetLocation = StartLocation + FVector(0.0f, 0.0f, -85.0f);
-        float LerpAlpha = FMath::Clamp((currentTime - MoveStartTime) / (MoveEndTime - MoveStartTime), 0.0f, 1.0f);
-        FVector NewLocation = FMath::Lerp(StartLocation, TargetLocation, LerpAlpha);
-        SetActorLocation(NewLocation);
-    }
-
+    
     
 	
 }

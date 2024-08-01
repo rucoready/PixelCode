@@ -62,25 +62,22 @@ void UTask_Boss2PhaseGoUp::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
         boss->ServerRPC_RoarParticle();
         onceParticleSpawn = true;
     }
-    if (currentTime > 4.5f)
+    if (currentTime > 4.5f &&!onceSetFirst2PhaseLocation)
     {
-        boss->SetActorLocation(FVector(2470.000000, 4420.000000, 267.964356));
+        boss->SetActorLocation(FVector(2470, 4420, 261));
+        onceSetFirst2PhaseLocation = true;
     }
     if (currentTime > 5.5f)
     {
-        float LerpAlpha = FMath::Min(1.0f, (currentTime - 5.5f) / lerpDuration); 
-
-        FVector CurrentLocation = boss->GetActorLocation();
-        FVector TargetLocation = FVector(CurrentLocation.X, CurrentLocation.Y, CurrentLocation.Z + 1500.0f);
-
-        FVector NewLocation = FMath::Lerp(CurrentLocation, TargetLocation, LerpAlpha);
-
-        boss->SetActorLocation(NewLocation);
-        if (!onceShield)
+        if (!onceResetBossCurrentTime)
         {
-            boss->phaseShieldComponent->SetVisibility(true);
-            boss->bossSwordComp->SetVisibility(false);
+            boss->currentTime = 0.0f;
+            onceResetBossCurrentTime = true;
         }
+        
+        boss->ServerRPC_Boss2phaseGoUp();
+
+        
         
     }
     
@@ -204,7 +201,7 @@ void UTask_Boss2PhaseGoUp::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
         boss->ServerRPC_lastSpawnDecalSword1();
     }
 
-    if (currentTime > 60.0f && !OnceSpawnStatue)
+    if (currentTime > 20.0f && !OnceSpawnStatue)
     {
         boss->ServerRPC_SpawnLazorDragonStatue();
         OnceSpawnStatue = true;

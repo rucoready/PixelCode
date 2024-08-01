@@ -44,6 +44,7 @@
 #include "FractureBoss.h"
 #include "EXPActor.h"
 #include "Components/CapsuleComponent.h"
+#include "PortalCollision.h"   //temporary
 #include "GeometryCollection/GeometryCollectionActor.h"
 #include "Components/WidgetComponent.h"
 
@@ -1767,14 +1768,15 @@ void ABossApernia::SpawnGigantSword()
 {
     if (gigantSword)
     {
-        AActor* spawnedSword = GetWorld()->SpawnActor<AActor>(gigantSword, FVector(2490,4830,9400), FRotator::ZeroRotator);
-
+        //AActor* spawnedSword = GetWorld()->SpawnActor<AActor>(gigantSword, FVector(2490,4830,9400), FRotator::ZeroRotator);
+        ServerRPC_MoveGigantSword();
     }
 }
 
 void ABossApernia::MoveGigantSword()
 {
     if (gigantSword)
+    UE_LOG(LogTemp, Warning, TEXT("UI88"));
     {
         FVector StartLocation(2490, 4830, 8400);
         FVector TargetLocation(2490, 4829, 3919);
@@ -1788,7 +1790,7 @@ void ABossApernia::MoveGigantSword()
             float Duration = 4.0f; // 이동을 완료하는 데 걸리는 시간
 
             FTimerHandle Handle;
-            GetWorld()->GetTimerManager().SetTimer(Handle, [&]()
+            GetWorld()->GetTimerManager().SetTimer(Handle, [this, StartTime, Duration, StartLocation, TargetLocation, spawnedSword, &Handle]()
                 {
                     float CurrentTime = GetWorld()->GetTimeSeconds();
                     float Alpha = FMath::Clamp((CurrentTime - StartTime) / Duration, 0.0f, 1.0f);
@@ -1802,6 +1804,7 @@ void ABossApernia::MoveGigantSword()
                     // Lerping이 완료되면 타이머 해제
                     if (Alpha >= 1.0f)
                     {
+                        spawnedSword->SetActorLocation(TargetLocation); // 명시적으로 목표 위치 설정
                         GetWorld()->GetTimerManager().ClearTimer(Handle);
                     }
                 }, 0.01f, true);
@@ -1895,6 +1898,15 @@ void ABossApernia::MulticastRPC_DropBossExp_Implementation()
 
             AActor* spawnOrb = GetWorld()->SpawnActor<AEXPActor>(expOrb, spawnLocation, spawnRotation);
         }
+    }
+
+    if (exitBackGate)
+    {
+        FVector dieLocation = GetActorLocation();
+        FVector dieBackVector = -GetActorForwardVector();
+
+        portalGate = GetWorld()->SpawnActor<APortalCollision>(exitBackGate, dieBackVector * 100, GetActorRotation());
+
     }
 }
 
@@ -2040,6 +2052,8 @@ void ABossApernia::DestroyStoneDecal()
 
 
 
+
+
 //2phase//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ABossApernia::ServerRPC_SpawnDecalSword3_Implementation()
 {
@@ -2052,7 +2066,7 @@ void ABossApernia::MulticastRPC_SpawnDecalSword3_Implementation()
     {
         FVector center(2490.0f, 4920.0f, 70.0f); // 중앙점
         float radius = 5000.0f; // 반지름 설정
-        int numDecals = 22; // 데칼 개수
+        int numDecals = 15; // 데칼 개수
 
         for (int i = 0; i < numDecals; ++i)
         {
@@ -2068,28 +2082,35 @@ void ABossApernia::MulticastRPC_SpawnDecalSword3_Implementation()
 
 void ABossApernia::ServerRPC_SpawnDecalSword4_Implementation()
 {
-    MulticastRPC_SpawnDecalSword4();
+    // 랜덤 위치 계산
+    TArray<FVector> decalLocations;
+    FVector center(2490.0f, 4920.0f, 70.0f); // 중앙점
+    float minRadius = 1000.0f; // 최소 반지름
+    float maxRadius = 5500.0f; // 최대 반지름
+    int numDecals = 13; // 데칼 개수
+
+    for (int i = 0; i < numDecals; ++i)
+    {
+        float angle = (2 * PI / numDecals) * i; // 각도 계산
+        float radius = FMath::FRandRange(minRadius, maxRadius); // 랜덤 반지름 설정
+        float x = center.X + radius * FMath::Cos(angle);
+        float y = center.Y + radius * FMath::Sin(angle);
+        FVector spawnLocation(x, y, center.Z); // 새로운 위치 계산
+        decalLocations.Add(spawnLocation); // 위치 저장
+    }
+
+    // 클라이언트로 위치 전송
+    MulticastRPC_SpawnDecalSword4(decalLocations);
 }
 
-void ABossApernia::MulticastRPC_SpawnDecalSword4_Implementation()
+void ABossApernia::MulticastRPC_SpawnDecalSword4_Implementation(const TArray<FVector>& decalLocations4)
 {
     if (decalCircle)
     {
-        FVector center(2490.0f, 4920.0f, 70.0f); // 중앙점
-        float minRadius = 1000.0f; // 최소 반지름
-        float maxRadius = 5500.0f; // 최대 반지름
-        int numDecals = 25; // 데칼 개수
-
-        for (int i = 0; i < numDecals; ++i)
+        for (const FVector& location : decalLocations4)
         {
-            float angle = (2 * PI / numDecals) * i; // 각도 계산
-            float radius = FMath::FRandRange(minRadius, maxRadius); // 랜덤 반지름 설정
-            float x = center.X + radius * FMath::Cos(angle);
-            float y = center.Y + radius * FMath::Sin(angle);
-            FVector spawnLocation(x, y, center.Z); // 새로운 위치 계산
-
             FTransform spawnTransform;
-            spawnTransform.SetLocation(spawnLocation);
+            spawnTransform.SetLocation(location);
             spawnTransform.SetRotation(FQuat(FRotator::ZeroRotator));
             float randomScale = FMath::FRandRange(1.5f, 3.0f); // 랜덤 스케일 설정
             spawnTransform.SetScale3D(FVector(randomScale)); // 스케일 적용
@@ -2101,28 +2122,35 @@ void ABossApernia::MulticastRPC_SpawnDecalSword4_Implementation()
 
 void ABossApernia::ServerRPC_SpawnDecalSword5_Implementation()
 {
-    MulticastRPC_SpawnDecalSword5();
+    // 랜덤 위치 계산
+    TArray<FVector> decalLocations;
+    FVector center(2490.0f, 4920.0f, 70.0f); // 중앙점
+    float minRadius = 2500.0f; // 최소 반지름
+    float maxRadius = 4000.0f; // 최대 반지름
+    int numDecals = 20; // 데칼 개수
+
+    for (int i = 0; i < numDecals; ++i)
+    {
+        float angle = (2 * PI / numDecals) * i; // 각도 계산
+        float radius = FMath::FRandRange(minRadius, maxRadius); // 랜덤 반지름 설정
+        float x = center.X + radius * FMath::Cos(angle);
+        float y = center.Y + radius * FMath::Sin(angle);
+        FVector spawnLocation(x, y, center.Z); // 새로운 위치 계산
+        decalLocations.Add(spawnLocation); // 위치 저장
+    }
+
+    // 클라이언트로 위치 전송
+    MulticastRPC_SpawnDecalSword5(decalLocations);
 }
 
-void ABossApernia::MulticastRPC_SpawnDecalSword5_Implementation()
+void ABossApernia::MulticastRPC_SpawnDecalSword5_Implementation(const TArray<FVector>& decalLocations)
 {
     if (decalCircle)
     {
-        FVector center(2490.0f, 4920.0f, 70.0f); // 중앙점
-        float minRadius = 2500.0f; // 최소 반지름
-        float maxRadius = 4000.0f; // 최대 반지름
-        int numDecals = 30; // 데칼 개수
-
-        for (int i = 0; i < numDecals; ++i)
+        for (const FVector& location : decalLocations)
         {
-            float angle = (2 * PI / numDecals) * i; // 각도 계산
-            float radius = FMath::FRandRange(minRadius, maxRadius); // 랜덤 반지름 설정
-            float x = center.X + radius * FMath::Cos(angle);
-            float y = center.Y + radius * FMath::Sin(angle);
-            FVector spawnLocation(x, y, center.Z); // 새로운 위치 계산
-
             FTransform spawnTransform;
-            spawnTransform.SetLocation(spawnLocation);
+            spawnTransform.SetLocation(location);
             spawnTransform.SetRotation(FQuat(FRotator::ZeroRotator));
             float randomScale = FMath::FRandRange(1.5f, 3.0f); // 랜덤 스케일 설정
             spawnTransform.SetScale3D(FVector(randomScale)); // 스케일 적용
@@ -2134,22 +2162,14 @@ void ABossApernia::MulticastRPC_SpawnDecalSword5_Implementation()
 
 void ABossApernia::ServerRPC_SpawnDemonSword2Phase_Implementation()
 {
-    MulticastRPC_SpawnDemonSword2Phase();
-}
-
-void ABossApernia::MulticastRPC_SpawnDemonSword2Phase_Implementation()
-{
     if (demonSwordV2)
     {
         // 변수 초기화
-        CurrentDecalIndex = 0;
+        
         FVector center(2490.0f, 4920.0f, 70.0f); // 중앙점
         float minRadius = 2500.0f; // 최소 반지름
         float maxRadius = 4000.0f; // 최대 반지름
-        int numDecals = 20; // 데칼 개수
-
-        // 각 데칼의 스폰 위치와 변환 정보를 저장할 배열을 생성
-
+        int numDecals = 13; // 데칼 개수
 
         for (int i = 0; i < numDecals; ++i)
         {
@@ -2169,12 +2189,22 @@ void ABossApernia::MulticastRPC_SpawnDemonSword2Phase_Implementation()
             SpawnTransforms.Add(spawnTransform);
         }
 
-        // 타이머 설정
-        GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ABossApernia::SpawnSwordDelay, 0.5f, true);
+        // 스폰 정보 배열을 클라이언트로 전송
+        MulticastRPC_SpawnDemonSword2Phase(SpawnTransforms);
+    }
+}
 
+void ABossApernia::MulticastRPC_SpawnDemonSword2Phase_Implementation(const TArray<FTransform>& SpawnTransformsD)
+{
+    if (demonSwordV2)
+    {
         // 스폰 정보 배열을 멤버 변수로 저장
         this->SpawnTransforms = SpawnTransforms;
+
+        // 타이머 설정
+        GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ABossApernia::SpawnSwordDelay, 0.5f, true);
     }
+
 }
 void ABossApernia::ServerRPC_lastSpawnDecalSword1_Implementation()
 {
@@ -2187,7 +2217,7 @@ void ABossApernia::MulticastRPC_lastSpawnDecalSword1_Implementation()
     {
         FVector center(2490.0f, 4920.0f, 70.0f);
         float radius = 350.0f; // 오각형의 반지름
-        int numVertices = 30;
+        int numVertices = 22;
         int decalsPerVertex = 8;
         float distanceBetweenDecals = 900.0f; // 각 데칼 사이의 거리
 
@@ -2232,7 +2262,7 @@ void ABossApernia::MulticastRPC_SpawnDecalSword6_Implementation()
     // Central point
     FVector center(2490.0f, 4920.0f, 70.0f);
     float radius = 6000.0f;
-    int numDecals = 37;
+    int numDecals = 21;
 
     for (int i = 0; i < numDecals; ++i)
     {
@@ -2341,7 +2371,7 @@ void ABossApernia::MulticastRPC_SpawnDecalSword2_Implementation()
     {
         FVector center(2490.0f, 4920.0f, 70.0f); // 중앙점
         float radius = 1500.0f; // 반지름 설정
-        int numDecals = 20; // 데칼 개수
+        int numDecals = 15; // 데칼 개수
 
         for (int i = 0; i < numDecals; ++i)
         {
@@ -2366,7 +2396,7 @@ void ABossApernia::MulticastRPC_SpawnDecalSword_Implementation()
     {
         FVector center(2490.0f, 4920.0f, 70.0f); // 중앙점
         float radius = 2000.0f; // 반지름 설정
-        int numDecals = 20; // 데칼 개수
+        int numDecals = 15; // 데칼 개수
 
         for (int i = 0; i < numDecals; ++i)
         {
@@ -2378,4 +2408,38 @@ void ABossApernia::MulticastRPC_SpawnDecalSword_Implementation()
             GetWorld()->SpawnActor<AActor>(decalCircle, spawnLocation, FRotator::ZeroRotator); // 데칼 스폰
         }
     }
+}
+
+void ABossApernia::ServerRPC_Boss2phaseGoUp_Implementation()
+{
+    MulticastRPC_Boss2phaseGoUp();
+}
+
+void ABossApernia::MulticastRPC_Boss2phaseGoUp_Implementation()
+{
+    
+    float lerpDuration2 = 4.0f; 
+    float currentTime2 = 6.0f; 
+
+
+    float LerpAlpha = FMath::Min(1.0f, (currentTime2 - 5.5f) / lerpDuration2);
+
+   
+    float AdjustedLerpAlpha = FMath::Pow(LerpAlpha, 0.9f);
+
+   
+    FVector CurrentLocation = GetActorLocation();
+    FVector TargetLocation = FVector(2470.0f, 4420.0f, 2767.964355f); 
+
+    FVector NewLocation = FMath::Lerp(CurrentLocation, TargetLocation, AdjustedLerpAlpha);
+
+
+    SetActorLocation(NewLocation);
+
+    if (!onceShield)
+    {
+        phaseShieldComponent->SetVisibility(true);
+        bossSwordComp->SetVisibility(false);
+    }
+    
 }
