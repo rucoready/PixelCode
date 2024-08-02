@@ -306,10 +306,10 @@ void ABuildingVisual::DestroyInstance(const FHitResult& HitResult)
 				InteractingBuilding->DestroyInstance(BuildingSocketData, HitResult);
 			}
 
-			if(UStaticMeshComponent* statickMesh = Cast<UStaticMeshComponent>(HitResult.GetActor()))
+			/*if(UStaticMeshComponent* statickMesh = Cast<UStaticMeshComponent>(HitResult.GetActor()))
 			{
 				statickMesh->DestroyComponent();
-			}
+			}*/
 			
 // 			auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 // 
