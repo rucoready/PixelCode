@@ -27,7 +27,7 @@ class PIXELCODE_API UMyMapLodingWidget : public UUserWidget
 	FTimerHandle timerHandle_TimerMymapProgressLoading;
 	float progressed;
 	float elapsedTimes;
-	const float totalDurations = 7.0f; // √— 7√ 
+	const float totalDurations = 4.0f; // √— 7√ 
 
 	void UpdateMyMapProgressBar();	
 

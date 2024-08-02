@@ -38,7 +38,7 @@ public:
 	UPROPERTY(EditAnywhere, Category="MySettings")
 	class UNiagaraComponent* fireComponent;
 
-	void TakeDamage(float damage);
+	void TakeDamageD(float damage);
 
 	void OnMyClickBlackRoom();
 
