@@ -21,7 +21,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, Category="MySettings")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category="MySettings")
 	class UBoxComponent* boxCollision;
 
 	class AMyGameModeBase* MyGameMode;
