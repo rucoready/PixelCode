@@ -206,6 +206,20 @@ void APixelCodeCharacter::BeginPlay()
 		}
 	}
 
+// 	UPCodeSaveGame* castLoad = Cast<UPCodeSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("BuildingDataStorage"), 0));
+// 
+// 	if (castLoad)
+// 	{
+// 		FBuildingActorData BuildingActorData;
+// 		BuildingActorData.ABuilding = AbuildingClass->GetClass();
+// 		BuildingActorData.BuildingLocation = AbuildingClass->GetActorLocation();
+// 		BuildingActorData.BuildingRotation = AbuildingClass->GetActorRotation();
+// 
+// 		castLoad->SavedActors.Add(BuildingActorData);
+// 		UGameplayStatics::SaveGameToSlot(castLoad, TEXT("BuildingDataStorage"), 0);
+// 	}
+
+	
 
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
@@ -1264,8 +1278,6 @@ void APixelCodeCharacter::MultiRPC_RemoveBush_Implementation(const FHitResult& H
 	}
 }
 	
-
-
 // 서휘-----------------------------------------------------------------------------------------------------끝
 
 void APixelCodeCharacter::ServerRPC_Interact_Implementation()
