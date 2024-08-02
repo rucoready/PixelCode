@@ -141,10 +141,10 @@ FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent*
 		InstanceTransform = SocketTransform * InstanceTransform;
 
  		//DrawDebugString(GetWorld(), InstanceTransform.GetLocation(), SocketName.ToString(), nullptr, FColor::White, 0.01f);
- 		DrawDebugSphere(GetWorld(), InstanceTransform.GetLocation(), 8.0f, 10, FColor::Red);
+ 		//DrawDebugSphere(GetWorld(), InstanceTransform.GetLocation(), 8.0f, 10, FColor::Red);
  		FTransform Temp;
  		InstancedComponent->GetInstanceTransform(InstanceIndex, Temp, true);
- 		DrawDebugSphere(GetWorld(), Temp.GetLocation(), 8.0f, 15, FColor::Blue);
+ 		//DrawDebugSphere(GetWorld(), Temp.GetLocation(), 8.0f, 15, FColor::Blue);
 		
 		return InstanceTransform;
 	}	
@@ -153,7 +153,7 @@ FTransform ABuilding::GetInstancedSocketTransform(UInstancedStaticMeshComponent*
 
 int32 ABuilding::GetHitIndex(const FHitResult& HitResult)
 {
-	DrawDebugSphere(GetWorld(), HitResult.Location, 10.0f, 10, FColor::Red);
+	//DrawDebugSphere(GetWorld(), HitResult.Location, 10.0f, 10, FColor::Red);
 	return HitResult.Item;
 }
 
