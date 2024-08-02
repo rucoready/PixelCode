@@ -364,11 +364,7 @@ ABossApernia::ABossApernia()
     }
 
     ////////////////Camera////////////////////////
-    static ConstructorHelpers::FClassFinder<UCameraShakeBase> cameraObj1(TEXT("/Script/Engine.Blueprint'/Game/KMS_AI/Boss_Alpernia/CameraShake/BP_CameraShakeStomp.BP_CameraShakeStomp'_C"));
-    if (cameraObj1.Succeeded())
-    {
-        cameraShakeOBJ = cameraObj1.Class;
-    }
+   
 
 
     //Material

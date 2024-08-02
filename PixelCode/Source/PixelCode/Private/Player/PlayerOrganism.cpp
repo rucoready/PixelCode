@@ -49,7 +49,7 @@ void APlayerOrganism::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("characterName : %s"), *characterName));
+	//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("characterName : %s"), *characterName));
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
@@ -289,11 +289,11 @@ void APlayerOrganism::GetHit(const FVector& ImpactPoint, bool bFallDown)
 					UE_LOG(LogTemp, Warning, TEXT("Back"));
 					SetActorRotation(GetActorRotation() - FRotator(0, -180, 0));
 				}
-				if (GEngine)
-				{
-					// 화면 디버그 기능
-					//GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta));
-				}
+				//if (GEngine)
+				//{
+				//	// 화면 디버그 기능
+				//	//GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta));
+				//}
 				
 				AnimInsatnce->Montage_Play(hitFalldownReaction);
 				return;
@@ -326,11 +326,11 @@ void APlayerOrganism::GetHit(const FVector& ImpactPoint, bool bFallDown)
 
 		PlayHitReactMontage(Section);
 		}
-	if (GEngine)
-	{
-		// 화면 디버그 기능
-		//GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta));
-	}
+	//if (GEngine)
+	//{
+	//	// 화면 디버그 기능
+	//	//GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta));
+	//}
 	//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.0f, 5.f, FColor::Red, 5.f);
 	//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
 
