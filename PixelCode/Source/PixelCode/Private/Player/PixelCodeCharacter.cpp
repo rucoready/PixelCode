@@ -446,6 +446,10 @@ void APixelCodeCharacter::BeginInteract()
 {
 	if (!bIsJump)
 	{
+		SeverRPC_RemoveStone(PerformLineTrace(1000));
+		//SeverRPC_RemoveMetal(PerformLineTrace(1000));
+		SeverRPC_RemoveBush(PerformLineTrace(1000));
+
 		// 작용 가능한 상태에 아무것도 변경안되었는지 확인
 		PerformInteractionCheck();
 
@@ -1257,7 +1261,7 @@ void APixelCodeCharacter::MultiRPC_RemoveRock_Implementation(const FHitResult& H
 		
 		if (RockComp && RockComp->ComponentTags.Contains(TEXT("Rock")))
 		{
-			//UE_LOG(LogTemp, Warning, TEXT("Remove Rock"));
+			UE_LOG(LogTemp, Warning, TEXT("Remove Rock"));
 
 			RockComp->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupRock, HitResult.ImpactPoint, GetActorRotation());
@@ -2882,7 +2886,7 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	// 서휘-----------------------------------------------------------------------------------------------------
 	if (bInBuildMode && Builder)
 	{
-		Builder->SetBuildPosition(PerformLineTrace(2000.0f, true));
+		Builder->SetBuildPosition(PerformLineTrace(2000.0f));
 	}
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
@@ -2894,7 +2898,8 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 
 	if (bMine)
 	{
-		SeverRPC_RemoveRock(PerformLineTrace(1000, true));
+		SeverRPC_RemoveRock(PerformLineTrace(1000));
+		SeverRPC_RemoveMetal(PerformLineTrace(1000));
 		bMine = false;
 	}
 

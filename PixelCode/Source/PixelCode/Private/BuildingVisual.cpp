@@ -105,7 +105,7 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
  				ReturnMeshToSelected(); // 여기서 bReturnMesh = true
  			}
  			
- 			SocketData = InteractingBuilding->GetHitSocketTransform(HitResult, BuildingTypes[BuildingTypeIndex].FilterCharacter, 70.0f); // 소켓 감지 범위
+ 			SocketData = InteractingBuilding->GetHitSocketTransform(HitResult, BuildingTypes[BuildingTypeIndex].FilterCharacter, 100.0f); // 소켓 감지 범위
  
  			if (!SocketData.SocketTransform.Equals(FTransform()))
  			{
