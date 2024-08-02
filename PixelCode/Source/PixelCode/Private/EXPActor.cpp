@@ -20,6 +20,7 @@
 #include "Components/SphereComponent.h"
 #include "PCodePlayerController.h"
 #include "Player/pixelPlayerState.h"
+#include "Sound/SoundBase.h" 
 #include <../../../../../../../Source/Runtime/Engine/Public/Net/UnrealNetwork.h>
 
 // Sets default values
@@ -88,20 +89,7 @@ void AEXPActor::Tick(float DeltaTime)
 
 void AEXPActor::OnBeginOverlapExpOrb(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	/*if (OtherActor->GetName().Contains("Player"))
-	{
-		APixelCodeCharacter* Player = Cast<APixelCodeCharacter>(OtherActor);
-
-			APCodePlayerController* Pc = Cast<APCodePlayerController>(Player->GetController());
-			if (Pc->IsLocalController())
-			{
-				ApixelPlayerState* PlayerState = Cast<ApixelPlayerState>(Pc->pixelPlayerState);
-				PlayerState->SetaddUpEXP(50.0f);
-			}
-
-
-		Destroy();
-	}*/
+	
 
     if (OtherActor->GetName().Contains("Player"))
     {
@@ -118,6 +106,41 @@ void AEXPActor::OnBeginOverlapExpOrb(UPrimitiveComponent* OverlappedComponent, A
                     if (PlayerState)
                     {
                         PlayerState->SetaddUpEXP(50.0f);
+
+                        int32 expSoundValue = FMath::RandRange(1, 7);
+                        {
+                            if (expSoundValue == 1)
+                            {
+                                UGameplayStatics::PlaySoundAtLocation(GetWorld(), expSound1, GetActorLocation());
+                            }
+                            else if (expSoundValue == 2)
+                            {
+                                UGameplayStatics::PlaySoundAtLocation(GetWorld(), expSound2, GetActorLocation());
+                            }
+                            else if (expSoundValue == 3)
+                            {
+                                UGameplayStatics::PlaySoundAtLocation(GetWorld(), expSound3, GetActorLocation());
+                            }
+                            else if (expSoundValue == 4)
+                            {
+                                UGameplayStatics::PlaySoundAtLocation(GetWorld(), expSound4, GetActorLocation());
+                            }
+                            else if (expSoundValue == 5)
+                            {
+                                UGameplayStatics::PlaySoundAtLocation(GetWorld(), expSound5, GetActorLocation());
+                            }
+                            else if (expSoundValue == 6)
+                            {
+                                UGameplayStatics::PlaySoundAtLocation(GetWorld(), expSound6, GetActorLocation());
+                            }
+                            else
+                            {
+                                UGameplayStatics::PlaySoundAtLocation(GetWorld(), expSound7, GetActorLocation());
+                            }
+
+
+                        }
+
                     }
                 }
                 else

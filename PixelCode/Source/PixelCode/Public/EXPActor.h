@@ -34,6 +34,27 @@ public:
 
 	float RunningTime;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* expSound1;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* expSound2;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* expSound3;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* expSound4;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* expSound5;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* expSound6;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* expSound7;
+
 
 	UFUNCTION()
 	void OnBeginOverlapExpOrb(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

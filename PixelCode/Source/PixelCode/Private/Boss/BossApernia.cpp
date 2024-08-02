@@ -1795,7 +1795,7 @@ void ABossApernia::MoveGigantSword()
 
         AActor* spawnedSword = GetWorld()->SpawnActor<AActor>(gigantSword, StartLocation, SpawnRotation);
 
-        if (spawnedSword)
+        if (spawnedSword !=nullptr)
         {
             float StartTime = GetWorld()->GetTimeSeconds();
             float Duration = 4.0f; // 이동을 완료하는 데 걸리는 시간
