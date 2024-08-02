@@ -1360,6 +1360,8 @@ void APixelCodeCharacter::DieFunction()
 			pc->SetShowMouseCursor(true);
 			DisableInput(pc);
 			pc->PlayerDieWidget();
+			pc->HandleCharacterDeath(this);
+
 		}
 	}
 
@@ -1375,13 +1377,13 @@ void APixelCodeCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	//Pc = Cast<APCodePlayerController>(NewController);
-	//Pc->StatComponent = this->stateComp;
+	////Pc->StatComponent = this->stateComp;
 
-	
-	//Pc->bPossess = false;
+	//
+	////Pc->bPossess = false;
 
-	FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
-	FString hasController = Controller ? TEXT("HasCont") : TEXT("NoCont");
+	//FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
+	//FString hasController = Controller ? TEXT("HasCont") : TEXT("NoCont");
 
 	//UE_LOG(LogTemp, Warning, TEXT("[%s] %s - PossessedBy"), *netMode, *hasController);
 	

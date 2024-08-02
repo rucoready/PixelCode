@@ -21,6 +21,9 @@
 #include "MyMapLodingWidget.h"
 #include <../../../../../../../Source/Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
 #include "Player/StateComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Player/Pooling/PlayerObjectPoolManager.h"
+#include <../../../../../../../Source/Runtime/Engine/Public/EngineUtils.h>
 
 
 void APCodePlayerController::BeginPlay()
@@ -41,22 +44,31 @@ void APCodePlayerController::BeginPlay()
 	ClientRPC_PlayerStartWidget();
 	
 
-
-
 	//PlayerBeginWidget();
 
-	
-	
-	
 
 	if (ValidatePlayerState())
 	{
 		PlayerWidgetUpdate();
 	}
 
-	// 플레이어 스테이트가 유효한지 검사하고 유효한 경우에만 Setup_PC 함수를 호출
-	
+		// 플레이어 스테이트가 유효한지 검사하고 유효한 경우에만 Setup_PC 함수를 호출
+		 // ObjectPoolManager 초기화
+		// 예시: World에서 AObjectPoolManager 찾기
+		for (TActorIterator<APlayerObjectPoolManager> It(GetWorld()); It; ++It)
+		{
+			ObjectPoolManager = *It;
+			break; // 첫 번째 찾은 오브젝트 풀 매니저 사용
+		}
+
+		if (!ObjectPoolManager)
+		{
+			// 오브젝트 풀 매니저가 없는 경우 에러 처리
+			UE_LOG(LogTemp, Error, TEXT("ObjectPoolManager를 찾을 수 없습니다!"));
+		}
 }
+	
+
 
 void APCodePlayerController::FullExp()
 {
@@ -93,7 +105,6 @@ bool APCodePlayerController::ValidatePlayerState()
 		return false;
 	}
 }
-
 
 
 void APCodePlayerController::PlayerWidgetUpdate()
@@ -290,43 +301,80 @@ void APCodePlayerController::OpenUI(bool bOpen)
 	SetShowMouseCursor(bOpen);
 }
 
+void APCodePlayerController::SpawnCharacterAtLocation(const FVector& Location)
+{
+	if (ObjectPoolManager)
+	{
+		// 오브젝트 풀에서 사용 가능한 캐릭터 가져오기
+		APixelCodeCharacter* PooledCharacter = ObjectPoolManager->GetPooledCharacter();
+		if (PooledCharacter)
+		{
+			PooledCharacter->SetActorLocation(Location); // 위치 설정
+			PooledCharacter->SetActorHiddenInGame(false); // 게임에서 표시
+			PooledCharacter->SetActorEnableCollision(true); // 충돌 활성화
+			PooledCharacter->GetCharacterMovement()->Activate(); // 움직임 활성화
+			Possess(PooledCharacter); // 컨트롤러가 캐릭터를 조종
+			UE_LOG(LogTemp, Warning, TEXT("Possess!"));
+		}
+	}
+}
+
+void APCodePlayerController::HandleCharacterDeath(APixelCodeCharacter* APlayerchar)
+{
+	if (ObjectPoolManager)
+	{
+		UnPossess(); // 조종 중지
+
+		// 캐릭터 사망 애니메이션 처리
+		// ...
+
+		// 일정 시간 후 캐릭터 숨기기
+		GetWorld()->GetTimerManager().SetTimerForNextTick([this, APlayerchar]()
+			{
+				ObjectPoolManager->ReturnPooledCharacter(APlayerchar); // 캐릭터 반환
+			});
+	}
+	SpawnCharacterAtLocation(MainPlayer->GetActorLocation());
+}
+
 
 void APCodePlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	// PlayerName  Replication 
-
-
+	
+	// 오브젝트 풀 관리자 객체를 네트워크로 복제합니다.
+	//DOREPLIFETIME(APCodePlayerController, ObjectPoolManager);
 
 }
 
 
-void APCodePlayerController::ServerRPC_RespawnPlayer_Implementation()
-{
-
-	auto* oldPawn = GetPawn();
-
-	UE_LOG(LogTemp, Warning, TEXT("Possess"));
-
-	if (IsLocalController())
-	{
-		NormallyWidget->RemoveFromParent();
-		statWidget->RemoveFromParent();
-	}
-	
-	UnPossess();
-
-	// 시작
-	
-	if (oldPawn)
-	{
-		oldPawn->Destroy();
-	}
-
-
-	GM->RestartPlayer(this);
-}
+//void APCodePlayerController::ServerRPC_RespawnPlayer_Implementation()
+//{
+//
+//	auto* oldPawn = GetPawn();
+//
+//	UE_LOG(LogTemp, Warning, TEXT("Possess"));
+//
+//	if (IsLocalController())
+//	{
+//		NormallyWidget->RemoveFromParent();
+//		statWidget->RemoveFromParent();
+//	}
+//	
+//	UnPossess();
+//
+//	// 시작
+//	
+//	if (oldPawn)
+//	{
+//		oldPawn->Destroy();
+//	}
+//
+//
+//	GM->RestartPlayer(this);
+//}
 
 void APCodePlayerController::ServerRPC_CreateWidgetRobbyWidget_Implementation()
 {

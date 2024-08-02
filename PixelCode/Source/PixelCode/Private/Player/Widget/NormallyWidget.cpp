@@ -264,7 +264,7 @@ void UNormallyWidget::OnMyButtonRespawn()
 		// 플레이어컨트롤러를 통해 재시작하고싶다.
 		pc->SetInputMode(FInputModeGameOnly());
 		pc->SetShowMouseCursor(false);
-		pc->ServerRPC_RespawnPlayer();
+		pc->SpawnCharacterAtLocation(Player->GetActorLocation());
 		//pc->ServerRPC_ChangeSpectator();
 	}
 }

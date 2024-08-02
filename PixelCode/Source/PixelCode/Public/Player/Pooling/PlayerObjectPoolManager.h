@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "PlayerObjectPoolManager.generated.h"
 
+class APixelCodeCharacter;
+
 UCLASS()
 class PIXELCODE_API APlayerObjectPoolManager : public AActor
 {
@@ -22,5 +24,20 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pool")
+	TSubclassOf<APixelCodeCharacter> CharacterClass; // 풀에 사용할 캐릭터 클래스
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pool")
+	TArray<APixelCodeCharacter*> Pool; // 캐릭터 풀
+
+
+	APixelCodeCharacter* GetPooledCharacter(); // 캐릭터 가져오기
+	void ReturnPooledCharacter(APixelCodeCharacter* PlayerChar); // 캐릭터 반환하기
+
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Pool")
+	int32 MaxPoolSize; // 풀의 최대 크기
 
 };

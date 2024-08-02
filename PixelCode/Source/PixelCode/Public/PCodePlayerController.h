@@ -13,6 +13,7 @@ class UPlayerStatWidget;
 class ApixelPlayerState;
 class APixelCodeCharacter;
 class UStateComponent;
+class APlayerObjectPoolManager;
 
 /**
  * 
@@ -35,7 +36,14 @@ public:
 	void OpenUI(bool bOpen); 
 
 
+	void SpawnCharacterAtLocation(const FVector& Location); // 위치에 캐릭터 스폰
+	void HandleCharacterDeath(APixelCodeCharacter* Character); // 캐릭터 사망 처리
 
+
+	APlayerObjectPoolManager* ObjectPoolManager; // 오브젝트 풀 관리자
+
+
+public:
 	UPROPERTY()
 	AMyGameModeBase* GM;
 
@@ -90,8 +98,8 @@ public:
 
 	bool bPlayerState = false;
 
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_RespawnPlayer();
+	/*UFUNCTION(Server, Reliable)
+	void ServerRPC_RespawnPlayer();*/
 
 	//UFUNCTION(Server, Reliable)
 	//void ServerRPC_ChangeSpectator();
