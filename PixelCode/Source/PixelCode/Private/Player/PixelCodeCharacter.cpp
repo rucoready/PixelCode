@@ -64,6 +64,7 @@
 #include "Player/SpawnSkillActor/PlayerMageQSkillSpawnActor.h"
 #include "Player/SpawnSkillActor/PlayerMageESkillSpawnActor.h"
 #include "Player/SpawnSkillActor/PlayerMageZSkillSpawnActor.h"
+#include "CraftingArea.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -181,20 +182,30 @@ void APixelCodeCharacter::BeginPlay()
 // 		Buildings = *vars;
 // 	}
 
-   	if (!Builder)
-   	{
-   		if (BuildingClass)
-   		{
-   			Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass, FVector::ZeroVector, FRotator::ZeroRotator);
-   		}
-   	}
-   	if (!Buildings)
-   	{
-   		if (BuildingC)
-   		{
-   			Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC, FVector::ZeroVector, FRotator::ZeroRotator);
-   		}
-   	}
+	ACraftingArea* craftingArea = nullptr;
+	for (TActorIterator<ACraftingArea> var(GetWorld()); var; ++var)
+	{
+		craftingArea = *var;
+	}
+
+	if (craftingArea != nullptr)
+	{
+		if (!Builder)
+		{
+			if (BuildingClass)
+			{
+				Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass, FVector::ZeroVector, FRotator::ZeroRotator);
+			}
+		}
+		if (!Buildings)
+		{
+			if (BuildingC)
+			{
+				Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC, FVector::ZeroVector, FRotator::ZeroRotator);
+			}
+		}
+	}
+
 
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 
