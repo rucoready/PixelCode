@@ -235,6 +235,11 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), swordHitNA, GetActorLocation(), GetActorRotation(), FVector(10.0f));
 		dogBart->DogBartTakeDamage(10.0f);
 
+		/*if (NS_HitImpact != nullptr && eWeaponType == EWeaponType::LightSword)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_HitImpact, lastHitStruct.ImpactPoint, SwordMarkRotation);
+		}*/
+
 		dogBart->ServerRPC_TakeDamage();
 		bHit = true;
 
@@ -247,10 +252,7 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 
 
 
-	if (NS_HitImpact != nullptr && eWeaponType ==  EWeaponType::LightSword)
-	{ 
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_HitImpact, lastHitStruct.ImpactPoint, SwordMarkRotation);
-	}
+
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Initialization")
 	//FName AttachSocketName;
