@@ -917,10 +917,11 @@ void APixelCodeCharacter::ClientRPC_SetBuildMode_Implementation(bool mode)
 
 //-----------------------------------Cycle Mesh Network
 
-void APixelCodeCharacter::OnCycleMeshPressed()
+void APixelCodeCharacter::OnCycleMeshPressed(const FInputActionValue& value)
 {
+	wheelAxis = value.Get<float>();
 	//UE_LOG(LogTemp, Warning, TEXT("------------------CycleMesh Pressed"));
-
+	
 	if (HasAuthority())
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("------------------CycleMesh : authority"));

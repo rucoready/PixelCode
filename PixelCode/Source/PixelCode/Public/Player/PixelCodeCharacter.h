@@ -824,7 +824,9 @@ public:
 	bool GetBuildMode() const { return bInBuildMode; }
 
 	UFUNCTION()
-	void OnCycleMeshPressed();
+	void OnCycleMeshPressed(const FInputActionValue& value);
+
+	float wheelAxis;
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	void CycleBuildingMesh();

@@ -327,20 +327,48 @@ void ABuildingVisual::CycleMesh()
 {
 	FString sMode = bReturnedMesh ? TEXT("ReturnMesh : True") : TEXT("ReturnMesh : False");
 	//UE_LOG(LogTemp, Warning, TEXT("------------------ %s"), *sMode);
-
+	auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (Pc  /* ROLE_AutonomousProxy*/)
+	{
+		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
+		float wheelAxisVal = pc->wheelAxis;
 //  	if (bReturnedMesh) //$$
 //  	{
+//			if (++BuildingTypeIndex >= BuildingTypes.Num())
+// 			{
+// 				BuildingTypeIndex = 0;
+// 			}
+// 
 		// 건축자재 인덱스 스크롤로 돌리기
-		if (++BuildingTypeIndex >= BuildingTypes.Num())
+		if(wheelAxisVal > 0)
 		{
-			BuildingTypeIndex = 0;
+			if (BuildingTypeIndex < BuildingTypes.Num() - 1)
+			{
+				++BuildingTypeIndex;
+			}
+			else
+			{
+				BuildingTypeIndex = 0; // 배열의 처음으로 순환
+			}
 		}
+		else if (wheelAxisVal < 0) // 스크롤 휠을 올림
+		{
+			if (BuildingTypeIndex > 0)
+			{
+				--BuildingTypeIndex;
+			}
+			else
+			{
+				BuildingTypeIndex = BuildingTypes.Num() - 1; // 배열의 끝으로 순환
+			}
+		}
+
 		// 건축자재[#]의 메시를 preview 메시로 설정하기
 		if (BuildingTypes[BuildingTypeIndex].BuildingMesh)
 		{
 			BuildMesh->SetStaticMesh(BuildingTypes[BuildingTypeIndex].BuildingMesh);
 		}
-// 	}
+ 	}
 }
 
 void ABuildingVisual::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
