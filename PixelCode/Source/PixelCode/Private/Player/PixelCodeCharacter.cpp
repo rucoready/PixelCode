@@ -884,24 +884,7 @@ void APixelCodeCharacter::MultiRPC_SetBuildMode_Implementation(bool mode)
 
 void APixelCodeCharacter::ClientRPC_SetBuildMode_Implementation(bool mode)
 {
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (!Builder)
-	{
-		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
-		{
-			Builder = *var;
-		}
-	}
-	if (!Buildings)
-	{
-		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
-		{
-			Buildings = *vars;
-		}
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//UE_LOG(LogTemp, Warning, TEXT("------------------ClientRPC"));
-
+	
 	//bInBuildMode = mode;
 	if (Builder)
 	{
@@ -936,24 +919,6 @@ void APixelCodeCharacter::OnCycleMeshPressed(const FInputActionValue& value)
 
 void APixelCodeCharacter::CycleBuildingMesh()
 {
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (!Builder)
-	{
-		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
-		{
-			Builder = *var;
-		}
-	}
-	if (!Buildings)
-	{
-		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
-		{
-			Buildings = *vars;
-		}
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	FString sMode = bInBuildMode ? TEXT("Cycle_Auth BuildMode : ON") : TEXT("Cycle_Auth BuildMode : Off");
-	//UE_LOG(LogTemp, Warning, TEXT("------------------ %s"), *sMode);
 	if (bInBuildMode && Builder)
 	{
  
@@ -982,22 +947,7 @@ void APixelCodeCharacter::ClientRPC_CycleBuildingMesh_Implementation()
 
 void APixelCodeCharacter::OnSpawnBuildingPressed()
 {
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (!Builder)
-	{
-		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
-		{
-			Builder = *var;
-		}
-	}
-	if (!Buildings)
-	{
-		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
-		{
-			Buildings = *vars;
-		}
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 
 	if (HasAuthority())
 	{
@@ -1013,25 +963,7 @@ void APixelCodeCharacter::OnSpawnBuildingPressed()
 
 void APixelCodeCharacter::SpawnBuilding()
 {
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (!Builder)
-	{
-		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
-		{
-			Builder = *var;
-		}
-	}
-	if (!Buildings)
-	{
-		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
-		{
-			Buildings = *vars;
-		}
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	FString sbInBuildMode = bInBuildMode ? TEXT("BuildMode On") : TEXT("BuildMode Off");
-	FString sBuilder = Builder ? TEXT("Builder true") : TEXT("Builder false");
-	//UE_LOG(LogTemp, Warning, TEXT("SpawnBuilding() ; %s : %s"), *sbInBuildMode, *sBuilder);
+	
 
 	if (bInBuildMode && Builder)
 	{
@@ -1047,22 +979,7 @@ void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
 
 void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildType BuildType, FTransform transf)
 {
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (!Builder)
-	{
-		for (TActorIterator<ABuildingVisual> var(GetWorld()); var; ++var)
-		{
-			Builder = *var;
-		}
-	}
-	if (!Buildings)
-	{
-		for (TActorIterator<ABuilding> vars(GetWorld()); vars; ++vars)
-		{
-			Buildings = *vars;
-		}
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 
 	if (Buildings)
 	{
