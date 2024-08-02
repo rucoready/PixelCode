@@ -30,7 +30,7 @@ void UBossEnterWidget::NativeConstruct()
 
 void UBossEnterWidget::OnMyclickButtonEnter()
 {
-	ServerTravel();
+	//ServerTravel();
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
 		// PCodePlayerController 타입으로 캐스팅
@@ -38,7 +38,7 @@ void UBossEnterWidget::OnMyclickButtonEnter()
 		if (PCodePlayerController)
 		{
 			PCodePlayerController->ServerRPC_CreateWidgetBossLoading();
-			
+			GetWorld()->GetTimerManager().SetTimer(timerhandle_ServerTravel, this, &UBossEnterWidget::ServerTravel, 7.f, false);
 		}
 	}
 }

@@ -32,5 +32,7 @@ class PIXELCODE_API UBossEnterWidget : public UUserWidget
 	void ServerTravel();
 
 	class APCodePlayerController* PCodePlayerController;
+
+	FTimerHandle timerhandle_ServerTravel;
 	
 };
