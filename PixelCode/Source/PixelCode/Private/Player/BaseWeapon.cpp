@@ -206,7 +206,7 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 	{
 		GetWorldTimerManager().SetTimer(timerhandle_CoolTimeBossHit, this, &ABaseWeapon::HitCoolTimeSet, 0.1, false);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), swordHitNA, GetActorLocation(), GetActorRotation(), FVector(10.0f));
-		statue->TakeDamage(10.0f);
+		statue->TakeDamageD(10.0f);
 		bHit = true;
 
 	}

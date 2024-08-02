@@ -89,7 +89,7 @@ void ADragonRazorStatue::Tick(float DeltaTime)
 
 }
 
-void ADragonRazorStatue::TakeDamage(float damage)
+void ADragonRazorStatue::TakeDamageD(float damage)
 {
     currentHp = currentHp - damage;
 
