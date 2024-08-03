@@ -36,9 +36,10 @@ public:
 	void OpenUI(bool bOpen); 
 
 
-	void SpawnCharacterAtLocation(const FVector& Location); // 위치에 캐릭터 스폰
-	void HandleCharacterDeath(APixelCodeCharacter* Character); // 캐릭터 사망 처리
-
+	void SpawnCharacterAtLocation(APixelCodeCharacter* APlayerchar,const FVector& Location); // 위치에 캐릭터 스폰
+	void HandleCharacterDeath(); // 캐릭터 사망 처리
+	//UFUNCTION(Server, Reliable)
+	//void Server_SpawnAndPossessCharacter(APixelCodeCharacter* CharacterToSpawn, const FVector& Location);
 
 	APlayerObjectPoolManager* ObjectPoolManager; // 오브젝트 풀 관리자
 

@@ -24,6 +24,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/Pooling/PlayerObjectPoolManager.h"
 #include <../../../../../../../Source/Runtime/Engine/Public/EngineUtils.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/Components/CapsuleComponent.h>
+#include <../../../../../../../Source/Runtime/Engine/Classes/Camera/CameraComponent.h>
 
 
 void APCodePlayerController::BeginPlay()
@@ -252,7 +254,7 @@ void APCodePlayerController::PlayerDieWidget()
 {
 	if (NormallyWidget)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("RespawnOn22222"));
+		UE_LOG(LogTemp, Warning, TEXT("RespawnDieWidget"));
 		NormallyWidget->SetActiveGameOverUI(true);
 	}
 }
@@ -301,25 +303,7 @@ void APCodePlayerController::OpenUI(bool bOpen)
 	SetShowMouseCursor(bOpen);
 }
 
-void APCodePlayerController::SpawnCharacterAtLocation(const FVector& Location)
-{
-	if (ObjectPoolManager)
-	{
-		// 오브젝트 풀에서 사용 가능한 캐릭터 가져오기
-		APixelCodeCharacter* PooledCharacter = ObjectPoolManager->GetPooledCharacter();
-		if (PooledCharacter)
-		{
-			PooledCharacter->SetActorLocation(Location); // 위치 설정
-			PooledCharacter->SetActorHiddenInGame(false); // 게임에서 표시
-			PooledCharacter->SetActorEnableCollision(true); // 충돌 활성화
-			PooledCharacter->GetCharacterMovement()->Activate(); // 움직임 활성화
-			Possess(PooledCharacter); // 컨트롤러가 캐릭터를 조종
-			UE_LOG(LogTemp, Warning, TEXT("Possess!"));
-		}
-	}
-}
-
-void APCodePlayerController::HandleCharacterDeath(APixelCodeCharacter* APlayerchar)
+void APCodePlayerController::HandleCharacterDeath()
 {
 	if (ObjectPoolManager)
 	{
@@ -328,14 +312,70 @@ void APCodePlayerController::HandleCharacterDeath(APixelCodeCharacter* APlayerch
 		// 캐릭터 사망 애니메이션 처리
 		// ...
 
-		// 일정 시간 후 캐릭터 숨기기
-		GetWorld()->GetTimerManager().SetTimerForNextTick([this, APlayerchar]()
-			{
-				ObjectPoolManager->ReturnPooledCharacter(APlayerchar); // 캐릭터 반환
-			});
+
+		UE_LOG(LogTemp, Warning, TEXT("UnPossess!"));
 	}
-	SpawnCharacterAtLocation(MainPlayer->GetActorLocation());
+	//SpawnCharacterAtLocation(MainPlayer->GetActorLocation());
 }
+
+void APCodePlayerController::SpawnCharacterAtLocation(APixelCodeCharacter* APlayerchar, const FVector& Location)
+{
+
+	// 일정 시간 후 캐릭터 숨기기
+	GetWorld()->GetTimerManager().SetTimerForNextTick([this, APlayerchar]()
+		{
+			APlayerchar->motionState = ECharacterMotionState::Idle;
+
+			APlayerchar->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			APlayerchar->GetMesh()->SetCollisionProfileName("CharacterMesh");
+			APlayerchar->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+
+			ObjectPoolManager->ReturnPooledCharacter(APlayerchar); // 캐릭터 반환
+		});
+
+	//SpawnCharacterAtLocation(MainPlayer->GetActorLocation());
+	if (ObjectPoolManager)
+	{
+		// 오브젝트 풀에서 사용 가능한 캐릭터 가져오기
+		APixelCodeCharacter* PooledCharacter = ObjectPoolManager->GetPooledCharacter();
+		if (PooledCharacter)
+		{
+			PooledCharacter->bPoss = true;
+			PooledCharacter->SetActorLocation(Location); // 위치 설정
+			PooledCharacter->SetActorHiddenInGame(false); // 게임에서 표시
+			PooledCharacter->SetActorEnableCollision(true); // 충돌 활성화
+			PooledCharacter->GetCharacterMovement()->Activate(); // 움직임 활성화
+
+			StatComponent = PooledCharacter->stateComp;
+			StatComponent->InitStat();
+			NormallyWidget = this->NormallyWidget;
+			NormallyWidget->bPlayerDie = true;
+			Possess(PooledCharacter);
+		
+		//	if (HasAuthority())
+			//{
+				// 서버 권한이 있는 경우에는 바로 호출
+			//	Possess(PooledCharacter);
+		//	}
+			////else
+			//{
+				// 서버 권한이 없는 경우에는 서버에 요청
+				//Server_SpawnAndPossessCharacter(PooledCharacter, Location);
+			//}
+			//Server_SpawnAndPossessCharacter(PooledCharacter, Location);
+			//Possess(PooledCharacter); // 컨트롤러가 캐릭터를 조종
+			UE_LOG(LogTemp, Warning, TEXT("Possess!"));
+		}
+	}
+}
+
+
+//void APCodePlayerController::Server_SpawnAndPossessCharacter_Implementation(APixelCodeCharacter* CharacterToSpawn, const FVector& Location)
+//{
+//	SpawnCharacterAtLocation(CharacterToSpawn, Location);
+//	Possess(CharacterToSpawn);
+//}
 
 
 void APCodePlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

@@ -82,9 +82,7 @@ class APixelCodeCharacter : public APlayerOrganism
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
 
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FollowCamera;
+	
 	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -177,11 +175,17 @@ class APixelCodeCharacter : public APlayerOrganism
 	
 
 public:
+	/** Follow camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* FollowCamera;
+	
+
 	// 플레이어 마나, 스테미너 시스템
 	float MPRegen = 0.0f;
 	float SPRegen = 0.0f;
 	float SPRegenTime = 0.0f;
 
+	bool bPoss = false;
 
 	class APickup* Pickup;
 
@@ -994,7 +998,7 @@ public:
 
 	virtual void DieFunction() override;
 
-	virtual void PossessedBy(AController* NewController) override;
+	//virtual void PossessedBy(AController* NewController) override;
 
 	virtual void CreateInventory() override;
 

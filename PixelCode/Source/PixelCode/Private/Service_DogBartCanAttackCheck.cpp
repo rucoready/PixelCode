@@ -33,7 +33,7 @@ void UService_DogBartCanAttackCheck::TickNode(UBehaviorTreeComponent& OwnerComp,
         // 블랙보드에서 벡터 값을 가져옵니다.
         NearestPlayerLocation = BlackboardComp->GetValueAsVector(TEXT("DetectedPlayerLoc"));
 
-        UE_LOG(LogTemp, Warning, TEXT("NearestPlayerLocation: %f, %f, %f"), NearestPlayerLocation.X, NearestPlayerLocation.Y, NearestPlayerLocation.Z);
+      //  UE_LOG(LogTemp, Warning, TEXT("NearestPlayerLocation: %f, %f, %f"), NearestPlayerLocation.X, NearestPlayerLocation.Y, NearestPlayerLocation.Z);
 
     }
 

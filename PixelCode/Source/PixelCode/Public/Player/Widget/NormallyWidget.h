@@ -179,4 +179,6 @@ public:
 	void SetSwordSkillWidget(bool value);
 	void SetMageSkillWidget(bool value);
 
+	bool bPlayerDie = false;
+
 };

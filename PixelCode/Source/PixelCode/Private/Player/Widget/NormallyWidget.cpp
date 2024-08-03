@@ -44,15 +44,15 @@ void UNormallyWidget::NativeConstruct()
 	mageRDynamicMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, this);
 	mageZDynamicMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, this);
 
-	QDynamicMaterial->SetScalarParameterValue(TEXT("Percent"),0.0f);
-	EDynamicMaterial->SetScalarParameterValue(TEXT("Percent"),0.0f);
-	RDynamicMaterial->SetScalarParameterValue(TEXT("Percent"),0.0f);
-	ZDynamicMaterial->SetScalarParameterValue(TEXT("Percent"),0.0f);
+	QDynamicMaterial->SetScalarParameterValue(TEXT("Percent"),-0.1f);
+	EDynamicMaterial->SetScalarParameterValue(TEXT("Percent"),-0.1f);
+	RDynamicMaterial->SetScalarParameterValue(TEXT("Percent"),-0.1f);
+	ZDynamicMaterial->SetScalarParameterValue(TEXT("Percent"),-0.1f);
 
-	mageQDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), 0.0f);
-	mageEDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), 0.0f);
-	mageRDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), 0.0f);
-	mageZDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), 0.0f);
+	mageQDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), -0.1f);
+	mageEDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), -0.1f);
+	mageRDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), -0.1f);
+	mageZDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), -0.1f);
 
 	BP_QSkillbar->SetBrushFromMaterial(QDynamicMaterial);
 	BP_ESkillbar->SetBrushFromMaterial(EDynamicMaterial);
@@ -78,6 +78,13 @@ void UNormallyWidget::NativeConstruct()
 void UNormallyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry,InDeltaTime);
+
+
+	if (bPlayerDie)
+	{
+		Player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
+		bPlayerDie = false;
+	}
 
 	//currentExpUpdate(PlayerState->currentEXP, PlayerState->totalEXP);
 
@@ -135,14 +142,16 @@ void UNormallyWidget::QSetPercent()
 {
 	if (QDynamicMaterial)
 	{
-		if (Player!= nullptr &&Player->CurrentQSkillCoolTime != 0)
+		if (Player!= nullptr && Player->CurrentQSkillCoolTime != 0)
 		{
 			// 스칼라 파라미터 설정
 			QDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), 1.0f - Player->CurrentQSkillCoolTime/Player->QSkillCoolTime);
+			UE_LOG(LogTemp, Warning, TEXT("QskillcollWidget"));
 		}
 
 		// BP_QSkillbar가 UImage인 경우 SetBrushFromMaterial을 사용할 수 있습니다.
 		BP_QSkillbar->SetBrushFromMaterial(QDynamicMaterial);
+		
 	}
 }
 
@@ -264,7 +273,7 @@ void UNormallyWidget::OnMyButtonRespawn()
 		// 플레이어컨트롤러를 통해 재시작하고싶다.
 		pc->SetInputMode(FInputModeGameOnly());
 		pc->SetShowMouseCursor(false);
-		pc->SpawnCharacterAtLocation(Player->GetActorLocation());
+		pc->SpawnCharacterAtLocation(Player,Player->GetActorLocation());
 		//pc->ServerRPC_ChangeSpectator();
 	}
 }

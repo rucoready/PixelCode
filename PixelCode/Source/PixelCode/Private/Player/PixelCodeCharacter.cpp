@@ -1342,26 +1342,27 @@ void APixelCodeCharacter::DieFunction()
 {
 	auto param = GetMesh()->GetCollisionResponseToChannels();
 	param.SetResponse(ECC_Visibility, ECollisionResponse::ECR_Block);
-	//UE_LOG(LogTemp, Warning, TEXT("RespawnOn"));
 	GetMesh()->SetCollisionResponseToChannels(param);
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+	UE_LOG(LogTemp, Warning, TEXT("RespawnOn"));
+
 	// UI -> 리스폰 / 종료
 	if (IsLocallyControlled())
-	{
+	{ 
 		auto pc = Cast<APCodePlayerController>(Controller);
-		FollowCamera->PostProcessSettings.ColorSaturation = FVector4(0, 0, 0, 1);
-		
+		//FollowCamera->PostProcessSettings.ColorSaturation = FVector4(0, 0, 0, 1);
+		UE_LOG(LogTemp, Warning, TEXT("RespawnOn11"));
 		if (pc)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("RespawnOn22"));
 			pc->SetInputMode(FInputModeUIOnly());
 			pc->SetShowMouseCursor(true);
 			DisableInput(pc);
 			pc->PlayerDieWidget();
-			pc->HandleCharacterDeath(this);
-
+			pc->HandleCharacterDeath();
 		}
 	}
 
@@ -1372,34 +1373,34 @@ void APixelCodeCharacter::DieFunction()
 	Super::DieFunction();
 }
 
-void APixelCodeCharacter::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-
-	//Pc = Cast<APCodePlayerController>(NewController);
-	////Pc->StatComponent = this->stateComp;
-
-	//
-	////Pc->bPossess = false;
-
-	//FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
-	//FString hasController = Controller ? TEXT("HasCont") : TEXT("NoCont");
-
-	//UE_LOG(LogTemp, Warning, TEXT("[%s] %s - PossessedBy"), *netMode, *hasController);
-	
-
-	//Pc->ClientRPC_PlayerStartWidget();
-
-
-	// 내가 로컬이라면
-	//if (IsLocallyControlled())
-	//{ 
-		//InitMainUI(); //나중에 활성화?
-	//	UE_LOG(LogTemp, Warning, TEXT("Normal2"));
-	//}
-
-
-}
+//void APixelCodeCharacter::PossessedBy(AController* NewController)
+//{
+//	Super::PossessedBy(NewController);
+//
+//	//Pc = Cast<APCodePlayerController>(NewController);
+//	////Pc->StatComponent = this->stateComp;
+//
+//	//
+//	////Pc->bPossess = false;
+//
+//	//FString netMode = GetNetMode() == ENetMode::NM_ListenServer ? TEXT("Server") : TEXT("Client");
+//	//FString hasController = Controller ? TEXT("HasCont") : TEXT("NoCont");
+//
+//	//UE_LOG(LogTemp, Warning, TEXT("[%s] %s - PossessedBy"), *netMode, *hasController);
+//	
+//
+//	//Pc->ClientRPC_PlayerStartWidget();
+//
+//
+//	// 내가 로컬이라면
+//	//if (IsLocallyControlled())
+//	//{ 
+//		//InitMainUI(); //나중에 활성화?
+//	//	UE_LOG(LogTemp, Warning, TEXT("Normal2"));
+//	//}
+//
+//
+//}
 
 void APixelCodeCharacter::CreateInventory()
 {
@@ -2891,6 +2892,14 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		}
 	}
 	
+	if (bPoss)
+	{
+		EnableInput(Pc);
+		//FollowCamera->PostProcessSettings.ColorSaturation = FVector4(1, 1, 0, 0);
+		UE_LOG(LogTemp,Warning,TEXT("bPoss!!"));
+		bPoss = false;
+	}
+
 	Soundcollection();
 	// 지논------------------------------------------------------------------------------------------------------
 
