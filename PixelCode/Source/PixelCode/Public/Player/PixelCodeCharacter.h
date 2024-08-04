@@ -794,7 +794,7 @@ public:
 
 	// 서휘-----------------------------------------------------------------------------------------------------
 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
-	ABuilding* Buildings;
+	ABuilding* Building;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = KSH)
 	TArray<ABuilding*> ActorsToSave;
@@ -856,7 +856,7 @@ public:
  	void ServerRPC_SpawnBuilding();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticastRPC_SpawnBuilding(EBuildType BuildType, FTransform transf);
+	void NetMulticastRPC_SpawnBuilding(const FBuildingSocketData& BuildingSocketData, EBuildType BuildType, FTransform Transf);
 
 	//------------------------------------------------------------------------------------------
 	UFUNCTION()
@@ -869,7 +869,7 @@ public:
 	void ServerRPC_DestroyBuildingInstance();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticastRPC_DestroyBuildingInstance(UInstancedStaticMeshComponent* instComp, int32 instIndex);
+	void NetMulticastRPC_DestroyBuildingInstance(/*const FBuildingSocketData& BuildingSocketData*/);
 
 	//------------------------------------------------------------------------------------------
 	UFUNCTION()

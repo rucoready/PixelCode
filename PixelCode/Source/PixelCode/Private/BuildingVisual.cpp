@@ -45,7 +45,6 @@ void ABuildingVisual::BeginPlay()
 		bMaterialIsTrue = true;
 		BuildMesh->SetMaterial(0, MaterialTrue);
 	}
-
 }
 
 ABuilding* ABuildingVisual::GetHitBuildingActor(const FHitResult& HitResult)
@@ -246,22 +245,16 @@ void ABuildingVisual::DestroyInstance(const FHitResult& HitResult)
 				BuildingSocketData.InstancedComponent = InstancedStaticMeshComponent;
 				BuildingSocketData.Index = HitResult.Item;
 
-				InteractingBuilding->DestroyInstance(BuildingSocketData, HitResult);
-			}
+				InteractingBuilding->DestroyInstance(BuildingSocketData);
 
-			/*if(UStaticMeshComponent* statickMesh = Cast<UStaticMeshComponent>(HitResult.GetActor()))
-			{
-				statickMesh->DestroyComponent();
-			}*/
-			
-// 			auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-// 
-// 			if (Pc)
-// 			{
-// 				UE_LOG(LogTemp, Warning, TEXT("Controller Exist"));
-// 				pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
-// 				pc->NetMulticastRPC_DestroyBuildingInstance(HitResult);
-// 			}
+// 				auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+// 				if (Pc )
+// 				{
+// 				  	pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
+// 				  	pc->NetMulticastRPC_DestroyBuildingInstance(/*BuildingSocketData*/);
+// 					//InteractingBuilding->DestroyInstance(BuildingSocketData);
+// 				}
+			}
 		}
 	}
 }

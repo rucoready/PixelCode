@@ -95,36 +95,21 @@ void ABuilding::BeginPlay()
 	MeshInstancedSockets.Append(FloorInstancedMesh->GetAllSocketNames());
 }
 
-void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData, const FHitResult& HitResult)
+void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData)
 {	
 	//UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDING DestroyInstance"));
 	
-	if (BuildingSocketData.InstancedComponent)
-	{
-		UInstancedStaticMeshComponent* Instance = BuildingSocketData.InstancedComponent;
-		int32 num = BuildingSocketData.Index;
-		
+ 	if (BuildingSocketData.InstancedComponent)
+ 	{
 		BuildingSocketData.InstancedComponent->RemoveInstance(BuildingSocketData.Index);
+		int32 index = BuildingSocketData.Index;
 
-
-
-		//UInstancedStaticMeshComponent* InstancedStaticMeshComponent = Cast<UInstancedStaticMeshComponent>(HitResult.GetComponent());
-		//HitResult.ElementIndex
-		//InstancedStaticMeshComponent->RemoveInstance(InstancedStaticMeshComponent->GetInstanceIndex());
-		//InstancedStaticMeshComponent->GetInstanceIndexForId()
-
-		//UE_LOG(LogTemp, Warning, TEXT("------------------------------------------------------------------------BUILDING RemoveInstance"));
-
-		//if (!HasAuthority())
-		{
-			auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-			//Pc->IsLocalController() = ROLE_AutonomousProxy
-			if (Pc /*&& ROLE_AutonomousProxy*/)
-			{
-				pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
-				pc->NetMulticastRPC_DestroyBuildingInstance(Instance, num);
-			}
-		}
+//  		auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+//  		if (Pc )
+//  		{
+//  			pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
+//  			pc->NetMulticastRPC_DestroyBuildingInstance(/*BuildingSocketData*/);
+//  		}
 	}
 }
 
@@ -276,78 +261,74 @@ void ABuilding::AddInstance(const FBuildingSocketData& BuildingSocketData, EBuil
 		}
 	}
 
-	FTransform transform = BuildingSocketData.SocketTransform;
-	FString StrBuildType;
-	bool bAddInstanceSuccess=false;
+ 	FTransform transform = BuildingSocketData.SocketTransform; 
+	//bool bAddInstanceSuccess=false;
 
-	switch (BuildType)
-	{		
-		case EBuildType::Base:
-		BaseInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-		StrBuildType=TEXT("FoundationInstancedMesh");
-		bAddInstanceSuccess = true;
-		break;
+	//switch (BuildType)
+	//{		
+	//	case EBuildType::Base:
+	//	BaseInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+	//	StrBuildType=TEXT("FoundationInstancedMesh");
+	//	bAddInstanceSuccess = true;
+	//	break;
 
-		case EBuildType::Wall:
-		WallInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-		StrBuildType = TEXT("WallInstancedMesh");
-		bAddInstanceSuccess = true;
-		break;
+	//	case EBuildType::Wall:
+	//	WallInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+	//	StrBuildType = TEXT("WallInstancedMesh");
+	//	bAddInstanceSuccess = true;
+	//	break;
 
-		case EBuildType::Ceiling:
-		CeilingInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-		StrBuildType = TEXT("CeilingInstancedMesh");
-		bAddInstanceSuccess = true;
-		break;
+	//	case EBuildType::Ceiling:
+	//	CeilingInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+	//	StrBuildType = TEXT("CeilingInstancedMesh");
+	//	bAddInstanceSuccess = true;
+	//	break;
 
-		case EBuildType::Roof:
-		RoofInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-		StrBuildType = TEXT("RoofInstancedMesh");
-		bAddInstanceSuccess = true;
-		break;
+	//	case EBuildType::Roof:
+	//	RoofInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+	//	StrBuildType = TEXT("RoofInstancedMesh");
+	//	bAddInstanceSuccess = true;
+	//	break;
 
-		case EBuildType::Gable:
-		GableInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-		StrBuildType = TEXT("GableInstancedMesh");
-		bAddInstanceSuccess = true;
-		break;
+	//	case EBuildType::Gable:
+	//	GableInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+	//	StrBuildType = TEXT("GableInstancedMesh");
+	//	bAddInstanceSuccess = true;
+	//	break;
 
-		case EBuildType::Stairs:
-		StairsInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-		StrBuildType = TEXT("StairsInstancedMesh");
-		bAddInstanceSuccess = true;
-		break;
+	//	case EBuildType::Stairs:
+	//	StairsInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+	//	StrBuildType = TEXT("StairsInstancedMesh");
+	//	bAddInstanceSuccess = true;
+	//	break;
 
-		case EBuildType::Window:
-			WindowInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-			StrBuildType = TEXT("WindowInstancedMesh");
-			bAddInstanceSuccess = true;
-			break;
+	//	case EBuildType::Window:
+	//		WindowInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+	//		StrBuildType = TEXT("WindowInstancedMesh");
+	//		bAddInstanceSuccess = true;
+	//		break;
 
-		case EBuildType::Arch:
-			ArchInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-			StrBuildType = TEXT("ArchInstancedMesh");
-			bAddInstanceSuccess = true;
-			break;	
-			
-		case EBuildType::Floor:
-			FloorInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
-			StrBuildType = TEXT("FloorInstancedMesh");
-			bAddInstanceSuccess = true;
-			break;
+	//	case EBuildType::Arch:
+	//		ArchInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+	//		StrBuildType = TEXT("ArchInstancedMesh");
+	//		bAddInstanceSuccess = true;
+	//		break;	
+	//		
+	//	case EBuildType::Floor:
+	//		FloorInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+	//		StrBuildType = TEXT("FloorInstancedMesh");
+	//		bAddInstanceSuccess = true;
+	//		break;
 
-		default:
-		break;
-	}
+	//	default:
+	//	break;
+	//}
 
  	auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
- 	if (Pc && bAddInstanceSuccess /* ROLE_AutonomousProxy*/)
+ 	if (Pc)
  	{
  		pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
-		if (transform.IsValid())
-		{
-			pc->NetMulticastRPC_SpawnBuilding(BuildType, transform);
-		}
+		pc->NetMulticastRPC_SpawnBuilding(BuildingSocketData, BuildType, transform);
 		pc->AGetSpecificBuildingAmount(BuildType);
  	}	
 }

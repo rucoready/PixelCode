@@ -57,7 +57,7 @@ public:
 	class UInstancedStaticMeshComponent* FloorInstancedMesh;
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
-	void DestroyInstance(const FBuildingSocketData& BuildingSocketData, const FHitResult& HitResult);
+	void DestroyInstance(const FBuildingSocketData& BuildingSocketData);
 
 	UFUNCTION(BlueprintCallable, Category = KSH)
 	 FTransform GetInstancedSocketTransform(UInstancedStaticMeshComponent* InstancedComponent, int32 InstanceIndex, const FName& SocketName);

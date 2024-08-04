@@ -197,11 +197,11 @@ void APixelCodeCharacter::BeginPlay()
 				Builder = GetWorld()->SpawnActor<ABuildingVisual>(BuildingClass, FVector::ZeroVector, FRotator::ZeroRotator);
 			}
 		}
-		if (!Buildings)
+		if (!Building)
 		{
 			if (BuildingC)
 			{
-				Buildings = GetWorld()->SpawnActor<ABuilding>(BuildingC, FVector::ZeroVector, FRotator::ZeroRotator);
+				Building = GetWorld()->SpawnActor<ABuilding>(BuildingC, FVector::ZeroVector, FRotator::ZeroRotator);
 			}
 		}
 	}
@@ -991,62 +991,117 @@ void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
 	SpawnBuilding();
 }
 
-void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildType BuildType, FTransform transf)
+void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(const FBuildingSocketData& BuildingSocketData, EBuildType BuildType, FTransform Transf)
 {
-	
 
-	if (Buildings)
-	{
-		switch (BuildType)
-		{
-		case EBuildType::Base:
-			Buildings->BaseInstancedMesh->AddInstance(transf, true);
-			InstMeshComp = Buildings->BaseInstancedMesh;
-			break;
+	UE_LOG(LogTemp, Warning, TEXT("%f : %f"), Transf.GetLocation().X, BuildingSocketData.SocketTransform.GetLocation().X);
+	UE_LOG(LogTemp, Warning, TEXT("%f : %f"), Transf.GetLocation().Y, BuildingSocketData.SocketTransform.GetLocation().Y);
+	UE_LOG(LogTemp, Warning, TEXT("%f : %f"), Transf.GetLocation().Z, BuildingSocketData.SocketTransform.GetLocation().Z);
+// 	if (Building)
+// 	{
+// 		switch (BuildType)
+// 		{
+// 		case EBuildType::Base:
+// 			Building->BaseInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+// 			InstMeshComp = Building->BaseInstancedMesh;
+// 			break;
+// 
+// 		case EBuildType::Wall:
+// 			Building->WallInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+// 			InstMeshComp = Building->WallInstancedMesh;
+// 			break;
+// 
+// 		case EBuildType::Ceiling:
+// 			Building->CeilingInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+// 			InstMeshComp = Building->CeilingInstancedMesh;
+// 			break;
+// 
+// 		case EBuildType::Roof:
+// 			Building->RoofInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+// 			InstMeshComp = Building->RoofInstancedMesh;
+// 			break;
+// 
+// 		case EBuildType::Gable:
+// 			Building->GableInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+// 			InstMeshComp = Building->GableInstancedMesh;
+// 			break;
+// 
+// 		case EBuildType::Stairs:
+// 			Building->StairsInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+// 			InstMeshComp = Building->StairsInstancedMesh;
+// 			break;
+// 
+// 		case EBuildType::Window:
+// 			Building->WindowInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+// 			InstMeshComp = Building->WindowInstancedMesh;
+// 			break;
+// 
+// 		case EBuildType::Arch:
+// 			Building->ArchInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+// 			InstMeshComp = Building->ArchInstancedMesh;
+// 			break;
+// 
+// 		case EBuildType::Floor:
+// 			Building->FloorInstancedMesh->AddInstance(BuildingSocketData.SocketTransform, true);
+// 			InstMeshComp = Building->FloorInstancedMesh;
+// 			break;
+// 
+// 		default:
+// 			break;
+// 		}
 
-		case EBuildType::Wall:
-			Buildings->WallInstancedMesh->AddInstance(transf, true);
-			InstMeshComp = Buildings->WallInstancedMesh;
-			break;
-
-		case EBuildType::Ceiling:
-			Buildings->CeilingInstancedMesh->AddInstance(transf, true);
-			InstMeshComp = Buildings->CeilingInstancedMesh;
-			break;
-
-		case EBuildType::Roof:
-			Buildings->RoofInstancedMesh->AddInstance(transf, true);
-			InstMeshComp = Buildings->RoofInstancedMesh;
-			break;
-
-		case EBuildType::Gable:
-			Buildings->GableInstancedMesh->AddInstance(transf, true);
-			InstMeshComp = Buildings->GableInstancedMesh;
-			break;
-
-		case EBuildType::Stairs:
-			Buildings->StairsInstancedMesh->AddInstance(transf, true);
-			InstMeshComp = Buildings->StairsInstancedMesh;
-			break;
-
-		case EBuildType::Window:
-			Buildings->WindowInstancedMesh->AddInstance(transf, true);
-			InstMeshComp = Buildings->WindowInstancedMesh;
-			break;
-
-		case EBuildType::Arch:
-			Buildings->ArchInstancedMesh->AddInstance(transf, true);
-			InstMeshComp = Buildings->ArchInstancedMesh;
-			break;
-
-		case EBuildType::Floor:
-			Buildings->FloorInstancedMesh->AddInstance(transf, true);
-			InstMeshComp = Buildings->FloorInstancedMesh;
-			break;
-
-		default:
-			break;
-		}
+ 	if (Building)
+ 	{
+ 		switch (BuildType)
+ 		{
+ 		case EBuildType::Base:
+ 			Building->BaseInstancedMesh->AddInstance(Transf, true);
+ 			InstMeshComp = Building->BaseInstancedMesh;
+ 			break;
+ 
+ 		case EBuildType::Wall:
+ 			Building->WallInstancedMesh->AddInstance(Transf, true);
+ 			InstMeshComp = Building->WallInstancedMesh;
+ 			break;
+ 
+ 		case EBuildType::Ceiling:
+ 			Building->CeilingInstancedMesh->AddInstance(Transf, true);
+ 			InstMeshComp = Building->CeilingInstancedMesh;
+ 			break;
+ 
+ 		case EBuildType::Roof:
+ 			Building->RoofInstancedMesh->AddInstance(Transf, true);
+ 			InstMeshComp = Building->RoofInstancedMesh;
+ 			break;
+ 
+ 		case EBuildType::Gable:
+ 			Building->GableInstancedMesh->AddInstance(Transf, true);
+ 			InstMeshComp = Building->GableInstancedMesh;
+ 			break;
+ 
+ 		case EBuildType::Stairs:
+ 			Building->StairsInstancedMesh->AddInstance(Transf, true);
+ 			InstMeshComp = Building->StairsInstancedMesh;
+ 			break;
+ 
+ 		case EBuildType::Window:
+ 			Building->WindowInstancedMesh->AddInstance(Transf, true);
+ 			InstMeshComp = Building->WindowInstancedMesh;
+ 			break;
+ 
+ 		case EBuildType::Arch:
+ 			Building->ArchInstancedMesh->AddInstance(Transf, true);
+ 			InstMeshComp = Building->ArchInstancedMesh;
+ 			break;
+ 
+ 		case EBuildType::Floor:
+ 			Building->FloorInstancedMesh->AddInstance(Transf, true);
+ 			InstMeshComp = Building->FloorInstancedMesh;
+ 			break;
+ 
+ 		default:
+ 			break;
+ 		}
 
 		UPCodeSaveGame* castSave = Cast<UPCodeSaveGame>(UGameplayStatics::CreateSaveGameObject(UPCodeSaveGame::StaticClass()));
 
@@ -1060,7 +1115,7 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 
 			FBuildingInstanceData BuildingInstData;
 			BuildingInstData.InstancedComponent = InstMeshComp;
-			BuildingInstData.InstTransform = transf;
+			BuildingInstData.InstTransform = Transf;
 
 			castLoad->SavedInstances.Add(BuildingInstData);
 			UGameplayStatics::SaveGameToSlot(castLoad, TEXT("BuildingiNSTDataStorage"), 0);
@@ -1075,7 +1130,7 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 
 			FBuildingInstanceData BuildingInstData;
 			BuildingInstData.InstancedComponent = InstMeshComp;
-			BuildingInstData.InstTransform = transf;
+			BuildingInstData.InstTransform = Transf;
 
 			castSave->SavedInstances.Add(BuildingInstData);
 			UGameplayStatics::SaveGameToSlot(castSave, TEXT("BuildingiNSTDataStorage"), 0);
@@ -1092,9 +1147,16 @@ void APixelCodeCharacter::OnDestroyBuildingPressed()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("------------------Destroy Pressed"));
 
-	//ServerRPC_DestroyBuildingInstanceV2(PerformLineTrace());
-
-	ServerRPC_DestroyBuildingInstance();
+	if (HasAuthority())
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding : authority"));
+		DestroyBuildingInstance();
+	}
+	else
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("------------------SpawnBuilding : no authority"));
+		ServerRPC_DestroyBuildingInstance();
+	}
 }
 
 void APixelCodeCharacter::DestroyBuildingInstance()
@@ -1107,12 +1169,12 @@ void APixelCodeCharacter::DestroyBuildingInstance()
 
 void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation()
 {
-	DestroyBuildingInstance();
+	NetMulticastRPC_DestroyBuildingInstance();
 }
 
- void APixelCodeCharacter::NetMulticastRPC_DestroyBuildingInstance_Implementation(UInstancedStaticMeshComponent* instComp, int32 instIndex)
+ void APixelCodeCharacter::NetMulticastRPC_DestroyBuildingInstance_Implementation(/*const FBuildingSocketData& BuildingSocketData*/)
  {
-	 instComp->RemoveInstance(instIndex-1);
+	 DestroyBuildingInstance();
  }
 
  //------------------------------------Remove Foliage Network
@@ -1401,7 +1463,7 @@ void APixelCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(APixelCodeCharacter, TargetInteractable);
 	DOREPLIFETIME(APixelCodeCharacter, BuildingClass);
 	DOREPLIFETIME(APixelCodeCharacter, Builder);
-	DOREPLIFETIME(APixelCodeCharacter, Buildings); 
+	DOREPLIFETIME(APixelCodeCharacter, Building); 
 	// DOREPLIFETIME(APixelCodeCharacter, bInBuildMode); 
 	DOREPLIFETIME(APixelCodeCharacter, RollAnim);
 	DOREPLIFETIME(APixelCodeCharacter, Iteminfos);
