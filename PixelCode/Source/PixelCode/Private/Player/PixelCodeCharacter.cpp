@@ -1054,7 +1054,6 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 
 		if (castLoad)
 		{
-
 			int32 arrnum = castLoad->SavedInstances.Num();
 			//UE_LOG(LogTemp, Warning, TEXT("-------------INST Load :: %d "), arrnum);
 
@@ -1065,7 +1064,6 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 			castLoad->SavedInstances.Add(BuildingInstData);
 			UGameplayStatics::SaveGameToSlot(castLoad, TEXT("BuildingiNSTDataStorage"), 0);
 			//UE_LOG(LogTemp, Warning, TEXT("-------------INST Load :: %d "), arrnum);
-
 		}
 
 		else if (castSave)
@@ -1081,7 +1079,6 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 			UGameplayStatics::SaveGameToSlot(castSave, TEXT("BuildingiNSTDataStorage"), 0);
 
 			//UE_LOG(LogTemp, Warning, TEXT("-------------INST Cast :: %d "), arrnum);
-
 		}
 	}
 }
@@ -1091,9 +1088,7 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 void APixelCodeCharacter::OnDestroyBuildingPressed()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("------------------Destroy Pressed"));
-
 	//ServerRPC_DestroyBuildingInstanceV2(PerformLineTrace());
-
 	ServerRPC_DestroyBuildingInstance();
 }
 
@@ -1104,28 +1099,7 @@ void APixelCodeCharacter::DestroyBuildingInstance()
 		Builder->DestroyInstance(PerformLineTrace());
 	}
 }
-// 
-// void APixelCodeCharacter::ServerRPC_DestroyBuildingInstanceV2_Implementation(const FHitResult& HitResult)
-// {
-// 		MulticastRPC_DestroyBuildingInstanceV2(HitResult);
-// 
-// }
-// 
-// void APixelCodeCharacter::MulticastRPC_DestroyBuildingInstanceV2_Implementation(const FHitResult& HitResult)
-// {
-// 	if (HitResult.bBlockingHit)
-// 	{
-// 		UInstancedStaticMeshComponent* Instance = Cast< UInstancedStaticMeshComponent>(HitResult.GetComponent());
-// 
-// 		if (Instance)
-// 		{
-// 			UE_LOG(LogTemp, Warning, TEXT("------------------Destroy MultiRPC"));
-// 
-// 			Instance->DestroyComponent();
-// 		}
-// 	}
-// }
-/////////////////////////////////////////////////
+
 void APixelCodeCharacter::ServerRPC_DestroyBuildingInstance_Implementation()
 {
 	DestroyBuildingInstance();

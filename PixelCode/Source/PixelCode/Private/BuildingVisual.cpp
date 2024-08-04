@@ -155,87 +155,31 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 
 void ABuildingVisual::SpawnBuilding()
 {
-// 	auto Pc = Cast<APlayerOrganism>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
-// 	if (Pc)
-// 	{
-// 		TArray<UItemBase*> InventoryContentSArray = Pc->PlayerInventory->GetInventoryContents();
-// 		//uint8 BulidAmount = Recipe.Amount;
-// 		uint8 Index = 0;
-// 		TArray<uint8> RemoveedIndex;
-// 
-// 		if (InventoryContentSArray.IsValidIndex(Index))
-// 		{
-// 			for (UItemBase* Item : InventoryContentSArray)
-// 			{
-// 				if (Item && Item->Buildtypes == BuildingTypes[BuildingTypeIndex].BuildType)
-// 				{
-// 					if (Item->Quantity < 1)
-// 					{
-						// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
-						if (BuildingClass && !IsHidden())
-						{
-							// ABuilding 인스턴스 = 건축자재가 있을 때
-							if (InteractingBuilding)
-							{
-								// preview가 초록일 때
-								if (bMaterialIsTrue)
-								{
-									// ABuilding 클래스의 AddInstance() 호출
-									InteractingBuilding->AddInstance(SocketData, BuildingTypes[BuildingTypeIndex].BuildType);
-									//UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Add Instance"));
-								}
-							}
-							else
-							{
-								//GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
-								ABuilding* AbuildingClass = GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
-								//UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Spawn Actor"));
+	bool bItemQuantityValid = false;
+ 	auto Pc = Cast<APlayerOrganism>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
+ 	if (Pc)
+ 	{
+ 		TArray<UItemBase*> InventoryContentSArray = Pc->PlayerInventory->GetInventoryContents();
+ 		//uint8 BulidAmount = Recipe.Amount;
+ 		uint8 Index = 0;
+ 		TArray<uint8> RemoveedIndex;
  
-								
-
-								UPCodeSaveGame* castSave = Cast<UPCodeSaveGame>(UGameplayStatics::CreateSaveGameObject(UPCodeSaveGame::StaticClass()));
-
-								UPCodeSaveGame* castLoad = Cast<UPCodeSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("BuildingDataStorage"), 0));
-								
-								if (castLoad)
-								{
-									FBuildingActorData BuildingActorData;
-									BuildingActorData.ABuilding = AbuildingClass->GetClass();
-									BuildingActorData.BuildingLocation = AbuildingClass->GetActorLocation();
-									BuildingActorData.BuildingRotation = AbuildingClass->GetActorRotation();
-
-									castLoad->SavedActors.Add(BuildingActorData);
-									UGameplayStatics::SaveGameToSlot(castLoad, TEXT("BuildingDataStorage"), 0);
-
-									int32 arrnum = castLoad->SavedActors.Num();
-									//UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Load :: %d "), arrnum);
-								}
-
- 								else if (castSave)
- 								{
- 									FBuildingActorData BuildingActorData;
- 									BuildingActorData.ABuilding = AbuildingClass->GetClass();
- 									BuildingActorData.BuildingLocation = AbuildingClass->GetActorLocation();
- 									BuildingActorData.BuildingRotation = AbuildingClass->GetActorRotation();
- 
- 									castSave->SavedActors.Add(BuildingActorData);
- 									UGameplayStatics::SaveGameToSlot(castSave, TEXT("BuildingDataStorage"), 0);
-
-									int32 arrnum = castSave->SavedActors.Num();
-									//UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Cast :: %d "), arrnum);
- 								}
-							}
-						}
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-}
-
-void ABuildingVisual::SpawnBuilding_Cheat()
-{
-	if (BuildingClass && !IsHidden())
+ 		if (InventoryContentSArray.IsValidIndex(Index))
+ 		{
+ 			for (UItemBase* Item : InventoryContentSArray)
+ 			{
+ 				if (Item && Item->Buildtypes == BuildingTypes[BuildingTypeIndex].BuildType)
+ 				{
+ 					if (Item->Quantity < 1)
+ 					{
+						bItemQuantityValid  = true;		// 아이템 수량 만큼만 빌딩 가능모드
+					}
+				}
+			}
+		}
+	}
+	// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
+	if (BuildingClass && !IsHidden() && !bItemQuantityValid)	// 아이템 수량 만큼만 빌딩 가능모드 -> 치트모드로 바꾸려면 !bItemQuantityValid 로 쓰기
 	{
 		// ABuilding 인스턴스 = 건축자재가 있을 때
 		if (InteractingBuilding)
@@ -253,13 +197,12 @@ void ABuildingVisual::SpawnBuilding_Cheat()
 			//GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
 			ABuilding* AbuildingClass = GetWorld()->SpawnActor<ABuilding>(BuildingClass, Loc, GetActorRotation());
 			//UE_LOG(LogTemp, Warning, TEXT("---------------------BUILDINGVISUAL Spawn Actor"));
-
-
+ 
+								
 
 			UPCodeSaveGame* castSave = Cast<UPCodeSaveGame>(UGameplayStatics::CreateSaveGameObject(UPCodeSaveGame::StaticClass()));
-
 			UPCodeSaveGame* castLoad = Cast<UPCodeSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("BuildingDataStorage"), 0));
-
+								
 			if (castLoad)
 			{
 				FBuildingActorData BuildingActorData;
@@ -274,19 +217,19 @@ void ABuildingVisual::SpawnBuilding_Cheat()
 				//UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Load :: %d "), arrnum);
 			}
 
-			else if (castSave)
-			{
-				FBuildingActorData BuildingActorData;
-				BuildingActorData.ABuilding = AbuildingClass->GetClass();
-				BuildingActorData.BuildingLocation = AbuildingClass->GetActorLocation();
-				BuildingActorData.BuildingRotation = AbuildingClass->GetActorRotation();
-
-				castSave->SavedActors.Add(BuildingActorData);
-				UGameplayStatics::SaveGameToSlot(castSave, TEXT("BuildingDataStorage"), 0);
+ 			else if (castSave)
+ 			{
+ 				FBuildingActorData BuildingActorData;
+ 				BuildingActorData.ABuilding = AbuildingClass->GetClass();
+ 				BuildingActorData.BuildingLocation = AbuildingClass->GetActorLocation();
+ 				BuildingActorData.BuildingRotation = AbuildingClass->GetActorRotation();
+ 
+ 				castSave->SavedActors.Add(BuildingActorData);
+ 				UGameplayStatics::SaveGameToSlot(castSave, TEXT("BuildingDataStorage"), 0);
 
 				int32 arrnum = castSave->SavedActors.Num();
 				//UE_LOG(LogTemp, Warning, TEXT("-------------SAVEGAME__ACTOR Cast :: %d "), arrnum);
-			}
+ 			}
 		}
 	}
 }

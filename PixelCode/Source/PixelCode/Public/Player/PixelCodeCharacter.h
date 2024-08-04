@@ -870,17 +870,6 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_DestroyBuildingInstance(UInstancedStaticMeshComponent* instComp, int32 instIndex);
 
-	
-	/// //////////////////
-// 	
-// 	UFUNCTION(Server, Reliable)
-// 	void ServerRPC_DestroyBuildingInstanceV2(const FHitResult& HitResult);
-// 
-// 	UFUNCTION(NetMulticast, Reliable)
-// 	void MulticastRPC_DestroyBuildingInstanceV2(const FHitResult& HitResult);
-
-	////////
-
 	//------------------------------------------------------------------------------------------
 	UFUNCTION()
 	void OnRemoveFoliagePressed();  
@@ -910,8 +899,6 @@ public:
 	TSubclassOf<class APickup> pickupTwig;
 	//-----------------------------------------------------------------------------------
 
-
-	
 	UFUNCTION()
 	void OnBuildUI();  
 

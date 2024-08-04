@@ -108,7 +108,7 @@ void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData, c
 
 
 
-		UInstancedStaticMeshComponent* InstancedStaticMeshComponent = Cast<UInstancedStaticMeshComponent>(HitResult.GetComponent());
+		//UInstancedStaticMeshComponent* InstancedStaticMeshComponent = Cast<UInstancedStaticMeshComponent>(HitResult.GetComponent());
 		//HitResult.ElementIndex
 		//InstancedStaticMeshComponent->RemoveInstance(InstancedStaticMeshComponent->GetInstanceIndex());
 		//InstancedStaticMeshComponent->GetInstanceIndexForId()

@@ -82,8 +82,6 @@ public:
 
 	void SpawnBuilding();
 
-	void SpawnBuilding_Cheat();
-
 	void DestroyInstance(const FHitResult& HitResult);
 	void CycleMesh();
 
