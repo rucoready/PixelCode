@@ -11,6 +11,12 @@ class USceneComponent;
 class USphereComponent;
 class ACharacter;
 class AActor;
+class ABossApernia;
+class ADemonSword;
+class AGrux;
+class ADogBart;
+
+
 
 UCLASS()
 class PIXELCODE_API APlayerMageRightAttackSpawnActor : public AActor
@@ -45,6 +51,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Components");
 	USphereComponent* SphereComp4;
 
+	FVector GetTargetEnemyLocation();
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* NA_MageRightAttack;
@@ -64,22 +71,18 @@ public:
 	UPROPERTY()
 	ACharacter* Enemys;
 
-	float Speed = 2200.f;
+	float Speed = 500.f;
 
 	float DestroyTime = 0.0f;
 
 	bool bDestroy = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-    float DamageAmount = 50;
+    float DamageAmount = 10;
 
 	UFUNCTION()
 	void OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
-	
-
-
-
-	
+	void CheckForEnemiesAndAttack();
 
 };

@@ -4,8 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PlayerMageZSkillSpawnActor.generated.h"
-
+#include "PlayerMageRSkillSpawnActor.generated.h"
 
 class UParticleSystem;
 class USceneComponent;
@@ -16,16 +15,14 @@ class ADemonSword;
 class AGrux;
 class ADogBart;
 
-
-
 UCLASS()
-class PIXELCODE_API APlayerMageZSkillSpawnActor : public AActor
+class PIXELCODE_API APlayerMageRSkillSpawnActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	APlayerMageZSkillSpawnActor();
+	APlayerMageRSkillSpawnActor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -42,14 +39,12 @@ public:
 	USphereComponent* SphereComp;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* NA_MageZSkillAttack;
+	UParticleSystem* NA_MageRSkillAttack;
+
+	
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* NA_MagicCircle;
-
-	UPROPERTY(EditAnywhere)
-	UParticleSystem* NA_MageZSkillhit;
-
+	UParticleSystem* NA_MageRSkillhit;
 
 
 	ABossApernia* boss;
@@ -64,8 +59,6 @@ public:
 
 	bool bDestroy = false;
 
-	bool bMagicCircle = false;
-
 	float MagicCircleAttackSpawnTime = 0.0f;
 
 	// 데미지 관련 변수
@@ -76,9 +69,8 @@ public:
 	TArray<AActor*> OverlappingActors;
 	TArray<bool> IsOverlappingFlags;
 
-	
-
 	void ApplyDamage();
+
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	float DamageAmount = 10;

@@ -40,6 +40,8 @@ class APlayerMageQSkillSpawnActor;
 class APlayerMageESkillSpawnActor;
 class APlayerMageZSkillSpawnActor;
 class USoundBase;
+class APlayerMageRSkillCastActor;
+
 
 UENUM()
 enum class MyEnum : int8
@@ -287,6 +289,9 @@ public:
 	APlayerMageESkillSpawnActor* mageSpawnESkillCollsion;
 
 	UPROPERTY()
+	APlayerMageRSkillCastActor* mageSpawnRSkillCollsion;
+
+	UPROPERTY()
 	APlayerMageZSkillSpawnActor* mageSpawnZSkillCollsion;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
@@ -306,6 +311,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	TSubclassOf<APlayerMageESkillSpawnActor> mageESkillSpawn;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
+	TSubclassOf<APlayerMageRSkillCastActor> mageRSkillSpawn;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	TSubclassOf<APlayerMageZSkillSpawnActor> mageZSkillSpawn;

@@ -63,8 +63,10 @@
 #include "Player/SpawnSkillActor/PlayerMageLeftAttackSpawnActor.h"
 #include "Player/SpawnSkillActor/PlayerMageQSkillSpawnActor.h"
 #include "Player/SpawnSkillActor/PlayerMageESkillSpawnActor.h"
+#include "Player/SpawnSkillActor/PlayerMageRSkillCastActor.h"
 #include "Player/SpawnSkillActor/PlayerMageZSkillSpawnActor.h"
 #include "CraftingArea.h"
+
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -1894,7 +1896,7 @@ void APixelCodeCharacter::SkillR()
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -20);
 						FActorSpawnParameters SpawnParams;
-						GetWorld()->SpawnActor<APlayerMageESkillSpawnActor>(mageESkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+						GetWorld()->SpawnActor<APlayerMageRSkillCastActor>(mageRSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
 					}
 				}
 				bRskillCoolTime = true;

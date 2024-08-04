@@ -32,6 +32,7 @@ APlayerMageZSkillSpawnActor::APlayerMageZSkillSpawnActor()
 
 	SphereComp->SetRelativeScale3D(FVector(40));
 	
+
 }
 
 // Called when the game starts or when spawned
@@ -81,47 +82,48 @@ void APlayerMageZSkillSpawnActor::Tick(float DeltaTime)
 
 void APlayerMageZSkillSpawnActor::ApplyDamage()
 {
-	if (OverlappingActor == boss && bIsOverlapping)
+	for (int32 i = 0; i < OverlappingActors.Num(); ++i)
 	{
-		
-		// 데미지 적용 예시: TakeDamage 함수 호출
-		boss->BossTakeDamage(DamageAmount);
-		//boss->ServerRPC_TakeDamage();
-		if (NA_MageZSkillhit != nullptr)
-		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OverlappingActor->GetActorLocation(), OverlappingActor->GetActorRotation());
-		}
-		
-	}
-	if (OverlappingActor == demonSword && bIsOverlapping)
-	{
-		demonSword->SwordTakeDamage(DamageAmount);
-		if (NA_MageZSkillhit != nullptr)
-		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OverlappingActor->GetActorLocation(), OverlappingActor->GetActorRotation());
-		}
-	}
-	if (OverlappingActor == grux && bIsOverlapping)
-	{
-		grux->GruxTakeDamage(DamageAmount);
-		grux->ServerRPC_TakeDamage();
-		if (NA_MageZSkillhit != nullptr)
-		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OverlappingActor->GetActorLocation(), OverlappingActor->GetActorRotation());
-			UE_LOG(LogTemp, Warning, TEXT("Gruxdamage"));
-		}
-	}
-	if (OverlappingActor == dogBart && bIsOverlapping)
-	{
-		dogBart->DogBartTakeDamage(DamageAmount);
-		dogBart->ServerRPC_TakeDamage();
+		AActor* CurrentActor = OverlappingActors[i];
+		bool IsOverlapping = IsOverlappingFlags[i];
 
-
-		if (NA_MageZSkillhit != nullptr)
+		if (IsOverlapping)
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, OverlappingActor->GetActorLocation(), OverlappingActor->GetActorRotation());
+			if (ABossApernia* Boss = Cast<ABossApernia>(CurrentActor))
+			{
+				Boss->BossTakeDamage(DamageAmount);
+				if (NA_MageZSkillhit != nullptr)
+				{
+					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, Boss->GetActorLocation(), Boss->GetActorRotation());
+				}
+			}
+			else if (ADemonSword* DemonSword = Cast<ADemonSword>(CurrentActor))
+			{
+				DemonSword->SwordTakeDamage(DamageAmount);
+				if (NA_MageZSkillhit != nullptr)
+				{
+					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, DemonSword->GetActorLocation(), DemonSword->GetActorRotation());
+				}
+			}
+			else if (AGrux* Grux = Cast<AGrux>(CurrentActor))
+			{
+				Grux->GruxTakeDamage(DamageAmount);
+				Grux->ServerRPC_TakeDamage();
+				if (NA_MageZSkillhit != nullptr)
+				{
+					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, Grux->GetActorLocation(), Grux->GetActorRotation());
+				}
+			}
+			else if (ADogBart* DogBart = Cast<ADogBart>(CurrentActor))
+			{
+				DogBart->DogBartTakeDamage(DamageAmount);
+				DogBart->ServerRPC_TakeDamage();
+				if (NA_MageZSkillhit != nullptr)
+				{
+					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageZSkillhit, DogBart->GetActorLocation(), DogBart->GetActorRotation());
+				}
+			}
 		}
-		UE_LOG(LogTemp, Warning, TEXT("dogbartdamage"));
 	}
 }
 
@@ -136,40 +138,64 @@ void APlayerMageZSkillSpawnActor::OnOverlapEnemy(UPrimitiveComponent* Overlapped
 	demonSword = Cast<ADemonSword>(OtherActor);
 	grux = Cast<AGrux>(OtherActor);
 	dogBart = Cast<ADogBart>(OtherActor);
-
-	if (OtherActor && OtherActor != this && OtherActor == boss)
+	
+	//.Add 메서드를 사용하면 동적으로 배열의 크기 조절, 초기에 배열의 크기를 정하지 않고 필요할 때마다 요소를 추가 가능.
+	 // 적이 감지되면 해당 적을 배열에 추가하고 데미지 적용 타이머를 시작합니다.
+	if (boss)
 	{
-		OverlappingActor = OtherActor;
-		bIsOverlapping = true;
-
-		GetWorldTimerManager().SetTimer(DamageTimerHandle, this, &APlayerMageZSkillSpawnActor::ApplyDamage, 0.5f, true);
+		OverlappingActors.Add(OtherActor);
+		IsOverlappingFlags.Add(true);
+	}
+	else if (demonSword)
+	{
+		OverlappingActors.Add(OtherActor);
+		IsOverlappingFlags.Add(true);
+	}
+	else if (grux)
+	{
+		OverlappingActors.Add(OtherActor);
+		IsOverlappingFlags.Add(true);
+	}
+	else if (dogBart)
+	{
+		OverlappingActors.Add(OtherActor);
+		IsOverlappingFlags.Add(true);
 	}
 
-	if (OtherActor && OtherActor != this && OtherActor == demonSword)
+	// 첫 번째 적이 감지될 때만 데미지를 주기 위해 타이머를 시작합니다.
+	if (OverlappingActors.Num() == 1)
 	{
-		OverlappingActor = OtherActor;
-		bIsOverlapping = true;
-
 		GetWorldTimerManager().SetTimer(DamageTimerHandle, this, &APlayerMageZSkillSpawnActor::ApplyDamage, 0.5f, true);
 	}
+}
 
-	if (OtherActor && OtherActor != this && OtherActor == grux)
+void APlayerMageZSkillSpawnActor::EndOverlapEnemy(AActor* OtherActor)
+{
+	int32 IndexToRemove = OverlappingActors.IndexOfByKey(OtherActor);
+	if (IndexToRemove != INDEX_NONE)
 	{
-		OverlappingActor = OtherActor;
-		bIsOverlapping = true;
+		OverlappingActors.RemoveAt(IndexToRemove);
+		IsOverlappingFlags.RemoveAt(IndexToRemove);
 
-		GetWorldTimerManager().SetTimer(DamageTimerHandle, this, &APlayerMageZSkillSpawnActor::ApplyDamage, 0.5f, true);
+		if (OverlappingActors.Num() == 0)
+		{
+			GetWorldTimerManager().ClearTimer(DamageTimerHandle);
+		}
 	}
-
-	if (OtherActor && OtherActor != this && OtherActor == dogBart)
-	{
-		OverlappingActor = OtherActor;
-		bIsOverlapping = true;
-
-		GetWorldTimerManager().SetTimer(DamageTimerHandle, this, &APlayerMageZSkillSpawnActor::ApplyDamage, 0.5f, true);
-	}
+}
 
 
+
+//void APlayerMageZSkillSpawnActor::OnEndOverlapCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+//{
+//	if (OtherActor == OverlappingActor)
+//	{
+//		bIsOverlapping = false;
+//		OverlappingActor = nullptr;
+//
+//		GetWorldTimerManager().ClearTimer(DamageTimerHandle);
+//	}
+//}
 
 
 	//if (boss)
@@ -215,16 +241,4 @@ void APlayerMageZSkillSpawnActor::OnOverlapEnemy(UPrimitiveComponent* Overlapped
 
 
 
-}
-
-void APlayerMageZSkillSpawnActor::OnEndOverlapCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (OtherActor == OverlappingActor)
-	{
-		bIsOverlapping = false;
-		OverlappingActor = nullptr;
-
-		GetWorldTimerManager().ClearTimer(DamageTimerHandle);
-	}
-}
 
