@@ -26,6 +26,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Public/EngineUtils.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Components/CapsuleComponent.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Camera/CameraComponent.h>
+#include "Player/PlayerOrganism.h"
 
 
 void APCodePlayerController::BeginPlay()
@@ -39,9 +40,22 @@ void APCodePlayerController::BeginPlay()
 		GM = Cast<AMyGameModeBase>(GetWorld()->GetAuthGameMode());
 	}
 
+	TArray<AActor*> allActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), allActors);
+
+	for(auto Temp : allActors)
+	{
+		UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Name : %s"), *Temp->GetActorNameOrLabel()));
+		
+	}
+
+
 	MainPlayer = Cast<APixelCodeCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	StatComponent = Cast<UStateComponent>(MainPlayer->stateComp);
 
+	statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
+
+	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
 	
 	ClientRPC_PlayerStartWidget();
 	
@@ -123,9 +137,6 @@ void APCodePlayerController::PlayerWidgetUpdate()
 
 void APCodePlayerController::ClientRPC_PlayerStartWidget_Implementation()
 {
-	statWidget = Cast<UPlayerStatWidget>(CreateWidget(GetWorld(), StatWidgetClass));
-
-	NormallyWidget = Cast<UNormallyWidget>(CreateWidget(GetWorld(), NormallyWidgetClass));
 
 	// 시작
 	if (StatWidgetClass)
@@ -259,6 +270,26 @@ void APCodePlayerController::PlayerDieWidget()
 	}
 }
 
+//void APCodePlayerController::PlayerRespawn()
+//{
+//	MainPlayer->stateComp->InitStat();
+//
+//	ServerRPC_PlayerRespawn();
+//}
+//
+//void APCodePlayerController::ServerRPC_PlayerRespawn_Implementation()
+//{
+//	MainPlayer->SetActorLocation(MainPlayer->GetActorLocation());
+//	MainPlayer->EnableInput(this);	
+//	MainPlayer->bDead = false;
+//	ClientRPC_PlayerRespawn();
+//}
+//
+//void APCodePlayerController::ClientRPC_PlayerRespawn_Implementation()
+//{
+//	SetInputMode(FInputModeGameOnly());
+//}
+
 
 
 
@@ -318,41 +349,45 @@ void APCodePlayerController::HandleCharacterDeath()
 	//SpawnCharacterAtLocation(MainPlayer->GetActorLocation());
 }
 
-void APCodePlayerController::SpawnCharacterAtLocation(APixelCodeCharacter* APlayerchar, const FVector& Location)
+void APCodePlayerController::ClientRPC_PlayerSpawnWidget_Implementation()
 {
+	StatComponent->InitStat();
+}
 
-	// 일정 시간 후 캐릭터 숨기기
-	GetWorld()->GetTimerManager().SetTimerForNextTick([this, APlayerchar]()
-		{
-			APlayerchar->motionState = ECharacterMotionState::Idle;
+void APCodePlayerController::ServerRPC_SpawnCharacterAtLocation_Implementation()
+{
+	APixelCodeCharacter* PooledCharacter = ObjectPoolManager->GetPooledCharacter();
+	SpawnCharacterAtLocation(PooledCharacter);
 
-			APlayerchar->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-			APlayerchar->GetMesh()->SetCollisionProfileName("CharacterMesh");
-			APlayerchar->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+}
 
+//void APCodePlayerController::Server_SpawnCharacterAtLocation_Implementation(APixelCodeCharacter* CharacterToSpawn, const FVector& Location)
+//{
+//	SpawnCharacterAtLocation(CharacterToSpawn,Location);
+//}
 
-			ObjectPoolManager->ReturnPooledCharacter(APlayerchar); // 캐릭터 반환
-		});
-
+void APCodePlayerController::SpawnCharacterAtLocation(APixelCodeCharacter* PooledCharacter)
+{
 	//SpawnCharacterAtLocation(MainPlayer->GetActorLocation());
 	if (ObjectPoolManager)
 	{
 		// 오브젝트 풀에서 사용 가능한 캐릭터 가져오기
-		APixelCodeCharacter* PooledCharacter = ObjectPoolManager->GetPooledCharacter();
+		
 		if (PooledCharacter)
 		{
 			PooledCharacter->bPoss = true;
-			PooledCharacter->SetActorLocation(Location); // 위치 설정
+			PooledCharacter->SetActorLocation(PooledCharacter->GetActorLocation()); // 위치 설정
 			PooledCharacter->SetActorHiddenInGame(false); // 게임에서 표시
 			PooledCharacter->SetActorEnableCollision(true); // 충돌 활성화
 			PooledCharacter->GetCharacterMovement()->Activate(); // 움직임 활성화
-
-			
-
 			StatComponent = PooledCharacter->stateComp;
-			StatComponent->InitStat();
+			
+			ClientRPC_PlayerSpawnWidget();
+
 			NormallyWidget = this->NormallyWidget;
 			NormallyWidget->bPlayerDie = true;
+
+			
 
 			//Possess(PooledCharacter);
 		
@@ -364,7 +399,7 @@ void APCodePlayerController::SpawnCharacterAtLocation(APixelCodeCharacter* APlay
 			else
 			{
 				 //서버 권한이 없는 경우에는 서버에 요청
-				Server_SpawnAndPossessCharacter(PooledCharacter, Location);
+				Server_SpawnAndPossessCharacter(PooledCharacter);
 			}
 			//Server_SpawnAndPossessCharacter(PooledCharacter, Location);
 			//Possess(PooledCharacter); // 컨트롤러가 캐릭터를 조종
@@ -373,8 +408,27 @@ void APCodePlayerController::SpawnCharacterAtLocation(APixelCodeCharacter* APlay
 	}
 }
 
+void APCodePlayerController::DeleteCharacter(APixelCodeCharacter* APlayerchar, const FVector& Location)
+{
+	// 일정 시간 후 캐릭터 숨기기
+	GetWorld()->GetTimerManager().SetTimerForNextTick([this, APlayerchar]()
+		{
+			APlayerchar->motionState = ECharacterMotionState::Idle;
 
-void APCodePlayerController::Server_SpawnAndPossessCharacter_Implementation(APixelCodeCharacter* CharacterToSpawn, const FVector& Location)
+			APlayerchar->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			APlayerchar->GetMesh()->SetCollisionProfileName("CharacterMesh");
+			APlayerchar->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+
+			ServerRPC_SpawnCharacterAtLocation();
+			ObjectPoolManager->ReturnPooledCharacter(APlayerchar); // 캐릭터 반환
+			
+			
+		});
+}
+
+
+void APCodePlayerController::Server_SpawnAndPossessCharacter_Implementation(APixelCodeCharacter* CharacterToSpawn)
 {
 	//SpawnCharacterAtLocation(CharacterToSpawn, Location);
 	Possess(CharacterToSpawn);

@@ -36,13 +36,29 @@ public:
 	void OpenUI(bool bOpen); 
 
 
-	void SpawnCharacterAtLocation(APixelCodeCharacter* APlayerchar,const FVector& Location); // 위치에 캐릭터 스폰
-	void HandleCharacterDeath(); // 캐릭터 사망 처리
-	UFUNCTION(Server, Reliable)
-	void Server_SpawnAndPossessCharacter(APixelCodeCharacter* CharacterToSpawn, const FVector& Location);
+	void SpawnCharacterAtLocation(APixelCodeCharacter* APlayerchar); // 위치에 캐릭터 스폰
 
+	void DeleteCharacter(APixelCodeCharacter* APlayerchar, const FVector& Location); // 위치에 캐릭터 스폰
+
+	void HandleCharacterDeath(); // 캐릭터 사망 처리
+
+	UFUNCTION(Server, Reliable)
+	void Server_SpawnAndPossessCharacter(APixelCodeCharacter* CharacterToSpawn);
+
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnCharacterAtLocation();
+
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_PlayerSpawnWidget();
+
+	/*UFUNCTION(Server, Reliable)
+	void Server_SpawnCharacterAtLocation(APixelCodeCharacter* CharacterToSpawn, const FVector& Location);*/
+
+	
 	UPROPERTY(Replicated)
 	APlayerObjectPoolManager* ObjectPoolManager; // 오브젝트 풀 관리자
+
 
 
 public:
@@ -99,6 +115,15 @@ public:
 	bool bIsStatVisible = true;
 
 	bool bPlayerState = false;
+
+	//UFUNCTION()
+	//void PlayerRespawn();
+
+	//UFUNCTION(Server, Reliable)
+	//void ServerRPC_PlayerRespawn();
+
+	//UFUNCTION(Client, Reliable)
+	//void ClientRPC_PlayerRespawn();
 
 	/*UFUNCTION(Server, Reliable)
 	void ServerRPC_RespawnPlayer();*/

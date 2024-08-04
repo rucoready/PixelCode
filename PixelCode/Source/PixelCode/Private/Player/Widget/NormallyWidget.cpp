@@ -268,14 +268,26 @@ void UNormallyWidget::OnMyButtonRespawn()
 	// 게임오버UI를 보이지않게하고
 	SetActiveGameOverUI(false);
 	auto* pc = Cast<APCodePlayerController>(GetWorld()->GetFirstPlayerController());
+
 	if (pc)
 	{
 		// 플레이어컨트롤러를 통해 재시작하고싶다.
 		pc->SetInputMode(FInputModeGameOnly());
 		pc->SetShowMouseCursor(false);
-		pc->SpawnCharacterAtLocation(Player,Player->GetActorLocation());
+		pc->DeleteCharacter(Player, Player->GetActorLocation());
 		//pc->ServerRPC_ChangeSpectator();
 	}
+	
+
+	//if (pc)
+	//{
+	//	auto charTemp = pc->GetPawn();
+
+	//	if (auto charCheck = Cast<APixelCodeCharacter>(charTemp))
+	//	{
+	//		pc->PlayerRespawn();
+	//	}
+	//}
 }
 
 void UNormallyWidget::OnMyButtonQuit()

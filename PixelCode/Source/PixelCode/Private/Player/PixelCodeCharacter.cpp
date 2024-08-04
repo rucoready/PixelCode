@@ -1401,7 +1401,7 @@ void APixelCodeCharacter::DieFunction()
 			UE_LOG(LogTemp, Warning, TEXT("RespawnOn22"));
 			pc->SetInputMode(FInputModeUIOnly());
 			pc->SetShowMouseCursor(true);
-			//DisableInput(pc);
+			DisableInput(pc);
 			pc->PlayerDieWidget();
 			pc->HandleCharacterDeath();
 		}
@@ -2936,7 +2936,8 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	
 	if (bPoss)
 	{
-		//EnableInput(Pc);
+		EnableInput(Pc);
+		this->SetOwner(Pc);
 		//FollowCamera->PostProcessSettings.ColorSaturation = FVector4(1, 1, 0, 0);
 		UE_LOG(LogTemp,Warning,TEXT("bPoss!!"));
 		bPoss = false;
