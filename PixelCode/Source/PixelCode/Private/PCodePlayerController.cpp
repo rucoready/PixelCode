@@ -347,22 +347,25 @@ void APCodePlayerController::SpawnCharacterAtLocation(APixelCodeCharacter* APlay
 			PooledCharacter->SetActorEnableCollision(true); // 충돌 활성화
 			PooledCharacter->GetCharacterMovement()->Activate(); // 움직임 활성화
 
+			
+
 			StatComponent = PooledCharacter->stateComp;
 			StatComponent->InitStat();
 			NormallyWidget = this->NormallyWidget;
 			NormallyWidget->bPlayerDie = true;
-			Possess(PooledCharacter);
+
+			//Possess(PooledCharacter);
 		
-		//	if (HasAuthority())
-			//{
-				// 서버 권한이 있는 경우에는 바로 호출
-			//	Possess(PooledCharacter);
-		//	}
-			////else
-			//{
-				// 서버 권한이 없는 경우에는 서버에 요청
-				//Server_SpawnAndPossessCharacter(PooledCharacter, Location);
-			//}
+			if (HasAuthority())
+			{
+				 //서버 권한이 있는 경우에는 바로 호출
+				Possess(PooledCharacter);
+			}
+			else
+			{
+				 //서버 권한이 없는 경우에는 서버에 요청
+				Server_SpawnAndPossessCharacter(PooledCharacter, Location);
+			}
 			//Server_SpawnAndPossessCharacter(PooledCharacter, Location);
 			//Possess(PooledCharacter); // 컨트롤러가 캐릭터를 조종
 			UE_LOG(LogTemp, Warning, TEXT("Possess!"));
@@ -371,11 +374,11 @@ void APCodePlayerController::SpawnCharacterAtLocation(APixelCodeCharacter* APlay
 }
 
 
-//void APCodePlayerController::Server_SpawnAndPossessCharacter_Implementation(APixelCodeCharacter* CharacterToSpawn, const FVector& Location)
-//{
-//	SpawnCharacterAtLocation(CharacterToSpawn, Location);
-//	Possess(CharacterToSpawn);
-//}
+void APCodePlayerController::Server_SpawnAndPossessCharacter_Implementation(APixelCodeCharacter* CharacterToSpawn, const FVector& Location)
+{
+	//SpawnCharacterAtLocation(CharacterToSpawn, Location);
+	Possess(CharacterToSpawn);
+}
 
 
 void APCodePlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -385,7 +388,7 @@ void APCodePlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	// PlayerName  Replication 
 	
 	// 오브젝트 풀 관리자 객체를 네트워크로 복제합니다.
-	//DOREPLIFETIME(APCodePlayerController, ObjectPoolManager);
+	DOREPLIFETIME(APCodePlayerController, ObjectPoolManager);
 
 }
 

@@ -1054,6 +1054,7 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 
 		if (castLoad)
 		{
+
 			int32 arrnum = castLoad->SavedInstances.Num();
 			//UE_LOG(LogTemp, Warning, TEXT("-------------INST Load :: %d "), arrnum);
 
@@ -1064,6 +1065,7 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 			castLoad->SavedInstances.Add(BuildingInstData);
 			UGameplayStatics::SaveGameToSlot(castLoad, TEXT("BuildingiNSTDataStorage"), 0);
 			//UE_LOG(LogTemp, Warning, TEXT("-------------INST Load :: %d "), arrnum);
+
 		}
 
 		else if (castSave)
@@ -1079,6 +1081,7 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 			UGameplayStatics::SaveGameToSlot(castSave, TEXT("BuildingiNSTDataStorage"), 0);
 
 			//UE_LOG(LogTemp, Warning, TEXT("-------------INST Cast :: %d "), arrnum);
+
 		}
 	}
 }
@@ -1088,7 +1091,9 @@ void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(EBuildTyp
 void APixelCodeCharacter::OnDestroyBuildingPressed()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("------------------Destroy Pressed"));
+
 	//ServerRPC_DestroyBuildingInstanceV2(PerformLineTrace());
+
 	ServerRPC_DestroyBuildingInstance();
 }
 
@@ -1334,7 +1339,7 @@ void APixelCodeCharacter::DieFunction()
 			UE_LOG(LogTemp, Warning, TEXT("RespawnOn22"));
 			pc->SetInputMode(FInputModeUIOnly());
 			pc->SetShowMouseCursor(true);
-			DisableInput(pc);
+			//DisableInput(pc);
 			pc->PlayerDieWidget();
 			pc->HandleCharacterDeath();
 		}
@@ -1400,6 +1405,7 @@ void APixelCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	// DOREPLIFETIME(APixelCodeCharacter, bInBuildMode); 
 	DOREPLIFETIME(APixelCodeCharacter, RollAnim);
 	DOREPLIFETIME(APixelCodeCharacter, Iteminfos);
+	DOREPLIFETIME(APixelCodeCharacter, bPoss);
 }
 
 
@@ -2868,7 +2874,7 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	
 	if (bPoss)
 	{
-		EnableInput(Pc);
+		//EnableInput(Pc);
 		//FollowCamera->PostProcessSettings.ColorSaturation = FVector4(1, 1, 0, 0);
 		UE_LOG(LogTemp,Warning,TEXT("bPoss!!"));
 		bPoss = false;

@@ -38,9 +38,10 @@ public:
 
 	void SpawnCharacterAtLocation(APixelCodeCharacter* APlayerchar,const FVector& Location); // 위치에 캐릭터 스폰
 	void HandleCharacterDeath(); // 캐릭터 사망 처리
-	//UFUNCTION(Server, Reliable)
-	//void Server_SpawnAndPossessCharacter(APixelCodeCharacter* CharacterToSpawn, const FVector& Location);
+	UFUNCTION(Server, Reliable)
+	void Server_SpawnAndPossessCharacter(APixelCodeCharacter* CharacterToSpawn, const FVector& Location);
 
+	UPROPERTY(Replicated)
 	APlayerObjectPoolManager* ObjectPoolManager; // 오브젝트 풀 관리자
 
 

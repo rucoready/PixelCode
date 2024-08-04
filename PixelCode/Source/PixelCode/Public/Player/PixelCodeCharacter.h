@@ -185,6 +185,7 @@ public:
 	float SPRegen = 0.0f;
 	float SPRegenTime = 0.0f;
 
+	UPROPERTY(Replicated)
 	bool bPoss = false;
 
 	class APickup* Pickup;
@@ -899,6 +900,8 @@ public:
 	TSubclassOf<class APickup> pickupTwig;
 	//-----------------------------------------------------------------------------------
 
+
+	
 	UFUNCTION()
 	void OnBuildUI();  
 
