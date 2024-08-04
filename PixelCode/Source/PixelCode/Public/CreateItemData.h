@@ -54,6 +54,7 @@
 	ETN_PupplStone = 62		UMETA(DisplayName = "PupplStone"),
 	ETN_GreenStone = 63		UMETA(DisplayName = "GreenStone"),
 	ETN_YellowStone = 64    UMETA(DisplayName = "YellowStone"),
+	ETN_BossItem = 65		UMETA(DisplayName = "BossItem"),
 
 	ETN_MAX					UMETA(DisplayName = "MAX")
 
