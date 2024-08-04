@@ -34,7 +34,7 @@ public:
 	float spawnArea = 1000;
 
 	UPROPERTY(EditAnywhere, Category = "MySettings")
-	float spawnRate = 40.0f;
+	float spawnRate = 5.0f;
 
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	TSubclassOf<class AGrux> grux1;
@@ -51,4 +51,12 @@ public:
 	void SpawnMob();
 
 	float currentTime;
+
+	
+
+	
+
+	
+
+
 };
