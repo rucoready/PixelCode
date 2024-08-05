@@ -190,7 +190,7 @@ ABossApernia::ABossApernia()
         swordNormalAttack01V1 = montageObj11.Object;
     }
 
-    static ConstructorHelpers::FObjectFinder<UAnimMontage> montageObj12(TEXT("/Script/Engine.AnimMontage'/Game/KMS_AI/Boss_Alpernia/Animations/AnimationV2/AM_NormalAttackV2_Montage.AM_NormalAttackV2_Montage'"));
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> montageObj12(TEXT("/Script/Engine.AnimMontage'/Game/KMS_AI/Boss_Alpernia/Animations/AnimationFinish/AS_BossNormalAttack02.AS_BossNormalAttack02'"));
     if (montageObj12.Succeeded())
     {
         swordNormalAttack01V2 = montageObj12.Object;
@@ -1779,7 +1779,7 @@ void ABossApernia::MoveGigantSword()
 
         AActor* spawnedSword = GetWorld()->SpawnActor<AActor>(gigantSword, StartLocation, SpawnRotation);
 
-        if (spawnedSword !=nullptr)
+        if (spawnedSword != nullptr)
         {
             float StartTime = GetWorld()->GetTimeSeconds();
             float Duration = 4.0f; // 이동을 완료하는 데 걸리는 시간
@@ -1787,6 +1787,13 @@ void ABossApernia::MoveGigantSword()
             FTimerHandle Handle;
             GetWorld()->GetTimerManager().SetTimer(Handle, [this, StartTime, Duration, StartLocation, TargetLocation, spawnedSword, &Handle]()
                 {
+                    if (spawnedSword == nullptr)
+                    {
+                        // spawnedSword가 더 이상 유효하지 않다면 타이머를 해제합니다.
+                        GetWorld()->GetTimerManager().ClearTimer(Handle);
+                        return;
+                    }
+
                     float CurrentTime = GetWorld()->GetTimeSeconds();
                     float Alpha = FMath::Clamp((CurrentTime - StartTime) / Duration, 0.0f, 1.0f);
 

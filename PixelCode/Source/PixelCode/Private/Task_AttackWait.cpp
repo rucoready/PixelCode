@@ -109,7 +109,7 @@ void UTask_AttackWait::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
     }
 
     // 3.1초가 지나면 SetFocus를 해제하고 태스크를 완료
-    if (currentTime >= 3.1f)
+    if (currentTime >= 2.5f)
     {
         if (ABossAIController* bossController = Cast<ABossAIController>(OwnerComp.GetAIOwner()))
         {
