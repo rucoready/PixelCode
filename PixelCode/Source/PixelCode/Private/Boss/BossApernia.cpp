@@ -357,7 +357,7 @@ ABossApernia::ABossApernia()
         groundImpactParticle2 = particleObj2.Object;
     }
 
-    static ConstructorHelpers::FObjectFinder<UParticleSystem> particleObj3(TEXT("/Script/Engine.ParticleSystem'/Game/KMS_AI/Boss_Alpernia/Effects/CounterHit.CounterHit'"));
+    static ConstructorHelpers::FObjectFinder<UParticleSystem> particleObj3(TEXT("/Script/Engine.ParticleSystem'/Game/ParagonKhaimera/FX/ParticleSystems/Abilities/Ultimate/FX/P_Khaimera_Ult_Blast.P_Khaimera_Ult_Blast'"));
     if (particleObj3.Succeeded())
     {
         counterImpactParticle = particleObj3.Object;

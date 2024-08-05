@@ -27,7 +27,7 @@ UTask_FarJumpAttack::UTask_FarJumpAttack(FObjectInitializer const& ObjectInitial
         farStompAttack = montageObj.Object;
     }
 
-    static ConstructorHelpers::FClassFinder<UCameraShakeBase> shakeObj(TEXT("/Script/Engine.CameraShakeBase'/Game/KMS_AI/Boss_Alpernia/Effects/BossJumpShake.BossJumpShake_C'"));
+    static ConstructorHelpers::FClassFinder<UCameraShakeBase> shakeObj(TEXT("/Script/Engine.Blueprint'/Game/KMS_AI/Boss_Alpernia/CameraShake/BP_CameraShakeStomp.BP_CameraShakeStomp'"));
     if (shakeObj.Succeeded())
     {
         cameraShakeOBJ = shakeObj.Class;
