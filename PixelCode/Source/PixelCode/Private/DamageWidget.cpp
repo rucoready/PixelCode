@@ -59,7 +59,7 @@ void UDamageWidget::HideDamage()
 	if (damageText)
 	{
 		damageText->SetVisibility(ESlateVisibility::Collapsed);
-		damageImg->SetVisibility(ESlateVisibility::Collapsed);
+		//damageImg->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
@@ -91,7 +91,7 @@ void UDamageWidget::PlayDamageAnimation02(int damageValue2)
 {
 	PlayAnimation(DamageAnimation2);
 	damageText->SetText(FText::AsNumber(damageValue2));
-	damageImg->SetVisibility(ESlateVisibility::Visible);
+	//damageImg->SetVisibility(ESlateVisibility::Visible);
 	if (critsDamageSound)
 	{
 		UGameplayStatics::PlaySound2D(this, critsDamageSound);

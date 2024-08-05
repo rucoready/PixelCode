@@ -24,8 +24,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UTextBlock* damageText;	
 
-	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
-	class UImage* damageImg;
+	//UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	//class UImage* damageImg;
 
 	void PlayDamageAnimation();
 
