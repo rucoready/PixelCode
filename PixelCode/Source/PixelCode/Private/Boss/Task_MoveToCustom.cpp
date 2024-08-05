@@ -43,7 +43,7 @@ void UTask_MoveToCustom::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 
     if (PixelCodeCharacter)
     {
-        UE_LOG(LogTemp, Warning, TEXT("PixelCodeCharacter Found!!"));
+
         // 현재 캐릭터의 위치
         //FVector CurrentLocation = PixelCodeCharacter->GetActorLocation();
 

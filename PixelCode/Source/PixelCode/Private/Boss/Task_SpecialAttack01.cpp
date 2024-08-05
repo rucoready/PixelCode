@@ -214,7 +214,6 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
                         FVector LaunchVelocity(0, 0, 900);
 
                         boss->LaunchCharacter(LaunchVelocity, true, true);
-                        UE_LOG(LogTemp, Warning, TEXT("Launch Characters22222!"));
                         jumpOnce = true;
                     }
                     
@@ -239,7 +238,6 @@ void UTask_SpecialAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
                     if (boss->bossHitCounterAttack == false)
                     {
                         boss->LaunchCharacter(LaunchVelocity, true, true);
-                        UE_LOG(LogTemp, Warning, TEXT("Launch Characters!"));
                         jumpOnce2 = true;
                     }
                     

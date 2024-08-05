@@ -231,7 +231,7 @@ void ADemonSword::OnBeginOverlapSwordFloor(UPrimitiveComponent* OverlappedCompon
 
 	if (currentTime > 15.0f)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!2"));
+		
 	}
 	if (OtherActor->GetName().Contains("Floor")|| OtherActor->GetName().Contains("Player")|| OtherActor->GetName().Contains("Cube"))
 	{
@@ -240,7 +240,7 @@ void ADemonSword::OnBeginOverlapSwordFloor(UPrimitiveComponent* OverlappedCompon
 			Destroy();
 			onceSound = false;
 			ApplyDamageToTarget(OtherActor, 7);
-			UE_LOG(LogTemp, Warning, TEXT("OVerlap Floor"));
+			
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), grounSwordImpact2, GetActorLocation(), GetActorRotation(), FVector(0.5f));
 			//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), groundSwordImpact, GetActorLocation(), GetActorRotation(), FVector(3.0f));
 			TArray<AActor*> foundCharacters;

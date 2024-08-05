@@ -28,7 +28,7 @@ void UService_GruxCheckAttack::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), APixelCodeCharacter::StaticClass(), foundCharacters);
     float betweenSize = FVector::Dist2D(gruxLoc, actorLoc);
 
-    UE_LOG(LogTemp, Warning, TEXT("betweenSizeDistance : %f"), betweenSize);
+    
 
     for (AActor* actor : foundCharacters)
     {

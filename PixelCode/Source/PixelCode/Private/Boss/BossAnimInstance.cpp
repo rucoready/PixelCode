@@ -58,7 +58,6 @@ void UBossAnimInstance::AnimNotify_SwordOn()
 void UBossAnimInstance::AnimNotify_CollisionOn()
 {
 
-	UE_LOG(LogTemp, Warning, TEXT("AnimNotify CollisionOn Call"))
 	currentTime = 0;
 		
 	boss->SwordCollisionActive();
@@ -76,7 +75,6 @@ void UBossAnimInstance::AnimNotify_CollisionOn()
 void UBossAnimInstance::AnimNotify_CollisionOff()
 {
 	
-	UE_LOG(LogTemp, Warning, TEXT("AnimNotify CollisionOff Call"))
 	boss->SwordCollisionDeactive();
 	attackCoolTime = false;
 }

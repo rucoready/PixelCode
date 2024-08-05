@@ -26,13 +26,5 @@ void UDecorator_CantAttack::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
     // 블랙보드 키로부터 값을 가져옴
     bool value = OwnerComp.GetBlackboardComponent()->GetValueAsBool(GetSelectedBlackboardKey());
 
-    // 조건 확인
-    //if (value == true)
-    //{
-    //    return 
-    //}
-    //else
-    //{
-    //    return EBTNodeResult::InProgress;
-    //}
+    
 }

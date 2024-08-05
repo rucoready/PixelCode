@@ -46,7 +46,7 @@ void UTask_BossIdleMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 
                     // 블랙보드 키로부터 값을 가져옴
                     bool value = OwnerComp.GetBlackboardComponent()->GetValueAsBool(GetSelectedBlackboardKey());
-                    UE_LOG(LogTemp, Warning, TEXT("Bool : %d"), value);
+                    
 
                     // 조건 확인
                     if (value == true)

@@ -30,11 +30,7 @@ EBTNodeResult::Type UTask_GruxAttack01::ExecuteTask(UBehaviorTreeComponent& Owne
 
     grux = Cast<AGrux>(UGameplayStatics::GetActorOfClass(GetWorld(), AGrux::StaticClass()));
    
-//     if (grux)
-//     {
-//         grux->bPlayAttack = true;
-//         UE_LOG(LogTemp, Warning, TEXT("3232323232"));
-//     }
+
     grux->attackSensing = true;
 
 	return EBTNodeResult::InProgress;

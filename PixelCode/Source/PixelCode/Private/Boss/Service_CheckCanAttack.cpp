@@ -21,7 +21,6 @@ void UService_CheckCanAttack::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
     ABossApernia* bossCharacter = Cast<ABossApernia>(UGameplayStatics::GetActorOfClass(GetWorld(), ABossApernia::StaticClass()));
     if (!bossCharacter)
     {
-        UE_LOG(LogTemp, Error, TEXT("Failed to find boss character."));
         return;
     }
 
@@ -29,11 +28,9 @@ void UService_CheckCanAttack::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
     APixelCodeCharacter* pixelCharacter = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (!pixelCharacter)
     {
-        UE_LOG(LogTemp, Error, TEXT("Failed to find PixelCodeCharacter."));
         return;
     }
 
-    UE_LOG(LogTemp, Warning, TEXT("Enable check"));
 
     // BossApernia와 PixelCodeCharacter 사이의 거리 계산
     float distance = FVector::Distance(bossCharacter->GetActorLocation(), pixelCharacter->GetActorLocation());

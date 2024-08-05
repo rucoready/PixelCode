@@ -79,7 +79,7 @@ void AFireActor::ApplyDamage()
                 APCodePlayerController* pc = Cast<APCodePlayerController>(Controller);
                 if (pc != nullptr)
                 {
-                    UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
+              
                     pc->ClientStartCameraShake(cameraShakeFire);
                 }
             }

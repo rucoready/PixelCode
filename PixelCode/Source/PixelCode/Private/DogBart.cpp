@@ -489,7 +489,7 @@ void ADogBart::MulticastRPC_DogBartTakeDamageWidgetSet_Implementation(int32 valu
 			currentHp = currentHp - value2;
 			
 		}
-		UE_LOG(LogTemp, Warning, TEXT("currentHP3 : %d"), value2);
+		
 	}
 	
 	

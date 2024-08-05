@@ -24,7 +24,6 @@ void UService_CalculateDistanceBetween::TickNode(UBehaviorTreeComponent& OwnerCo
     ABossApernia* bossCharacter = Cast<ABossApernia>(UGameplayStatics::GetActorOfClass(GetWorld(), ABossApernia::StaticClass()));
     if (!bossCharacter)
     {
-        UE_LOG(LogTemp, Error, TEXT("Failed to find boss character."));
         return;
     }
 
@@ -47,7 +46,7 @@ void UService_CalculateDistanceBetween::TickNode(UBehaviorTreeComponent& OwnerCo
             if (player)
             {
 				FVector playerLocation = player->GetActorLocation();
-				UE_LOG(LogTemp, Warning, TEXT("Selected PlayerLocation: X=%f, Y=%f, Z=%f"), playerLocation.X, playerLocation.Y, playerLocation.Z);
+				
             }
         }
     }

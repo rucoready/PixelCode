@@ -408,15 +408,7 @@ void ABossApernia::BeginPlay()
     InitMainUI();
 
     
-//     ABossFloor* floorActor = Cast<ABossFloor>(floor);
-//     if (floorActor)
-//     {
-//         UE_LOG(LogTemp, Warning, TEXT("FloorC1"));
-//     }
-//     if (floorActor == NULL)
-//     {
-//         UE_LOG(LogTemp, Warning, TEXT("FloorC000"));
-//     }
+
 }
 
 // Called every frame
@@ -426,7 +418,6 @@ void ABossApernia::Tick(float DeltaTime)
 
     currentTime +=DeltaTime;
     
-    UE_LOG(LogTemp, Warning, TEXT("StatueDestroyCount : %d"), statueDestroyCount);
     if (allStatueDestroy)
     {
         ServerRPC_CheckingStatueSurvive();
@@ -469,7 +460,6 @@ void ABossApernia::Tick(float DeltaTime)
     }
     if (statueDestroyCount == 3&& !onceRestore2PhaseBoss)
     {
-        UE_LOG(LogTemp, Warning, TEXT("oo99"));
         onceRestore2PhaseBoss = true;
         RepocessBehaviorTree();
     }
@@ -704,7 +694,7 @@ void ABossApernia::BossTakeDamage(float Damage)
                 APlayerController* pc = player->GetController<APlayerController>();
                 if (pc != nullptr)
                 {
-                    UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
+  
                     pc->ClientStartCameraShake(cameraShakeHitPlayerOBJ);
 
 
@@ -753,37 +743,36 @@ void ABossApernia::RestoreBind()
 
 void ABossApernia::RepocessBehaviorTree()
 { 
-    UE_LOG(LogTemp, Warning, TEXT("RepocessBehaviorTree called"));
+
 
     if (ABossAIController* bossController = Cast<ABossAIController>(GetController()))
     {
         if (savedBTComponent)
         {
-            UE_LOG(LogTemp, Warning, TEXT("Restarting Behavior Tree"));
+   
             bossController->BrainComponent->RestartLogic();
             SetActorLocation(savedLocation); // Restore the saved location if necessary
         }
         else
         {
-            UE_LOG(LogTemp, Error, TEXT("Saved BT Component is null"));
+
         }
     }
     else
     {
-        UE_LOG(LogTemp, Error, TEXT("Boss AI Controller not found"));
+       
     }
     
 }
 
 void ABossApernia::RepocessBehaviorTreeRe()
 {
-    UE_LOG(LogTemp, Warning, TEXT("RepocessBehaviorTreeRe called"));
 
     if (ABossAIController* bossController = Cast<ABossAIController>(GetController()))
     {
         if (savedBTComponent && tree)
         {
-            UE_LOG(LogTemp, Warning, TEXT("Restarting Behavior Tree from the beginning"));
+            
             bossController->BrainComponent->RestartLogic();
             bossController->RunBehaviorTree(tree);
         }
@@ -1108,7 +1097,7 @@ void ABossApernia::MulticastRPC_JumpAttack03CameraShake_Implementation()
             APlayerController* pc = player->GetController<APlayerController>();
             if (pc != nullptr)
             {
-                UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
+    
                 pc->ClientStartCameraShake(cameraShakeOBJ);
 
 
@@ -1305,7 +1294,7 @@ void ABossApernia::MulticastRPC_DoubleSwingCameraShake_Implementation()
             APlayerController* pc = player->GetController<APlayerController>();
             if (pc != nullptr)
             {
-                UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
+
                 pc->ClientStartCameraShake(cameraShakeOBJ2);
 
 
@@ -1679,7 +1668,7 @@ void ABossApernia::ServerRPC_BossTakeDamageWidgetSet_Implementation()
             // damageWidgetInstance->PlayDamageAnimation05();
         }
 
-        UE_LOG(LogTemp, Warning, TEXT("damageAmount : %d"), damageAmount);
+
     }
 
 
@@ -1783,7 +1772,6 @@ void ABossApernia::SpawnGigantSword()
 void ABossApernia::MoveGigantSword()
 {
     if (gigantSword)
-    UE_LOG(LogTemp, Warning, TEXT("UI88"));
     {
         FVector StartLocation(2490, 4830, 8400);
         FVector TargetLocation(2490, 4829, 3919);
@@ -1840,7 +1828,6 @@ void ABossApernia::MulticastRPC_GigantSwordCameraShake_Implementation()
             APlayerController* pc = player->GetController<APlayerController>();
             if (pc != nullptr)
             {
-                UE_LOG(LogTemp, Warning, TEXT("Trying to shake camera!"));
                 pc->ClientStartCameraShake(gigantSwordCameraShake);
 
 
@@ -2039,12 +2026,10 @@ void ABossApernia::MulticastRPC_CheckingStatueSurvive_Implementation()
     
     if (FoundActors.Num() == 0)
     {
-        UE_LOG(LogTemp, Warning, TEXT("hello330"));  
     }
     
     if (FoundActors.Num() > 0)
     {
-        UE_LOG(LogTemp, Warning, TEXT("hello331"));  
     }
 }
 

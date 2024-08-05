@@ -127,7 +127,7 @@ void UTask_JumpAttack03::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
                     FVector LaunchVelocity(0, 0, 1400);
 
                     //boss->LaunchCharacter(LaunchVelocity, true, true);
-                    UE_LOG(LogTemp, Warning, TEXT("Launch Characters!"));
+                   
                     jumpOnce = true;
 
                 }

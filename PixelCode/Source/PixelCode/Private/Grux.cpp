@@ -158,7 +158,7 @@ void AGrux::Tick(float DeltaTime)
              GetWorldTimerManager().SetTimer(timerhandle_Destroy, this, &AGrux::DestroySelf, 7.0f, false);
 
          }
-         UE_LOG(LogTemp, Warning, TEXT("GRUX DIE!"));
+        
 
          
 
@@ -307,7 +307,7 @@ void AGrux::RetrunOriginLoc()
     }
     
     GetCharacterMovement()->MaxWalkSpeed = 900.0f;
-    UE_LOG(LogTemp, Warning, TEXT("ReP Grux Tree"));
+    
 
     GetWorldTimerManager().SetTimer(timerhandle_ReturnOrigin, this, &AGrux::CoolTimeSetting, 5.f, false);
     
@@ -465,7 +465,7 @@ void AGrux::ServerRPC_GruxTakeDamageWidgetSet_Implementation()
            // damageWidgetInstance->PlayDamageAnimation05();
         }
 
-        UE_LOG(LogTemp, Warning, TEXT("damageAmount : %d"), damageAmount);
+        
     }
 
 
@@ -515,7 +515,7 @@ void AGrux::MulticastRPC_GruxTakeDamageWidgetSet_Implementation(int32 vaule2)
 
     }
 
-    UE_LOG(LogTemp,Warning, TEXT("CURRENTT : %f"),currentHp);
+   
 	
 }
 

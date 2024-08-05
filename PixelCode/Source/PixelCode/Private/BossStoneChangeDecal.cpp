@@ -31,7 +31,6 @@ void ABossStoneChangeDecal::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Warning, TEXT("CA55"));
 	currentTime += DeltaTime;
 	
 	if (currentTime >= 0.0f && currentTime <= 2.0f)

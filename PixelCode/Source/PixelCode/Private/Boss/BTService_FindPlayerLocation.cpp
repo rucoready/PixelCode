@@ -22,7 +22,7 @@ void UBTService_FindPlayerLocation::TickNode(UBehaviorTreeComponent& OwnerComp, 
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
-	UE_LOG(LogTemp, Warning, TEXT("TickNodeTest"));
+
     // 블랙보드 컴포넌트 가져오기
     UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
     if (!BlackboardComp)

@@ -35,7 +35,7 @@ EBTNodeResult::Type UTask_DogBartMoveToPlayer::ExecuteTask(UBehaviorTreeComponen
             }
             if (dogBartController == NULL)
             {
-                UE_LOG(LogTemp, Warning, TEXT("8787878787878787878787"));
+                
             }
         }
 

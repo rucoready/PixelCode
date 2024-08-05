@@ -35,7 +35,7 @@ EBTNodeResult::Type UTask_Boss2PhaseGoUp::ExecuteTask(UBehaviorTreeComponent& Ow
             boss = Cast<ABossApernia>(controlledPawn);
             if (boss)
             {
-                UE_LOG(LogTemp, Warning, TEXT("Boss2PhaseOn"));
+               
                 
                 
                 boss->ServerRPC_Boss2phaseRoar();

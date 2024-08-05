@@ -110,7 +110,6 @@ void UTTask_StingAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
                         APlayerController* pc = player->GetController<APlayerController>();
                         if (pc != nullptr && !onceCameraShake)
                         {
-                            UE_LOG(LogTemp, Warning, TEXT("Trying to shake Sting"));
                             pc->ClientStartCameraShake(cameraShakeOBJ);
                             onceCameraShake = true;
 
@@ -142,7 +141,6 @@ void UTTask_StingAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
                     FVector currentLocation = bossPawn->GetActorLocation();
                     FVector targetLocation = currentLocation + bossPawn->GetActorForwardVector() * speed * DeltaSeconds * 4;
      
-                    UE_LOG(LogTemp, Warning, TEXT("OverFive2"));
                     // 실제 이동
                     bossPawn->SetActorLocation(targetLocation);
 
