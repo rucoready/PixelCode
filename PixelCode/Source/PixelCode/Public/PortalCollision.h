@@ -33,6 +33,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UPortalRobbyWidget> portalRobbyWidget;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* portalCreateSound;
+
 	
 
 	bool makeOnceUI = false;

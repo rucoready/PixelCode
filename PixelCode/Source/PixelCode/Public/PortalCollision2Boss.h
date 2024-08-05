@@ -26,6 +26,9 @@ public:
 	UPROPERTY(EditAnywhere, Category="MySettings")
 	class UBoxComponent* boxCollision;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* portalCreateSound;
+
 	UFUNCTION()
 	void OnBeginOverlapPortal(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 

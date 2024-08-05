@@ -56,7 +56,7 @@ void ABossFloor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
     currentTime += DeltaTime;
-
+    
     if (currentTime >= 30.0 && !bOnceActive)
     {
         SpawnSword();

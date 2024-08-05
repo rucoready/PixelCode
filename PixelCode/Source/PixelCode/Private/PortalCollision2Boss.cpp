@@ -4,6 +4,7 @@
 #include "PortalCollision2Boss.h"
 #include "PCodePlayerController.h"
 #include "Net/UnrealNetwork.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
 
 // Sets default values
@@ -43,6 +44,8 @@ void APortalCollision2Boss::OnBeginOverlapPortal(UPrimitiveComponent* Overlapped
 			if (OverlappedPlayerController)
 			{
 				OverlappedPlayerController->CreateWidgetBossEnterWidget();
+
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), portalCreateSound, GetActorLocation());
 			}
 		}
 	}

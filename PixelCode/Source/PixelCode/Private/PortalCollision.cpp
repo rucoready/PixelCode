@@ -59,6 +59,8 @@ void APortalCollision::OnBeginOverlapPortal(UPrimitiveComponent* OverlappedCompo
                 {
                     OverlappedPlayerController->ServerRPC_CreateWidgetRobbyWidget();
 
+                    UGameplayStatics::PlaySoundAtLocation(GetWorld(), portalCreateSound, GetActorLocation());
+
                 }
             }
         }
