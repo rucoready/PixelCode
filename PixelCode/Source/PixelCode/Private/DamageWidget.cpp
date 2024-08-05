@@ -5,6 +5,8 @@
 #include "Components/TextBlock.h"
 #include "TimerManager.h"
 #include "Engine/World.h"  // GetWorld()를 사용하기 위해 필요
+#include "Sound/SoundCue.h" // SoundCue 포함
+#include "Kismet/GameplayStatics.h" // UGameplayStatics 포함
 #include "Animation/WidgetAnimation.h"
 
 void UDamageWidget::NativeConstruct()
@@ -57,14 +59,18 @@ void UDamageWidget::HideDamage()
 	if (damageText)
 	{
 		damageText->SetVisibility(ESlateVisibility::Collapsed);
+		damageImg->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
+
+
 
 void UDamageWidget::SetDamage()
 {
 	if (damageText)
 	{
 		damageText->SetVisibility(ESlateVisibility::Visible);
+		
 	}
 }
 
@@ -85,6 +91,11 @@ void UDamageWidget::PlayDamageAnimation02(int damageValue2)
 {
 	PlayAnimation(DamageAnimation2);
 	damageText->SetText(FText::AsNumber(damageValue2));
+	damageImg->SetVisibility(ESlateVisibility::Visible);
+	if (critsDamageSound)
+	{
+		UGameplayStatics::PlaySound2D(this, critsDamageSound);
+	}
 	
 }
 

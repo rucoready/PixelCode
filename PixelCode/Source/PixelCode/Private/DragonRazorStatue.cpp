@@ -82,6 +82,8 @@ void ADragonRazorStatue::Tick(float DeltaTime)
         GetWorldTimerManager().SetTimer(timerhandle_Destroy, this, &ADragonRazorStatue::DrestroyFractureStatue, 5.0f, false);
 
         DestroySelf();
+
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(), fractureSound, GetActorLocation());
         
     }
 

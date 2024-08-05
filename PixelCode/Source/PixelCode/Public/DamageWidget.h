@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Image.h" // UImage 포함
 #include "DamageWidget.generated.h"
 
 /**
@@ -23,9 +24,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	class UTextBlock* damageText;	
 
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	class UImage* damageImg;
+
 	void PlayDamageAnimation();
 
 	void HideDamage();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+	class USoundCue* critsDamageSound;
 
 	void SetDamage();
 

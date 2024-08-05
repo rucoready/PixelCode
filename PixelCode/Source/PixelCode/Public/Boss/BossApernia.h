@@ -183,6 +183,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class USoundBase* counterSound; // 
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* fractureSound;
+
 	//////////////////////////UI
 
 

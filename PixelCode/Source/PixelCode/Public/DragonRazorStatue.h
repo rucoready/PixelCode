@@ -42,6 +42,10 @@ public:
 
 	void OnMyClickBlackRoom();
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* fractureSound;
+
+
 	float currentHp;
 
 	float maxHp = 30.0f;

@@ -39,4 +39,5 @@ public:
 	float attackDelay = 4.0f;
 
 	
+	
 };

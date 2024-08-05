@@ -1940,7 +1940,7 @@ void ABossApernia::SpawnFractureBoss()
     SpawnRotation.Yaw -= 90.0f;
 
 
-    
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), fractureSound, GetActorLocation());
 
     if (FractureBossClass)
     {
