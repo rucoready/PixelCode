@@ -181,7 +181,7 @@ void UCraftingWidget::OnCraftClicked()
 			UGameplayStatics::PlaySound2D(GetWorld(), CraftSuccessSound);
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("CLICK"));
+		//UE_LOG(LogTemp, Warning, TEXT("CLICK"));
 
 		Char->CraftItem(Crafts[SelectedIndex]);
 
@@ -189,7 +189,7 @@ void UCraftingWidget::OnCraftClicked()
 	}
 	else
 	{
-		UE_LOG(LogTemp,Warning,TEXT("Craftable"));
+		//UE_LOG(LogTemp,Warning,TEXT("Craftable"));
 	}
 
 

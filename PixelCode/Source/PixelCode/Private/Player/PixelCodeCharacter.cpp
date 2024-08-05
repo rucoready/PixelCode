@@ -233,6 +233,7 @@ void APixelCodeCharacter::BeginPlay()
 	if(GameInst)
 	{
 		OwningInventoryntory = GameInst->LoadInventory();
+		//PlayerInventory = GameInst->LoadInventory();
 	}
 
 	
@@ -810,9 +811,13 @@ void APixelCodeCharacter::UpdateGameInstanceInventory()
 {
 	if (!GameInst)
 	{
+		TArray<UItemBase*> InventoryContentSArray = PlayerInventory->GetInventoryContents();
 		return;
 	}
-	GameInst->UpdateInventory(OwningInventoryntory);
+	GameInst->UpdateInventory(PlayerInventory);
+
+	//TArray<UItemBase*> InventoryContentSArray = PlayerInventory->GetInventoryContents();
+
 }
 
 
@@ -996,9 +1001,9 @@ void APixelCodeCharacter::ServerRPC_SpawnBuilding_Implementation()
 void APixelCodeCharacter::NetMulticastRPC_SpawnBuilding_Implementation(const FBuildingSocketData& BuildingSocketData, EBuildType BuildType, FTransform Transf)
 {
 
-	UE_LOG(LogTemp, Warning, TEXT("%f : %f"), Transf.GetLocation().X, BuildingSocketData.SocketTransform.GetLocation().X);
-	UE_LOG(LogTemp, Warning, TEXT("%f : %f"), Transf.GetLocation().Y, BuildingSocketData.SocketTransform.GetLocation().Y);
-	UE_LOG(LogTemp, Warning, TEXT("%f : %f"), Transf.GetLocation().Z, BuildingSocketData.SocketTransform.GetLocation().Z);
+	//UE_LOG(LogTemp, Warning, TEXT("%f : %f"), Transf.GetLocation().X, BuildingSocketData.SocketTransform.GetLocation().X);
+	//UE_LOG(LogTemp, Warning, TEXT("%f : %f"), Transf.GetLocation().Y, BuildingSocketData.SocketTransform.GetLocation().Y);
+	//UE_LOG(LogTemp, Warning, TEXT("%f : %f"), Transf.GetLocation().Z, BuildingSocketData.SocketTransform.GetLocation().Z);
 // 	if (Building)
 // 	{
 // 		switch (BuildType)
@@ -1390,17 +1395,17 @@ void APixelCodeCharacter::DieFunction()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	UE_LOG(LogTemp, Warning, TEXT("RespawnOn"));
+	//UE_LOG(LogTemp, Warning, TEXT("RespawnOn"));
 
 	// UI -> 리스폰 / 종료
 	if (IsLocallyControlled())
 	{ 
 		auto pc = Cast<APCodePlayerController>(Controller);
 		//FollowCamera->PostProcessSettings.ColorSaturation = FVector4(0, 0, 0, 1);
-		UE_LOG(LogTemp, Warning, TEXT("RespawnOn11"));
+		//UE_LOG(LogTemp, Warning, TEXT("RespawnOn11"));
 		if (pc)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("RespawnOn22"));
+			//UE_LOG(LogTemp, Warning, TEXT("RespawnOn22"));
 			pc->SetInputMode(FInputModeUIOnly());
 			pc->SetShowMouseCursor(true);
 			DisableInput(pc);

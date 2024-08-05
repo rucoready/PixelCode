@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Player/PixelCodeCharacter.h"
 #include "PortalRobbyWidget.generated.h"
 
 /**
@@ -15,6 +16,13 @@ class PIXELCODE_API UPortalRobbyWidget : public UUserWidget
 public:
 
 	virtual void NativeConstruct() override;
+
+	// ฟไวั
+
+	class APixelCodeCharacter* Pc;
+	//class APCodePlayerController* Pc;
+
+
 
 	// Button and text block widgets
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))

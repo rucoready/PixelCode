@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Player/PixelCodeCharacter.h"
 #include "PortalCollision.generated.h"
 
 UCLASS()
@@ -39,6 +40,8 @@ public:
 	bool bReady = false;
 
 	class UPortalRobbyWidget* WidgetInstance;
+
+	class APixelCodeCharacter* Pc;
 
 	TMap<APlayerController*, FVector> PlayerStartLocations;
 

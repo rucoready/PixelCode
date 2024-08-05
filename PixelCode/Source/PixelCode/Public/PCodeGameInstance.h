@@ -144,7 +144,11 @@ class PIXELCODE_API UPCodeGameInstance : public UGameInstance
 	//TArray<UItemBase*> LoadInventory();
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateInventory(const TArray<UInventoryComponent*> InInventory);
+	//void UpdateInventory(const TArray<UInventoryComponent*> InInventory);
+	void UpdateInventory(UInventoryComponent* InInventory);
+	//void UpdateInventory(UItemBase* InInventory);
+
+	
 
 
 	//인벤토리 로드
@@ -155,7 +159,7 @@ class PIXELCODE_API UPCodeGameInstance : public UGameInstance
 	TArray<UItemBase*> Inventory;
 
 	UPROPERTY(EditAnywhere, Category = "KYH")
-	TArray<UInventoryComponent*> PlayerInventory;
+	TArray<UInventoryComponent*> PlayerInventorys;
 
 // 	UPROPERTY(EditAnywhere, Category = KSH)
 // 	TArray<ABuilding*> ActorsToSave;

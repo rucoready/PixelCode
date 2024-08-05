@@ -778,7 +778,10 @@ public:
 	UPROPERTY(EditDefaultsOnly,Category = KYH)
 	UPCodeGameInstance* GameInst;
 
+     UFUNCTION(BlueprintCallable)
 	 void UpdateGameInstanceInventory();
+
+
 
 
 	 // ==== 크래프팅 + 빌드 + 인벤토리 함수 Test ======

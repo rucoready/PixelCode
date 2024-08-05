@@ -31,11 +31,17 @@ void UPortalRobbyWidget::NativeConstruct()
 	MyGameMode = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(this));
 	PortalActor = Cast<APortalCollision>(UGameplayStatics::GetActorOfClass(this, APortalCollision::StaticClass()));
 	
+	
 }
 
 void UPortalRobbyWidget::ServerTravel()
 {
 	GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/Dungeon2?listen"));
+	
+	
+	Pc->UpdateGameInstanceInventory();
+
+	
 	//GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/BossMap2?Listen"));
 	if (PCodePlayerController)
 	{

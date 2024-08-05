@@ -291,15 +291,15 @@ void UPCodeGameInstance::MultiExitRoom_Implementation()
 
 // Áø¿ø ³¡--------------------------------------------------------------------
 
-void UPCodeGameInstance::UpdateInventory(const TArray<UInventoryComponent*> InInventory)
+void UPCodeGameInstance::UpdateInventory(UInventoryComponent* InInventory)
 {
-	PlayerInventory = InInventory;
+	InInventory->GetInventoryContents();
 }
 
 
 TArray<UInventoryComponent*> UPCodeGameInstance::LoadInventory()
 {
-	return PlayerInventory;
+	return PlayerInventorys;
 }
 
 

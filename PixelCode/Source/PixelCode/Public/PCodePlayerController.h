@@ -236,6 +236,8 @@ public:
 
 	
 
+	
+
 	class UMyMapWidget* MyMapEnterWidgets;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
