@@ -45,6 +45,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class USphereComponent* sphereComp;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* hitImpactSound;
+
 	
 
 	virtual void Tick(float DeltaTime) override;

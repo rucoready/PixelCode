@@ -100,7 +100,7 @@ void ADragonRazorStatue::TakeDamageD(float damage)
     statueComp->SetMaterial(MaterialIndex, damagelMaterial);
     
     GetWorldTimerManager().SetTimer(timerhandle_SetOriginMaterial, this, &ADragonRazorStatue::RestoreOriginMaterial, 0.25f, false);
-    
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), fractureHitSound, GetActorLocation());
 }
 
 void ADragonRazorStatue::OnMyClickBlackRoom()

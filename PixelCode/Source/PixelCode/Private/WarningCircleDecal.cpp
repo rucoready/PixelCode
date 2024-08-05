@@ -112,6 +112,7 @@ void AWarningCircleDecal::Tick(float DeltaTime)
 			onceExplosion = true;
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), explosionSword, GetActorLocation(), GetActorRotation(), FVector(1.0f));
 			sphereComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), hitImpactSound, GetActorLocation());
 			Destroy();
 
 		}

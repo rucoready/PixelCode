@@ -45,6 +45,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class USoundBase* fractureSound;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* fractureHitSound;
+
 
 	float currentHp;
 
