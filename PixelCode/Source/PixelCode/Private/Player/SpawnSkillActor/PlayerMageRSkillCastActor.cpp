@@ -23,7 +23,7 @@ APlayerMageRSkillCastActor::APlayerMageRSkillCastActor()
 
     // Sphere 컬리전을 가진 컴포넌트 생성
     CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-    CollisionSphere->InitSphereRadius(250.0f); // 구의 반지름 설정 (적절한 크기로 조정 필요)
+    CollisionSphere->InitSphereRadius(100.0f); // 구의 반지름 설정 (적절한 크기로 조정 필요)
 
     CollisionSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     CollisionSphere->SetSimulatePhysics(true);
@@ -37,7 +37,7 @@ void APlayerMageRSkillCastActor::BeginPlay()
 	Super::BeginPlay();
 	
     SetActorLocation(GetActorLocation() + FVector(0, 0, 1000));
-    SetActorRotation(FRotator(FMath::RandRange(-180, 180), FMath::RandRange(-180, 180), 0));
+    SetActorRotation(GetActorRotation());
 
     FVector LaunchDirection = GetActorRotation().Vector();
     CollisionSphere->AddImpulse(LaunchDirection * 2000);
@@ -68,8 +68,7 @@ void APlayerMageRSkillCastActor::OnMeteorHit(AActor* SelfActor, AActor* OtherAct
 
         //.Add 메서드를 사용하면 동적으로 배열의 크기 조절, 초기에 배열의 크기를 정하지 않고 필요할 때마다 요소를 추가 가능.
          // 적이 감지되면 해당 적을 배열에 추가하고 데미지 적용 타이머를 시작합니다.
-        if (boss)
-        {
+       
             // 충돌 지점에 스폰할 액터를 생성
             FActorSpawnParameters SpawnParams;
             SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -79,52 +78,8 @@ void APlayerMageRSkillCastActor::OnMeteorHit(AActor* SelfActor, AActor* OtherAct
             {
                 Destroy();
             }
-        }
-        else if (demonSword)
-        {
-            // 충돌 지점에 스폰할 액터를 생성
-            FActorSpawnParameters SpawnParams;
-            SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-            APlayerMageRSkillSpawnActor* SpawnedActor = GetWorld()->SpawnActor<APlayerMageRSkillSpawnActor>(ActorToSpawn, Hit.ImpactPoint, FRotator::ZeroRotator, SpawnParams);
-
-            if (SpawnedActor)
-            {
-                Destroy();
-            }
-        }
-        else if (grux)
-        {
-            // 충돌 지점에 스폰할 액터를 생성
-            FActorSpawnParameters SpawnParams;
-            SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-            APlayerMageRSkillSpawnActor* SpawnedActor = GetWorld()->SpawnActor<APlayerMageRSkillSpawnActor>(ActorToSpawn, Hit.ImpactPoint, FRotator::ZeroRotator, SpawnParams);
-
-            if (SpawnedActor)
-            {
-                Destroy();
-            }
-        }
-        else if (dogBart)
-        {
-            // 충돌 지점에 스폰할 액터를 생성
-            FActorSpawnParameters SpawnParams;
-            SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-            APlayerMageRSkillSpawnActor* SpawnedActor = GetWorld()->SpawnActor<APlayerMageRSkillSpawnActor>(ActorToSpawn, Hit.ImpactPoint, FRotator::ZeroRotator, SpawnParams);
-
-            if (SpawnedActor)
-            {
-                Destroy();
-            }
-        }
-        else
-        {
-            FActorSpawnParameters SpawnParams;
-            SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-            // 메테오도 폭발 처리
-            APlayerMageRSkillSpawnActor* SpawnedActor = GetWorld()->SpawnActor<APlayerMageRSkillSpawnActor>(ActorToSpawn, Hit.ImpactPoint, FRotator::ZeroRotator, SpawnParams);
-            Destroy();
-        }
+        
+       
     }
     
      

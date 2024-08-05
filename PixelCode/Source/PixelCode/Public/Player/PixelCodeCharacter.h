@@ -318,6 +318,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 	TSubclassOf<APlayerMageZSkillSpawnActor> mageZSkillSpawn;
 
+	// 검사 스킬스폰
 	UFUNCTION(Server, Reliable) 
 	void SeverRPC_QSkillSpawn();
 
@@ -330,6 +331,42 @@ public:
 	UFUNCTION(NetMulticast, Reliable) 
 	void MultiRPC_RSkillSpawn();
 
+	// 메이지 스킬 스폰
+	UFUNCTION(Server, Reliable) 
+	void SeverRPC_mageLeftAttackSpawn();
+
+	UFUNCTION(NetMulticast, Reliable) 
+	void MultiRPC_mageLeftAttackSpawn();
+	
+	UFUNCTION(Server, Reliable) 
+	void SeverRPC_mageRightAttackSpawn();
+	
+	UFUNCTION(NetMulticast, Reliable) 
+	void MultiRPC_mageRightAttackSpawn();
+	
+	UFUNCTION(Server, Reliable) 
+	void SeverRPC_mageQSkillSpawn();
+
+	UFUNCTION(NetMulticast, Reliable) 
+	void MultiRPC_mageQSkillSpawn();
+	
+	UFUNCTION(Server, Reliable) 
+	void SeverRPC_mageESkillSpawn();
+
+	UFUNCTION(NetMulticast, Reliable) 
+	void MultiRPC_mageESkillSpawn();
+
+	UFUNCTION(Server, Reliable) 
+	void SeverRPC_mageRSkillSpawn();
+
+	UFUNCTION(NetMulticast, Reliable) 
+	void MultiRPC_mageRSkillSpawn();
+
+	UFUNCTION(Server, Reliable) 
+	void SeverRPC_mageZSkillSpawn();
+
+	UFUNCTION(NetMulticast, Reliable) 
+	void MultiRPC_mageZSkillSpawn();
 
 	FVector CachedDestination;
 

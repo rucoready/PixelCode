@@ -66,6 +66,7 @@
 #include "Player/SpawnSkillActor/PlayerMageRSkillCastActor.h"
 #include "Player/SpawnSkillActor/PlayerMageZSkillSpawnActor.h"
 #include "CraftingArea.h"
+#include "Player/SpawnSkillActor/PlayerMageRSkillSpawnActor.h"
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -1731,12 +1732,10 @@ void APixelCodeCharacter::SkillQ()
 				{
 					if (bUseSkill)
 					{
-					
 						PerformAttack(1, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -10);
-						FActorSpawnParameters SpawnParams;
-						GetWorld()->SpawnActor<APlayerMageQSkillSpawnActor>(mageQSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+						SeverRPC_mageQSkillSpawn();
 					}
 				}
 
@@ -1789,6 +1788,7 @@ void APixelCodeCharacter::SkillE()
 						PerformAttack(6, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -15);
+					
 					}
 				}
 
@@ -1818,8 +1818,7 @@ void APixelCodeCharacter::SkillE()
 						PerformAttack(2, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -15);
-						FActorSpawnParameters SpawnParams;
-						GetWorld()->SpawnActor<APlayerMageESkillSpawnActor>(mageESkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+						SeverRPC_mageESkillSpawn();
 					}
 				}
 
@@ -1900,8 +1899,7 @@ void APixelCodeCharacter::SkillR()
 						PerformAttack(3, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -20);
-						FActorSpawnParameters SpawnParams;
-						GetWorld()->SpawnActor<APlayerMageRSkillCastActor>(mageRSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+						SeverRPC_mageRSkillSpawn();
 					}
 				}
 				bRskillCoolTime = true;
@@ -1982,8 +1980,7 @@ void APixelCodeCharacter::SkillZ()
 						PerformAttack(4, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -30);
-						FActorSpawnParameters SpawnParams;
-						GetWorld()->SpawnActor<APlayerMageZSkillSpawnActor>(mageZSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+						SeverRPC_mageZSkillSpawn();
 					}
 				}
 
@@ -2044,8 +2041,8 @@ void APixelCodeCharacter::SkillRightMouse()
 					SPRegenTime = 3.0f;
 					if (mageRightAttackSpawn != nullptr)
 					{
-						FActorSpawnParameters SpawnParams;
-						GetWorld()->SpawnActor<APlayerMageRightAttackSpawnActor>(mageRightAttackSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+						SeverRPC_mageRightAttackSpawn();
+						// 서버 라이트  메이지 공격 여기다 적용
 						//UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!"));
 
 					}
@@ -2057,7 +2054,7 @@ void APixelCodeCharacter::SkillRightMouse()
 
 
 
-
+// 검사 스킬 스폰
 void APixelCodeCharacter::SeverRPC_QSkillSpawn_Implementation()
 {
 	MultiRPC_QSkillSpawn();
@@ -2080,6 +2077,84 @@ void APixelCodeCharacter::MultiRPC_RSkillSpawn_Implementation()
 	GetWorld()->SpawnActor<ASpawnSwordRSkill>(RSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
 }
 
+
+
+// 메이지 스킬 스폰
+void APixelCodeCharacter::SeverRPC_mageLeftAttackSpawn_Implementation()
+{
+	MultiRPC_mageLeftAttackSpawn();
+}
+
+void APixelCodeCharacter::MultiRPC_mageLeftAttackSpawn_Implementation()
+{
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<APlayerMageLeftAttackSpawnActor>(mageLeftAttackSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+}
+
+void APixelCodeCharacter::SeverRPC_mageRightAttackSpawn_Implementation()
+{
+	MultiRPC_mageRightAttackSpawn();
+}
+
+void APixelCodeCharacter::MultiRPC_mageRightAttackSpawn_Implementation()
+{
+	FActorSpawnParameters SpawnParams;
+	FVector LeftSpawnLocation = GetActorLocation() - GetActorRightVector() * 300.f; // 플레이어의 왼쪽으로 500 단위만큼 이동
+	FVector LeftTopSpawnLocation = GetActorLocation() + GetActorUpVector() * 200.f - GetActorRightVector() * 300.f; // 플레이어의 왼쪽 위로 200 단위만큼 이동
+	FVector RightSpawnLocation = GetActorLocation() + GetActorRightVector() * 300.f; // 플레이어의 오른쪽으로 500 단위만큼 이동
+	FVector RightTopSpawnLocation = GetActorLocation() + GetActorUpVector() * 200.f + GetActorRightVector() * 300.f; // 플레이어의 오른쪽 위로 200 단위만큼 이동
+	GetWorld()->SpawnActor<APlayerMageRightAttackSpawnActor>(mageRightAttackSpawn, LeftSpawnLocation, GetActorRotation(), SpawnParams);
+	GetWorld()->SpawnActor<APlayerMageRightAttackSpawnActor>(mageRightAttackSpawn, LeftTopSpawnLocation, GetActorRotation(), SpawnParams);
+	GetWorld()->SpawnActor<APlayerMageRightAttackSpawnActor>(mageRightAttackSpawn, RightSpawnLocation, GetActorRotation(), SpawnParams);
+	GetWorld()->SpawnActor<APlayerMageRightAttackSpawnActor>(mageRightAttackSpawn, RightTopSpawnLocation, GetActorRotation(), SpawnParams);
+}
+
+void APixelCodeCharacter::SeverRPC_mageQSkillSpawn_Implementation()
+{
+	MultiRPC_mageQSkillSpawn();
+}
+
+void APixelCodeCharacter::MultiRPC_mageQSkillSpawn_Implementation()
+{
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<APlayerMageQSkillSpawnActor>(mageQSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+}
+
+void APixelCodeCharacter::SeverRPC_mageESkillSpawn_Implementation()
+{
+	MultiRPC_mageESkillSpawn();
+}
+
+void APixelCodeCharacter::MultiRPC_mageESkillSpawn_Implementation()
+{
+	// 메이지 스킬스폰
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<APlayerMageESkillSpawnActor>(mageESkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+}
+
+void APixelCodeCharacter::SeverRPC_mageRSkillSpawn_Implementation()
+{
+	MultiRPC_mageRSkillSpawn();
+}
+
+void APixelCodeCharacter::MultiRPC_mageRSkillSpawn_Implementation()
+{
+	// 메이지 스킬스폰
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<APlayerMageRSkillCastActor>(mageRSkillSpawn, GetActorLocation() + GetActorForwardVector() * 400, GetActorRotation(), SpawnParams);
+}
+
+void APixelCodeCharacter::SeverRPC_mageZSkillSpawn_Implementation()
+{
+	MultiRPC_mageZSkillSpawn();
+}
+
+void APixelCodeCharacter::MultiRPC_mageZSkillSpawn_Implementation()
+{
+	// 메이지 스킬스폰
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<APlayerMageZSkillSpawnActor>(mageZSkillSpawn, GetActorLocation() + GetActorForwardVector()* 500, GetActorRotation(), SpawnParams);
+}
 void APixelCodeCharacter::Mousehit()
 {
 	if (!bRotation)
@@ -2709,13 +2784,15 @@ void APixelCodeCharacter::LightAttackFunction(const FInputActionValue& Value)
 			else if (equipment->eWeaponType == EWeaponType::MagicStaff)
 			{
 				//UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!!"));
-				AttackEvent();
+				//AttackEvent();
+				PerformAttack(0, false);
 				stateComp->AddStatePoint(SP, -10.0f);
 				SPRegenTime = 3.0f;
 				if (mageLeftAttackSpawn != nullptr)
 				{
-					FActorSpawnParameters SpawnParams;
-					GetWorld()->SpawnActor<APlayerMageLeftAttackSpawnActor>(mageLeftAttackSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+					SeverRPC_mageLeftAttackSpawn();
+					//여기서 메이지 기본공격 스폰
+					combatComponent->attackCount = 0;
 					//UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!"));
 
 				}
@@ -2981,4 +3058,5 @@ void APixelCodeCharacter::PrintInfo()
 	FVector loc = GetActorLocation() + FVector(0, 0, 50);
 	//DrawDebugString(GetWorld(), loc, str, nullptr, FColor::White, 0, true);
 }
+
 

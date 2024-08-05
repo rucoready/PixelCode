@@ -14,6 +14,7 @@
 #include <../../../../../../../Source/Runtime/Engine/Public/EngineUtils.h>
 #include <../../../../../../../Source/Runtime/Engine/Classes/Engine/OverlapResult.h>
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Player/Pooling/PlayerObjectPoolManager.h"
 
 // Sets default values
 APlayerMageRightAttackSpawnActor::APlayerMageRightAttackSpawnActor()
@@ -29,32 +30,10 @@ APlayerMageRightAttackSpawnActor::APlayerMageRightAttackSpawnActor()
 
 	SphereComp1->SetGenerateOverlapEvents(true);
 
-	SphereComp2 = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp2"));
-	SphereComp2->SetupAttachment(RootComponent);
-
-	SphereComp2->SetGenerateOverlapEvents(true);
-
-	SphereComp3 = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp3"));
-	SphereComp3->SetupAttachment(RootComponent);
-
-	SphereComp3->SetGenerateOverlapEvents(true);
-
-	SphereComp4 = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp4"));
-	SphereComp4->SetupAttachment(RootComponent);
-
-	SphereComp4->SetGenerateOverlapEvents(true);
-
 	NA_MageRightAttackComp1 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleComp1"));
 	NA_MageRightAttackComp1->SetupAttachment(SphereComp1);
 
-	NA_MageRightAttackComp2 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleComp2"));
-	NA_MageRightAttackComp2->SetupAttachment(SphereComp2);
 
-	NA_MageRightAttackComp3 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleComp3"));
-	NA_MageRightAttackComp3->SetupAttachment(SphereComp3);
-
-	NA_MageRightAttackComp4 = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleComp4"));
-	NA_MageRightAttackComp4->SetupAttachment(SphereComp4);
 }
 
 // Called when the game starts or when spawned
@@ -62,38 +41,20 @@ void APlayerMageRightAttackSpawnActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-	CheckForEnemiesAndAttack();
-	
-
 	bDestroy = true;
 	NA_MageRightAttackComp1 = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageRightAttack, GetActorLocation(), GetActorRotation());
-	NA_MageRightAttackComp2 = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageRightAttack, GetActorLocation(), GetActorRotation());
-	NA_MageRightAttackComp3 = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageRightAttack, GetActorLocation(), GetActorRotation());
-	NA_MageRightAttackComp4 = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageRightAttack, GetActorLocation(), GetActorRotation());
-	
 
 
 	SphereComp1->OnComponentBeginOverlap.AddDynamic(this, &APlayerMageRightAttackSpawnActor::OnOverlapEnemy);
-	SphereComp2->OnComponentBeginOverlap.AddDynamic(this, &APlayerMageRightAttackSpawnActor::OnOverlapEnemy);
-	SphereComp3->OnComponentBeginOverlap.AddDynamic(this, &APlayerMageRightAttackSpawnActor::OnOverlapEnemy);
-	SphereComp4->OnComponentBeginOverlap.AddDynamic(this, &APlayerMageRightAttackSpawnActor::OnOverlapEnemy);
+
 	
-
-
 	FVector PlayerLocation = GetActorLocation(); // 플레이어 위치
 
 	// 발사 위치를 계산합니다.
-	//FVector LeftSpawnLocation = PlayerLocation - GetActorRightVector() * 300.f; // 플레이어의 왼쪽으로 500 단위만큼 이동
-	//FVector LeftTopSpawnLocation = PlayerLocation + GetActorUpVector() * 200.f - GetActorRightVector() * 300.f; // 플레이어의 왼쪽 위로 200 단위만큼 이동
-	//FVector RightSpawnLocation = PlayerLocation + GetActorRightVector() * 300.f; // 플레이어의 오른쪽으로 500 단위만큼 이동
-	//FVector RightTopSpawnLocation = PlayerLocation + GetActorUpVector() * 200.f + GetActorRightVector() * 300.f; // 플레이어의 오른쪽 위로 200 단위만큼 이동
+	
 
 	// 각 위치에서 스피어컬리전을 발사합니다.
 	SphereComp1->SetWorldLocation(PlayerLocation);
-	SphereComp2->SetWorldLocation(PlayerLocation);
-	SphereComp3->SetWorldLocation(PlayerLocation);
-	SphereComp4->SetWorldLocation(PlayerLocation);
 
 
 	
@@ -108,15 +69,26 @@ void APlayerMageRightAttackSpawnActor::Tick(float DeltaTime)
 	//FVector NewLocation = GetActorLocation() + GetActorForwardVector() * Speed * DeltaTime; // Speed는 앞으로 이동할 속도
 	
 	// 플레이어 이동 로직
-	FVector TargetLocation = GetTargetEnemyLocation();
-	FVector NewLocation = FMath::VInterpConstantTo(GetActorLocation(), TargetLocation, DeltaTime, Speed);
-	SetActorLocation(NewLocation);
+	GetTargetEnemyLocation();
+
+	if (bIsTargetFound)
+	{
+		// 타겟 위치로 부드럽게 이동
+		FVector NewLocation = FMath::VInterpTo(GetActorLocation(), TargetLocation, DeltaTime, MoveSpeed);
+		SetActorLocation(NewLocation);
+	}
+	else
+	{
+		// 타겟을 찾지 못했을 때 기본 이동 로직 적용
+		FVector NewLocation = GetActorLocation() + GetActorForwardVector() * Speed * DeltaTime;
+		SetActorLocation(NewLocation);
+	}
 
 
 	if (bDestroy)
 	{
 		DestroyTime += DeltaTime;
-		if (DestroyTime >= 2.5f)
+		if (DestroyTime >= DestroyDelay)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("destroy"));
 			bDestroy = false;
@@ -131,34 +103,43 @@ void APlayerMageRightAttackSpawnActor::Tick(float DeltaTime)
 
 FVector APlayerMageRightAttackSpawnActor::GetTargetEnemyLocation()
 {
-	// 월드에서 가장 가까운 적의 위치를 탐지하기 위한 로직
 	TArray<AActor*> FoundActors;
-	FVector PlayerLocation = GetActorLocation(); // 플레이어 위치
-	float AttackRange = 1000.f; // 공격 가능한 최대 거리
-	FVector TargetLocation = PlayerLocation; // 기본적으로 플레이어 위치에서 시작
+	FVector PlayerLocation = GetActorLocation();
+	TArray<AActor*> ActiveEnemies;
 
-	// 월드에서 플레이어 주변의 적 찾기
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawn::StaticClass(), FoundActors);
 
 	for (AActor* Actor : FoundActors)
 	{
 		APawn* Pawn = Cast<APawn>(Actor);
-		if (Pawn && !Pawn->IsPlayerControlled()) // 플레이어 캐릭터는 제외하고 적만 탐지
+		if (Pawn && !Pawn->IsPlayerControlled())
 		{
-			float DistanceToEnemy = FVector::Dist(PlayerLocation, Pawn->GetActorLocation());
-			if (DistanceToEnemy <= AttackRange)
+			bool bIsValidTarget = false;
+			for (const TSubclassOf<APawn>& EnemyClass : EnemyClasses)
 			{
-				// 가장 가까운 적의 위치를 타겟으로 설정
-				TargetLocation = Pawn->GetActorLocation();
-				break;
+				if (Pawn->IsA(EnemyClass))
+				{
+					bIsValidTarget = true;
+					break;
+				}
+			}
+
+			if (bIsValidTarget)
+			{
+				float DistanceToEnemy = FVector::Dist(PlayerLocation, Pawn->GetActorLocation());
+				if (DistanceToEnemy <= AttackRange)
+				{
+					TargetLocation = Pawn->GetActorLocation();
+					bIsTargetFound = true;
+					return TargetLocation;
+				}
 			}
 		}
 	}
 
-	return TargetLocation;
+	bIsTargetFound = false;
+	return PlayerLocation;
 }
-
-
 
 
 
@@ -190,37 +171,9 @@ void APlayerMageRightAttackSpawnActor::OnOverlapEnemy(UPrimitiveComponent* Overl
 		Destroy();
 	}
 
-
-	
 }
 
-void APlayerMageRightAttackSpawnActor::CheckForEnemiesAndAttack()
-{
-	// 월드에서 적 탐지하기
-	TArray<AActor*> FoundActors;
-	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn)); // 적은 Pawn 콜리전 채널에 있어야 함
 
-	FVector PlayerLocation = GetActorLocation(); // 플레이어 위치
-	float AttackRange = 1000.f; // 공격 가능한 최대 거리
-
-	// 월드에서 플레이어 주변의 적 찾기
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawn::StaticClass(), FoundActors);
-
-	for (AActor* Actor : FoundActors)
-	{
-		APawn* Pawn = Cast<APawn>(Actor);
-		if (Pawn && !Pawn->IsPlayerControlled()) // 플레이어 캐릭터는 제외하고 적만 탐지
-		{
-			float DistanceToEnemy = FVector::Dist(PlayerLocation, Pawn->GetActorLocation());
-			if (DistanceToEnemy <= AttackRange)
-			{
-				// 적이 공격 가능 범위 내에 있으면 공격 수행
-				SetActorLocation(Pawn->GetActorLocation());
-			}
-		}
-	}
-}
 
 
 

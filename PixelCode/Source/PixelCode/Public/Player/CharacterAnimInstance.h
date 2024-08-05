@@ -169,6 +169,12 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_SB_SwordZ5Sound();
+
+
+	// ∏ﬁ¿Ã¡ˆ
+
+
+
 };
 
 

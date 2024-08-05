@@ -15,7 +15,7 @@ class ABossApernia;
 class ADemonSword;
 class AGrux;
 class ADogBart;
-
+class APlayerObjectPoolManager;
 
 
 UCLASS()
@@ -42,47 +42,42 @@ public:
 	USphereComponent * SphereComp1;
 
 
-	UPROPERTY(EditAnywhere, Category = "Components");
-	USphereComponent* SphereComp2;
-
-	UPROPERTY(EditAnywhere, Category = "Components");
-	USphereComponent* SphereComp3;
-
-	UPROPERTY(EditAnywhere, Category = "Components");
-	USphereComponent* SphereComp4;
-
-	FVector GetTargetEnemyLocation();
-
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* NA_MageRightAttack;
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystemComponent* NA_MageRightAttackComp1;
 
-	UPROPERTY(EditAnywhere)
-	UParticleSystemComponent* NA_MageRightAttackComp2;
+	 UPROPERTY(EditAnywhere)
+    TArray<TSubclassOf<APawn>> EnemyClasses; // 공격할 적 클래스 배열
+
+
+	float Speed = 1000.f;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystemComponent* NA_MageRightAttackComp3;
+    float AttackRange = 1000.0f;
 
-	UPROPERTY(EditAnywhere)
-	UParticleSystemComponent* NA_MageRightAttackComp4;
-
-	UPROPERTY()
-	ACharacter* Enemys;
-
-	float Speed = 500.f;
+	UPROPERTY(EditDefaultsOnly)
+	float MoveSpeed = 20.0f;
 
 	float DestroyTime = 0.0f;
 
-	bool bDestroy = false;
+	UPROPERTY(EditAnywhere)
+    float DestroyDelay = 2.5f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
     float DamageAmount = 10;
 
+	bool bDestroy = false;
+
+	bool bIsTargetFound = false;
+
+	FVector TargetLocation; // 가장 가까운 적의 위치를 저장하는 변수
+
 	UFUNCTION()
 	void OnOverlapEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	
-	void CheckForEnemiesAndAttack();
 
+
+	FVector GetTargetEnemyLocation();
+	
 };
