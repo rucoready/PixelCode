@@ -408,3 +408,27 @@ void UCharacterAnimInstance::AnimNotify_SB_SwordZ5Sound()
 	}
 }
 
+void UCharacterAnimInstance::AnimNotify_mageRightAttack()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bmageRightAttack = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_mageEAttack()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bmageEAttack = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_mageRAttack()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bmageRAttack = true;
+	}
+}
+

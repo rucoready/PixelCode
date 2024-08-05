@@ -213,6 +213,12 @@ public:
 
 	bool bSwordZ5Sound = false;
 
+	bool bmageRightAttack = false;
+
+	bool bmageEAttack = false;
+
+	bool bmageRAttack = false;
+
 	UPROPERTY(EditAnywhere, Category = "Sounds")
 	USoundBase* PlayerHitSound;
 

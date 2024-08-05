@@ -172,7 +172,15 @@ public:
 
 
 	// ∏ﬁ¿Ã¡ˆ
+	UFUNCTION()
+	void AnimNotify_mageRightAttack();
+	
 
+	UFUNCTION()
+	void AnimNotify_mageEAttack();
+
+	UFUNCTION()
+	void AnimNotify_mageRAttack();
 
 
 };

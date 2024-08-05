@@ -1818,7 +1818,6 @@ void APixelCodeCharacter::SkillE()
 						PerformAttack(2, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -15);
-						SeverRPC_mageESkillSpawn();
 					}
 				}
 
@@ -2039,13 +2038,11 @@ void APixelCodeCharacter::SkillRightMouse()
 					combatComponent->attackCount = 0;
 					stateComp->AddStatePoint(SP, -20.0f);
 					SPRegenTime = 3.0f;
-					if (mageRightAttackSpawn != nullptr)
-					{
-						SeverRPC_mageRightAttackSpawn();
-						// 서버 라이트  메이지 공격 여기다 적용
-						//UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!"));
+					
+					// 서버 라이트  메이지 공격 여기다 적용
+					//UE_LOG(LogTemp, Warning, TEXT("PlayermageRightAttack!"));
 
-					}
+					
 				}
 			}
 		}
@@ -2088,7 +2085,7 @@ void APixelCodeCharacter::SeverRPC_mageLeftAttackSpawn_Implementation()
 void APixelCodeCharacter::MultiRPC_mageLeftAttackSpawn_Implementation()
 {
 	FActorSpawnParameters SpawnParams;
-	GetWorld()->SpawnActor<APlayerMageLeftAttackSpawnActor>(mageLeftAttackSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);
+	GetWorld()->SpawnActor<APlayerMageLeftAttackSpawnActor>(mageLeftAttackSpawn, GetActorLocation() + GetActorForwardVector() * 200, GetActorRotation(), SpawnParams);
 }
 
 void APixelCodeCharacter::SeverRPC_mageRightAttackSpawn_Implementation()
@@ -2984,12 +2981,36 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 	if (bSkillNSR)
 	{
 		SeverRPC_RSkillSpawn();
-		
-		/*FActorSpawnParameters SpawnParams;
-		GetWorld()->SpawnActor<ASpawnSwordRSkill>(RSkillSpawn, GetActorLocation(), GetActorRotation(), SpawnParams);*/
 
 		bSkillNSR = false;
 	}
+
+
+	if (bmageRightAttack)
+	{
+		SeverRPC_mageRightAttackSpawn();
+
+		bmageRightAttack = false;
+		UE_LOG(LogTemp,Warning,TEXT("magerightattack"));
+	}
+
+	if (bmageEAttack)
+	{
+		SeverRPC_mageESkillSpawn();
+		bmageEAttack = false;
+	}
+
+	if (bmageRAttack)
+	{
+		SeverRPC_mageRSkillSpawn();
+		bmageRAttack = false;
+	}
+
+	/*
+	if ()
+	{
+
+	}*/
 
 	if (stateComp->currentMP / stateComp->MaxMP <= 1)
 	{
