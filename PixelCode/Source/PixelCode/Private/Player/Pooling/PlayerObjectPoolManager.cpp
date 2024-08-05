@@ -12,22 +12,22 @@ APlayerObjectPoolManager::APlayerObjectPoolManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-	MaxPoolSize = 5; // ±âº» Ç® Å©±â ¼³Á¤
+	MaxPoolSize = 0; // ï¿½âº» Ç® Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 }
 
 // Called when the game starts or when spawned
 void APlayerObjectPoolManager::BeginPlay()
 {
-	Super::BeginPlay(); // ºÎ¸ð Å¬·¡½ºÀÇ BeginPlay È£Ãâ
+	Super::BeginPlay(); // ï¿½Î¸ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ BeginPlay È£ï¿½ï¿½
 	
-    // ½ÃÀÛÇÒ ¶§ Ç®¿¡ Ä³¸¯ÅÍ »ý¼ºÇÏ¿© Ãß°¡
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ç®ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ß°ï¿½
     for (int32 i = 0; i < MaxPoolSize; i++)
     {
         APixelCodeCharacter* NewCharacter = GetWorld()->SpawnActor<APixelCodeCharacter>(CharacterClass);
-        NewCharacter->SetActorHiddenInGame(true); // °ÔÀÓ¿¡¼­ ¼û±è
-        NewCharacter->SetActorEnableCollision(false); // Ãæµ¹ ºñÈ°¼ºÈ­
-        NewCharacter->GetCharacterMovement()->Deactivate(); // ¿òÁ÷ÀÓ ºñÈ°¼ºÈ­
-        Pool.Add(NewCharacter); // Ç®¿¡ Ãß°¡
+        NewCharacter->SetActorHiddenInGame(true); // ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        NewCharacter->SetActorEnableCollision(false); // ï¿½æµ¹ ï¿½ï¿½È°ï¿½ï¿½È­
+        NewCharacter->GetCharacterMovement()->Deactivate(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
+        Pool.Add(NewCharacter); // Ç®ï¿½ï¿½ ï¿½ß°ï¿½
     }
 
 }
@@ -43,26 +43,26 @@ void APlayerObjectPoolManager::Tick(float DeltaTime)
 
 APixelCodeCharacter* APlayerObjectPoolManager::GetPooledCharacter()
 {
-    // »ç¿ë °¡´ÉÇÑ Ä³¸¯ÅÍ Ã£¾Æ ¹ÝÈ¯
+    // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½È¯
     for (APixelCodeCharacter* Character : Pool)
     {
-        if (Character->IsHidden()) // ¼û°ÜÁø Ä³¸¯ÅÍÀÎÁö È®ÀÎ
+        if (Character->IsHidden()) // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
         {
             return Character;
         }
     }
 
-    // »ç¿ë °¡´ÉÇÑ Ä³¸¯ÅÍ°¡ ¾øÀ¸¸é »õ·Î »ý¼ºÇÏ¿© ¹ÝÈ¯
+    // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½È¯
     APixelCodeCharacter* NewCharacter = GetWorld()->SpawnActor<APixelCodeCharacter>(CharacterClass);
-    Pool.Add(NewCharacter); // Ç®¿¡ Ãß°¡
+    Pool.Add(NewCharacter); // Ç®ï¿½ï¿½ ï¿½ß°ï¿½
     return NewCharacter;
 }
 
 void APlayerObjectPoolManager::ReturnPooledCharacter(APixelCodeCharacter* PlayerChar)
 {
-    PlayerChar->SetActorHiddenInGame(true); // ¼û±è Ã³¸®
-    PlayerChar->SetActorEnableCollision(false); // Ãæµ¹ ºñÈ°¼ºÈ­
-    PlayerChar->GetCharacterMovement()->Deactivate(); // ¿òÁ÷ÀÓ ºñÈ°¼ºÈ­
+    PlayerChar->SetActorHiddenInGame(true); // ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
+    PlayerChar->SetActorEnableCollision(false); // ï¿½æµ¹ ï¿½ï¿½È°ï¿½ï¿½È­
+    PlayerChar->GetCharacterMovement()->Deactivate(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
 
 }
 
