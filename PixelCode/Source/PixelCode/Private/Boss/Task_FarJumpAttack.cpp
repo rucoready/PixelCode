@@ -28,6 +28,7 @@ UTask_FarJumpAttack::UTask_FarJumpAttack(FObjectInitializer const& ObjectInitial
     }
 
     static ConstructorHelpers::FClassFinder<UCameraShakeBase> shakeObj(TEXT("/Script/Engine.Blueprint'/Game/KMS_AI/Boss_Alpernia/CameraShake/BP_CameraShakeStomp.BP_CameraShakeStomp'"));
+   
     if (shakeObj.Succeeded())
     {
         cameraShakeOBJ = shakeObj.Class;

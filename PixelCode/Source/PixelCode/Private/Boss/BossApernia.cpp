@@ -57,7 +57,8 @@ ABossApernia::ABossApernia()
     PrimaryActorTick.bCanEverTick = true;
 
     //Set Character Mesh
-    static ConstructorHelpers::FObjectFinder<USkeletalMesh>bossMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/KMS_AI/Boss_Alpernia/BossAlpernia.BossAlpernia'"));
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh>bossMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/KMS_AI/Boss_Alpernia/M_Alpernia/BossAlpernia.BossAlpernia'"));
+
     if (bossMesh.Succeeded())
     {
         GetMesh()->SetSkeletalMesh(bossMesh.Object);
@@ -121,7 +122,7 @@ ABossApernia::ABossApernia()
     phaseShieldComponent->SetWorldScale3D(FVector(2.0f));
     
     // Optionally, you can set a widget class to the DamageWidgetComponent
-    static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/Engine.Blueprint'/Game/KMS_AI/Damage/BP_DamageWidgetComponent.BP_DamageWidgetComponent'"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/KMS_AI/Damage/BP_DamageWidget.BP_DamageWidget'"));
     if (WidgetClass.Succeeded())
     {
         damageWidgetComponentl->SetWidgetClass(WidgetClass.Class);
