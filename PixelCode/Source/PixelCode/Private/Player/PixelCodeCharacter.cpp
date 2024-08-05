@@ -159,7 +159,7 @@ void APixelCodeCharacter::BeginPlay()
 	spawnParam.Owner = this;
 	spawnParam.Instigator = this;
 
-	equipment = GetWorld()->SpawnActor<ABaseWeapon>(defaultWeapon, GetActorTransform(), spawnParam);
+	equipment = GetWorld()->SpawnActor<ABaseWeapon>(axe, GetActorTransform(), spawnParam);
 
 	if (equipment)
 	{
@@ -2205,35 +2205,6 @@ void APixelCodeCharacter::switchWeapon2()
 		{
 			equipment->Destroy();
 		}
-		combatComponent->bCombatEnable = false;
-
-		FActorSpawnParameters spawnParam;
-		spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		spawnParam.Owner = this;
-		spawnParam.Instigator = this;
-
-
-		if (defaultWeapon != nullptr)
-		{
-			equipment = GetWorld()->SpawnActor<ABaseWeapon>(defaultWeapon, GetActorTransform(), spawnParam);
-			Pc->PlayerSwordSkillWidget();
-		}
-		if (equipment)
-		{
-			equipment->OnEquipped();
-		}
-	}
-}
-
-void APixelCodeCharacter::switchWeapon3()
-{
-	if (!bIsJump)
-	{
-		if (equipment != nullptr)
-		{
-			equipment->Destroy();
-		}
 		FActorSpawnParameters spawnParam;
 		spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
@@ -2253,6 +2224,35 @@ void APixelCodeCharacter::switchWeapon3()
 		}
 
 		combatComponent->bCombatEnable = true;
+	}
+}
+
+void APixelCodeCharacter::switchWeapon3()
+{
+	if (!bIsJump)
+	{
+		if (equipment != nullptr)
+		{
+			equipment->Destroy();
+		}
+		combatComponent->bCombatEnable = false;
+
+		FActorSpawnParameters spawnParam;
+		spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		spawnParam.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+		spawnParam.Owner = this;
+		spawnParam.Instigator = this;
+
+
+		if (defaultWeapon != nullptr)
+		{
+			equipment = GetWorld()->SpawnActor<ABaseWeapon>(defaultWeapon, GetActorTransform(), spawnParam);
+			Pc->PlayerSwordSkillWidget();
+		}
+		if (equipment)
+		{
+			equipment->OnEquipped();
+		}
 	}
 }
 

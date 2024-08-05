@@ -72,7 +72,7 @@ void UNormallyWidget::NativeConstruct()
 	Player = Cast<APixelCodeCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
 
 	SwitcherUI->SetActiveWidgetIndex(0);
-	SkillSwitcherUI->SetActiveWidgetIndex(1);
+	SkillSwitcherUI->SetActiveWidgetIndex(0);
 }
 
 void UNormallyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
