@@ -45,7 +45,7 @@ void APCodePlayerController::BeginPlay()
 
 	for(auto Temp : allActors)
 	{
-		UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Name : %s"), *Temp->GetActorNameOrLabel()));
+		//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Name : %s"), *Temp->GetActorNameOrLabel()));
 		
 	}
 
