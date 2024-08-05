@@ -33,7 +33,7 @@ void UBulidWIdget::SetBuildInfo(uint16 Index, uint16 ButtonIndex)
 	{
 		EItemName EnumName = BuildeCrafts[Index].CraftedItem;
 		const FText ItemName = GetBuildNameFromType(EnumName);
-		T_MainText->SetText(ItemName);
+		//T_MainText->SetText(ItemName);
 		I_MainImage->SetBrush(GetBuildIconFromType(EnumName));
 		// 나중에 갯수 넣어줄 자리
 		//T_Stack->SetText(FText::AsNumber(Crafts[SelectedIndex].CraftedItemAmount));

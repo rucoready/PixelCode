@@ -34,8 +34,8 @@ public:
 	void SetBuildInfo(uint16 Index, uint16 ButtonIndex);
 
 protected:
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* T_MainText;
+	/*UPROPERTY(meta = (BindWidget))
+	UTextBlock* T_MainText;*/
 
 	UPROPERTY(meta = (BindWidget))
 	UImage* I_MainImage;
