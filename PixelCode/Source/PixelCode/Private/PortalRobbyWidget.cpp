@@ -39,7 +39,7 @@ void UPortalRobbyWidget::ServerTravel()
 	GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/Dungeon2?listen"));
 	
 	
-	Pc->UpdateGameInstanceInventory();
+	//Pc->UpdateGameInstanceInventory();
 
 	
 	//GetWorld()->ServerTravel(TEXT("/Game/KMS_AI/BossMap/BossMap2?Listen"));
