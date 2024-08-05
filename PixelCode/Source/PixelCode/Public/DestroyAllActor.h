@@ -35,6 +35,27 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class UNiagaraSystem* swordDestroyNiagara;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* damageSound1;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* damageSound2;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* damageSound3;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* damageSound4;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* damageSound5;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* damageSound6;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* damageSound7;
+
 	bool activeCollisionOnce = false;
 
 	float currentTime;
@@ -51,6 +72,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void ApplyDamageToTarget(AActor* OtherActor, float DamageAmount);
+
+	void PlayDamageSound();
 
 	UFUNCTION()
 	void OnBeginOverlapCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

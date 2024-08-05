@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerController.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Sound/SoundBase.h" 
 #include "Player/PlayerOrganism.h"
 
 ADestroyAllActor::ADestroyAllActor()
@@ -97,7 +98,44 @@ void ADestroyAllActor::ApplyDamageToTarget(AActor* OtherActor, float DamageAmoun
 	{
 		Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		UGameplayStatics::ApplyDamage(OtherActor, DamageAmount, Pc, Player, UDamageType::StaticClass());
+
+		PlayDamageSound();
 	}
+}
+
+void ADestroyAllActor::PlayDamageSound()
+{
+	int32 damageValue = FMath::RandRange(1, 7);
+
+	if (damageValue == 1)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), damageSound1, GetActorLocation());
+	}
+	else if (damageValue == 2)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), damageSound2, GetActorLocation());
+	}
+	else if (damageValue == 3)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), damageSound3, GetActorLocation());
+	}
+	else if (damageValue == 4)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), damageSound4, GetActorLocation());
+	}
+	else if (damageValue == 5)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), damageSound5, GetActorLocation());
+	}
+	else if (damageValue == 6)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), damageSound6, GetActorLocation());
+	}
+	else
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), damageSound7, GetActorLocation());
+	}
+	
 }
 
 void ADestroyAllActor::OnBeginOverlapCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

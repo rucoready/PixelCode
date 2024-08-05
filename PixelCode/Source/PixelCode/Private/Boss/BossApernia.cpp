@@ -49,6 +49,7 @@
 #include "PortalCollision.h"   //temporary
 #include "GeometryCollection/GeometryCollectionActor.h"
 #include "BossFloor.h"
+#include "player/World/Pickup.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -517,6 +518,7 @@ void ABossApernia::SwordCollisionDeactive()
 void ABossApernia::DestroySelfOriginMesh()
 {
     ServerRPC_DropBossExp();
+    ServerRPC_SpawnGoldBossStatue();
     Destroy();
     
     
@@ -749,7 +751,7 @@ void ABossApernia::RepocessBehaviorTree()
         {
    
             bossController->BrainComponent->RestartLogic();
-            SetActorLocation(savedLocation); // Restore the saved location if necessary
+            SetActorLocation(savedLocation); 
         }
         else
         {
@@ -1736,6 +1738,22 @@ void ABossApernia::ServerRPC_RoarParticle_Implementation()
 void ABossApernia::MulticastRPC_RoarParticle_Implementation()
 {
     UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), roarParticle, GetActorLocation(), GetActorRotation(), FVector(1.0f));
+
+    if (boundCollisionRoar)
+    {
+        FVector SpawnLocation = GetActorLocation();
+        FRotator SpawnRotation = GetActorRotation();
+
+
+        ABoundCollision* SpawnedBoundCollision = GetWorld()->SpawnActor<ABoundCollision>(boundCollisionRoar, SpawnLocation, SpawnRotation);
+        if (SpawnedBoundCollision)
+        {
+            SpawnedBoundCollision->SetActorScale3D(FVector(50.0f));
+        }
+    }
+
+    
+
 }
 
 void ABossApernia::ServerRPC_SpawnGigantSword_Implementation()
@@ -1806,10 +1824,16 @@ void ABossApernia::MoveGigantSword()
                         spawnedSword->SetActorLocation(LerpedLocation);
                     }
 
-                    // Lerping이 완료되면 타이머 해제
+                    
                     if (Alpha >= 1.0f)
                     {
-                        spawnedSword->SetActorLocation(TargetLocation); // 명시적으로 목표 위치 설정
+                        if (!onceSoundGigantImpact)
+                        {
+                            UGameplayStatics::PlaySoundAtLocation(GetWorld(), gigantSwordSound, GetActorLocation());
+                            onceSoundGigantImpact = true;
+                        }
+                        
+                        spawnedSword->SetActorLocation(TargetLocation); 
                         GetWorld()->GetTimerManager().ClearTimer(Handle);
                     }
                 }, 0.01f, true);
@@ -1966,15 +1990,12 @@ void ABossApernia::ServerRPC_SpawnBoundCollision_Implementation()
 
 void ABossApernia::MulticastRPC_SpawnBoundCollision_Implementation()
 {
-    // 현재 위치와 방향을 가져옵니다.
+
     FVector CurrentLocation = GetActorLocation();
     FVector ForwardVector = GetActorForwardVector();
-
-    // 새로운 위치를 계산합니다.
     FVector SpawnLocation = CurrentLocation + (ForwardVector * 400.0f);
     SpawnLocation.Z -= 200.0f;
 
-    // 새로운 위치에서 액터를 스폰합니다.
     ABoundCollision* spawnedActor = GetWorld()->SpawnActor<ABoundCollision>(boundCollision, SpawnLocation, GetActorRotation());
 
     if (spawnedActor)
@@ -2483,4 +2504,38 @@ void ABossApernia::MulticastRPC_Boss2phaseGoUp_Implementation()
         bossSwordComp->SetVisibility(false);
     }
     
+}
+
+void ABossApernia::ServerRPC_SpawnGoldBossStatue_Implementation()
+{
+    MulticastRPC_SpawnGoldBossStatue();
+}
+
+void ABossApernia::MulticastRPC_SpawnGoldBossStatue_Implementation()
+{
+    if (goldBossStatue)
+    {
+        FVector SpawnLocation = GetActorLocation();
+        FRotator SpawnRotation = GetActorRotation();
+        FVector ForwardVector = SpawnRotation.Vector();
+        SpawnLocation += ForwardVector * 500.0f;
+        GetWorld()->SpawnActor<AActor>(goldBossStatue, SpawnLocation, SpawnRotation);
+    }
+    
+}
+
+void ABossApernia::ServerRPC_SpawnBoundCollisionRoar_Implementation()
+{
+    MulticastRPC_SpawnBoundCollisionRoar();
+}
+
+void ABossApernia::MulticastRPC_SpawnBoundCollisionRoar_Implementation()
+{
+
+    ABoundCollision* spawnedActor = GetWorld()->SpawnActor<ABoundCollision>(boundCollision, GetActorLocation(), GetActorRotation());
+
+    if (spawnedActor)
+    {
+        spawnedActor->SetActorScale3D(FVector(7.0f));
+    }
 }

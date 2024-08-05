@@ -23,6 +23,9 @@ public:
     UPROPERTY(EditAnywhere, Category = "MySettings")
     class UNiagaraComponent* fireNiagara;
 
+    UPROPERTY(EditAnywhere, Category = "MySettings")
+    class USoundBase* fireDamageSound;
+
     // Functions
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
@@ -65,4 +68,6 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
     TSubclassOf<UCameraShakeBase> cameraShakeFire;
+
+    
 };

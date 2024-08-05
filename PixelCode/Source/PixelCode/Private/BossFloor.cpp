@@ -54,7 +54,7 @@ void ABossFloor::Tick(float DeltaTime)
 {
     
 	Super::Tick(DeltaTime);
-    UE_LOG(LogTemp, Warning, TEXT("BossFloorTick"));
+
     currentTime += DeltaTime;
 
     if (currentTime >= 30.0 && !bOnceActive)

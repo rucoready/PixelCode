@@ -185,6 +185,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class USoundBase* fractureSound;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* gigantSwordSound;
+
+	bool onceSoundGigantImpact = false;
+
 	//////////////////////////UI
 
 
@@ -364,11 +369,20 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	TSubclassOf<class ABoundCollision> boundCollision;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	TSubclassOf<class ABoundCollision> boundCollisionRoar;
+
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_SpawnBoundCollision();
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_SpawnBoundCollision();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnBoundCollisionRoar();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnBoundCollisionRoar();
 
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_SpawnBoundCollision2();
@@ -977,6 +991,15 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_SpawnAllDestroyActor();
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnGoldBossStatue();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnGoldBossStatue();
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class APickup> goldBossStatue;
 
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class TSubclassOf<class ADestroyAllActor> destroyActor;

@@ -68,6 +68,7 @@ void AFireActor::ApplyDamage()
 {
     if (OverlappingActor && bIsOverlapping)
     {
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(), fireDamageSound, GetActorLocation());
         ApplyDamageToTarget(OverlappingActor, 5.0f);
 
         // OverlappingActor의 컨트롤러를 가져옴
