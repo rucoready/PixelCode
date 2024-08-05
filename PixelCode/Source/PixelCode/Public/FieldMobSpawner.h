@@ -30,6 +30,8 @@ public:
 	UPROPERTY(EditAnywhere, Category="MySettings")
 	int32 maxSpawn = 5;
 
+	int32 totalSpawnCount = 0;
+
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	float spawnArea = 1000;
 
@@ -51,6 +53,11 @@ public:
 	void SpawnMob();
 
 	float currentTime;
+
+	
+
+	UPROPERTY()
+	TArray<AActor*> SpawnedActors;
 
 	
 
