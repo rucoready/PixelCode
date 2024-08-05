@@ -85,10 +85,11 @@ void UTask_GruxAttack01::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
     }
 
     // 시간이 3.5초 이상인 경우
-    if (currentTime >= 5.5f)
+    if (currentTime >= attackDelay)
     {
         currentTime = 0.0f;
         animOnce = false;
         FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
     }
 }
+

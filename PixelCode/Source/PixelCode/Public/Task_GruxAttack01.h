@@ -34,4 +34,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector nearlestPlayerLocationKey;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	float attackDelay = 4.0f;
+
+	
 };

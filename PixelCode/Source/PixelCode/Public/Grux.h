@@ -61,7 +61,10 @@ public:
 
 	void CoolTimeSetting();
 
+	UPROPERTY(EditAnywhere, Category="MySettings")
 	float maxHp = 5000.0f;
+
+	
 
 	float currentHp;
 

@@ -10,8 +10,8 @@ UCLASS()
 class PIXELCODE_API AFieldMobSpawner : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AFieldMobSpawner();
 
@@ -19,7 +19,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -27,8 +27,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class UBoxComponent* spawnerComp;
 
-	UPROPERTY(EditAnywhere, Category="MySettings")
+	UPROPERTY(EditAnywhere, Category = "MySettings")
 	int32 maxSpawn = 5;
+
+	int32 totalSpawnCount = 0;
 
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	float spawnArea = 1000;
@@ -52,11 +54,22 @@ public:
 
 	float currentTime;
 
-	
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_Spawn();
 
-	
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_Spawn();
 
-	
+
+
+	UPROPERTY()
+	TArray<AActor*> SpawnedActors;
+
+
+
+
+
+
 
 
 };
