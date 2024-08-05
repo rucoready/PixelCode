@@ -20,12 +20,7 @@ ABossSword::ABossSword()
 	sceneComp = CreateDefaultSubobject<USceneComponent>(TEXT("sceneComp"));
 	damageSphereComp = CreateDefaultSubobject<UBoxComponent>(TEXT("damageSphereComp"));
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> bossOBJ(TEXT("/Script/Engine.StaticMesh'/Game/KMS_AI/Boss_Alpernia/BossSword/BossSword_Sword_low.BossSword_Sword_low'"));
 	
-	if (bossOBJ.Succeeded())
-	{
-		swordComp->SetStaticMesh(bossOBJ.Object);
-	}
 
 	SetRootComponent(sceneComp);
 	swordComp->SetupAttachment(RootComponent);

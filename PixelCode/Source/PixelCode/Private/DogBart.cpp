@@ -100,12 +100,7 @@ ADogBart::ADogBart()
 	damageWidgetComponentl->SetRelativeLocation(FVector(0, 0, 188));
 	damageWidgetComponentl->SetRelativeRotation(FRotator(0, -99, 0));
 
-	// Optionally, you can set a widget class to the DamageWidgetComponent
-	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/KMS_AI/Damage/BP_DamageWidget.BP_DamageWidget'"));
-	if (WidgetClass.Succeeded())
-	{
-		damageWidgetComponentl->SetWidgetClass(WidgetClass.Class);
-	}
+	
 
 	//static ConstructorHelpers::FObjectFinder<USkeletalMesh>dogMane(TEXT("/Script/Engine.SkeletalMesh'/Game/QuadrapedCreatures/Barghest/Meshes/SK_BARGHEST_MANE.SK_BARGHEST_MANE'"));
 	//if (dogMane.Succeeded())

@@ -122,11 +122,7 @@ ABossApernia::ABossApernia()
     phaseShieldComponent->SetWorldScale3D(FVector(2.0f));
     
     // Optionally, you can set a widget class to the DamageWidgetComponent
-    static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/KMS_AI/Damage/BP_DamageWidget.BP_DamageWidget'"));
-    if (WidgetClass.Succeeded())
-    {
-        damageWidgetComponentl->SetWidgetClass(WidgetClass.Class);
-    }
+    
 
     //////////////////////////////////////////////////////////////////////////Boss Animation forward slash
     static ConstructorHelpers::FObjectFinder<UAnimMontage> MontageObj(TEXT("/Script/Engine.AnimMontage'/Game/KMS_AI/Boss_Alpernia/Animations/AnimationFinish/AM_BossComboAttack01.AM_BossComboAttack01'"));
