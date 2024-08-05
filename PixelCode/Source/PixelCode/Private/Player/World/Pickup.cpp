@@ -13,6 +13,7 @@ APickup::APickup()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickupMesh"));
 	PickupMesh->SetSimulatePhysics(true);
 	SetRootComponent(PickupMesh);
@@ -36,18 +37,20 @@ void APickup::Tick(float DeltaTime)
 
 }
 
+// 픽업 아이템을 초기화
 void APickup::InitializePickup(const TSubclassOf<UItemBase> BaseClass, const int32 InQuantity)
 {
 	if (ItemDataTable && !DesiredItemID.IsNone()) // 없는 아이템인지 확인 ,비어있지않음
 	{
 		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
 
+		// 아이템 참조가 없으면 새로 생성
 		if (ItemReference == nullptr)
 		{
-			ItemReference = NewObject<UItemBase>(this, BaseClass); // 항목을 성공적으로 가져오고 초기화 할 새 항목참조생성
+			ItemReference = NewObject<UItemBase>(this, BaseClass);
 		}
 
-		// 새 항목 데이터 테이블 행의 항목으로 내부 픽업 항목 참조를 초기화
+		// 아이템 데이터로 ItemReference를 초기화
 		ItemReference->ID = ItemData->ID;
 		ItemReference->ItemType = ItemData->ItemType;
 		ItemReference->ItemQuality = ItemData->ItemQuality;
@@ -57,10 +60,13 @@ void APickup::InitializePickup(const TSubclassOf<UItemBase> BaseClass, const int
 		ItemReference->ItemName = ItemData->ItemName;
 		ItemReference->Buildtypes = ItemData->Buildtypes;
 
+		// 수량 설정
 		InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
 
+		// 메시에 아이템 데이터의 메쉬를 설정
 		PickupMesh->SetStaticMesh(ItemData->AssetData.Mesh);
 
+		// 상호작용 데이터 업데이트
 		UpdateInteractableData();
 	}
 }
@@ -120,14 +126,15 @@ void APickup::Interact(APixelCodeCharacter* PlayerCharacter)
 
 void APickup::TakePickup(const APlayerOrganism* Taker)
 {
-	if (!IsPendingKillPending()) // 항목추가처리
+	if (!IsPendingKillPending()) // 삭제 대기 중인지 확인
 	{
 		if (ItemReference)
 		{
 			if (UInventoryComponent* PlayerInventory = Taker->GetInventory())
 			{
 				// 플레이어 인벤토리에 항목을 추가한 다음
-				// 결과에따라 항목을 조정하거나 파괴.
+				 
+				// 인벤토리에 아이템 추가 및 결과 처리
 				const FItemAddResult AddResult = PlayerInventory->HandleAddItem(ItemReference);
 
 				switch (AddResult.operationResult)
@@ -147,7 +154,7 @@ void APickup::TakePickup(const APlayerOrganism* Taker)
 					break;
 				}
 				case EItemAddResult::IAR_AllItemAdded:
-					Destroy();
+					Destroy();  //아이템이 모두 추가되면 픽업 객체 삭제
 					break;
 				default:
 					break;
