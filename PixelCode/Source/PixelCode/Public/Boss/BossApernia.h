@@ -10,7 +10,6 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
-
 #include "BossApernia.generated.h"
 
 UCLASS()
@@ -973,7 +972,18 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastRPC_DestroyShield();
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SpawnAllDestroyActor();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPC_SpawnAllDestroyActor();
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class TSubclassOf<class ADestroyAllActor> destroyActor;
+
 	bool onceShield = false;
+
+	bool onceDestroyActorSpawn = false;
 
 	float lerpDuration = 3.0f;
 

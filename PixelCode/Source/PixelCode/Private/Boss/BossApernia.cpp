@@ -17,6 +17,7 @@
 #include "Engine/World.h"
 #include "Particles/ParticleSystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "DestroyAllActor.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "GameFramework/Character.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -1786,19 +1787,24 @@ void ABossApernia::MoveGigantSword()
                 {
                     if (spawnedSword == nullptr)
                     {
-                        // spawnedSword가 더 이상 유효하지 않다면 타이머를 해제합니다.
+             
                         GetWorld()->GetTimerManager().ClearTimer(Handle);
                         return;
                     }
 
+                    
+
                     float CurrentTime = GetWorld()->GetTimeSeconds();
                     float Alpha = FMath::Clamp((CurrentTime - StartTime) / Duration, 0.0f, 1.0f);
 
-                    // 이동값 계산
+                  
                     FVector LerpedLocation = StartLocation + (TargetLocation - StartLocation) * Alpha;
 
-                    // 이동 적용
-                    spawnedSword->SetActorLocation(LerpedLocation);
+                   
+                    if (spawnedSword != nullptr)
+                    {
+                        spawnedSword->SetActorLocation(LerpedLocation);
+                    }
 
                     // Lerping이 완료되면 타이머 해제
                     if (Alpha >= 1.0f)
@@ -2057,6 +2063,21 @@ void ABossApernia::DestroyStoneDecal()
     {
         spawnDecalActor->Destroy();
     }
+}
+
+void ABossApernia::ServerRPC_SpawnAllDestroyActor_Implementation()
+{
+    MulticastRPC_SpawnAllDestroyActor();
+}
+
+void ABossApernia::MulticastRPC_SpawnAllDestroyActor_Implementation()
+{
+    if (destroyActor &&!onceDestroyActorSpawn)
+    {
+        GetWorld()->SpawnActor<AActor>(destroyActor, GetActorLocation(), GetActorRotation());
+        onceDestroyActorSpawn = true;
+    }
+    
 }
 
 void ABossApernia::ServerRPC_DestroyShield_Implementation()

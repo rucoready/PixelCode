@@ -563,6 +563,8 @@ void AGrux::MulticastRPC_GruxDropExp_Implementation()
             FVector SpawnLocation = GetActorLocation(); // Use appropriate location
             FRotator SpawnRotation = GetActorRotation(); // Use appropriate rotation
             GetWorld()->SpawnActor<APickup>(SelectedPickup, SpawnLocation, SpawnRotation);
+
+            UGameplayStatics::PlaySoundAtLocation(this, soulGetSound, GetActorLocation());
         }
     }
 }

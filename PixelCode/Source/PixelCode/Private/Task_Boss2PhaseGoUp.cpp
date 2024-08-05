@@ -218,6 +218,11 @@ void UTask_Boss2PhaseGoUp::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
             boss->ServerRPC_DestroyShield();
             FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
         }
+
+        if (boss->statueDestroyCount != 3&&currentTime >70.0f)
+        {
+            boss->ServerRPC_SpawnAllDestroyActor();
+        }
     }
     
 }

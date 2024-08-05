@@ -48,6 +48,18 @@ public:
 	UPROPERTY(EditAnywhere, Category = "MySettings")
 	class USoundBase* hitImpactSound;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* hitImpactSound2;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* hitImpactSound3;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* hitImpactSound4;
+
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* hitImpactSound5;
+
 	
 
 	virtual void Tick(float DeltaTime) override;

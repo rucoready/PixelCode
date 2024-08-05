@@ -47,6 +47,9 @@ public:
 
 	FTimerHandle timerhandle_CoolTimeReDamage;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* soulGetSound;
+
 	void Redamage();
 
 	bool reDamage = false;

@@ -47,6 +47,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* attack03;
 
+	UPROPERTY(EditAnywhere, Category = "MySettings")
+	class USoundBase* soulGetSound;
+
 	bool bPlayAttack = false;
 
 	bool attackSensing = false;

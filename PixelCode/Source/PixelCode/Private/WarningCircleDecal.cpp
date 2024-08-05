@@ -112,7 +112,31 @@ void AWarningCircleDecal::Tick(float DeltaTime)
 			onceExplosion = true;
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), explosionSword, GetActorLocation(), GetActorRotation(), FVector(1.0f));
 			sphereComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), hitImpactSound, GetActorLocation());
+			int32 hitValue = FMath::RandRange(1, 5);
+			{
+				if (hitValue == 1)
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), hitImpactSound, GetActorLocation());
+				}
+				else if (hitValue == 2)
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), hitImpactSound2, GetActorLocation());
+				}
+				else if (hitValue == 3)
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), hitImpactSound3, GetActorLocation());
+				}
+				else if (hitValue == 4)
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), hitImpactSound4, GetActorLocation());
+				}
+				else
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), hitImpactSound5, GetActorLocation());
+				}
+			}
+
+			
 			Destroy();
 
 		}
