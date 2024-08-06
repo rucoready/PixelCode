@@ -45,6 +45,8 @@ void APlayerMageESkillSpawnActor::BeginPlay()
 	bDestroy = true;
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &APlayerMageESkillSpawnActor::OnOverlapEnemy);
 
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerMageEskillSound, GetActorLocation());
+
 }
 
 // Called every frame

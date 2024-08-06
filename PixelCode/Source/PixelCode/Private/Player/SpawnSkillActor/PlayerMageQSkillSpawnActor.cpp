@@ -57,6 +57,8 @@ void APlayerMageQSkillSpawnActor::BeginPlay()
 	boxComp->OnComponentBeginOverlap.AddDynamic(this, &APlayerMageQSkillSpawnActor::OnOverlapEnemy);
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageQSkill, GetActorLocation(), GetActorRotation());
 
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerMageQskillSound, GetActorLocation());
+
 }
 
 // Called every frame

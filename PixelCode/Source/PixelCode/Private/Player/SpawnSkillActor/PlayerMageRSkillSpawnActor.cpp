@@ -48,6 +48,10 @@ void APlayerMageRSkillSpawnActor::BeginPlay()
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageRSkillAttack, GetActorLocation(), GetActorRotation());
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageRSkillfire, GetActorLocation(), GetActorRotation());
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageRSkillfire2, GetActorLocation(), GetActorRotation());
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerMageFirstHitSound, GetActorLocation());
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerMageRskillSound, GetActorLocation());
 }
 
 // Called every frame

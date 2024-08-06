@@ -46,6 +46,8 @@ void APlayerMageZSkillSpawnActor::BeginPlay()
 	bMagicCircle = true;
 
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MagicCircle, GetActorLocation(), GetActorRotation());
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerMageZskillSound, GetActorLocation());
 }
 
 // Called every frame

@@ -62,6 +62,7 @@ public:
 	float MaxScaleFactor;
 	float ScaleSpeed;
 
-
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerMageQskillSound;
 
 };

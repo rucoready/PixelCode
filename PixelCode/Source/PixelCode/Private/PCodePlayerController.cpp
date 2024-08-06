@@ -418,7 +418,7 @@ void APCodePlayerController::DeleteCharacter(APixelCodeCharacter* APlayerchar, c
 			APlayerchar->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 			APlayerchar->GetMesh()->SetCollisionProfileName("CharacterMesh");
 			APlayerchar->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-
+			//APlayerchar->GetMesh()->GetAnimInstance()->Montage_Stop(0.2f, APlayerchar->AM_DeathMontage);
 
 			ServerRPC_SpawnCharacterAtLocation();
 			ObjectPoolManager->ReturnPooledCharacter(APlayerchar); // 캐릭터 반환

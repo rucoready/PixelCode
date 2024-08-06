@@ -48,6 +48,9 @@ void APlayerMageRSkillCastActor::BeginPlay()
     // OnActorHit 이벤트에 핸들러 함수를 바인딩
     OnActorHit.AddDynamic(this, &APlayerMageRSkillCastActor::OnMeteorHit);
 
+
+   
+
 }
 
 // Called every frame

@@ -185,6 +185,10 @@ public:
 	UCameraComponent* FollowCamera;
 	
 
+	UPROPERTY(EditDefaultsOnly, Category = "MySettings", Replicated)
+	class UAnimMontage* AM_DeathMontage;
+
+
 	// 플레이어 마나, 스테미너 시스템
 	float MPRegen = 0.0f;
 	float SPRegen = 0.0f;

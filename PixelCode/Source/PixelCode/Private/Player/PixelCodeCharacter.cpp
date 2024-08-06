@@ -1426,11 +1426,17 @@ void APixelCodeCharacter::DieFunction()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+
+
 	//UE_LOG(LogTemp, Warning, TEXT("RespawnOn"));
 
 	// UI -> 리스폰 / 종료
 	if (IsLocallyControlled())
 	{ 
+	/*	if (AM_DeathMontage != nullptr)
+		{
+			GetMesh()->GetAnimInstance()->Montage_Play(AM_DeathMontage);
+		}*/
 		auto pc = Cast<APCodePlayerController>(Controller);
 		//FollowCamera->PostProcessSettings.ColorSaturation = FVector4(0, 0, 0, 1);
 		//UE_LOG(LogTemp, Warning, TEXT("RespawnOn11"));
@@ -1446,6 +1452,10 @@ void APixelCodeCharacter::DieFunction()
 	}
 
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerDieSound, GetActorLocation());
+
+	
+	
+		
 
 	motionState = ECharacterMotionState::Die;
 
@@ -1506,6 +1516,7 @@ void APixelCodeCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(APixelCodeCharacter, RollAnim);
 	DOREPLIFETIME(APixelCodeCharacter, Iteminfos);
 	DOREPLIFETIME(APixelCodeCharacter, bPoss);
+	DOREPLIFETIME(APixelCodeCharacter, AM_DeathMontage);
 }
 
 

@@ -86,4 +86,10 @@ public:
 	UFUNCTION()
 	void EndOverlapEnemy(AActor* OtherActor);
 
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerMageFirstHitSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundBase* PlayerMageRskillSound;
+
 };
