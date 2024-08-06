@@ -85,7 +85,4 @@ public:
 	void DestroyInstance(const FHitResult& HitResult);
 	void CycleMesh();
 
-	UPROPERTY(BlueprintReadWrite, Category = KSH)
-	bool bItemQuantityValid = false;
-
 };

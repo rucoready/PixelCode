@@ -1327,25 +1327,25 @@ void APixelCodeCharacter::MultiRPC_RemoveBush_Implementation(const FHitResult& H
 	}
 }
 	
-void APixelCodeCharacter::OnCheatMode(const FInputActionValue& value)
-{
-	bool Val = value.Get<bool>();
-
-	if (Val)
-	{
-		Builder->bItemQuantityValid = !Builder->bItemQuantityValid;
-	}
-	
+// void APixelCodeCharacter::OnCheatMode(const FInputActionValue& value)
+// {
+// 	bool Val = value.Get<bool>();
+// 
 // 	if (Val)
 // 	{
-// 		Builder->bItemQuantityValid = true;
+// 		Builder->bItemQuantityValid = !Builder->bItemQuantityValid;
 // 	}
-// 	else
-// 	{
-// 		Builder->bItemQuantityValid = false;
-// 	}
-
-}
+// 	
+// // 	if (Val)
+// // 	{
+// // 		Builder->bItemQuantityValid = true;
+// // 	}
+// // 	else
+// // 	{
+// // 		Builder->bItemQuantityValid = false;
+// // 	}
+// 
+// }
 
 // 서휘-----------------------------------------------------------------------------------------------------끝
 
@@ -1672,7 +1672,7 @@ void APixelCodeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 			
 			
 			EnhancedInputComponent->BindAction(IA_Build, ETriggerEvent::Started, this, &APixelCodeCharacter::OnBuildUI);
-			EnhancedInputComponent->BindAction(IA_Cheat, ETriggerEvent::Started, this, &APixelCodeCharacter::OnCheatMode);
+	/*		EnhancedInputComponent->BindAction(IA_Cheat, ETriggerEvent::Started, this, &APixelCodeCharacter::OnCheatMode);*/
 
 
 
