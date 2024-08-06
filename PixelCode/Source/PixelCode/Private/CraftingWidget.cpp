@@ -186,6 +186,7 @@ void UCraftingWidget::OnCraftClicked()
 		if (Pc->HasAuthority())
 		{
 			Char->CraftItem(Crafts[SelectedIndex]);
+			InitializeCraftSlot();
 		}
 		else
 		{

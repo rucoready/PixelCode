@@ -594,10 +594,10 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 
 void APixelCodeCharacter::ServerRPC_CraftItem_Implementation(const FCraftItem& Item)
 {
-	MultiRPC_CraftItem(Item);
+	ClientRPC_CraftItem(Item);
 }
 
-void APixelCodeCharacter::MultiRPC_CraftItem_Implementation(const FCraftItem& Item)
+void APixelCodeCharacter::ClientRPC_CraftItem_Implementation(const FCraftItem& Item)
 {
 	CraftItem(Item);
 }
