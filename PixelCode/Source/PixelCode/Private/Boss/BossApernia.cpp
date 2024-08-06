@@ -825,9 +825,9 @@ void ABossApernia::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-    DOREPLIFETIME(ABossApernia, swordComboAttack1);
-    DOREPLIFETIME(ABossApernia, jumpAttack01V1);
-    DOREPLIFETIME(ABossApernia, Player);
+    //DOREPLIFETIME(ABossApernia, swordComboAttack1);
+    //DOREPLIFETIME(ABossApernia, jumpAttack01V1);
+    //DOREPLIFETIME(ABossApernia, Player);
 }
 
 void ABossApernia::ServerRPC_ForwardSlash_Implementation()

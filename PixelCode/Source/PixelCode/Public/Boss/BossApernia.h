@@ -118,7 +118,7 @@ public:
 
 	void RepocessBehaviorTreeRe();
 
-	UPROPERTY(EditAnywhere, Category="MySettings",Replicated)
+	UPROPERTY(EditAnywhere, Category="MySettings")
 	class APlayerOrganism* Player;
 
 	bool bBossAttackFallDownAttack = false;
@@ -212,7 +212,7 @@ public:
 
 	//Forward Slash//////////////////////////////////////////////////////////
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings", Replicated)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* swordComboAttack1;
 
 	UFUNCTION(Server, Reliable)
@@ -224,7 +224,7 @@ public:
 	//Jump Attack01/////////////////////////////////////////////////////////////////
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings", Replicated)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* jumpAttack01V1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
@@ -236,10 +236,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* jumpAttack01V4;
 
-	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
+	UPROPERTY(EditAnywhere, Category = "Niagara")
 	class UNiagaraSystem* groundImpactV1Niagara;
 
-	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
+	UPROPERTY(EditAnywhere, Category = "Niagara")
 	class UNiagaraSystem* bissHitNA;
 
 
@@ -488,10 +488,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* forwardSlashAttack;
 
-	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
+	UPROPERTY(EditAnywhere, Category = "Niagara")
 	class UNiagaraSystem* impactSwing;
 
-	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
+	UPROPERTY(EditAnywhere, Category = "Niagara")
 	class UNiagaraSystem* impactSwing2;
 
 	UFUNCTION(Server, Reliable)
@@ -764,7 +764,7 @@ public:
 	class UParticleSystem* roarParticle;
 
 
-	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
+	UPROPERTY(EditAnywhere, Category = "Niagara")
 	class UNiagaraSystem* phaseShield;
 
 	UFUNCTION(Server, Reliable)
@@ -902,7 +902,7 @@ public:
 
 	class ADragonRazorStatue* drangonStatue;
 
-	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)
+	UPROPERTY(EditAnywhere, Category = "Niagara")
 	class UNiagaraSystem* fireNA;
 
 	bool allStatueDestroy = false;
