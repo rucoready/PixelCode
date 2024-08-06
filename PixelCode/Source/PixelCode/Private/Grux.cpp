@@ -122,7 +122,7 @@ void AGrux::Tick(float DeltaTime)
      distance = FVector::Dist(originLocation, currentLocation);
  
      if (distance > maxLocationSize && !returnCoolTime)
-     boxCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+     
      {
          RetrunOriginLoc();
          returnCoolTime = true;
@@ -376,23 +376,27 @@ void AGrux::ServerRPC_TakeDamage_Implementation()
 
 void AGrux::MulticastRPC_TakeDamage_Implementation()
 {
-    int32 value2 = FMath::RandRange(1, 3);
-
-    if (value2 == 1)
+    if (currentHp > 0.0f)
     {
-        PlayAnimMontage(gruxTakeDamage);
+        int32 value2 = FMath::RandRange(1, 3);
 
-    }
-    else if (value2 == 2)
-    {
-        PlayAnimMontage(gruxTakeDamage2);
+        if (value2 == 1)
+        {
+            PlayAnimMontage(gruxTakeDamage);
 
-    }
-    else
-    {
-        PlayAnimMontage(gruxTakeDamage3);
+        }
+        else if (value2 == 2)
+        {
+            PlayAnimMontage(gruxTakeDamage2);
 
+        }
+        else
+        {
+            PlayAnimMontage(gruxTakeDamage3);
+
+        }
     }
+    
 }
 
 void AGrux::ServerRPC_Attack01_Implementation()
