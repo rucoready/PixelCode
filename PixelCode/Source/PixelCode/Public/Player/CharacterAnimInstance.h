@@ -177,12 +177,19 @@ public:
 	
 
 	UFUNCTION()
+	void AnimNotify_mageQAttack();
+
+	UFUNCTION()
 	void AnimNotify_mageEAttack();
 
 	UFUNCTION()
 	void AnimNotify_mageRAttack();
 
+	UFUNCTION()
+	void AnimNotify_bMove();
 
+	UFUNCTION()
+	void AnimNotify_bMoveEnd();
 };
 
 

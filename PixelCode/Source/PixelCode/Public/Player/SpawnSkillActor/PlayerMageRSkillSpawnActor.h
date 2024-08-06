@@ -41,6 +41,11 @@ public:
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* NA_MageRSkillAttack;
 
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* NA_MageRSkillfire;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* NA_MageRSkillfire2;
 	
 
 	UPROPERTY(EditAnywhere)

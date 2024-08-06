@@ -46,6 +46,8 @@ void APlayerMageRSkillSpawnActor::BeginPlay()
 	
 	UE_LOG(LogTemp, Warning, TEXT("RSKillActor"));
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageRSkillAttack, GetActorLocation(), GetActorRotation());
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageRSkillfire, GetActorLocation(), GetActorRotation());
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageRSkillfire2, GetActorLocation(), GetActorRotation());
 }
 
 // Called every frame

@@ -89,22 +89,22 @@ void ABaseWeapon::OnEquipped()
 						{
 							AnimInterface->UpdateCombatType_Implementation(eWeaponType);
 
-							UE_LOG(LogTemp, Warning, TEXT("%s Send UUpdateCombatType"), *animInstance->GetName());
+							//UE_LOG(LogTemp, Warning, TEXT("%s Send UUpdateCombatType"), *animInstance->GetName());
 						}
 						else
 						{
-							UE_LOG(LogTemp, Warning, TEXT("%s Is do not Have IAnimInstance_Interface"), *skeletalMeshComponent->GetName());
+							//UE_LOG(LogTemp, Warning, TEXT("%s Is do not Have IAnimInstance_Interface"), *skeletalMeshComponent->GetName());
 						}
 					}
 				}
 				else
 				{
-					UE_LOG(LogTemp, Warning, TEXT("skeletalMeshComponent Is Nullptr"));
+					//UE_LOG(LogTemp, Warning, TEXT("skeletalMeshComponent Is Nullptr"));
 				}
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Owner Is Not Character"));
+				//UE_LOG(LogTemp, Warning, TEXT("Owner Is Not Character"));
 			}
 
 			collisionComponent->SetCollisionMesh(GetItemMesh());
@@ -145,22 +145,22 @@ void ABaseWeapon::OnEquippedTarget(UCombatComponent* combatcomp)
 						{
 							AnimInterface->UpdateCombatType_Implementation(eWeaponType);
 
-							UE_LOG(LogTemp, Warning, TEXT("%s Send UUpdateCombatType"), *animInstance->GetName());
+							//UE_LOG(LogTemp, Warning, TEXT("%s Send UUpdateCombatType"), *animInstance->GetName());
 						}
 						else
 						{
-							UE_LOG(LogTemp, Warning, TEXT("%s Is do not Have IAnimInstance_Interface"), *skeletalMeshComponent->GetName());
+							//UE_LOG(LogTemp, Warning, TEXT("%s Is do not Have IAnimInstance_Interface"), *skeletalMeshComponent->GetName());
 						}
 					}
 				}
 				else
 				{
-					UE_LOG(LogTemp, Warning, TEXT("skeletalMeshComponent Is Nullptr"));
+					//UE_LOG(LogTemp, Warning, TEXT("skeletalMeshComponent Is Nullptr"));
 				}
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Owner Is Not Character"));
+				//UE_LOG(LogTemp, Warning, TEXT("Owner Is Not Character"));
 			}
 
 			collisionComponent->SetCollisionMesh(GetItemMesh());
@@ -169,7 +169,7 @@ void ABaseWeapon::OnEquippedTarget(UCombatComponent* combatcomp)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("selectedName : %p"), this);
+		//UE_LOG(LogTemp, Warning, TEXT("selectedName : %p"), this);
 	}
 }
 
@@ -198,7 +198,7 @@ void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 		bHit = true;
 		
 		
-		UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage1"));
+		//UE_LOG(LogTemp, Warning, TEXT("Boss Take Damage1"));
 
 	}	
 

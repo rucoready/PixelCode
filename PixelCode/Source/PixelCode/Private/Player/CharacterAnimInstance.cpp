@@ -416,6 +416,14 @@ void UCharacterAnimInstance::AnimNotify_mageRightAttack()
 	}
 }
 
+void UCharacterAnimInstance::AnimNotify_mageQAttack()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bmageQAttack = true;
+	}
+}
+
 void UCharacterAnimInstance::AnimNotify_mageEAttack()
 {
 	if (myCharacter != nullptr)
@@ -429,6 +437,22 @@ void UCharacterAnimInstance::AnimNotify_mageRAttack()
 	if (myCharacter != nullptr)
 	{
 		myCharacter->bmageRAttack = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_bMove()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bMove = true;
+	}
+}
+
+void UCharacterAnimInstance::AnimNotify_bMoveEnd()
+{
+	if (myCharacter != nullptr)
+	{
+		myCharacter->bMove = false;
 	}
 }
 

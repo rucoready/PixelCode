@@ -215,9 +215,13 @@ public:
 
 	bool bmageRightAttack = false;
 
+	bool bmageQAttack = false;
+
 	bool bmageEAttack = false;
 
 	bool bmageRAttack = false;
+
+	bool bMove = false;
 
 	UPROPERTY(EditAnywhere, Category = "Sounds")
 	USoundBase* PlayerHitSound;
