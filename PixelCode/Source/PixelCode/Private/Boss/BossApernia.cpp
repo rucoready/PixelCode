@@ -1763,17 +1763,18 @@ void ABossApernia::ServerRPC_SpawnGigantSword_Implementation()
 
 void ABossApernia::MulticastRPC_SpawnGigantSword_Implementation()
 {
-    SpawnGigantSword();
+    //SpawnGigantSword();
 }
 
 void ABossApernia::ServerRPC_MoveGigantSword_Implementation()
 {
+    
     MulticastRPC_MoveGigantSword();
 }
 
 void ABossApernia::MulticastRPC_MoveGigantSword_Implementation()
 {
-    MoveGigantSword();
+    //MoveGigantSword();
 }
 
 void ABossApernia::SpawnGigantSword()
@@ -1787,64 +1788,14 @@ void ABossApernia::SpawnGigantSword()
 
 void ABossApernia::MoveGigantSword()
 {
-    if (gigantSword)
+    if (gigantSword != nullptr)
     {
         FVector StartLocation(2490, 4830, 8400);
         FVector TargetLocation(2490, 4829, 3919);
         FRotator SpawnRotation = FRotator::ZeroRotator;
-
-        AActor* spawnedSword = GetWorld()->SpawnActor<AActor>(gigantSword, StartLocation, SpawnRotation);
-
-        if (spawnedSword != nullptr)
-        {
-            float StartTime = GetWorld()->GetTimeSeconds();
-            float Duration = 4.0f; // 이동을 완료하는 데 걸리는 시간
-
-            FTimerHandle Handle;
-            GetWorld()->GetTimerManager().SetTimer(Handle, [this, StartTime, Duration, StartLocation, TargetLocation, spawnedSword, &Handle]()
-                {
-                    // spawnedSword가 null이 아닌지 확인
-                    if (spawnedSword == nullptr)
-                    {
-                        GetWorld()->GetTimerManager().ClearTimer(Handle);
-                        return;
-                    }
-
-                    // 시간 계산
-                    float CurrentTime = GetWorld()->GetTimeSeconds();
-                    float Alpha = FMath::Clamp((CurrentTime - StartTime) / Duration, 0.0f, 1.0f);
-
-                    // StartLocation과 TargetLocation이 유효한지 확인
-                    if (!StartLocation.IsZero() && !TargetLocation.IsZero())
-                    {
-                        FVector LerpedLocation = StartLocation + (TargetLocation - StartLocation) * Alpha;
-
-                        // spawnedSword가 여전히 null이 아닌지 확인
-                        if (spawnedSword != nullptr)
-                        {
-                            spawnedSword->SetActorLocation(LerpedLocation);
-                        }
-
-                        // 타이머 완료 조건
-                        if (Alpha >= 1.0f)
-                        {
-                            if (!onceSoundGigantImpact)
-                            {
-                                UGameplayStatics::PlaySoundAtLocation(GetWorld(), gigantSwordSound, GetActorLocation());
-                                onceSoundGigantImpact = true;
-                            }
-
-                            spawnedSword->SetActorLocation(TargetLocation);
-                            GetWorld()->GetTimerManager().ClearTimer(Handle);
-                        }
-                    }
-                    else
-                    {
-                        GetWorld()->GetTimerManager().ClearTimer(Handle);
-                    }
-                }, 0.01f, true);
-        }
     }
+
+            
 }
 
 
