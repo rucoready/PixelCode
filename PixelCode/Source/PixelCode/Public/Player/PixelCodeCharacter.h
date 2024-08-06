@@ -729,8 +729,9 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void ServerRPC_Interact();
 
-
-	UFUNCTION(NetMulticast, Reliable)
+	//UFUNCTION(NetMulticast, Reliable)
+	
+	UFUNCTION(Client, Reliable)
 	void NetMulticastRPC_Interact(const TScriptInterface<IInteractionInterface>& Interactable);
 
 	APlayerOrganism* focusedChar = nullptr;
