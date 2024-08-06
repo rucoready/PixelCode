@@ -592,6 +592,16 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 	}
 }
 
+void APixelCodeCharacter::ServerRPC_CraftItem_Implementation(const FCraftItem& Item)
+{
+	MultiRPC_CraftItem(Item);
+}
+
+void APixelCodeCharacter::MultiRPC_CraftItem_Implementation(const FCraftItem& Item)
+{
+	CraftItem(Item);
+}
+
 void APixelCodeCharacter::DropedItem(const UItemBase* Iteminfo)
 {
 	if (ItemStorage)

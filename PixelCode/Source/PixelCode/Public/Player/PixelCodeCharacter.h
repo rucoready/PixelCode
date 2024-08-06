@@ -764,6 +764,12 @@ public:
 	UFUNCTION()
 	void CraftItem(const FCraftItem& Item);
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_CraftItem(const FCraftItem& Item);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_CraftItem(const FCraftItem& Item);
+
 	UFUNCTION()
 	void DropedItem(const UItemBase* Iteminfo);
 
