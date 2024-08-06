@@ -994,8 +994,8 @@ public:
 	void MultiRPC_RemoveBush(const FHitResult& HitResult);
 
 
-// 	UFUNCTION()
-// 	void OnCheatMode(const FInputActionValue& value);
+ 	UFUNCTION()
+ 	void OnCheatMode(const FInputActionValue& value);
 
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 	/*UPROPERTY(EditAnywhere, Category="MySettings")

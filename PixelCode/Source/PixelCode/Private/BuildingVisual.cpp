@@ -154,7 +154,7 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 
 void ABuildingVisual::SpawnBuilding()
 {
-	bool bItemQuantityValid = false;
+	bItemQuantityValid = false;
  	auto Pc = Cast<APlayerOrganism>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
  	if (Pc)
  	{

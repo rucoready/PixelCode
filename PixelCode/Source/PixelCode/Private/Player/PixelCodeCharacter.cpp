@@ -1337,25 +1337,25 @@ void APixelCodeCharacter::MultiRPC_RemoveBush_Implementation(const FHitResult& H
 	}
 }
 	
-// void APixelCodeCharacter::OnCheatMode(const FInputActionValue& value)
-// {
-// 	bool Val = value.Get<bool>();
-// 
-// 	if (Val)
-// 	{
-// 		Builder->bItemQuantityValid = !Builder->bItemQuantityValid;
-// 	}
-// 	
-// // 	if (Val)
-// // 	{
-// // 		Builder->bItemQuantityValid = true;
-// // 	}
-// // 	else
-// // 	{
-// // 		Builder->bItemQuantityValid = false;
-// // 	}
-// 
-// }
+ void APixelCodeCharacter::OnCheatMode(const FInputActionValue& value)
+ {
+ 	bool Val = value.Get<bool>();
+ 
+ 	if (Val)
+ 	{
+ 		Builder->bItemQuantityValid = !Builder->bItemQuantityValid;
+ 	}
+ 	
+ // 	if (Val)
+ // 	{
+ // 		Builder->bItemQuantityValid = true;
+ // 	}
+ // 	else
+ // 	{
+ // 		Builder->bItemQuantityValid = false;
+ // 	}
+ 
+ }
 
 // 서휘-----------------------------------------------------------------------------------------------------끝
 
