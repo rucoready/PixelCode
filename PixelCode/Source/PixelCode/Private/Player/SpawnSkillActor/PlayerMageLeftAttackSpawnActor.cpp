@@ -54,14 +54,14 @@ void APlayerMageLeftAttackSpawnActor::Tick(float DeltaTime)
 	FVector NewLocation = GetActorLocation() + GetActorForwardVector() * Speed * DeltaTime; // Speed는 앞으로 이동할 속도
 	SetActorLocation(NewLocation);
 
-	UE_LOG(LogTemp,Warning,TEXT("PlayerLocation"));
+	//UE_LOG(LogTemp,Warning,TEXT("PlayerLocation"));
 
 	if (bDestroy)
 	{
 		DestroyTime += DeltaTime;
 		if (DestroyTime >= 1.0f)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("destroy"));
+			//UE_LOG(LogTemp, Warning, TEXT("destroy"));
 			bDestroy = false;
 			DestroyTime = 0.0f;
 			Destroy();

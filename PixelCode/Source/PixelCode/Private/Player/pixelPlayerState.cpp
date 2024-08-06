@@ -96,12 +96,12 @@ void ApixelPlayerState::maxEXP()
 void ApixelPlayerState::OnRep_totalEXP(int32 OldEXP)
 {
     // totalEXP가 변경될 때 실행할 로직 작성
-    UE_LOG(LogTemp, Warning, TEXT("Total EXP changed from %d to %d"), OldEXP, totalEXP);
+    //UE_LOG(LogTemp, Warning, TEXT("Total EXP changed from %d to %d"), OldEXP, totalEXP);
 }
 
 void ApixelPlayerState::OnRep_currentEXP(float OldEXP)
 {
     // currentEXP가 변경될 때 실행할 로직 작성
-	UE_LOG(LogTemp, Warning, TEXT("Current EXP changed from %f to %f"), OldEXP, currentEXP);
+	//UE_LOG(LogTemp, Warning, TEXT("Current EXP changed from %f to %f"), OldEXP, currentEXP);
 }
 

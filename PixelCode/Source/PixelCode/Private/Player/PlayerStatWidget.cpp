@@ -19,13 +19,13 @@
 void UPlayerStatWidget::DisplayStat()
 {
 	SetVisibility(ESlateVisibility::Visible);
-	UE_LOG(LogTemp, Warning, TEXT("StatWidgetOn"));
+	//UE_LOG(LogTemp, Warning, TEXT("StatWidgetOn"));
 }
 
 void UPlayerStatWidget::HideStat()
 {
 	SetVisibility(ESlateVisibility::Collapsed);
-	UE_LOG(LogTemp, Warning, TEXT("StatWidgetOff"));
+	//UE_LOG(LogTemp, Warning, TEXT("StatWidgetOff"));
 }
 
 void UPlayerStatWidget::NativeConstruct()
@@ -74,7 +74,7 @@ void UPlayerStatWidget::UpdateLevel(ApixelPlayerState* Ps)
 {
 	LEVEL = FString::FromInt(Ps->Level);  // float을 FString으로 변환
 	TB_LEVEL->SetText(FText::FromString(LEVEL));  // FString을 FText로 변환하여 UTextBlock에 설정	
-	UE_LOG(LogTemp, Warning, TEXT("UPdateLEvel"));
+	//UE_LOG(LogTemp, Warning, TEXT("UPdateLEvel"));
 }
 
 

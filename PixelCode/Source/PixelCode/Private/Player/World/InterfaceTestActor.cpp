@@ -98,7 +98,7 @@ void AInterfaceTestActor::EndFocus()
 
 void AInterfaceTestActor::BeginInteract()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Calling BeginInteract override on Interface test actor")); // 시작 상호작용 재정의 호출
+	//UE_LOG(LogTemp, Warning, TEXT("Calling BeginInteract override on Interface test actor")); // 시작 상호작용 재정의 호출
 
 
 	//bportalOnOff = true;
@@ -108,13 +108,13 @@ void AInterfaceTestActor::BeginInteract()
 void AInterfaceTestActor::EndInteract()
 {
 	//bportalOnOff = false;
-	UE_LOG(LogTemp, Warning, TEXT("Calling EndInteract override on Interface test actor"));
+	//UE_LOG(LogTemp, Warning, TEXT("Calling EndInteract override on Interface test actor"));
 	//portalBarWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void AInterfaceTestActor::Interact(APixelCodeCharacter* PlayerCharacter)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Calling Interact override on Interface test actor"));
+	//UE_LOG(LogTemp, Warning, TEXT("Calling Interact override on Interface test actor"));
 
 }
 

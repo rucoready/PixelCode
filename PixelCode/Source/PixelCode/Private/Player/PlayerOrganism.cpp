@@ -211,12 +211,12 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 	{
 		if (EventInstigator != nullptr)
 		{
-			UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("EventInstigator : %s"), *EventInstigator->GetActorNameOrLabel()));
+			//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("EventInstigator : %s"), *EventInstigator->GetActorNameOrLabel()));
 		}
 
 		if (DamageCauser != nullptr)
 		{
-			UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Attack By : %s"), *DamageCauser->GetActorNameOrLabel()));
+			//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Attack By : %s"), *DamageCauser->GetActorNameOrLabel()));
 		}
 	}
 	
@@ -553,7 +553,7 @@ void APlayerOrganism::NetMulticastRPC_AmountDamage_Implementation(float damage)
 
 void APlayerOrganism::DieFunction()
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Dead : %s"), *GetActorNameOrLabel()));
+	//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Dead : %s"), *GetActorNameOrLabel()));
 
 	bDead = true;
 

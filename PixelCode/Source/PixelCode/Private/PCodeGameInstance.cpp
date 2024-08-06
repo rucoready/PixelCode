@@ -73,7 +73,7 @@ void UPCodeGameInstance::CreateMySession(FString roomName,  int32 PlayerCount)
 	set.NumPublicConnections = PlayerCount;
 
 	// 6. 참여할 공개 연결의 최대 갯수
-	UE_LOG(LogTemp, Warning, TEXT("set.NumPublicConnections: %d,"), set.NumPublicConnections);
+	//UE_LOG(LogTemp, Warning, TEXT("set.NumPublicConnections: %d,"), set.NumPublicConnections);
 	PlayerCount = (PlayerCount == 0) ? 2 : PlayerCount;
 
 	if (PlayerCount == 0)
@@ -83,7 +83,7 @@ void UPCodeGameInstance::CreateMySession(FString roomName,  int32 PlayerCount)
 
 	set.NumPublicConnections = PlayerCount;
 
-	UE_LOG(LogTemp, Warning, TEXT("set.NumPublicConnections: %d,"), set.NumPublicConnections);
+	//UE_LOG(LogTemp, Warning, TEXT("set.NumPublicConnections: %d,"), set.NumPublicConnections);
 
 	// 커스텀 정보 : 방 이름 , 호스트 이름
 	//set.Set(FName("ROOM_NAME"), roomName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
@@ -119,20 +119,20 @@ void UPCodeGameInstance::FindOtherSessions()
 	// 세션 인터페이스를 이용해서 방을 찾고 싶다. 
 
 	sessionInSearch = MakeShareable(new FOnlineSessionSearch);
-	UE_LOG(LogTemp, Warning, TEXT("11111111111111"));
+	//UE_LOG(LogTemp, Warning, TEXT("11111111111111"));
 
 	// 검색 조건을 설정 하고싶다.
 
 	sessionInSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Near);
-	UE_LOG(LogTemp, Warning, TEXT("2222222222"));
+	//UE_LOG(LogTemp, Warning, TEXT("2222222222"));
 
 	// LAN 여부
 	sessionInSearch->bIsLanQuery = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
-	UE_LOG(LogTemp, Warning, TEXT("33333333333"));
+	//UE_LOG(LogTemp, Warning, TEXT("33333333333"));
 
 	// 최대 검색 수
 	sessionInSearch->MaxSearchResults = 30;
-	UE_LOG(LogTemp, Warning, TEXT("44444444444444444"));
+	//UE_LOG(LogTemp, Warning, TEXT("44444444444444444"));
 
 	sessionInterface->FindSessions(0, sessionInSearch.ToSharedRef());
 
@@ -157,7 +157,7 @@ void UPCodeGameInstance::OnFindSessionsComplete(bool bWasSuccressful)
 			auto results = sessionInSearch->SearchResults;
 			if (results.Num() == 0) {
 				//UE_LOG(LogTemp, Warning, TEXT("OnFindSessionsComplete results.Num() == 0"));
-				UE_LOG(LogTemp, Warning, TEXT(" i kill you"));
+				//UE_LOG(LogTemp, Warning, TEXT(" i kill you"));
 			
 			}
 			for (int i = 0; i < results.Num(); i++)
@@ -179,7 +179,7 @@ void UPCodeGameInstance::OnFindSessionsComplete(bool bWasSuccressful)
 
 				OnMySessionSearchCompleteDelegate.Broadcast(info);
 
-				UE_LOG(LogTemp, Warning, TEXT("%s"), *info.ToString());
+				//UE_LOG(LogTemp, Warning, TEXT("%s"), *info.ToString());
 			}
 		
 		}
@@ -193,7 +193,7 @@ void UPCodeGameInstance::OnFindSessionsComplete(bool bWasSuccressful)
 void UPCodeGameInstance::JoinMySession(int32 index)
 {
 	sessionInterface->JoinSession(0, FName(*mySessionName), sessionInSearch->SearchResults[index]);
-	UE_LOG(LogTemp, Warning, TEXT("777777777"));
+	//UE_LOG(LogTemp, Warning, TEXT("777777777"));
 }
 
 void UPCodeGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type results)
@@ -204,7 +204,7 @@ void UPCodeGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSession
 		auto* pc = GetWorld()->GetFirstPlayerController();
 		FString url;
 		sessionInterface->GetResolvedConnectString(SessionName, url);
-		UE_LOG(LogTemp, Warning, TEXT("ClientTravel URL : %s"), *url);
+		//UE_LOG(LogTemp, Warning, TEXT("ClientTravel URL : %s"), *url);
 
 		if (false == url.IsEmpty())
 		{
@@ -237,7 +237,7 @@ FCharacterStat UPCodeGameInstance::GetCharacterDataTable(const FString& rowName)
 {
 	if (dt_characerStatDataTable != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("gameins"));
+		//UE_LOG(LogTemp, Warning, TEXT("gameins"));
 		FString errorText;
 		FCharacterStat* characerStatInfo = dt_characerStatDataTable->FindRow<FCharacterStat>(FName(rowName), errorText);
 

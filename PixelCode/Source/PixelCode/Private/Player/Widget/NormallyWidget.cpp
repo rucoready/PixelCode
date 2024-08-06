@@ -146,7 +146,7 @@ void UNormallyWidget::QSetPercent()
 		{
 			// 스칼라 파라미터 설정
 			QDynamicMaterial->SetScalarParameterValue(TEXT("Percent"), 1.0f - Player->CurrentQSkillCoolTime/Player->QSkillCoolTime);
-			UE_LOG(LogTemp, Warning, TEXT("QskillcollWidget"));
+			//UE_LOG(LogTemp, Warning, TEXT("QskillcollWidget"));
 		}
 
 		// BP_QSkillbar가 UImage인 경우 SetBrushFromMaterial을 사용할 수 있습니다.
@@ -306,7 +306,7 @@ void UNormallyWidget::SetActiveGameOverUI(bool value)
 	SwitcherUI->SetActiveWidgetIndex(0);
 	SwitcherUI->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 	CP_GameOverUI->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
-	UE_LOG(LogTemp,Warning,TEXT("RespawnUI"));
+	//UE_LOG(LogTemp,Warning,TEXT("RespawnUI"));
 }
 
 void UNormallyWidget::SetActiveStopWidgetUI(bool value)
@@ -325,11 +325,11 @@ void UNormallyWidget::SetBaseSkillWidget(bool value)
 
 void UNormallyWidget::SetSwordSkillWidget(bool value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("SetSwordSkillWidget"));
+	//UE_LOG(LogTemp, Warning, TEXT("SetSwordSkillWidget"));
 	SkillSwitcherUI->SetActiveWidgetIndex(1);
 	SkillSwitcherUI->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 	CP_PlayerSwordSkill->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
-	UE_LOG(LogTemp, Warning, TEXT("Boolean value is: %s"), value ? TEXT("True") : TEXT("False"));
+	//UE_LOG(LogTemp, Warning, TEXT("Boolean value is: %s"), value ? TEXT("True") : TEXT("False"));
 }
 
 void UNormallyWidget::SetMageSkillWidget(bool value)

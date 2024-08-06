@@ -54,7 +54,7 @@ void ASpawnSwordRSkill::Tick(float DeltaTime)
 		DestroyTime += DeltaTime;
 		if (DestroyTime >= 1.0f)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("destroy"));
+			//UE_LOG(LogTemp, Warning, TEXT("destroy"));
 			bDestroy = false;
 			DestroyTime = 0.0f;
 			Destroy();

@@ -12,7 +12,7 @@ bool UDropItemWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropE
 
 	if (!IsValid(DragWidgetResult))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Cast returned null."))
+		//UE_LOG(LogTemp, Warning, TEXT("Cast returned null."))
 			return false;
 	}
 

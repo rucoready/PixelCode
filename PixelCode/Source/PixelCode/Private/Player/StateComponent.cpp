@@ -31,7 +31,7 @@ void UStateComponent::BeginPlay()
 
 	//NormallyWidget->firstUpdate();
 		
-	UE_LOG(LogTemp, Warning, TEXT("StateComp GetIsReplicated() : %s"), GetIsReplicated() ? TEXT("TRUE") : TEXT("FALSE"));
+	//UE_LOG(LogTemp, Warning, TEXT("StateComp GetIsReplicated() : %s"), GetIsReplicated() ? TEXT("TRUE") : TEXT("FALSE"));
 	if (GetIsReplicated() != true)
 	{
 
@@ -88,7 +88,7 @@ void UStateComponent::InitStat()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GetGameInstance Is Null"));
+		//UE_LOG(LogTemp, Warning, TEXT("GetGameInstance Is Null"));
 	}
 }
 
@@ -197,7 +197,7 @@ void UStateComponent::UpdateStat()
 	//	}
 	//}
 
-	UE_LOG(LogTemp,Warning,TEXT("updateStat"));
+	//UE_LOG(LogTemp,Warning,TEXT("updateStat"));
 	// 이후 장비에 있는 스탯을 여기에 추가해줘야 함
 	MaxHP = stat.MaxHP;
 	MaxSP = stat.MaxSP;

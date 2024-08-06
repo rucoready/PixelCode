@@ -61,7 +61,7 @@ void AEquipmentable::AttachActor(FName SocketName)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ownerCharacter Cast Failed"));
+		//UE_LOG(LogTemp, Warning, TEXT("ownerCharacter Cast Failed"));
 	}
 }
 

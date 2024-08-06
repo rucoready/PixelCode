@@ -331,7 +331,7 @@ void APixelCodeCharacter::NetMulticastRPC_ToggleCombat_Implementation()
 		{
 			animPlayTime = PlayAnimMontage(mainWeaponPtr->exitCombatMontage, 1.5f);
 
-			UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("animPlayTime : %f"), animPlayTime));
+			//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("animPlayTime : %f"), animPlayTime));
 		}
 		else
 		{
@@ -344,7 +344,7 @@ void APixelCodeCharacter::NetMulticastRPC_ToggleCombat_Implementation()
 		{
 			animPlayTime = PlayAnimMontage(mainWeaponPtr->enterCombatMontage, 1.5f);
 
-			UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("animPlayTime : %f"), animPlayTime));
+			//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("animPlayTime : %f"), animPlayTime));
 		}
 		else
 		{
@@ -361,7 +361,7 @@ void APixelCodeCharacter::NetMulticastRPC_ToggleCombat_Implementation()
 
 			GetWorld()->GetTimerManager().ClearTimer(timerHandle);
 
-			UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("combatComponent->bCombatEnable : %s"), combatComponent->bCombatEnable ? TEXT("TRUE") : TEXT("FALSE")));
+			//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("combatComponent->bCombatEnable : %s"), combatComponent->bCombatEnable ? TEXT("TRUE") : TEXT("FALSE")));
 
 		}, animPlayTime, false, 1.0f);
 }
@@ -1242,7 +1242,7 @@ void APixelCodeCharacter::MultiRPC_RemoveRock_Implementation(const FHitResult& H
 		
 		if (RockComp && RockComp->ComponentTags.Contains(TEXT("Rock")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Remove Rock"));
+			//UE_LOG(LogTemp, Warning, TEXT("Remove Rock"));
 
 			RockComp->RemoveInstance(HitResult.Item);
 			GetWorld()->SpawnActor<APickup>(pickupRock, HitResult.ImpactPoint, GetActorRotation());
@@ -2320,14 +2320,14 @@ void APixelCodeCharacter::Soundcollection()
 	{
 		ServerRPC_PlayerSwordOutSound();
 		bSwordOutSound = false;
-		UE_LOG(LogTemp, Warning, TEXT("PlayerOut"));
+		//UE_LOG(LogTemp, Warning, TEXT("PlayerOut"));
 	}
 
 	if (bSwordInSound)
 	{
 		ServerRPC_PlayerSwordInSound();
 		bSwordInSound = false;
-		UE_LOG(LogTemp, Warning, TEXT("PlayerIn"));
+		//UE_LOG(LogTemp, Warning, TEXT("PlayerIn"));
 	}
 
 	if (bBaseSwordSound1)
@@ -2848,7 +2848,7 @@ void APixelCodeCharacter::ToggleCombatFunction(const FInputActionValue& Value)
 		{
 			if (motionState == ECharacterMotionState::Idle)
 			{
-				UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("combatComponent->bCombatEnable : %s"), combatComponent->bCombatEnable ? TEXT("TRUE") : TEXT("FALSE")));
+				//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("combatComponent->bCombatEnable : %s"), combatComponent->bCombatEnable ? TEXT("TRUE") : TEXT("FALSE")));
 
 				ServerRPC_ToggleCombat();
 			}
@@ -3015,7 +3015,7 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		SeverRPC_mageRightAttackSpawn();
 
 		bmageRightAttack = false;
-		UE_LOG(LogTemp,Warning,TEXT("magerightattack"));
+		//UE_LOG(LogTemp,Warning,TEXT("magerightattack"));
 	}
 
 	if (bmageQAttack)
@@ -3074,7 +3074,7 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 		EnableInput(Pc);
 		this->SetOwner(Pc);
 		//FollowCamera->PostProcessSettings.ColorSaturation = FVector4(1, 1, 0, 0);
-		UE_LOG(LogTemp,Warning,TEXT("bPoss!!"));
+		//UE_LOG(LogTemp,Warning,TEXT("bPoss!!"));
 		bPoss = false;
 	}
 

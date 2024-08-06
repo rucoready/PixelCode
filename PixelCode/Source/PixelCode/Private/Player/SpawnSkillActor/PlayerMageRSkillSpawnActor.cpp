@@ -44,7 +44,7 @@ void APlayerMageRSkillSpawnActor::BeginPlay()
 	bDestroy = true;
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &APlayerMageRSkillSpawnActor::OnOverlapEnemy);
 	
-	UE_LOG(LogTemp, Warning, TEXT("RSKillActor"));
+	//UE_LOG(LogTemp, Warning, TEXT("RSKillActor"));
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageRSkillAttack, GetActorLocation(), GetActorRotation());
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageRSkillfire, GetActorLocation(), GetActorRotation());
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), NA_MageRSkillfire2, GetActorLocation(), GetActorRotation());
@@ -60,7 +60,7 @@ void APlayerMageRSkillSpawnActor::Tick(float DeltaTime)
 		DestroyTime += DeltaTime;
 		if (DestroyTime >= 3.0f)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("destroy"));
+			//UE_LOG(LogTemp, Warning, TEXT("destroy"));
 			bDestroy = false;
 			DestroyTime = 0.0f;
 			GetWorldTimerManager().ClearTimer(DamageTimerHandle);

@@ -57,7 +57,7 @@ void APlayerMageESkillSpawnActor::Tick(float DeltaTime)
 		DestroyTime += DeltaTime;
 		if (DestroyTime >= 0.1f)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("destroy"));
+			//UE_LOG(LogTemp, Warning, TEXT("destroy"));
 			bDestroy = false;
 			DestroyTime = 0.0f;
 			Destroy();
@@ -101,7 +101,7 @@ void APlayerMageESkillSpawnActor::OnOverlapEnemy(UPrimitiveComponent* Overlapped
 		if (NS_MageESkillhit != nullptr)
 		{
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MageESkillhit, OtherActor->GetActorLocation(), OtherActor->GetActorRotation());
-			UE_LOG(LogTemp, Warning, TEXT("Gruxdamage"));
+			//UE_LOG(LogTemp, Warning, TEXT("Gruxdamage"));
 		}
 	}
 	else if (dogBart)
@@ -121,7 +121,7 @@ void APlayerMageESkillSpawnActor::OnOverlapEnemy(UPrimitiveComponent* Overlapped
 		{
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_MageESkillhit, OtherActor->GetActorLocation(),OtherActor->GetActorRotation());
 		}
-		UE_LOG(LogTemp,Warning,TEXT("dogbartdamage"));
+		//UE_LOG(LogTemp,Warning,TEXT("dogbartdamage"));
 	}
 
 }

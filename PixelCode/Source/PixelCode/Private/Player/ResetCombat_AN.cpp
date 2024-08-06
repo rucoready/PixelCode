@@ -15,11 +15,11 @@ void UResetCombat_AN::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s : %d"), *FString(__FILE__), __LINE__);
+			//UE_LOG(LogTemp, Warning, TEXT("%s : %d"), *FString(__FILE__), __LINE__);
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s : %d"), *FString(__FILE__), __LINE__);
+		//UE_LOG(LogTemp, Warning, TEXT("%s : %d"), *FString(__FILE__), __LINE__);
 	}
 }

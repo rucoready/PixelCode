@@ -70,7 +70,7 @@ void APlayerMageZSkillSpawnActor::Tick(float DeltaTime)
 		DestroyTime += DeltaTime;
 		if (DestroyTime >= 5.0f)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("destroy"));
+			//UE_LOG(LogTemp, Warning, TEXT("destroy"));
 			bDestroy = false;
 			DestroyTime = 0.0f;
 			GetWorldTimerManager().ClearTimer(DamageTimerHandle);

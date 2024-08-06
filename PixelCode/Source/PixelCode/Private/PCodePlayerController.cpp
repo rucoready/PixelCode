@@ -80,7 +80,7 @@ void APCodePlayerController::BeginPlay()
 		if (!ObjectPoolManager)
 		{
 			// 오브젝트 풀 매니저가 없는 경우 에러 처리
-			UE_LOG(LogTemp, Error, TEXT("ObjectPoolManager를 찾을 수 없습니다!"));
+			//UE_LOG(LogTemp, Error, TEXT("ObjectPoolManager를 찾을 수 없습니다!"));
 		}
 }
 	
@@ -104,16 +104,16 @@ bool APCodePlayerController::ValidatePlayerState()
 
 	if (PlayerState->IsValidLowLevel())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("0 APC_Gameplay::PlayerState->IsValid"));
+		//UE_LOG(LogTemp, Warning, TEXT("0 APC_Gameplay::PlayerState->IsValid"));
 		return true;
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("0 APC_Gameplay::PlayerState->Is Not Valid"));
+		//UE_LOG(LogTemp, Warning, TEXT("0 APC_Gameplay::PlayerState->Is Not Valid"));
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle_PlayerStateCheck, [&]() {
 			if (ValidatePlayerState())
 			{
-				UE_LOG(LogTemp, Warning, TEXT("0 APC_Gameplay::PlayerState 다시 validate!!!!!!!!"));
+				//UE_LOG(LogTemp, Warning, TEXT("0 APC_Gameplay::PlayerState 다시 validate!!!!!!!!"));
 				PlayerWidgetUpdate();
 			}
 			}, 0.2f, false);
@@ -145,7 +145,7 @@ void APCodePlayerController::ClientRPC_PlayerStartWidget_Implementation()
 		{
 			statWidget->AddToViewport(1);
 			statWidget->SetVisibility(ESlateVisibility::Collapsed);
-			UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
+			//UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
 		}
 
 	}
@@ -156,7 +156,7 @@ void APCodePlayerController::ClientRPC_PlayerStartWidget_Implementation()
 		{
 			NormallyWidget->AddToViewport(-1);
 			NormallyWidget->SetVisibility(ESlateVisibility::Visible);
-			UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
+			//UE_LOG(LogTemp, Warning, TEXT("NormalAuth"));
 		}
 	}
 
@@ -228,14 +228,14 @@ void APCodePlayerController::PlayerStatWidget()
 		{
 			statWidget->DisplayStat();
 			bIsStatVisible = false;
-			UE_LOG(LogTemp, Warning, TEXT("StatOn"));
+			//UE_LOG(LogTemp, Warning, TEXT("StatOn"));
 		}
 
 		else
 		{
 			statWidget->HideStat();
 			bIsStatVisible = true;
-			UE_LOG(LogTemp, Warning, TEXT("StatOff"));
+			//UE_LOG(LogTemp, Warning, TEXT("StatOff"));
 		}
 	}
 
@@ -265,7 +265,7 @@ void APCodePlayerController::PlayerDieWidget()
 {
 	if (NormallyWidget)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("RespawnDieWidget"));
+		//UE_LOG(LogTemp, Warning, TEXT("RespawnDieWidget"));
 		NormallyWidget->SetActiveGameOverUI(true);
 	}
 }
@@ -344,7 +344,7 @@ void APCodePlayerController::HandleCharacterDeath()
 		// ...
 
 
-		UE_LOG(LogTemp, Warning, TEXT("UnPossess!"));
+		//UE_LOG(LogTemp, Warning, TEXT("UnPossess!"));
 	}
 	//SpawnCharacterAtLocation(MainPlayer->GetActorLocation());
 }
@@ -403,7 +403,7 @@ void APCodePlayerController::SpawnCharacterAtLocation(APixelCodeCharacter* Poole
 			}
 			//Server_SpawnAndPossessCharacter(PooledCharacter, Location);
 			//Possess(PooledCharacter); // 컨트롤러가 캐릭터를 조종
-			UE_LOG(LogTemp, Warning, TEXT("Possess!"));
+			//UE_LOG(LogTemp, Warning, TEXT("Possess!"));
 		}
 	}
 }
@@ -692,7 +692,7 @@ void APCodePlayerController::MulticastRPC_CreateDamageWidget_Implementation()
 
 void APCodePlayerController::ChangeRobbyWidgetButtonReady()
 {
-	UE_LOG(LogTemp, Warning, TEXT("TA66"));
+	//UE_LOG(LogTemp, Warning, TEXT("TA66"));
 	WidgetInstance->NormalChangeButton1();
 }
 
@@ -702,7 +702,7 @@ void APCodePlayerController::CreateWidgetBossEnterWidget()
 	{
 		if (bossEnterWidget)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("CALL4455"));
+			//UE_LOG(LogTemp, Warning, TEXT("CALL4455"));
 			bossEnterWidgets = CreateWidget<UBossEnterWidget>(this, bossEnterWidget);
 			if (bossEnterWidgets)
 			{

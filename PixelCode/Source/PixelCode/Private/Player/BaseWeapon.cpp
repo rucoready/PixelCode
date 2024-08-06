@@ -113,7 +113,7 @@ void ABaseWeapon::OnEquipped()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("selectedName : %p"), this);
+		//UE_LOG(LogTemp, Warning, TEXT("selectedName : %p"), this);
 	}
 }
 
@@ -176,7 +176,7 @@ void ABaseWeapon::OnEquippedTarget(UCombatComponent* combatcomp)
 
 void ABaseWeapon::OnHitCollisionComponent(FHitResult lastHitStruct)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnHitCollisionComponent Called"));
+	//UE_LOG(LogTemp, Warning, TEXT("OnHitCollisionComponent Called"));
 	
 	AActor* hitActor = lastHitStruct.GetActor();
 	ABossApernia* boss = Cast<ABossApernia>(hitActor);
