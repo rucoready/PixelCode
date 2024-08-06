@@ -1803,37 +1803,43 @@ void ABossApernia::MoveGigantSword()
             FTimerHandle Handle;
             GetWorld()->GetTimerManager().SetTimer(Handle, [this, StartTime, Duration, StartLocation, TargetLocation, spawnedSword, &Handle]()
                 {
+                    // spawnedSword가 null이 아닌지 확인
                     if (spawnedSword == nullptr)
                     {
-             
                         GetWorld()->GetTimerManager().ClearTimer(Handle);
                         return;
                     }
 
-                    
-
+                    // 시간 계산
                     float CurrentTime = GetWorld()->GetTimeSeconds();
                     float Alpha = FMath::Clamp((CurrentTime - StartTime) / Duration, 0.0f, 1.0f);
 
-                  
-                    FVector LerpedLocation = StartLocation + (TargetLocation - StartLocation) * Alpha;
-
-                   
-                    if (spawnedSword != nullptr)
+                    // StartLocation과 TargetLocation이 유효한지 확인
+                    if (!StartLocation.IsZero() && !TargetLocation.IsZero())
                     {
-                        spawnedSword->SetActorLocation(LerpedLocation);
-                    }
+                        FVector LerpedLocation = StartLocation + (TargetLocation - StartLocation) * Alpha;
 
-                    
-                    if (Alpha >= 1.0f)
-                    {
-                        if (!onceSoundGigantImpact)
+                        // spawnedSword가 여전히 null이 아닌지 확인
+                        if (spawnedSword != nullptr)
                         {
-                            UGameplayStatics::PlaySoundAtLocation(GetWorld(), gigantSwordSound, GetActorLocation());
-                            onceSoundGigantImpact = true;
+                            spawnedSword->SetActorLocation(LerpedLocation);
                         }
-                        
-                        spawnedSword->SetActorLocation(TargetLocation); 
+
+                        // 타이머 완료 조건
+                        if (Alpha >= 1.0f)
+                        {
+                            if (!onceSoundGigantImpact)
+                            {
+                                UGameplayStatics::PlaySoundAtLocation(GetWorld(), gigantSwordSound, GetActorLocation());
+                                onceSoundGigantImpact = true;
+                            }
+
+                            spawnedSword->SetActorLocation(TargetLocation);
+                            GetWorld()->GetTimerManager().ClearTimer(Handle);
+                        }
+                    }
+                    else
+                    {
                         GetWorld()->GetTimerManager().ClearTimer(Handle);
                     }
                 }, 0.01f, true);
