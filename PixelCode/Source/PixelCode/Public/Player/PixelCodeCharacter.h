@@ -997,6 +997,12 @@ public:
  	UFUNCTION()
  	void OnCheatMode(const FInputActionValue& value);
 
+	UFUNCTION(Server, Reliable)
+ 	void ServerRPC_OnCheatMode(const FInputActionValue& value);
+
+	UFUNCTION(Client, Reliable)
+ 	void ClientRPC_OnCheatMode(const FInputActionValue& value);
+
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 	/*UPROPERTY(EditAnywhere, Category="MySettings")
 	class UAnimMontage* rollMT;*/

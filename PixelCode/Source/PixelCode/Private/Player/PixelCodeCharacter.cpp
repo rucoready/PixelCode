@@ -1339,12 +1339,20 @@ void APixelCodeCharacter::MultiRPC_RemoveBush_Implementation(const FHitResult& H
 	
  void APixelCodeCharacter::OnCheatMode(const FInputActionValue& value)
  {
- 	bool Val = value.Get<bool>();
- 
- 	if (Val)
- 	{
- 		Builder->bItemQuantityValid = !Builder->bItemQuantityValid;
- 	}
+	 if (HasAuthority())
+	 {
+		 bool Val = value.Get<bool>();
+
+		 if (Val)
+		 {
+			 Builder->bItemQuantityValid = !Builder->bItemQuantityValid;
+		 }
+	}
+	 else
+	 {
+		 ServerRPC_OnCheatMode(value);
+	 }
+ 	
  	
  // 	if (Val)
  // 	{
@@ -1355,6 +1363,21 @@ void APixelCodeCharacter::MultiRPC_RemoveBush_Implementation(const FHitResult& H
  // 		Builder->bItemQuantityValid = false;
  // 	}
  
+ }
+
+ void APixelCodeCharacter::ServerRPC_OnCheatMode_Implementation(const FInputActionValue& value)
+ {
+	 ClientRPC_OnCheatMode(value);
+ }
+
+ void APixelCodeCharacter::ClientRPC_OnCheatMode_Implementation(const FInputActionValue& value)
+ {
+	 bool Val = value.Get<bool>();
+
+	 if (Val)
+	 {
+		 Builder->bItemQuantityValid = !Builder->bItemQuantityValid;
+	 }
  }
 
 // 서휘-----------------------------------------------------------------------------------------------------끝
