@@ -134,11 +134,11 @@ void APlayerOrganism::Tick(float DeltaTime)
 
 	if (bSwordQSkillCameraShake)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerShake"));
+		//UE_LOG(LogTemp, Warning, TEXT("PlayerShake"));
 		APlayerController* APc = Cast<APlayerController>(this->GetController());
 		if (APc != nullptr)
 		{
-			UE_LOG(LogTemp,Warning,TEXT("PlayerShake1"));
+			//UE_LOG(LogTemp,Warning,TEXT("PlayerShake1"));
 			APc->ClientStartCameraShake(PlayerQSkillShake_bp);
 		}
 		bSwordQSkillCameraShake = false;
@@ -189,7 +189,7 @@ float APlayerOrganism::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 			AnimInsatnce->Montage_Play(AttackCounter);
 			
 		}
-	UE_LOG(LogTemp,Warning,TEXT("PlayerCounter"));
+	//UE_LOG(LogTemp,Warning,TEXT("PlayerCounter"));
 		return 0.0f;
 	}
 
@@ -272,21 +272,21 @@ void APlayerOrganism::GetHit(const FVector& ImpactPoint, bool bFallDown)
 			{
 				if (Theta >= -45.f && Theta < 45.f)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Front"));
+					//UE_LOG(LogTemp, Warning, TEXT("Front"));
 				}
 				else if (Theta >= -135.f && Theta < -45.f)
 				{
 					SetActorRotation(GetActorRotation()-FRotator(0,-270,0));
-					UE_LOG(LogTemp, Warning, TEXT("Left"));
+					//UE_LOG(LogTemp, Warning, TEXT("Left"));
 				}
 				else if (Theta >= 45.f && Theta < 135.f)
 				{
 					SetActorRotation(GetActorRotation() - FRotator(0,-90,0));
-					UE_LOG(LogTemp, Warning, TEXT("Right"));
+					//UE_LOG(LogTemp, Warning, TEXT("Right"));
 				}
 				else
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Back"));
+					//UE_LOG(LogTemp, Warning, TEXT("Back"));
 					SetActorRotation(GetActorRotation() - FRotator(0, -180, 0));
 				}
 				//if (GEngine)
@@ -307,21 +307,21 @@ void APlayerOrganism::GetHit(const FVector& ImpactPoint, bool bFallDown)
 		if (Theta >= -45.f && Theta < 45.f)
 		{
 			Section = FName("HitForward");
-			UE_LOG(LogTemp, Warning, TEXT("Front"));
+			//UE_LOG(LogTemp, Warning, TEXT("Front"));
 		}
 		else if (Theta >= -135.f && Theta < -45.f)
 		{
 			Section = FName("HitLeft");
-			UE_LOG(LogTemp, Warning, TEXT("Left"));
+			//UE_LOG(LogTemp, Warning, TEXT("Left"));
 		}
 		else if (Theta >= 45.f && Theta < 135.f)
 		{
 			Section = FName("HitRight");
-			UE_LOG(LogTemp, Warning, TEXT("Right"));
+			//UE_LOG(LogTemp, Warning, TEXT("Right"));
 		}
 		else
 		{
-		UE_LOG(LogTemp, Warning, TEXT("Back"));
+		//UE_LOG(LogTemp, Warning, TEXT("Back"));
 		}
 
 		PlayHitReactMontage(Section);
@@ -461,12 +461,12 @@ void APlayerOrganism::EnableRagdoll()
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("AEromCharacter : %d"), __LINE__);
+			//UE_LOG(LogTemp, Warning, TEXT("AEromCharacter : %d"), __LINE__);
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AEromCharacter : %d"), __LINE__);
+		//UE_LOG(LogTemp, Warning, TEXT("AEromCharacter : %d"), __LINE__);
 	}
 }
 
@@ -648,9 +648,9 @@ void APlayerOrganism::SkillZTarget()
 
 	FVector PlayerLocation = GetActorLocation();
 	FString LocationString = PlayerLocation.ToString();
-	UE_LOG(LogTemp, Warning, TEXT("SkillZ: %s"), *LocationString);
+	//UE_LOG(LogTemp, Warning, TEXT("SkillZ: %s"), *LocationString);
 
-	UE_LOG(LogTemp, Warning, TEXT("SkillZ: %d"), CurrentDashIndex);
+	//UE_LOG(LogTemp, Warning, TEXT("SkillZ: %d"), CurrentDashIndex);
 
 
 
@@ -672,7 +672,7 @@ void APlayerOrganism::CharcurrentLoc()
 	
 		FVector PlayerLocation = GetActorLocation();
 		FString LocationString = PlayerLocation.ToString();
-		UE_LOG(LogTemp, Warning, TEXT("getLoc: %s"), *LocationString);
+		//UE_LOG(LogTemp, Warning, TEXT("getLoc: %s"), *LocationString);
 
 	}
 
