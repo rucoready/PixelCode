@@ -15,6 +15,8 @@ APortalCollision2Boss::APortalCollision2Boss()
 
 	boxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("boxCollision"));
 
+	RootComponent = boxCollision;
+
 }
 
 // Called when the game starts or when spawned
@@ -23,6 +25,8 @@ void APortalCollision2Boss::BeginPlay()
 	Super::BeginPlay();
 	
 	boxCollision->OnComponentBeginOverlap.AddDynamic(this, &APortalCollision2Boss::OnBeginOverlapPortal);
+
+	
 }
 
 // Called every frame

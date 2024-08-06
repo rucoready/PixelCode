@@ -327,10 +327,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UParticleSystem* hitPaticle;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	int32 itemRandNums = 0;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	int32 randItemIndex = 0;
 
 	UFUNCTION(Server, Reliable)

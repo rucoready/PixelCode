@@ -21,11 +21,7 @@ APhase2GigantSword::APhase2GigantSword()
     swordComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("swordComp"));
     sceneComp = CreateDefaultSubobject<USceneComponent>(TEXT("sceneComp"));
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> swordOBJ(TEXT("/Game/KMS_AI/Boss_Alpernia/BossSword/BossSword_Sword_low.BossSword_Sword_low"));
-    if (swordOBJ.Succeeded())
-    {
-        swordComp->SetStaticMesh(swordOBJ.Object);
-    }
+    
 
     
     currentTime = 0.0f;

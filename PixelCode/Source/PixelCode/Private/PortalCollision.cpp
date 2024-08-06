@@ -16,6 +16,8 @@ APortalCollision::APortalCollision()
     PrimaryActorTick.bCanEverTick = true;
 
     boxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("boxCollision"));
+
+    RootComponent = boxCollision;
 }
 
 // Called when the game starts or when spawned

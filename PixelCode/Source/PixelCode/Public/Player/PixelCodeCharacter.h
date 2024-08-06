@@ -691,13 +691,13 @@ protected:
 	// 서휘-----------------------------------------------------------------------------------------------------
 	FHitResult PerformLineTrace(float Distance = 650.0f, bool DrawDebug = false);
 
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = KSH)
+	UPROPERTY(BlueprintReadOnly, Category = KSH)
 	bool bInBuildMode;
 
 	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
 	TSubclassOf<ABuildingVisual> BuildingClass;
 
-	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
+	UPROPERTY(EditDefaultsOnly, Category = KSH)
 	TSubclassOf<ABuilding> BuildingC;
 
 	UPROPERTY(Replicated,EditDefaultsOnly, BlueprintReadOnly, Category = KSH)
