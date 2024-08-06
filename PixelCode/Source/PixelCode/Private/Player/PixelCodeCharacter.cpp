@@ -159,7 +159,7 @@ void APixelCodeCharacter::BeginPlay()
 	spawnParam.Owner = this;
 	spawnParam.Instigator = this;
 
-	equipment = GetWorld()->SpawnActor<ABaseWeapon>(axe, GetActorTransform(), spawnParam);
+	equipment = GetWorld()->SpawnActor<ABaseWeapon>(defaultWeapon, GetActorTransform(), spawnParam);
 
 	if (equipment)
 	{
@@ -1720,12 +1720,14 @@ void APixelCodeCharacter::SkillQ()
 						PerformAttack(5, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -10);
+
+						bQskillCoolTime = true;
+
+						GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
 					}
 				}
 
-				bQskillCoolTime = true;
-
-				GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
+			
 			}
 		}
 		else if (equipment->eWeaponType == EWeaponType::MagicStaff)
@@ -1750,12 +1752,12 @@ void APixelCodeCharacter::SkillQ()
 						PerformAttack(1, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -10);
-						SeverRPC_mageQSkillSpawn();
+						bQskillCoolTime = true;
+						GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
 					}
 				}
 
-				bQskillCoolTime = true;
-				GetWorldTimerManager().SetTimer(QSkillTimer, this, &APixelCodeCharacter::QskillTime, 1.0f, true);
+				
 			}
 		}
 	}
@@ -1803,13 +1805,13 @@ void APixelCodeCharacter::SkillE()
 						PerformAttack(6, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -15);
-					
+						bEskillCoolTime = true;
+
+						GetWorldTimerManager().SetTimer(ESkillTimer, this, &APixelCodeCharacter::EskillTime, 1.0f, true);
 					}
 				}
 
-				bEskillCoolTime = true;
-
-				GetWorldTimerManager().SetTimer(ESkillTimer, this, &APixelCodeCharacter::EskillTime, 1.0f, true);
+			
 			}
 		}
 		else if (equipment->eWeaponType == EWeaponType::MagicStaff)
@@ -1833,12 +1835,13 @@ void APixelCodeCharacter::SkillE()
 						PerformAttack(2, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -15);
+						bEskillCoolTime = true;
+
+						GetWorldTimerManager().SetTimer(ESkillTimer, this, &APixelCodeCharacter::EskillTime, 1.0f, true);
 					}
 				}
 
-				bEskillCoolTime = true;
-
-				GetWorldTimerManager().SetTimer(ESkillTimer, this, &APixelCodeCharacter::EskillTime, 1.0f, true);
+				
 			}
 		}
 	}
@@ -1885,12 +1888,13 @@ void APixelCodeCharacter::SkillR()
 						PerformAttack(7, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -20);
+						bRskillCoolTime = true;
+
+						GetWorldTimerManager().SetTimer(RSkillTimer, this, &APixelCodeCharacter::RskillTime, 1.0f, true);
 					}
 				}
 
-				bRskillCoolTime = true;
-
-				GetWorldTimerManager().SetTimer(RSkillTimer, this, &APixelCodeCharacter::RskillTime, 1.0f, true);
+			
 			}
 		}
 		else if (equipment->eWeaponType == EWeaponType::MagicStaff)
@@ -1913,12 +1917,12 @@ void APixelCodeCharacter::SkillR()
 						PerformAttack(3, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -20);
-						SeverRPC_mageRSkillSpawn();
+						bRskillCoolTime = true;
+
+						GetWorldTimerManager().SetTimer(RSkillTimer, this, &APixelCodeCharacter::RskillTime, 1.0f, true);
 					}
 				}
-				bRskillCoolTime = true;
-
-				GetWorldTimerManager().SetTimer(RSkillTimer, this, &APixelCodeCharacter::RskillTime, 1.0f, true);
+			
 			}
 		}
 	}
@@ -1965,12 +1969,13 @@ void APixelCodeCharacter::SkillZ()
 						PerformAttack(8, false);
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -30);
+						bZskillCoolTime = true;
+
+						GetWorldTimerManager().SetTimer(ZSkillTimer, this, &APixelCodeCharacter::ZskillTime, 1.0f, true);
 					}
 				}
 
-				bZskillCoolTime = true;
-
-				GetWorldTimerManager().SetTimer(ZSkillTimer, this, &APixelCodeCharacter::ZskillTime, 1.0f, true);
+			
 			}
 		}
 		else if (equipment->eWeaponType == EWeaponType::MagicStaff)
@@ -1995,12 +2000,13 @@ void APixelCodeCharacter::SkillZ()
 						combatComponent->attackCount = 0;
 						stateComp->AddStatePoint(MP, -30);
 						SeverRPC_mageZSkillSpawn();
+						bZskillCoolTime = true;
+
+						GetWorldTimerManager().SetTimer(ZSkillTimer, this, &APixelCodeCharacter::ZskillTime, 1.0f, true);
 					}
 				}
 
-				bZskillCoolTime = true;
-
-				GetWorldTimerManager().SetTimer(ZSkillTimer, this, &APixelCodeCharacter::ZskillTime, 1.0f, true);
+	
 			}
 		}
 	}
@@ -2721,7 +2727,10 @@ void APixelCodeCharacter::NetMulticastRPC_PlayerZSound5_Implementation()
 
 void APixelCodeCharacter::Move(const FInputActionValue& Value)
 {
-
+	if (bMove)
+	{
+		return;
+	}
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -3007,6 +3016,12 @@ void APixelCodeCharacter::Tick(float DeltaTime)
 
 		bmageRightAttack = false;
 		UE_LOG(LogTemp,Warning,TEXT("magerightattack"));
+	}
+
+	if (bmageQAttack)
+	{
+		SeverRPC_mageQSkillSpawn();
+		bmageQAttack = false;
 	}
 
 	if (bmageEAttack)
