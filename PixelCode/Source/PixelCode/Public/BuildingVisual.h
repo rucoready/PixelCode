@@ -56,7 +56,7 @@ public:
 	UPROPERTY(Replicated)
 	ABuilding* InteractingBuilding;
 
-	UPROPERTY(Replicated,EditDefaultsOnly, Category = KSH)
+	UPROPERTY(EditDefaultsOnly, Category = KSH)
 	UItemBase* ItemReference;
 
 	UPROPERTY(Replicated)

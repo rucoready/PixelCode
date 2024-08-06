@@ -227,13 +227,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings", Replicated)
 	class UAnimMontage* jumpAttack01V1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings", Replicated)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* jumpAttack01V2;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings", Replicated)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings" )
 	class UAnimMontage* jumpAttack01V3;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings", Replicated)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
 	class UAnimMontage* jumpAttack01V4;
 
 	UPROPERTY(EditAnywhere, Category = "Niagara", Replicated)

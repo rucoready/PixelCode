@@ -83,12 +83,7 @@ ABossApernia::ABossApernia()
     bossSwordComp->SetupAttachment(GetMesh(), TEXT("RightHandSocket"));
 
     // FObjectFinder를 사용하여 ABossSword 클래스 객체를 찾습니다.
-    static ConstructorHelpers::FClassFinder<ABossSword> bossSwordAsset(TEXT("/Script/Engine.Blueprint'/Game/KMS_AI/Boss_Alpernia/BossSword/BP_BossSword.BP_BossSword'_C"));
-    if (bossSwordAsset.Succeeded())
-    {
-        // ABossSword 클래스를 설정합니다.
-        bossSwordComp->SetChildActorClass(bossSwordAsset.Class);
-    }
+    
 
     // 위치, 회전, 스케일 설정
     bossSwordComp->SetRelativeLocation(FVector(29.122834f, 84.073564f, 4.113887f));
@@ -100,11 +95,7 @@ ABossApernia::ABossApernia()
     bossBackSwordComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("bossBackSwordComp"));
     //SwordComp Attach RightHandSocket!!
     bossBackSwordComp->SetupAttachment(GetMesh(), TEXT("SpineSocket"));
-    static ConstructorHelpers::FObjectFinder<UStaticMesh>bossBackSwordMesh(TEXT("/Script/Engine.StaticMesh'/Game/KMS_AI/Boss_Alpernia/BossSword/BossSword_Sword_low.BossSword_Sword_low'"));
-    if (bossBackSwordMesh.Succeeded())
-    {
-        bossBackSwordComp->SetStaticMesh(bossBackSwordMesh.Object);
-    }
+    
     
     bossBackSwordComp->SetRelativeLocation(FVector(-28.945981f, -235.270012f, 29.204212f));
     bossBackSwordComp->SetRelativeRotation(FRotator(-0.016692f, 0.044553f, 20.539312f));
