@@ -169,7 +169,7 @@ void ABuildingVisual::SpawnBuilding()
  			{
  				if (Item && Item->Buildtypes == BuildingTypes[BuildingTypeIndex].BuildType)
  				{
- 					if (Item->Quantity < 1)
+ 					if (Item->Quantity > 0)
  					{
 						bItemQuantityValid  = true;		// 아이템 수량 만큼만 빌딩 가능모드
 					}
@@ -178,7 +178,7 @@ void ABuildingVisual::SpawnBuilding()
 		}
 	}
 	// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
-	if (BuildingClass && !IsHidden() && bItemQuantityValid)	// 아이템 수량 만큼만 빌딩 가능모드 -> 치트모드로 바꾸려면 !bItemQuantityValid 로 쓰기
+	if (BuildingClass && !IsHidden() && !bItemQuantityValid)	// 아이템 수량 만큼만 빌딩 가능모드 -> 치트모드로 바꾸려면 !bItemQuantityValid 로 쓰기
 	{
 		// ABuilding 인스턴스 = 건축자재가 있을 때
 		if (InteractingBuilding)
@@ -247,13 +247,6 @@ void ABuildingVisual::DestroyInstance(const FHitResult& HitResult)
 
 				InteractingBuilding->DestroyInstance(BuildingSocketData);
 
-// 				auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-// 				if (Pc )
-// 				{
-// 				  	pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
-// 				  	pc->NetMulticastRPC_DestroyBuildingInstance(/*BuildingSocketData*/);
-// 					//InteractingBuilding->DestroyInstance(BuildingSocketData);
-// 				}
 			}
 		}
 	}

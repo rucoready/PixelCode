@@ -104,12 +104,28 @@ void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData)
 		BuildingSocketData.InstancedComponent->RemoveInstance(BuildingSocketData.Index);
 		int32 index = BuildingSocketData.Index;
 
-//  		auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-//  		if (Pc )
-//  		{
-//  			pc = Cast<APixelCodeCharacter>(Pc->GetPawn());
-//  			pc->NetMulticastRPC_DestroyBuildingInstance(/*BuildingSocketData*/);
-//  		}
+
+		for (FInstanceSocketCheck& InstanceSocket : InstanceSocketsCheck)
+		{
+			if (InstanceSocket.InstancedComponent == BuildingSocketData.InstancedComponent) // 인스턴스 소켓의 메시가 = 인자로 넘겨받은 소켓의 메시랑 같을 때
+			{
+				for (FBuildIndexSockets& IndexSockets : InstanceSocket.InstanceSocketInformation)
+				{
+					if (IndexSockets.Index == BuildingSocketData.Index)
+					{
+						for (FSocketInformation& SocketInformation : IndexSockets.SocketsInformation)
+						{
+							if (SocketInformation.SocketName == BuildingSocketData.SocketName/*$.ToString()*/)
+							{
+								SocketInformation.bSocketInUse = true;
+								break;
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
 	}
 }
 
