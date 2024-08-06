@@ -122,7 +122,7 @@ void AGrux::Tick(float DeltaTime)
      distance = FVector::Dist(originLocation, currentLocation);
  
      if (distance > maxLocationSize && !returnCoolTime)
-
+     boxCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
      {
          RetrunOriginLoc();
          returnCoolTime = true;

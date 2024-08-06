@@ -134,7 +134,7 @@ void ADogBart::Tick(float DeltaTime)
 		
 		UGameplayStatics::PlaySoundAtLocation(this, dieSound, GetActorLocation());
 		
-
+		
 
 		GetWorldTimerManager().SetTimer(timerhandle_Destroy, this, &ADogBart::DestroySelf, 3.0f, false);
 		
