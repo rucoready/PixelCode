@@ -592,6 +592,16 @@ void APixelCodeCharacter::CraftItem(const FCraftItem& Item)
 	}
 }
 
+void APixelCodeCharacter::ServerRPC_CraftItem_Implementation(const FCraftItem& Item)
+{
+	ClientRPC_CraftItem(Item);
+}
+
+void APixelCodeCharacter::ClientRPC_CraftItem_Implementation(const FCraftItem& Item)
+{
+	CraftItem(Item);
+}
+
 void APixelCodeCharacter::DropedItem(const UItemBase* Iteminfo)
 {
 	if (ItemStorage)
@@ -1327,25 +1337,25 @@ void APixelCodeCharacter::MultiRPC_RemoveBush_Implementation(const FHitResult& H
 	}
 }
 	
-// void APixelCodeCharacter::OnCheatMode(const FInputActionValue& value)
-// {
-// 	bool Val = value.Get<bool>();
-// 
-// 	if (Val)
-// 	{
-// 		Builder->bItemQuantityValid = !Builder->bItemQuantityValid;
-// 	}
-// 	
-// // 	if (Val)
-// // 	{
-// // 		Builder->bItemQuantityValid = true;
-// // 	}
-// // 	else
-// // 	{
-// // 		Builder->bItemQuantityValid = false;
-// // 	}
-// 
-// }
+ void APixelCodeCharacter::OnCheatMode(const FInputActionValue& value)
+ {
+ 	bool Val = value.Get<bool>();
+ 
+ 	if (Val)
+ 	{
+ 		Builder->bItemQuantityValid = !Builder->bItemQuantityValid;
+ 	}
+ 	
+ // 	if (Val)
+ // 	{
+ // 		Builder->bItemQuantityValid = true;
+ // 	}
+ // 	else
+ // 	{
+ // 		Builder->bItemQuantityValid = false;
+ // 	}
+ 
+ }
 
 // 서휘-----------------------------------------------------------------------------------------------------끝
 

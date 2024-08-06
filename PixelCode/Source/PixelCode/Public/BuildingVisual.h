@@ -85,4 +85,6 @@ public:
 	void DestroyInstance(const FHitResult& HitResult);
 	void CycleMesh();
 
+	UPROPERTY()
+	bool bItemQuantityValid;
 };

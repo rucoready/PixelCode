@@ -764,6 +764,12 @@ public:
 	UFUNCTION()
 	void CraftItem(const FCraftItem& Item);
 
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_CraftItem(const FCraftItem& Item);
+
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_CraftItem(const FCraftItem& Item);
+
 	UFUNCTION()
 	void DropedItem(const UItemBase* Iteminfo);
 
@@ -988,8 +994,8 @@ public:
 	void MultiRPC_RemoveBush(const FHitResult& HitResult);
 
 
-// 	UFUNCTION()
-// 	void OnCheatMode(const FInputActionValue& value);
+ 	UFUNCTION()
+ 	void OnCheatMode(const FInputActionValue& value);
 
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 	/*UPROPERTY(EditAnywhere, Category="MySettings")

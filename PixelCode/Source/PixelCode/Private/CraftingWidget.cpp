@@ -182,10 +182,17 @@ void UCraftingWidget::OnCraftClicked()
 		}
 
 		//UE_LOG(LogTemp, Warning, TEXT("CLICK"));
-
-		Char->CraftItem(Crafts[SelectedIndex]);
-
-		InitializeCraftSlot();
+		auto Pc = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		if (Pc->HasAuthority())
+		{
+			Char->CraftItem(Crafts[SelectedIndex]);
+			InitializeCraftSlot();
+		}
+		else
+		{
+			Char->ServerRPC_CraftItem(Crafts[SelectedIndex]);
+			InitializeCraftSlot();
+		}
 	}
 	else
 	{
