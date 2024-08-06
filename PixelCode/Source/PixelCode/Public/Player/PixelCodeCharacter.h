@@ -174,6 +174,9 @@ class APixelCodeCharacter : public APlayerOrganism
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
 	UInputAction* IA_Build;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
+	UInputAction* IA_Cheat;
+
 	
 
 public:
@@ -984,6 +987,9 @@ public:
 	UFUNCTION(NetMulticast, Reliable) 
 	void MultiRPC_RemoveBush(const FHitResult& HitResult);
 
+
+	UFUNCTION()
+	void OnCheatMode(const FInputActionValue& value);
 
 	// 서휘-----------------------------------------------------------------------------------------------------끝
 	/*UPROPERTY(EditAnywhere, Category="MySettings")

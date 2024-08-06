@@ -154,7 +154,7 @@ void ABuildingVisual::SetBuildPosition(const FHitResult& HitResult)
 
 void ABuildingVisual::SpawnBuilding()
 {
-	bool bItemQuantityValid = false;
+	
  	auto Pc = Cast<APlayerOrganism>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
  	if (Pc)
  	{
@@ -178,7 +178,7 @@ void ABuildingVisual::SpawnBuilding()
 		}
 	}
 	// ABuilding 이 숨김이 아닐 때 = 건축자재가 preview 상태일 때
-	if (BuildingClass && !IsHidden() && !bItemQuantityValid)	// 아이템 수량 만큼만 빌딩 가능모드 -> 치트모드로 바꾸려면 !bItemQuantityValid 로 쓰기
+	if (BuildingClass && !IsHidden() && bItemQuantityValid)	// 아이템 수량 만큼만 빌딩 가능모드 -> 치트모드로 바꾸려면 !bItemQuantityValid 로 쓰기
 	{
 		// ABuilding 인스턴스 = 건축자재가 있을 때
 		if (InteractingBuilding)

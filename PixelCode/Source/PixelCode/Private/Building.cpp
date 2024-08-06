@@ -102,8 +102,7 @@ void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData)
  	if (BuildingSocketData.InstancedComponent)
  	{
 		BuildingSocketData.InstancedComponent->RemoveInstance(BuildingSocketData.Index);
-		int32 index = BuildingSocketData.Index;
-
+		//int32 index = BuildingSocketData.Index;
 
 		for (FInstanceSocketCheck& InstanceSocket : InstanceSocketsCheck)
 		{
@@ -117,7 +116,7 @@ void ABuilding::DestroyInstance(const FBuildingSocketData& BuildingSocketData)
 						{
 							if (SocketInformation.SocketName == BuildingSocketData.SocketName/*$.ToString()*/)
 							{
-								SocketInformation.bSocketInUse = true;
+								SocketInformation.bSocketInUse = false;
 								break;
 							}
 						}
