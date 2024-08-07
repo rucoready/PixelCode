@@ -87,7 +87,7 @@ public:
 
 	//float bossMaxHP = 43000.0f;
 	UPROPERTY(EditAnywhere, Category = "HP")
-	float bossMaxHP = 80000.0f;
+	float bossMaxHP = 100000.0f;
 	float bossCurrentHP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings")
