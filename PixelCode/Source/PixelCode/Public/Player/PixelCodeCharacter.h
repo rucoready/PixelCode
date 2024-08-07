@@ -175,7 +175,8 @@ class APixelCodeCharacter : public APlayerOrganism
 	UInputAction* IA_Build;
 
 // 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
-// 	UInputAction* IA_Cheat;
+ 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true")) 
+ 	UInputAction* IA_Cheat;
 
 	
 
@@ -738,7 +739,7 @@ protected:
 
 	//UFUNCTION(NetMulticast, Reliable)
 	
-	UFUNCTION(Client, Reliable)
+	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticastRPC_Interact(const TScriptInterface<IInteractionInterface>& Interactable);
 
 	APlayerOrganism* focusedChar = nullptr;
